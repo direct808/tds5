@@ -4,10 +4,9 @@ import { AuthService } from './auth.service'
 import { UserModule } from '../user'
 import { JwtModule } from '@nestjs/jwt'
 import { AppConfig } from '../config'
-import { LocalStrategy } from './local.strategy'
-import { JwtStrategy } from './jwt.strategy'
 import { APP_GUARD } from '@nestjs/core'
-import { JwtAuthGuard } from './jwt-auth.guard'
+import { JwtStrategy, LocalStrategy } from './strategies'
+import { JwtAuthGuard } from './guards'
 
 @Module({
   imports: [
