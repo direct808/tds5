@@ -4,12 +4,12 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { CreateSourceDto } from './dto'
+import { CreateSourceDto, UpdateSourceDto } from './dto'
 import { SourceService } from './source.service'
 import { UserId } from '../auth'
 
@@ -19,8 +19,8 @@ export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
   @Get()
-  getSources() {
-    return []
+  getSources(@UserId() userId: string) {
+    return this.sourceService.getList(userId)
   }
 
   @Post()
@@ -32,8 +32,12 @@ export class SourceController {
   }
 
   @Patch(':id')
-  updateSource(@Param('id', ParseIntPipe) id: number) {
-    console.log(id)
+  async updateSource(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UserId() userId: string,
+    @Body() dto: UpdateSourceDto,
+  ) {
+    await this.sourceService.update(id, userId, dto)
   }
 
   @Delete(':id')
