@@ -7,12 +7,20 @@ export class AppConfig {
   port: string
 
   @IsString()
+  @Expose({ name: 'SECRET' })
+  secret: string
+
+  @IsString()
+  @Expose({ name: 'JWT_EXPIRES' })
+  jwtExpires: string
+
+  @IsString()
   @Expose({ name: 'DB_HOST' })
   dbHost: string
 
-  @IsNumber()
+  @IsPort()
   @Expose({ name: 'DB_PORT' })
-  dbPort: number
+  dbPort: string
 
   @IsString()
   @Expose({ name: 'DB_USER' })

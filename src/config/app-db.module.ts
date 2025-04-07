@@ -10,7 +10,7 @@ import { AppConfig } from './app-config.service'
         return {
           type: 'postgres',
           host: config.dbHost,
-          port: config.dbPort,
+          port: Number(config.dbPort),
           username: config.dbUser,
           password: config.dbPass,
           database: config.dbName,
