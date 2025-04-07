@@ -11,6 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 import { CreateSourceDto } from './dto'
 import { SourceService } from './source.service'
+import { UserId } from '../auth'
 
 @ApiTags('Источники трафика')
 @Controller('source')
@@ -18,20 +19,23 @@ export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
   @Get()
-  getTrafficSources() {
+  getSources() {
     return []
   }
 
   @Post()
-  async createTrafficSource(@Body() { name }: CreateSourceDto) {
-    await this.sourceService.create(name)
+  async createSource(
+    @Body() { name }: CreateSourceDto,
+    @UserId() userId: string,
+  ) {
+    await this.sourceService.create({ name, userId })
   }
 
   @Patch(':id')
-  updateTrafficSource(@Param('id', ParseIntPipe) id: number) {
+  updateSource(@Param('id', ParseIntPipe) id: number) {
     console.log(id)
   }
 
   @Delete(':id')
-  deleteTrafficSource(@Param('id') id: number) {}
+  deleteSource(@Param('id') id: number) {}
 }
