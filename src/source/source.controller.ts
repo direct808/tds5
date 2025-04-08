@@ -41,5 +41,10 @@ export class SourceController {
   }
 
   @Delete(':id')
-  deleteSource(@Param('id') id: number) {}
+  async deleteSource(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UserId() userId: string,
+  ) {
+    await this.sourceService.delete(id, userId)
+  }
 }

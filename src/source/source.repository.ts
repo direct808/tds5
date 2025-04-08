@@ -1,13 +1,12 @@
-import { Repository } from 'typeorm'
+import { DataSource } from 'typeorm'
 import { Source } from './source.entity'
 import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
 export class SourceRepository {
-  constructor(
-    @InjectRepository(Source) private readonly repository: Repository<Source>,
-  ) {}
+  private readonly repository = this.dataSource.getRepository(Source)
+
+  constructor(private readonly dataSource: DataSource) {}
 
   public async create(args: Pick<Source, 'name' | 'userId'>): Promise<void> {
     const source = this.repository.create(args)
@@ -29,5 +28,9 @@ export class SourceRepository {
 
   public async update(id: string, data: Pick<Source, 'name'>): Promise<void> {
     await this.repository.update({ id }, data)
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.softDelete(id)
   }
 }

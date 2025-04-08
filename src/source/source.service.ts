@@ -46,4 +46,13 @@ export class SourceService {
   public async getList(userId: string): Promise<Source[]> {
     return this.repository.getListByUserId(userId)
   }
+
+  public async delete(id: string, userId: string): Promise<void> {
+    const source = await this.repository.getById(id, userId)
+
+    if (!source) {
+      throw new NotFoundException()
+    }
+    await this.repository.delete(id)
+  }
 }
