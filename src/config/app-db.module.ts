@@ -15,6 +15,7 @@ import { AppConfig } from './app-config.service'
           password: config.dbPass,
           database: config.dbName,
           entities: ['./**/*.entity.js'],
+          // entities: [__dirname + '/../**/*.entity.ts'],
           synchronize: true,
           logging: false,
         }
