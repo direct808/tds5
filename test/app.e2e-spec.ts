@@ -6,6 +6,7 @@ import { AppModule } from '../src/app.module'
 import { DataSource, Repository } from 'typeorm'
 import { authUser, loadSourceFixtures, loadUserFixtures } from './utils'
 import { Source } from '../src/source'
+import { configureApp } from '../src/helpers/configure-app'
 
 describe('AppController (e2e)', () => {
   let app: INestApplication
@@ -18,6 +19,7 @@ describe('AppController (e2e)', () => {
       imports: [AppModule],
     }).compile()
     app = moduleFixture.createNestApplication()
+    configureApp(app)
     await app.init()
     const dataSource = app.get(DataSource)
     await loadUserFixtures(dataSource)
@@ -28,7 +30,7 @@ describe('AppController (e2e)', () => {
 
   it('Create source', () => {
     return request(app.getHttpServer())
-      .post('/source')
+      .post('/api/source')
       .auth(accessToken, { type: 'bearer' })
       .send({ name: 'source 1' })
       .expect(201)
@@ -37,18 +39,21 @@ describe('AppController (e2e)', () => {
   it('List source', () => {
     return (
       request(app.getHttpServer())
-        .get('/source')
+        .get('/api/source')
         .auth(accessToken, { type: 'bearer' })
         // .send({ name: 'source 1' })
         .expect(200)
     )
   })
 
-  it('Update source', async () => {
+  it('Обновление source, при этом нельзя обновить id у source', async () => {
     await request(app.getHttpServer())
-      .patch('/source/00000000-0000-0000-0000-000000000001')
+      .patch('/api/source/00000000-0000-0000-0000-000000000001')
       .auth(accessToken, { type: 'bearer' })
-      .send({ name: 'updated name' })
+      .send({
+        name: 'updated name',
+        id: '00000000-0000-0000-0000-000000000022',
+      })
       .expect(200)
 
     const source = await sourceRepository.findOneOrFail({
@@ -60,7 +65,7 @@ describe('AppController (e2e)', () => {
 
   it('Delete source', async () => {
     await request(app.getHttpServer())
-      .delete('/source/00000000-0000-0000-0000-000000000001')
+      .delete('/api/source/00000000-0000-0000-0000-000000000001')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 

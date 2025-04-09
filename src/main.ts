@@ -1,13 +1,11 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { ValidationPipe } from '@nestjs/common'
+import { configureApp } from './helpers/configure-app'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-
-  app.setGlobalPrefix('api')
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
+  configureApp(app)
 
   const config = new DocumentBuilder()
     .setTitle('TDS 5')

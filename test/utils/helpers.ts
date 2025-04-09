@@ -17,7 +17,7 @@ export async function loadUserFixtures(ds: DataSource) {
 
 export async function authUser(app: INestApplication) {
   const { body } = await request(app.getHttpServer())
-    .post('/auth/login')
+    .post('/api/auth/login')
     .send({ email: 'admin@gmail.com', password: '1234' })
 
   return body.accessToken
