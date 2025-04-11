@@ -3,7 +3,9 @@ import { AuthService } from './auth.service'
 import { LoginDto } from './dto'
 import { LoginRequest, SkipAuth } from './types'
 import { LocalAuthGuard } from './guards'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Аутентификация')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

@@ -5,9 +5,17 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
 import { StartRequestInterceptor } from './start-request.interceptor'
 import { UserModule } from './user'
 import { AuthModule } from './auth'
+import { AffiliateNetworkModule } from './affiliate-network'
 
 @Module({
-  imports: [AppConfigModule, AppDbModule, SourceModule, UserModule, AuthModule],
+  imports: [
+    AppConfigModule,
+    AppDbModule,
+    SourceModule,
+    UserModule,
+    AuthModule,
+    AffiliateNetworkModule,
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,
