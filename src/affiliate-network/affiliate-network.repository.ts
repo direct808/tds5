@@ -44,4 +44,11 @@ export class AffiliateNetworkRepository {
   public async delete(id: string): Promise<void> {
     await this.repository.softDelete(id)
   }
+
+  async getByNameAndUserId(
+    name: string,
+    userId: string,
+  ): Promise<AffiliateNetwork | null> {
+    return this.repository.findOne({ where: { name, userId } })
+  }
 }
