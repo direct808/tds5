@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm'
 import { Source } from './source.entity'
 import { Injectable } from '@nestjs/common'
+import { AffiliateNetwork } from '../affiliate-network/affiliate-network.entity'
 
 @Injectable()
 export class SourceRepository {
@@ -32,5 +33,11 @@ export class SourceRepository {
 
   public async delete(id: string): Promise<void> {
     await this.repository.softDelete(id)
+  }
+  async getByNameAndUserId(
+    name: string,
+    userId: string,
+  ): Promise<AffiliateNetwork | null> {
+    return this.repository.findOne({ where: { name, userId } })
   }
 }

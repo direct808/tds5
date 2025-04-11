@@ -11,6 +11,7 @@ describe('SourceService', () => {
     update: jest.fn(),
     getListByUserId: jest.fn(),
     delete: jest.fn(),
+    getByNameAndUserId: jest.fn(),
   } as unknown as jest.Mocked<SourceRepository>
 
   const service = new SourceService(repository as unknown as SourceRepository)
@@ -63,6 +64,35 @@ describe('SourceService', () => {
         service.update('1', '1', { name: 'Updated' }),
       ).rejects.toThrow(NotFoundException)
       expect(repository.update).not.toHaveBeenCalled()
+    })
+
+    it('Должен выбросить ConflictException если имя не уникальное', async () => {
+      repository.getById.mockResolvedValue({ id: 'id123' } as Source)
+      repository.getByNameAndUserId.mockResolvedValue({
+        id: 'another-id',
+      } as Source)
+
+      await expect(
+        service.update('id123', 'user123', { name: 'Test Name' }),
+      ).rejects.toThrow(ConflictException)
+      expect(repository.getByNameAndUserId).toHaveBeenCalledWith(
+        'Test Name',
+        'user123',
+      )
+    })
+
+    it('Не должен выбросить ConflictException, если есть такое же имя с таким же id', async () => {
+      repository.getById.mockResolvedValue({ id: 'id123' } as Source)
+      repository.getByNameAndUserId.mockResolvedValue({ id: 'id123' } as Source)
+
+      await service.update('id123', 'user123', { name: 'Test Name' })
+      await expect(
+        service.update('id123', 'user123', { name: 'Test Name' }),
+      ).resolves.not.toThrow(ConflictException)
+      expect(repository.getByNameAndUserId).toHaveBeenCalledWith(
+        'Test Name',
+        'user123',
+      )
     })
   })
 

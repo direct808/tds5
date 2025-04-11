@@ -47,6 +47,16 @@ export class AffiliateNetworkService {
       throw new NotFoundException()
     }
 
+    if (args.name) {
+      const existing = await this.repository.getByNameAndUserId(
+        args.name,
+        userId,
+      )
+      if (existing && existing.id !== id) {
+        throw new ConflictException('Name must be unique')
+      }
+    }
+
     await this.repository.update(id, args)
   }
 
