@@ -1,18 +1,92 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AuthService } from './auth.service'
+import { UserService } from '../user'
+import { JwtService } from '@nestjs/jwt'
+import { LoginUser } from './types'
 
 describe('AuthService', () => {
-  let service: AuthService
+  let authService: AuthService
+  const userService = {
+    getByEmail: jest.fn(),
+  }
+  const jwtService = {
+    sign: jest.fn(),
+  }
 
   beforeEach(async () => {
+    jest.clearAllMocks()
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [
+        AuthService,
+        { provide: UserService, useValue: userService },
+        { provide: JwtService, useValue: jwtService },
+      ],
     }).compile()
 
-    service = module.get<AuthService>(AuthService)
+    authService = module.get<AuthService>(AuthService)
   })
 
-  it('should be defined', () => {
-    expect(service).toBeDefined()
+  describe('validateUser', () => {
+    it('should return user without password if password matches', async () => {
+      const user = {
+        id: '1',
+        email: 'test@example.com',
+        password: '1234',
+        name: 'Test User',
+      }
+
+      userService.getByEmail.mockResolvedValue(user)
+
+      const result = await authService.validateUser('test@example.com', '1234')
+      expect(result).toEqual({
+        id: '1',
+        email: 'test@example.com',
+        name: 'Test User',
+      })
+    })
+
+    it('should return null if user not found', async () => {
+      userService.getByEmail.mockResolvedValue(null)
+
+      const result = await authService.validateUser(
+        'notfound@example.com',
+        '1234',
+      )
+
+      expect(result).toBeNull()
+    })
+
+    it('should return null if password does not match', async () => {
+      const user = {
+        id: '1',
+        email: 'test@example.com',
+        password: 'wrong',
+      }
+
+      userService.getByEmail.mockResolvedValue(user)
+
+      const result = await authService.validateUser('test@example.com', '1234')
+      expect(result).toBeNull()
+    })
+  })
+
+  describe('sign', () => {
+    it('should return access token', () => {
+      const user: LoginUser = {
+        id: '1',
+        email: 'test@example.com',
+      }
+
+      jwtService.sign.mockReturnValue('mocked-jwt')
+
+      const result = authService.sign(user)
+
+      expect(result).toEqual({ accessToken: 'mocked-jwt' })
+      expect(jwtService.sign).toHaveBeenCalledWith({
+        email: user.email,
+        sub: user.id,
+      })
+    })
   })
 })
