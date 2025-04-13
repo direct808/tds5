@@ -1,9 +1,16 @@
 import { DataSource } from 'typeorm'
 import { Injectable } from '@nestjs/common'
 import { AffiliateNetwork } from './affiliate-network.entity'
+import {
+  IGetEntityByIdAndUserId,
+  IGetEntityByNameAndUserId,
+  NameAndUserId,
+} from '../utils/'
 
 @Injectable()
-export class AffiliateNetworkRepository {
+export class AffiliateNetworkRepository
+  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+{
   private readonly repository = this.dataSource.getRepository(AffiliateNetwork)
 
   constructor(private readonly dataSource: DataSource) {}
@@ -16,18 +23,19 @@ export class AffiliateNetworkRepository {
     await this.repository.insert(source)
   }
 
-  public async getByName(
-    name: string,
-    userId: string,
-  ): Promise<AffiliateNetwork | null> {
+  public async getByNameAndUserId({
+    name,
+    userId,
+  }: NameAndUserId): Promise<AffiliateNetwork | null> {
     return this.repository.findOne({ where: { name, userId } })
   }
 
-  public async getById(
-    id: string,
-    userId: string,
+  public async getByIdAndUserId(
+    args: Pick<AffiliateNetwork, 'id' | 'userId'>,
   ): Promise<AffiliateNetwork | null> {
-    return this.repository.findOne({ where: { id, userId } })
+    return this.repository.findOne({
+      where: { id: args.id, userId: args.userId },
+    })
   }
 
   public async getListByUserId(userId: string): Promise<AffiliateNetwork[]> {
@@ -35,20 +43,12 @@ export class AffiliateNetworkRepository {
   }
 
   public async update(
-    id: string,
-    data: Pick<AffiliateNetwork, 'name'>,
+    data: Pick<AffiliateNetwork, 'id' | 'name'>,
   ): Promise<void> {
-    await this.repository.update({ id }, data)
+    await this.repository.update({ id: data.id }, data)
   }
 
   public async delete(id: string): Promise<void> {
     await this.repository.softDelete(id)
-  }
-
-  async getByNameAndUserId(
-    name: string,
-    userId: string,
-  ): Promise<AffiliateNetwork | null> {
-    return this.repository.findOne({ where: { name, userId } })
   }
 }

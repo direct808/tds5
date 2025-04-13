@@ -39,7 +39,7 @@ export class AffiliateNetworkController {
     @UserId() userId: string,
     @Body() dto: UpdateAffiliateNetworkDto,
   ) {
-    await this.affiliateNetworkService.update(id, userId, dto)
+    await this.affiliateNetworkService.update({ ...dto, id, userId })
   }
 
   @Delete(':id')
@@ -47,6 +47,6 @@ export class AffiliateNetworkController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
   ) {
-    await this.affiliateNetworkService.delete(id, userId)
+    await this.affiliateNetworkService.delete({ id, userId })
   }
 }

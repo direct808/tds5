@@ -11,7 +11,6 @@ import {
 import { User } from '../user'
 
 @Entity()
-@Unique(['userId', 'name'])
 export class Source {
   @PrimaryGeneratedColumn('uuid')
   id: string
