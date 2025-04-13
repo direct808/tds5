@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { AffiliateNetworkRepository } from './affiliate-network.repository'
 import { AffiliateNetwork } from './affiliate-network.entity'
 import {
-  checkEntityExists,
+  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
 } from '../utils'
@@ -16,7 +16,7 @@ type CreateArgs = {
 type UpdatedArgs = {
   id: string
   userId: string
-  name: string
+  name?: string
   params?: string
 }
 
@@ -36,13 +36,16 @@ export class AffiliateNetworkService {
   }
 
   public async update(args: UpdatedArgs): Promise<void> {
-    await checkEntityExists(this.repository, args)
+    await ensureEntityExists(this.repository, args)
 
     if (args.name) {
-      await checkUniqueNameForUpdate(this.repository, args)
+      await checkUniqueNameForUpdate(this.repository, {
+        ...args,
+        name: args.name,
+      })
     }
 
-    await this.repository.update(args)
+    await this.repository.update(args.id, args)
   }
 
   public async getList(userId: string): Promise<AffiliateNetwork[]> {
@@ -50,7 +53,7 @@ export class AffiliateNetworkService {
   }
 
   public async delete(args: DeleteArgs): Promise<void> {
-    await checkEntityExists(this.repository, args)
+    await ensureEntityExists(this.repository, args)
 
     await this.repository.delete(args.id)
   }

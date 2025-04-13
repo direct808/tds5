@@ -37,7 +37,7 @@ export class SourceController {
     @UserId() userId: string,
     @Body() dto: UpdateSourceDto,
   ) {
-    await this.sourceService.update(id, userId, dto)
+    await this.sourceService.update({ ...dto, id, userId })
   }
 
   @Delete(':id')
@@ -45,6 +45,6 @@ export class SourceController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
   ) {
-    await this.sourceService.delete(id, userId)
+    await this.sourceService.delete({ id, userId })
   }
 }

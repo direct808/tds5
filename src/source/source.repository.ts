@@ -1,10 +1,16 @@
 import { DataSource } from 'typeorm'
 import { Source } from './source.entity'
 import { Injectable } from '@nestjs/common'
-import { AffiliateNetwork } from '../affiliate-network/affiliate-network.entity'
+import {
+  IGetEntityByIdAndUserId,
+  IGetEntityByNameAndUserId,
+  NameAndUserId,
+} from '../utils'
 
 @Injectable()
-export class SourceRepository {
+export class SourceRepository
+  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+{
   private readonly repository = this.dataSource.getRepository(Source)
 
   constructor(private readonly dataSource: DataSource) {}
@@ -15,7 +21,10 @@ export class SourceRepository {
     await this.repository.insert(source)
   }
 
-  public async getByName(name: string, userId: string): Promise<Source | null> {
+  public async getByNameAndUserId({
+    name,
+    userId,
+  }: NameAndUserId): Promise<Source | null> {
     return this.repository.findOne({ where: { name, userId } })
   }
 
@@ -27,17 +36,19 @@ export class SourceRepository {
     return this.repository.find({ where: { userId } })
   }
 
-  public async update(id: string, data: Pick<Source, 'name'>): Promise<void> {
+  public async update(id: string, data: Partial<Source>): Promise<void> {
     await this.repository.update({ id }, data)
   }
 
   public async delete(id: string): Promise<void> {
     await this.repository.softDelete(id)
   }
-  async getByNameAndUserId(
-    name: string,
-    userId: string,
-  ): Promise<AffiliateNetwork | null> {
-    return this.repository.findOne({ where: { name, userId } })
+
+  public async getByIdAndUserId(
+    args: Pick<Source, 'id' | 'userId'>,
+  ): Promise<Source | null> {
+    return this.repository.findOne({
+      where: { id: args.id, userId: args.userId },
+    })
   }
 }
