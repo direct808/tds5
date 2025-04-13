@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { AffiliateNetworkRepository } from './affiliate-network.repository'
+import { AffiliateNetwork } from './affiliate-network.entity'
 import {
-  checkEntityExists,
+  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
 } from '../utils'
@@ -52,29 +53,29 @@ describe('AffiliateNetworkService', () => {
 
       await service.update(args)
 
-      expect(checkEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
       expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
-      expect(repository.update).toHaveBeenCalledWith(args)
+      expect(repository.update).toHaveBeenCalledWith('1', args)
     })
 
     it('should update entity without checking name if not provided', async () => {
-      const args: any = { id: '1', userId: 'user123' }
+      const args = { id: '1', userId: 'user123' }
 
       await service.update(args)
 
-      expect(checkEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
       expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
-      expect(repository.update).toHaveBeenCalledWith(args)
+      expect(repository.update).toHaveBeenCalledWith('1', args)
     })
   })
 
   describe('getList', () => {
     it('should return list of networks by userId', async () => {
       const userId = 'user123'
-      const list: any = [
+      const list = [
         { id: '1', name: 'Net A', userId },
         { id: '2', name: 'Net B', userId },
-      ]
+      ] as unknown as AffiliateNetwork[]
 
       repository.getListByUserId.mockResolvedValue(list)
 
@@ -91,7 +92,7 @@ describe('AffiliateNetworkService', () => {
 
       await service.delete(args)
 
-      expect(checkEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
       expect(repository.delete).toHaveBeenCalledWith(args.id)
     })
   })

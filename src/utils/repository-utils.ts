@@ -37,7 +37,7 @@ export async function checkUniqueNameForUpdate(
   }
 }
 
-export async function checkEntityExists(
+export async function ensureEntityExists(
   repository: IGetEntityByIdAndUserId,
   args: IdAndUserId,
 ): Promise<void> {

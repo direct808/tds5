@@ -1,10 +1,11 @@
 import { SourceRepository } from './source.repository'
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Source } from './source.entity'
+import {
+  ensureEntityExists,
+  checkUniqueNameForCreate,
+  checkUniqueNameForUpdate,
+} from '../utils'
 
 type CreateArgs = {
   name: string
@@ -12,7 +13,14 @@ type CreateArgs = {
 }
 
 type UpdatedArgs = {
-  name: string
+  name?: string
+  id: string
+  userId: string
+}
+
+type DeleteArgs = {
+  id: string
+  userId: string
 }
 
 @Injectable()
@@ -20,49 +28,31 @@ export class SourceService {
   constructor(private readonly repository: SourceRepository) {}
 
   public async create(args: CreateArgs): Promise<void> {
-    const existsSource = await this.repository.getByName(args.name, args.userId)
-
-    if (existsSource) {
-      throw new ConflictException('Источник с таким именем уже существует')
-    }
+    await checkUniqueNameForCreate(this.repository, args)
 
     await this.repository.create(args)
   }
 
-  public async update(
-    id: string,
-    userId: string,
-    args: UpdatedArgs,
-  ): Promise<void> {
-    const source = await this.repository.getById(id, userId)
-
-    if (!source) {
-      throw new NotFoundException()
-    }
+  public async update(args: UpdatedArgs): Promise<void> {
+    await ensureEntityExists(this.repository, args)
 
     if (args.name) {
-      const existing = await this.repository.getByNameAndUserId(
-        args.name,
-        userId,
-      )
-      if (existing && existing.id !== id) {
-        throw new ConflictException('Name must be unique')
-      }
+      await checkUniqueNameForUpdate(this.repository, {
+        ...args,
+        name: args.name,
+      })
     }
 
-    await this.repository.update(id, args)
+    await this.repository.update(args.id, args)
   }
 
   public async getList(userId: string): Promise<Source[]> {
     return this.repository.getListByUserId(userId)
   }
 
-  public async delete(id: string, userId: string): Promise<void> {
-    const source = await this.repository.getById(id, userId)
+  public async delete(args: DeleteArgs): Promise<void> {
+    await ensureEntityExists(this.repository, args)
 
-    if (!source) {
-      throw new NotFoundException()
-    }
-    await this.repository.delete(id)
+    await this.repository.delete(args.id)
   }
 }

@@ -1,132 +1,95 @@
+import { Test, TestingModule } from '@nestjs/testing'
 import { SourceService } from './source.service'
 import { SourceRepository } from './source.repository'
-import { ConflictException, NotFoundException } from '@nestjs/common'
 import { Source } from './source.entity'
+import {
+  checkUniqueNameForCreate,
+  checkUniqueNameForUpdate,
+  ensureEntityExists,
+} from '../utils'
+
+jest.mock('../utils')
 
 describe('SourceService', () => {
-  const repository = {
-    getByName: jest.fn(),
-    create: jest.fn(),
-    getById: jest.fn(),
-    update: jest.fn(),
-    getListByUserId: jest.fn(),
-    delete: jest.fn(),
-    getByNameAndUserId: jest.fn(),
-  } as unknown as jest.Mocked<SourceRepository>
+  let service: SourceService
+  let repository: jest.Mocked<SourceRepository>
 
-  const service = new SourceService(repository as unknown as SourceRepository)
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        SourceService,
+        {
+          provide: SourceRepository,
+          useValue: {
+            create: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+            getListByUserId: jest.fn(),
+          },
+        },
+      ],
+    }).compile()
 
-  beforeEach(() => {
+    service = module.get<SourceService>(SourceService)
+    repository = module.get(SourceRepository)
+
     jest.clearAllMocks()
   })
 
   describe('create', () => {
-    it('создаёт новый источник, если такого нет', async () => {
-      repository.getByName.mockResolvedValueOnce(null)
+    it('should check unique name and call create', async () => {
+      const args = { name: 'Test', userId: '1' }
 
-      await service.create({ name: 'Test', userId: '1' })
+      await service.create(args)
 
-      expect(repository.getByName).toHaveBeenCalledWith('Test', '1')
-      expect(repository.create).toHaveBeenCalledWith({
-        name: 'Test',
-        userId: '1',
-      })
-    })
-
-    it('выбрасывает ConflictException, если уже существует', async () => {
-      repository.getByName.mockResolvedValue({ id: 'existing' } as Source)
-
-      await expect(
-        service.create({ name: 'Test', userId: '1' }),
-      ).rejects.toThrow(ConflictException)
-      expect(repository.create).not.toHaveBeenCalled()
+      expect(checkUniqueNameForCreate).toHaveBeenCalledWith(repository, args)
+      expect(repository.create).toHaveBeenCalledWith(args)
     })
   })
 
   describe('update', () => {
-    it('обновляет источник, если найден', async () => {
-      repository.getById.mockResolvedValue({
-        id: '1',
-        name: 'Old',
-        userId: '1',
-      } as Source)
+    it('should ensure entity exists and update name if provided', async () => {
+      const args = { id: '123', name: 'New Name', userId: 'Userid' }
 
-      await service.update('1', '1', { name: 'Updated' })
+      await service.update(args)
 
-      expect(repository.getById).toHaveBeenCalledWith('1', '1')
-      expect(repository.update).toHaveBeenCalledWith('1', { name: 'Updated' })
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
+      expect(repository.update).toHaveBeenCalledWith('123', args)
     })
 
-    it('выбрасывает NotFoundException, если не найден', async () => {
-      repository.getById.mockResolvedValue(null)
+    it('should update without name check if name is not provided', async () => {
+      const args = { id: '123', userId: 'Userid' }
 
-      await expect(
-        service.update('1', '1', { name: 'Updated' }),
-      ).rejects.toThrow(NotFoundException)
-      expect(repository.update).not.toHaveBeenCalled()
-    })
+      await service.update(args)
 
-    it('Должен выбросить ConflictException если имя не уникальное', async () => {
-      repository.getById.mockResolvedValue({ id: 'id123' } as Source)
-      repository.getByNameAndUserId.mockResolvedValue({
-        id: 'another-id',
-      } as Source)
-
-      await expect(
-        service.update('id123', 'user123', { name: 'Test Name' }),
-      ).rejects.toThrow(ConflictException)
-      expect(repository.getByNameAndUserId).toHaveBeenCalledWith(
-        'Test Name',
-        'user123',
-      )
-    })
-
-    it('Не должен выбросить ConflictException, если есть такое же имя с таким же id', async () => {
-      repository.getById.mockResolvedValue({ id: 'id123' } as Source)
-      repository.getByNameAndUserId.mockResolvedValue({ id: 'id123' } as Source)
-
-      await service.update('id123', 'user123', { name: 'Test Name' })
-      await expect(
-        service.update('id123', 'user123', { name: 'Test Name' }),
-      ).resolves.not.toThrow(ConflictException)
-      expect(repository.getByNameAndUserId).toHaveBeenCalledWith(
-        'Test Name',
-        'user123',
-      )
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
+      expect(repository.update).toHaveBeenCalledWith('123', args)
     })
   })
 
   describe('getList', () => {
-    it('возвращает список', async () => {
-      repository.getListByUserId.mockResolvedValue([
-        { id: '1', name: 'Test' } as Source,
-      ])
+    it('should return list from repository', async () => {
+      const userId = 'user123'
+      const list = [{ id: '1', name: 'Test' }] as unknown as Source[]
+      repository.getListByUserId.mockResolvedValue(list)
 
-      const result = await service.getList('1')
+      const result = await service.getList(userId)
 
-      expect(repository.getListByUserId).toHaveBeenCalledWith('1')
-      expect(result).toEqual([{ id: '1', name: 'Test' }])
+      expect(repository.getListByUserId).toHaveBeenCalledWith(userId)
+      expect(result).toBe(list)
     })
   })
 
   describe('delete', () => {
-    it('удаляет, если найден', async () => {
-      repository.getById.mockResolvedValue({
-        id: '1',
-        name: 'Test',
-        userId: '1',
-      } as Source)
+    it('should ensure entity exists and call delete', async () => {
+      const args = { id: 'del123', userId: 'Userid' }
 
-      await service.delete('1', '1')
+      await service.delete(args)
 
-      expect(repository.delete).toHaveBeenCalledWith('1')
-    })
-
-    it('выбрасывает NotFoundException, если не найден', async () => {
-      repository.getById.mockResolvedValue(null)
-
-      await expect(service.delete('1', '1')).rejects.toThrow(NotFoundException)
-      expect(repository.delete).not.toHaveBeenCalled()
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(repository.delete).toHaveBeenCalledWith(args.id)
     })
   })
 })

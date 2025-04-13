@@ -1,6 +1,6 @@
 import { ConflictException, NotFoundException } from '@nestjs/common'
 import {
-  checkEntityExists,
+  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   IGetEntityByIdAndUserId,
@@ -88,7 +88,7 @@ describe('Utility Functions', () => {
 
       const args = { id: '1', userId: 'user1' }
 
-      await expect(checkEntityExists(mockRepository, args)).rejects.toThrow(
+      await expect(ensureEntityExists(mockRepository, args)).rejects.toThrow(
         NotFoundException,
       )
     })
@@ -103,7 +103,7 @@ describe('Utility Functions', () => {
       const args = { id: '1', userId: 'user1' }
 
       await expect(
-        checkEntityExists(mockRepository, args),
+        ensureEntityExists(mockRepository, args),
       ).resolves.not.toThrow()
     })
   })

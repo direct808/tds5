@@ -43,9 +43,10 @@ export class AffiliateNetworkRepository
   }
 
   public async update(
-    data: Pick<AffiliateNetwork, 'id' | 'name'>,
+    id: string,
+    data: Partial<AffiliateNetwork>,
   ): Promise<void> {
-    await this.repository.update({ id: data.id }, data)
+    await this.repository.update({ id }, data)
   }
 
   public async delete(id: string): Promise<void> {
