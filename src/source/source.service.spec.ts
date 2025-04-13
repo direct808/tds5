@@ -22,7 +22,7 @@ describe('SourceService', () => {
 
   describe('create', () => {
     it('создаёт новый источник, если такого нет', async () => {
-      repository.getByName.mockResolvedValue(null)
+      repository.getByName.mockResolvedValueOnce(null)
 
       await service.create({ name: 'Test', userId: '1' })
 

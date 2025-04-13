@@ -5,13 +5,11 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm'
 import { User } from '../user'
 
 @Entity()
-@Unique(['userId', 'name'])
 export class AffiliateNetwork {
   @PrimaryGeneratedColumn('uuid')
   id: string
