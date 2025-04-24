@@ -6,6 +6,7 @@ import { StartRequestInterceptor } from './start-request.interceptor'
 import { UserModule } from './user'
 import { AuthModule } from './auth'
 import { AffiliateNetworkModule } from './affiliate-network'
+import { OfferModule } from './offer'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AffiliateNetworkModule } from './affiliate-network'
     UserModule,
     AuthModule,
     AffiliateNetworkModule,
+    OfferModule,
   ],
   providers: [
     {

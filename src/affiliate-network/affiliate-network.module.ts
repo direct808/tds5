@@ -6,5 +6,6 @@ import { AffiliateNetworkRepository } from './affiliate-network.repository'
 @Module({
   controllers: [AffiliateNetworkController],
   providers: [AffiliateNetworkService, AffiliateNetworkRepository],
+  exports: [AffiliateNetworkRepository],
 })
 export class AffiliateNetworkModule {}
