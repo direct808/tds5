@@ -37,13 +37,20 @@ export async function checkUniqueNameForUpdate(
   }
 }
 
+/**
+ * Check if entity exist by id and userId
+ * @param repository
+ * @param args
+ * @param message
+ */
 export async function ensureEntityExists(
   repository: IGetEntityByIdAndUserId,
   args: IdAndUserId,
+  message?: string,
 ): Promise<void> {
   const entity = await repository.getByIdAndUserId(args)
 
   if (!entity) {
-    throw new NotFoundException()
+    throw new NotFoundException(message)
   }
 }

@@ -1,21 +1,23 @@
 import { DataSource } from 'typeorm'
-import { Source } from './source.entity'
 import { Injectable } from '@nestjs/common'
 import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from '../utils'
+import { Offer } from './offer.entity'
 
 @Injectable()
-export class SourceRepository
+export class OfferRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(Source)
+  private readonly repository = this.dataSource.getRepository(Offer)
 
   constructor(private readonly dataSource: DataSource) {}
 
-  public async create(args: Pick<Source, 'name' | 'userId'>): Promise<void> {
+  public async create(
+    args: Pick<Offer, 'name' | 'userId' | 'url'>,
+  ): Promise<void> {
     const source = this.repository.create(args)
 
     await this.repository.insert(source)
@@ -24,15 +26,15 @@ export class SourceRepository
   public async getByNameAndUserId({
     name,
     userId,
-  }: NameAndUserId): Promise<Source | null> {
+  }: NameAndUserId): Promise<Offer | null> {
     return this.repository.findOne({ where: { name, userId } })
   }
 
-  public async getListByUserId(userId: string): Promise<Source[]> {
+  public async getListByUserId(userId: string): Promise<Offer[]> {
     return this.repository.find({ where: { userId } })
   }
 
-  public async update(id: string, data: Partial<Source>): Promise<void> {
+  public async update(id: string, data: Partial<Offer>): Promise<void> {
     await this.repository.update({ id }, data)
   }
 
@@ -41,8 +43,8 @@ export class SourceRepository
   }
 
   public async getByIdAndUserId(
-    args: Pick<Source, 'id' | 'userId'>,
-  ): Promise<Source | null> {
+    args: Pick<Offer, 'id' | 'userId'>,
+  ): Promise<Offer | null> {
     return this.repository.findOne({
       where: { id: args.id, userId: args.userId },
     })

@@ -106,5 +106,17 @@ describe('Utility Functions', () => {
         ensureEntityExists(mockRepository, args),
       ).resolves.not.toThrow()
     })
+
+    it('should throw NotFoundException when entity does not exist with message', async () => {
+      const mockRepository: IGetEntityByIdAndUserId = {
+        getByIdAndUserId: jest.fn().mockResolvedValue(null),
+      }
+
+      const args = { id: '1', userId: 'user1' }
+
+      await expect(
+        ensureEntityExists(mockRepository, args, 'Error message'),
+      ).rejects.toThrow(new NotFoundException('Error message'))
+    })
   })
 })
