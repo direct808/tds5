@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { UserId } from '../auth'
+import { UserId } from '../auth/user-id.decorator'
 import { OfferService } from './offer.service'
 import { CreateOfferDto, UpdateOfferDto } from './dto'
 

@@ -11,7 +11,7 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 import { CreateSourceDto, UpdateSourceDto } from './dto'
 import { SourceService } from './source.service'
-import { UserId } from '../auth'
+import { UserId } from '../auth/user-id.decorator'
 
 @ApiTags('Источники трафика')
 @Controller('source')
