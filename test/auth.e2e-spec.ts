@@ -1,11 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { createTestDataSource } from './setup-postgres'
 import { AppModule } from '../src/app.module'
 import { DataSource } from 'typeorm'
-import { loadSourceFixtures, loadUserFixtures } from './utils'
-import { configureApp } from '../src/helpers/configure-app'
+import {
+  createTestDataSource,
+  loadSourceFixtures,
+  loadUserFixtures,
+} from './utils'
+import { configureApp } from '../src/utils/configure-app'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
