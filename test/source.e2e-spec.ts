@@ -1,14 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { createTestDataSource } from './setup-postgres'
 import { AppModule } from '../src/app.module'
 import { DataSource, Repository } from 'typeorm'
-import { authUser, loadSourceFixtures, loadUserFixtures } from './utils'
+import {
+  authUser,
+  loadSourceFixtures,
+  loadUserFixtures,
+  createTestDataSource,
+} from './utils'
 import { Source } from '../src/source'
-import { configureApp } from '../src/helpers/configure-app'
+import { configureApp } from '../src/utils/configure-app'
 
-describe('AppController (e2e)', () => {
+describe('SourceController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let sourceRepository: Repository<Source>
@@ -69,10 +73,10 @@ describe('AppController (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const source = sourceRepository.findOneOrFail({
-      where: { id: '00000000-0000-0000-0000-000000000001' },
+    const source = await sourceRepository.findOneBy({
+      id: '00000000-0000-0000-0000-000000000001',
     })
 
-    await expect(source).rejects.toThrow()
+    await expect(source).toBeNull()
   })
 })
