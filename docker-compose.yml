@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:17.2
+    image: postgres:17.4-alpine
     environment:
       - POSTGRES_PASSWORD=1234
     ports:
