@@ -4,13 +4,15 @@ import { EntityManager } from 'typeorm'
 import { StreamRepository } from './stream.repository'
 import { CampaignRepository } from './campaign.repository'
 import { ensureEntityExists } from '../utils'
-import { Stream } from './entity'
+import { CampaignStreamSchema, Stream } from './entity'
+import { StreamOfferService } from './stream-offer.service'
 
 @Injectable()
 export class StreamService {
   constructor(
     private readonly repository: StreamRepository,
     private readonly campaignRepository: CampaignRepository,
+    private readonly streamOfferService: StreamOfferService,
   ) {}
 
   public async create(
@@ -28,11 +30,13 @@ export class StreamService {
     manager: EntityManager,
     campaignId: string,
     userId: string,
-    streamsInput: StreamInputDto,
+    input: StreamInputDto,
   ) {
-    await this.ensureCampaignExists(userId, streamsInput.actionCampaignId)
-    const data = this.buildData(streamsInput, campaignId)
-    await this.repository.create(manager, data)
+    await this.ensureCampaignExists(userId, input.actionCampaignId)
+    const data = this.buildData(input, campaignId)
+    const stream = await this.repository.create(manager, data)
+
+    await this.createStreamOffers(manager, input, stream.id, userId)
   }
 
   private async ensureCampaignExists(userId: string, campaignId?: string) {
@@ -63,5 +67,26 @@ export class StreamService {
       actionCampaignId: input.actionCampaignId,
       actionContent: input.actionContent,
     }
+  }
+
+  private async createStreamOffers(
+    manager: EntityManager,
+    input: StreamInputDto,
+    streamId: string,
+    userId: string,
+  ) {
+    if (
+      input.schema !== CampaignStreamSchema.LANDINGS_OFFERS ||
+      input.offers.length === 0
+    ) {
+      return
+    }
+
+    await this.streamOfferService.create(
+      manager,
+      streamId,
+      userId,
+      input.offers,
+    )
   }
 }
