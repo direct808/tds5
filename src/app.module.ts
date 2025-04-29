@@ -7,6 +7,7 @@ import { UserModule } from './user'
 import { AuthModule } from './auth'
 import { AffiliateNetworkModule } from './affiliate-network'
 import { OfferModule } from './offer'
+import { CampaignModule } from './campaign'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { OfferModule } from './offer'
     AuthModule,
     AffiliateNetworkModule,
     OfferModule,
+    CampaignModule,
   ],
   providers: [
     {
