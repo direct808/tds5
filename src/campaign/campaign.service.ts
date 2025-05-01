@@ -1,12 +1,17 @@
-import { CampaignCreateDto } from './dto/campaign-create.dto'
+import { CreateCampaignDto } from './dto/create-campaign.dto'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForCreate, ensureEntityExists } from '../utils'
+import {
+  checkUniqueNameForCreate,
+  checkUniqueNameForUpdate,
+  ensureEntityExists,
+} from '../utils'
 import { Injectable } from '@nestjs/common'
 import { CampaignRepository } from './campaign.repository'
 import { nanoid } from 'nanoid'
 import { StreamService } from './stream.service'
 import { Campaign } from './entity'
 import { SourceRepository } from '../source/source.repository'
+import { UpdateCampaignDto } from './dto'
 
 @Injectable()
 export class CampaignService {
@@ -18,7 +23,7 @@ export class CampaignService {
   ) {}
 
   public async create(
-    args: CampaignCreateDto & { userId: string },
+    args: CreateCampaignDto & { userId: string },
     manager: EntityManager | null,
   ): Promise<void> {
     if (!manager) {
@@ -31,13 +36,42 @@ export class CampaignService {
 
     await checkUniqueNameForCreate(this.repository, args)
 
-    const data = this.buildData(args)
+    const data = this.buildCreateData(args)
 
     const campaign = await this.repository.create(manager, data)
 
-    await this.streamService.create(
+    await this.streamService.createStreams(
       manager,
       campaign.id,
+      args.userId,
+      args.streams,
+    )
+  }
+
+  public async update(
+    args: UpdateCampaignDto & { userId: string; id: string },
+    manager: EntityManager | null,
+  ): Promise<void> {
+    if (!manager) {
+      return this.dataSource.transaction((manage) => {
+        return this.update(args, manage)
+      })
+    }
+
+    await this.ensureSourceExists(args.userId, args.sourceId)
+
+    if (args.name) {
+      await checkUniqueNameForUpdate(this.repository, {
+        ...args,
+        name: args.name,
+      })
+    }
+
+    await this.repository.update(manager, args.id, this.buildUpdateData(args))
+
+    await this.streamService.updateStreams(
+      manager,
+      args.id,
       args.userId,
       args.streams,
     )
@@ -47,8 +81,8 @@ export class CampaignService {
     return nanoid(6)
   }
 
-  private buildData(
-    args: CampaignCreateDto & { userId: string },
+  private buildCreateData(
+    args: CreateCampaignDto & { userId: string },
   ): Partial<Campaign> {
     return {
       name: args.name,
@@ -56,6 +90,14 @@ export class CampaignService {
       sourceId: args.sourceId,
       active: args.active,
       userId: args.userId,
+    }
+  }
+
+  private buildUpdateData(args: UpdateCampaignDto): Partial<Campaign> {
+    return {
+      name: args.name,
+      sourceId: args.sourceId,
+      active: args.active,
     }
   }
 

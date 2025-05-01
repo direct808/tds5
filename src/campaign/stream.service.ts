@@ -1,36 +1,71 @@
-import { Injectable } from '@nestjs/common'
-import { StreamInputDto } from './dto/stream-input.dto'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { CreateStreamDto } from './dto'
 import { EntityManager } from 'typeorm'
 import { StreamRepository } from './stream.repository'
 import { CampaignRepository } from './campaign.repository'
 import { ensureEntityExists } from '../utils'
 import { CampaignStreamSchema, Stream } from './entity'
-import { StreamOfferService } from './stream-offer.service'
+import { UpdateStreamDto } from './dto/update-stream.dto'
+import {
+  CreateStreamOfferService,
+  UpdateStreamOfferService,
+} from './stream-offer'
 
 @Injectable()
 export class StreamService {
   constructor(
     private readonly repository: StreamRepository,
     private readonly campaignRepository: CampaignRepository,
-    private readonly streamOfferService: StreamOfferService,
+    private readonly createStreamOfferService: CreateStreamOfferService,
+    private readonly updateStreamOfferService: UpdateStreamOfferService,
   ) {}
 
-  public async create(
+  public async createStreams(
     manager: EntityManager,
     campaignId: string,
     userId: string,
-    streamsInput: StreamInputDto[],
+    streams: CreateStreamDto[],
   ) {
-    for (const stream of streamsInput) {
-      await this.createOne(manager, campaignId, userId, stream)
+    for (const stream of streams) {
+      await this.createStream(manager, campaignId, userId, stream)
     }
   }
 
-  private async createOne(
+  public async updateStreams(
     manager: EntityManager,
     campaignId: string,
     userId: string,
-    input: StreamInputDto,
+    streams: UpdateStreamDto[],
+  ) {
+    for (const stream of streams) {
+      if (stream.id) {
+        await this.updateStream(manager, campaignId, userId, stream, stream.id)
+      } else {
+        await this.createStream(manager, campaignId, userId, stream)
+      }
+    }
+  }
+
+  private async updateStream(
+    manager: EntityManager,
+    campaignId: string,
+    userId: string,
+    input: UpdateStreamDto,
+    streamId: string,
+  ) {
+    this.checkCampaignSelfReferencing(campaignId, input.actionCampaignId)
+    await this.ensureCampaignExists(userId, input.actionCampaignId)
+    const data = this.buildData(input, campaignId)
+    await this.repository.update(manager, streamId, data)
+
+    await this.updateStreamOffers(manager, input, streamId, userId)
+  }
+
+  private async createStream(
+    manager: EntityManager,
+    campaignId: string,
+    userId: string,
+    input: CreateStreamDto,
   ) {
     await this.ensureCampaignExists(userId, input.actionCampaignId)
     const data = this.buildData(input, campaignId)
@@ -54,7 +89,7 @@ export class StreamService {
   }
 
   private buildData(
-    input: StreamInputDto,
+    input: CreateStreamDto,
     campaignId: string,
   ): Partial<Stream> {
     return {
@@ -71,7 +106,7 @@ export class StreamService {
 
   private async createStreamOffers(
     manager: EntityManager,
-    input: StreamInputDto,
+    input: CreateStreamDto,
     streamId: string,
     userId: string,
   ) {
@@ -82,11 +117,41 @@ export class StreamService {
       return
     }
 
-    await this.streamOfferService.create(
+    await this.createStreamOfferService.createStreamOffers(
       manager,
       streamId,
       userId,
       input.offers,
     )
+  }
+
+  private async updateStreamOffers(
+    manager: EntityManager,
+    input: UpdateStreamDto,
+    streamId: string,
+    userId: string,
+  ) {
+    if (
+      input.schema !== CampaignStreamSchema.LANDINGS_OFFERS ||
+      input.offers.length === 0
+    ) {
+      return
+    }
+
+    await this.updateStreamOfferService.updateStreamOffers(
+      manager,
+      streamId,
+      userId,
+      input.offers,
+    )
+  }
+
+  private checkCampaignSelfReferencing(
+    campaignId: string,
+    actionCampaignId?: string,
+  ) {
+    if (campaignId === actionCampaignId) {
+      throw new BadRequestException('Company should not refer to itself')
+    }
   }
 }

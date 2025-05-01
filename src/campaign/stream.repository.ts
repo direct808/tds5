@@ -12,4 +12,12 @@ export class StreamRepository {
 
     return manager.save(campaign)
   }
+
+  public async update(
+    manager: EntityManager,
+    id: string,
+    args: Partial<Stream>,
+  ): Promise<void> {
+    await manager.update(Stream, id, args)
+  }
 }

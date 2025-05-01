@@ -31,6 +31,14 @@ export class CampaignRepository
     return manager.save(campaign)
   }
 
+  public async update(
+    manager: EntityManager,
+    id: string,
+    args: Partial<Campaign>,
+  ): Promise<void> {
+    await manager.update(Campaign, id, args)
+  }
+
   public async getByIdAndUserId(
     args: Pick<Campaign, 'id' | 'userId'>,
   ): Promise<Campaign | null> {

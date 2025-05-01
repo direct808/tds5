@@ -1,4 +1,5 @@
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsNotEmpty,
@@ -8,9 +9,9 @@ import {
   ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
-import { StreamInputDto } from './stream-input.dto'
+import { CreateStreamDto } from './create-stream.dto'
 
-export class CampaignCreateDto {
+export class CreateCampaignDto {
   @IsString()
   @IsNotEmpty()
   name: string
@@ -20,10 +21,11 @@ export class CampaignCreateDto {
   sourceId?: string
 
   @IsBoolean()
-  active = true
+  active: boolean
 
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested()
-  @Type(() => StreamInputDto)
-  streams: StreamInputDto[] = []
+  @Type(() => CreateStreamDto)
+  streams: CreateStreamDto[]
 }

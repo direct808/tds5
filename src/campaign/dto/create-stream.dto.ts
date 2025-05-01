@@ -15,13 +15,9 @@ import {
   StreamActionType,
   StreamRedirectType,
 } from '../entity'
-import { StreamOfferInputDto } from './stream-offer-input.dto'
+import { CreateStreamOfferDto } from './create-stream-offer.dto'
 
-export class StreamInputDto {
-  @IsUUID('4')
-  @IsOptional()
-  id?: string
-
+export class CreateStreamDto {
   @IsString()
   @IsNotEmpty()
   name: string
@@ -30,18 +26,18 @@ export class StreamInputDto {
   schema: CampaignStreamSchema
 
   @ValidateIf(
-    (data: StreamInputDto) => data.schema === CampaignStreamSchema.ACTION,
+    (data: CreateStreamDto) => data.schema === CampaignStreamSchema.ACTION,
   )
   @IsEnum(StreamActionType)
   actionType?: StreamActionType
 
   @ValidateIf(
-    (data: StreamInputDto) => data.actionType === StreamActionType.TO_CAMPAIGN,
+    (data: CreateStreamDto) => data.actionType === StreamActionType.TO_CAMPAIGN,
   )
   @IsUUID('4')
   actionCampaignId?: string
 
-  @ValidateIf((data: StreamInputDto) =>
+  @ValidateIf((data: CreateStreamDto) =>
     [StreamActionType.SHOW_HTML, StreamActionType.SHOW_TEXT].includes(
       data.actionType!,
     ),
@@ -50,13 +46,13 @@ export class StreamInputDto {
   actionContent?: string
 
   @ValidateIf(
-    (data: StreamInputDto) => data.schema === CampaignStreamSchema.DIRECT_URL,
+    (data: CreateStreamDto) => data.schema === CampaignStreamSchema.DIRECT_URL,
   )
   @IsEnum(StreamRedirectType)
   redirectType?: StreamRedirectType
 
   @ValidateIf(
-    (data: StreamInputDto) => data.schema === CampaignStreamSchema.DIRECT_URL,
+    (data: CreateStreamDto) => data.schema === CampaignStreamSchema.DIRECT_URL,
   )
   @IsUrl({ require_protocol: true })
   redirectUrl?: string
@@ -64,6 +60,6 @@ export class StreamInputDto {
   @IsArray()
   @IsOptional()
   @ValidateNested()
-  @Type(() => StreamOfferInputDto)
-  offers: StreamOfferInputDto[] = []
+  @Type(() => CreateStreamOfferDto)
+  offers: CreateStreamOfferDto[] = []
 }
