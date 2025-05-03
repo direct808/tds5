@@ -13,12 +13,14 @@ export class CommonStreamOfferService {
    * @private
    */
   public checkPercentSum(input: CreateStreamOfferDto[]) {
-    const sum = input
-      .filter((item) => item.active)
-      .reduce(
-        (accumulator, currentValue) => accumulator + currentValue.percent,
-        0,
-      )
+    const activeInput = input.filter((item) => item.active)
+    if (activeInput.length === 0) {
+      return
+    }
+    const sum = activeInput.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.percent,
+      0,
+    )
 
     if (sum !== 100) {
       throw new BadRequestException('Sum of the percentages should be 100')
