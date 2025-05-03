@@ -5,11 +5,12 @@ import { Type } from 'class-transformer'
 
 export class UpdateStreamDto extends CreateStreamDto {
   @IsUUID('4')
-  id: string
+  @IsOptional()
+  id?: string
 
   @IsArray()
   @IsOptional()
   @ValidateNested()
   @Type(() => UpdateStreamOfferDto)
-  offers: UpdateStreamOfferDto[] = []
+  offers?: UpdateStreamOfferDto[]
 }

@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common'
 import { CampaignController } from './campaign.controller'
-import { CampaignService } from './campaign.service'
+import { CommonCampaignService } from './common-campaign.service'
 import { CampaignRepository } from './campaign.repository'
-import { StreamService } from './stream.service'
-import { StreamRepository } from './stream.repository'
+import { StreamModule } from './stream'
 import { SourceModule } from '../source'
-import { OfferModule } from '../offer'
-import { StreamOfferModule } from './stream-offer'
+import { CreateCampaignService } from './create-campaign.service'
+import { UpdateCampaignService } from './update-campaign.service'
 
 @Module({
   controllers: [CampaignController],
-  imports: [SourceModule, OfferModule, StreamOfferModule],
+  imports: [StreamModule, SourceModule],
   providers: [
-    CampaignService,
-    StreamService,
+    CommonCampaignService,
     CampaignRepository,
-    StreamRepository,
+    CreateCampaignService,
+    UpdateCampaignService,
   ],
+  exports: [CampaignRepository],
 })
 export class CampaignModule {}

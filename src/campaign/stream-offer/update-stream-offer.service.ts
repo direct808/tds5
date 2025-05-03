@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { EntityManager } from 'typeorm'
-import { UpdateStreamOfferDto } from '../dto/update-stream-offer.dto'
+import { UpdateStreamOfferDto } from '../dto'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from './stream-offer.repository'
 

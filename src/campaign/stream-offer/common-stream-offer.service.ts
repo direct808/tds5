@@ -58,7 +58,6 @@ export class CommonStreamOfferService {
    * @param userId
    * @private
    */
-
   public async ensureOffersExists(
     input: { offerId: string }[],
     userId: string,

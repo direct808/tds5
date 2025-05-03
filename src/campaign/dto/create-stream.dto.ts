@@ -61,5 +61,5 @@ export class CreateStreamDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => CreateStreamOfferDto)
-  offers: CreateStreamOfferDto[] = []
+  offers?: CreateStreamOfferDto[]
 }

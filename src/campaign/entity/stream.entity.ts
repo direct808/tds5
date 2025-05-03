@@ -38,6 +38,7 @@ export class Stream {
 
   @ManyToOne(() => Campaign, (campaign) => campaign.streams, {
     nullable: false,
+    onDelete: 'CASCADE',
   })
   declare campaign: Campaign
 
