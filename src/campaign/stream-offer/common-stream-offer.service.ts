@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { CreateStreamOfferDto } from '../dto'
 import { OfferRepository } from '../../offer/offer.repository'
 import { arrayUnique } from '../../utils'
@@ -71,7 +75,7 @@ export class CommonStreamOfferService {
     )
 
     if (offers.length !== offerIds.length) {
-      throw new BadRequestException('Some offers not found')
+      throw new NotFoundException('Some offers not found')
     }
   }
 }

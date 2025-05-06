@@ -27,6 +27,8 @@ export class UpdateStreamService {
     await this.deleteOldStreams(manager, streams, campaignId)
 
     for (const stream of streams) {
+      this.checkCampaignSelfReferencing(campaignId, stream.actionCampaignId)
+
       if (stream.id) {
         await this.updateStream(manager, campaignId, userId, stream, stream.id)
       } else {
@@ -47,8 +49,6 @@ export class UpdateStreamService {
     input: UpdateStreamDto,
     streamId: string,
   ) {
-    this.checkCampaignSelfReferencing(campaignId, input.actionCampaignId)
-
     await this.commonService.ensureCampaignExists(
       userId,
       input.actionCampaignId,
