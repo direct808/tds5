@@ -1,7 +1,5 @@
-// import { ExceptionFilter } from '@nestjs/common'
 import { BaseExceptionFilter } from '@nestjs/core'
-import { ArgumentsHost, Logger } from '@nestjs/common'
-import { HttpException } from '@nestjs/common/exceptions/http.exception'
+import { ArgumentsHost, Logger, HttpException } from '@nestjs/common'
 
 export class AppExceptionFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(AppExceptionFilter.name)
