@@ -7,6 +7,7 @@ import { UserModule } from './user'
 import { AuthModule } from './auth'
 import { AffiliateNetworkModule } from './affiliate-network'
 import { OfferModule } from './offer'
+import { LoggerModule } from 'nestjs-pino'
 
 @Module({
   imports: [
@@ -17,6 +18,14 @@ import { OfferModule } from './offer'
     AuthModule,
     AffiliateNetworkModule,
     OfferModule,
+    LoggerModule.forRoot({
+      pinoHttp: {
+        redact: ['req.headers.authorization'],
+        transport: {
+          target: 'pino-pretty',
+        },
+      },
+    }),
   ],
   providers: [
     {
