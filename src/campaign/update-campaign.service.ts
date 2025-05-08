@@ -4,7 +4,7 @@ import { DataSource, EntityManager } from 'typeorm'
 import { checkUniqueNameForUpdate } from '../utils'
 import { Campaign } from './entity'
 import { CampaignRepository } from './campaign.repository'
-import { UpdateStreamService } from './stream'
+import { UpdateStreamService } from './stream/update-stream.service'
 import { CommonCampaignService } from './common-campaign.service'
 
 @Injectable()

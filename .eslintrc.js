@@ -30,5 +30,11 @@ module.exports = {
       { blankLine: 'never', prev: 'import', next: 'import' },
     ],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "ignoreRestSiblings": true
+      }
+    ]
   },
 };
