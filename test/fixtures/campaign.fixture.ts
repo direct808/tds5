@@ -3,6 +3,7 @@ import {
   CampaignStreamSchema,
   Stream,
   StreamActionType,
+  StreamOffer,
 } from '../../src/campaign'
 
 export const campaignFixtures: Partial<Campaign>[] = [
@@ -29,5 +30,22 @@ export const streamFixtures: Partial<Stream>[] = [
     campaignId: '00000000-0000-4000-8000-000000000001',
     schema: CampaignStreamSchema.ACTION,
     actionType: StreamActionType.NOTHING,
+  },
+]
+
+export const streamOfferFixtures: Partial<StreamOffer>[] = [
+  {
+    id: '00000000-0000-4000-8000-000000000001',
+    offerId: '00000000-0000-4000-8000-000000000001',
+    percent: 60,
+    active: true,
+    streamId: '00000000-0000-4000-8000-000000000001',
+  },
+  {
+    id: '00000000-0000-4000-8000-000000000002',
+    offerId: '00000000-0000-4000-8000-000000000002',
+    percent: 40,
+    active: true,
+    streamId: '00000000-0000-4000-8000-000000000001',
   },
 ]

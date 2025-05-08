@@ -6,6 +6,7 @@ import {
   offerFixtures,
   sourceFixtures,
   streamFixtures,
+  streamOfferFixtures,
   userFixtures,
 } from '../fixtures'
 import { User } from '../../src/user'
@@ -13,7 +14,7 @@ import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { Offer } from '../../src/offer'
 import { AffiliateNetwork } from '../../src/affiliate-network'
-import { Campaign, Stream } from '../../src/campaign'
+import { Campaign, Stream, StreamOffer } from '../../src/campaign'
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 
 export async function loadSourceFixtures(ds: DataSource) {
@@ -40,11 +41,17 @@ export async function loadCampaignFixtures(ds: DataSource) {
   const repo = ds.getRepository(Campaign)
   await repo.save(repo.create(campaignFixtures))
   await loadStreamFixtures(ds)
+  await loadStreamOfferFixtures(ds)
 }
 
-export async function loadStreamFixtures(ds: DataSource) {
+async function loadStreamFixtures(ds: DataSource) {
   const repo = ds.getRepository(Stream)
   await repo.save(repo.create(streamFixtures))
+}
+
+async function loadStreamOfferFixtures(ds: DataSource) {
+  const repo = ds.getRepository(StreamOffer)
+  await repo.save(repo.create(streamOfferFixtures))
 }
 
 export async function authUser(app: INestApplication) {

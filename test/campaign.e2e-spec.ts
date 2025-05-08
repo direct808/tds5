@@ -14,13 +14,20 @@ import {
   truncateTables,
 } from './utils'
 import { configureApp } from '../src/utils'
-import { Campaign, Stream, StreamActionType } from '../src/campaign'
+import {
+  Campaign,
+  CampaignStreamSchema,
+  Stream,
+  StreamActionType,
+  StreamOffer,
+} from '../src/campaign'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let campaignRepository: Repository<Campaign>
   let streamRepository: Repository<Stream>
+  let streamOfferRepository: Repository<StreamOffer>
 
   beforeAll(async () => {
     await createTestContainer()
@@ -41,12 +48,13 @@ describe('CampaignController (e2e)', () => {
 
     campaignRepository = dataSource.getRepository(Campaign)
     streamRepository = dataSource.getRepository(Stream)
+    streamOfferRepository = dataSource.getRepository(StreamOffer)
 
     await loadUserFixtures(dataSource)
     await loadAffiliateNetworkFixtures(dataSource)
     await loadOfferFixtures(dataSource)
-    await loadCampaignFixtures(dataSource)
     await loadSourceFixtures(dataSource)
+    await loadCampaignFixtures(dataSource)
 
     accessToken = await authUser(app)
   })
@@ -319,13 +327,13 @@ describe('CampaignController (e2e)', () => {
         name: 'Test stream 1',
       })
 
-      expect(streamBeforeDelete).toBeDefined()
+      expect(streamBeforeDelete).not.toBeNull()
       expect(streamAfterDelete).toBeNull()
       expect(newStream).toBeDefined()
     })
 
     it('Check campaign self referencing', async () => {
-      async function asdf(withId: boolean) {
+      async function sendRequest(withId: boolean) {
         await request(app.getHttpServer())
           .put('/api/campaign/00000000-0000-4000-8000-000000000001')
           .auth(accessToken, { type: 'bearer' })
@@ -346,8 +354,44 @@ describe('CampaignController (e2e)', () => {
           .expect(/Company should not refer to itself/)
       }
 
-      await asdf(false)
-      await asdf(true)
+      await sendRequest(false)
+      await sendRequest(true)
+    })
+
+    it('Check deleteOldStreamOffers', async () => {
+      const streamOfferBeforeDelete = await streamOfferRepository.findOneBy({
+        id: '00000000-0000-4000-8000-000000000001',
+      })
+
+      await request(app.getHttpServer())
+        .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+        .auth(accessToken, { type: 'bearer' })
+        .send({
+          name: 'Campaign 1',
+          active: true,
+          streams: [
+            {
+              id: '00000000-0000-4000-8000-000000000001',
+              name: 'Test stream 1',
+              schema: CampaignStreamSchema.LANDINGS_OFFERS,
+              offers: [
+                {
+                  offerId: '00000000-0000-4000-8000-000000000001',
+                  percent: 100,
+                  active: true,
+                },
+              ],
+            },
+          ],
+        })
+        .expect(200)
+
+      const streamOfferAfterDelete = await streamOfferRepository.findOneBy({
+        id: '00000000-0000-4000-8000-000000000001',
+      })
+
+      expect(streamOfferBeforeDelete).not.toBeNull()
+      expect(streamOfferAfterDelete).toBeNull()
     })
   })
 })
