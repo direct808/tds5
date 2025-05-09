@@ -300,7 +300,7 @@ describe('CampaignController (e2e)', () => {
 
     it('Check deleteOldStreams', async () => {
       const streamBeforeDelete = await streamRepository.findOneBy({
-        id: '00000000-0000-4000-8000-000001000001',
+        id: '00000000-0000-4000-8000-000000000001',
       })
 
       await request(app.getHttpServer())
@@ -320,7 +320,7 @@ describe('CampaignController (e2e)', () => {
         .expect(200)
 
       const streamAfterDelete = await streamRepository.findOneBy({
-        id: '00000000-0000-4000-8000-000001000001',
+        id: '00000000-0000-4000-8000-000000000001',
       })
 
       const newStream = await streamRepository.findOneBy({
