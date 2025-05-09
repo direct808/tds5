@@ -8,9 +8,10 @@ import {
   loadAffiliateNetworkFixtures,
   loadOfferFixtures,
   loadUserFixtures,
-  createTestDataSource,
+  createTestContainer,
+  truncateTables,
 } from './utils'
-import { configureApp } from '../src/utils/configure-app'
+import { configureApp } from '../src/utils'
 import { Offer } from '../src/offer'
 
 describe('OfferController (e2e)', () => {
@@ -18,8 +19,15 @@ describe('OfferController (e2e)', () => {
   let accessToken: string
   let offerRepository: Repository<Offer>
 
+  beforeAll(async () => {
+    await createTestContainer()
+  })
+
+  afterEach(async () => {
+    await truncateTables(app)
+  })
+
   beforeEach(async () => {
-    await createTestDataSource()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
@@ -39,7 +47,7 @@ describe('OfferController (e2e)', () => {
       await request(app.getHttpServer())
         .post('/api/offer')
         .auth(accessToken, { type: 'bearer' })
-        .send({ name: 'Test offer 1', url: 'http://ya.ru' })
+        .send({ name: 'Test offer 1', url: 'http://google.com' })
         .expect(201)
 
       const offer = await offerRepository.findOne({
@@ -56,22 +64,22 @@ describe('OfferController (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(Array.isArray(body)).toBe(true) // Проверяем, что это массив
-    expect(body.length).toBeGreaterThan(0) // Проверяем, что длина массива > 0
+    expect(Array.isArray(body)).toBe(true)
+    expect(body.length).toBeGreaterThan(0)
   })
 
   it('Обновление offer, при этом нельзя обновить id у source', async () => {
     await request(app.getHttpServer())
-      .patch('/api/offer/00000000-0000-0000-0000-000000000001')
+      .patch('/api/offer/00000000-0000-4000-8000-000000000001')
       .auth(accessToken, { type: 'bearer' })
       .send({
         name: 'updated name',
-        id: '00000000-0000-0000-0000-000000000022',
+        id: '00000000-0000-4000-8000-000000000022',
       })
       .expect(200)
 
     const source = await offerRepository.findOneOrFail({
-      where: { id: '00000000-0000-0000-0000-000000000001' },
+      where: { id: '00000000-0000-4000-8000-000000000001' },
     })
 
     expect(source.name).toEqual('updated name')
@@ -79,12 +87,12 @@ describe('OfferController (e2e)', () => {
 
   it('Delete offer', async () => {
     await request(app.getHttpServer())
-      .delete('/api/offer/00000000-0000-0000-0000-000000000001')
+      .delete('/api/offer/00000000-0000-4000-8000-000000000001')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     const source = await offerRepository.findOneBy({
-      id: '00000000-0000-0000-0000-000000000001',
+      id: '00000000-0000-4000-8000-000000000001',
     })
 
     expect(source).toBeNull()

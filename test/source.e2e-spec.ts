@@ -7,18 +7,26 @@ import {
   authUser,
   loadSourceFixtures,
   loadUserFixtures,
-  createTestDataSource,
+  createTestContainer,
+  truncateTables,
 } from './utils'
 import { Source } from '../src/source'
-import { configureApp } from '../src/utils/configure-app'
+import { configureApp } from '../src/utils'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let sourceRepository: Repository<Source>
 
+  beforeAll(async () => {
+    await createTestContainer()
+  })
+
+  afterEach(async () => {
+    await truncateTables(app)
+  })
+
   beforeEach(async () => {
-    await createTestDataSource()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
@@ -52,16 +60,16 @@ describe('SourceController (e2e)', () => {
 
   it('Обновление source, при этом нельзя обновить id у source', async () => {
     await request(app.getHttpServer())
-      .patch('/api/source/00000000-0000-0000-0000-000000000001')
+      .patch('/api/source/00000000-0000-4000-8000-000000000001')
       .auth(accessToken, { type: 'bearer' })
       .send({
         name: 'updated name',
-        id: '00000000-0000-0000-0000-000000000022',
+        id: '00000000-0000-4000-8000-000000000022',
       })
       .expect(200)
 
     const source = await sourceRepository.findOneOrFail({
-      where: { id: '00000000-0000-0000-0000-000000000001' },
+      where: { id: '00000000-0000-4000-8000-000000000001' },
     })
 
     expect(source.name).toEqual('updated name')
@@ -69,12 +77,12 @@ describe('SourceController (e2e)', () => {
 
   it('Delete source', async () => {
     await request(app.getHttpServer())
-      .delete('/api/source/00000000-0000-0000-0000-000000000001')
+      .delete('/api/source/00000000-0000-4000-8000-000000000001')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     const source = await sourceRepository.findOneBy({
-      id: '00000000-0000-0000-0000-000000000001',
+      id: '00000000-0000-4000-8000-000000000001',
     })
 
     await expect(source).toBeNull()

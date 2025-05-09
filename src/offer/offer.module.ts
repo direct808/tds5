@@ -8,5 +8,6 @@ import { AffiliateNetworkModule } from '../affiliate-network'
   imports: [AffiliateNetworkModule],
   controllers: [OfferController],
   providers: [OfferService, OfferRepository],
+  exports: [OfferRepository],
 })
 export class OfferModule {}

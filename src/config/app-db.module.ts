@@ -5,6 +5,7 @@ import { AffiliateNetwork } from '../affiliate-network'
 import { Offer } from '../offer/'
 import { Source } from '../source'
 import { User } from '../user'
+import { Campaign, Stream, StreamOffer } from '../campaign'
 
 @Global()
 @Module({
@@ -18,7 +19,15 @@ import { User } from '../user'
           username: config.dbUser,
           password: config.dbPass,
           database: config.dbName,
-          entities: [AffiliateNetwork, Offer, Source, User],
+          entities: [
+            AffiliateNetwork,
+            Offer,
+            Source,
+            User,
+            Campaign,
+            Stream,
+            StreamOffer,
+          ],
           synchronize: true,
           logging: false,
         }

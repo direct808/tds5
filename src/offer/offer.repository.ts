@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm'
+import { DataSource, In } from 'typeorm'
 import { Injectable } from '@nestjs/common'
 import {
   IGetEntityByIdAndUserId,
@@ -47,6 +47,16 @@ export class OfferRepository
   ): Promise<Offer | null> {
     return this.repository.findOne({
       where: { id: args.id, userId: args.userId },
+    })
+  }
+
+  public async getByIdsAndUserId(
+    ids: string[],
+    userId: string,
+  ): Promise<Offer[]> {
+    return this.repository.findBy({
+      id: In(ids),
+      userId,
     })
   }
 }
