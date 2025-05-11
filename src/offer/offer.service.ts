@@ -3,7 +3,7 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../utils'
+} from '../utils/repository-utils'
 import { OfferRepository } from './offer.repository'
 import { Offer } from './offer.entity'
 import { AffiliateNetworkRepository } from '../affiliate-network'
@@ -38,6 +38,7 @@ export class OfferService {
     private readonly repository: OfferRepository,
     private readonly networkRepository: AffiliateNetworkRepository,
   ) {}
+
   /**
    * Создание партнерской сети
    * @param args
@@ -49,6 +50,7 @@ export class OfferService {
 
     await this.repository.create(args)
   }
+
   /**
    * Обновление партнерский сети
    * @param args
@@ -67,6 +69,7 @@ export class OfferService {
 
     await this.repository.update(args.id, args)
   }
+
   /**
    * Список партнерских сетей
    * @param userId
@@ -74,6 +77,7 @@ export class OfferService {
   public async getList(userId: string): Promise<Offer[]> {
     return this.repository.getListByUserId(userId)
   }
+
   /**
    * Удаление партнерской сети
    * @param args
@@ -83,6 +87,7 @@ export class OfferService {
 
     await this.repository.delete(args.id)
   }
+
   /**
    * Проверяет существование Affiliate Network для пользователя.
    *

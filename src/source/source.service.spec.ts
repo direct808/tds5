@@ -6,9 +6,9 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../utils'
+} from '../utils/repository-utils'
 
-jest.mock('../utils')
+jest.mock('../utils/repository-utils')
 
 describe('SourceService', () => {
   let service: SourceService

@@ -2,11 +2,11 @@ import { CampaignRepository } from './campaign.repository'
 import { DataSource, EntityManager } from 'typeorm'
 import { UpdateStreamService } from './stream'
 import { Test, TestingModule } from '@nestjs/testing'
-import { checkUniqueNameForUpdate } from '../utils'
+import { checkUniqueNameForUpdate } from '../utils/repository-utils'
 import { UpdateCampaignService } from './update-campaign.service'
 import { CommonCampaignService } from './common-campaign.service'
 
-jest.mock('../utils')
+jest.mock('../utils/repository-utils')
 
 const args = {
   id: 'id-1',

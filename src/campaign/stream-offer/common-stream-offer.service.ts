@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { CreateStreamOfferDto } from '../dto'
 import { OfferRepository } from '../../offer/offer.repository'
-import { arrayUnique } from '../../utils'
+import { arrayUnique } from '../../utils/helpers'
 
 @Injectable()
 export class CommonStreamOfferService {

@@ -1,4 +1,4 @@
-import { ensureEntityExists } from '../utils'
+import { ensureEntityExists } from '../utils/repository-utils'
 import { Injectable } from '@nestjs/common'
 import { SourceRepository } from '../source/source.repository'
 

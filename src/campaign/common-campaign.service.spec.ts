@@ -1,11 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CommonCampaignService } from './common-campaign.service'
 import { SourceRepository } from '../source/source.repository'
-import { ensureEntityExists } from '../utils'
+import { ensureEntityExists } from '../utils/repository-utils'
 
-jest.mock('../utils', () => ({
-  ensureEntityExists: jest.fn(),
-}))
+jest.mock('../utils/repository-utils')
 
 describe('CommonCampaignService', () => {
   let service: CommonCampaignService

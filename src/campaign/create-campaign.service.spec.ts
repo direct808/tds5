@@ -4,9 +4,9 @@ import { CampaignRepository } from './campaign.repository'
 import { CommonCampaignService } from './common-campaign.service'
 import { DataSource, EntityManager } from 'typeorm'
 import { CreateStreamService } from './stream'
-import { checkUniqueNameForCreate } from '../utils'
+import { checkUniqueNameForCreate } from '../utils/repository-utils'
 
-jest.mock('../utils')
+jest.mock('../utils/repository-utils')
 
 const args = {
   name: 'test',

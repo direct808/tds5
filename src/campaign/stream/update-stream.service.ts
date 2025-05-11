@@ -6,7 +6,8 @@ import { StreamRepository } from './stream.repository'
 import { UpdateStreamOfferService } from '../stream-offer'
 import { CampaignStreamSchema } from '../entity'
 import { CreateStreamService } from './create-stream.service'
-import { arrayUnique } from '../../utils'
+import { getIdsForDelete } from '../../utils/repository-utils'
+import { arrayUnique } from '../../utils/helpers'
 
 @Injectable()
 export class UpdateStreamService {
@@ -27,18 +28,27 @@ export class UpdateStreamService {
     await this.deleteOldStreams(manager, streams, campaignId)
 
     for (const stream of streams) {
-      this.checkCampaignSelfReferencing(campaignId, stream.actionCampaignId)
+      await this.processStream(manager, campaignId, userId, stream)
+    }
+  }
 
-      if (stream.id) {
-        await this.updateStream(manager, campaignId, userId, stream, stream.id)
-      } else {
-        await this.createStreamService.createStream(
-          manager,
-          campaignId,
-          userId,
-          stream,
-        )
-      }
+  private async processStream(
+    manager: EntityManager,
+    campaignId: string,
+    userId: string,
+    stream: UpdateStreamDto,
+  ) {
+    this.checkCampaignSelfReferencing(campaignId, stream.actionCampaignId)
+
+    if (stream.id) {
+      await this.updateStream(manager, campaignId, userId, stream, stream.id)
+    } else {
+      await this.createStreamService.createStream(
+        manager,
+        campaignId,
+        userId,
+        stream,
+      )
     }
   }
 
@@ -74,11 +84,8 @@ export class UpdateStreamService {
     streamId: string,
     userId: string,
   ) {
-    if (!input.offers) {
-      return
-    }
-
     if (
+      !input.offers ||
       input.schema !== CampaignStreamSchema.LANDINGS_OFFERS ||
       input.offers.length === 0
     ) {
@@ -98,19 +105,7 @@ export class UpdateStreamService {
     input: UpdateStreamDto[],
     campaignId: string,
   ): Promise<void> {
-    const existsStreams = await this.repository.getByCampaignId(
-      manager,
-      campaignId,
-    )
-
-    const existsStreamsIds = existsStreams.map((offer) => offer.id)
-    const inputStreamsIds = input
-      .filter((stream) => Boolean(stream.id))
-      .map((stream) => stream.id)
-
-    const idsForDelete = existsStreamsIds.filter(
-      (item) => !inputStreamsIds.includes(item),
-    )
+    const idsForDelete = await this.getIdsForDelete(manager, input, campaignId)
 
     if (idsForDelete.length === 0) {
       return
@@ -119,7 +114,7 @@ export class UpdateStreamService {
     await this.repository.delete(manager, idsForDelete)
   }
 
-  public async ensureStreamExists(
+  private async ensureStreamExists(
     manager: EntityManager,
     input: { id?: string }[],
     campaignId: string,
@@ -137,5 +132,18 @@ export class UpdateStreamService {
     if (offers.length !== offerIds.length) {
       throw new BadRequestException('Some stream ids not found')
     }
+  }
+
+  private async getIdsForDelete(
+    manager: EntityManager,
+    input: UpdateStreamDto[],
+    campaignId: string,
+  ): Promise<string[]> {
+    const existsStreams = await this.repository.getByCampaignId(
+      manager,
+      campaignId,
+    )
+
+    return getIdsForDelete(existsStreams, input)
   }
 }
