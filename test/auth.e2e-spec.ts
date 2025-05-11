@@ -4,7 +4,7 @@ import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource } from 'typeorm'
 import { createTestContainer, loadUserFixtures, truncateTables } from './utils'
-import { configureApp } from '../src/utils'
+import { configureApp } from '../src/utils/configure-app'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication

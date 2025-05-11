@@ -13,7 +13,6 @@ import {
   loadUserFixtures,
   truncateTables,
 } from './utils'
-import { configureApp } from '../src/utils'
 import {
   Campaign,
   CampaignStreamSchema,
@@ -21,6 +20,7 @@ import {
   StreamActionType,
   StreamOffer,
 } from '../src/campaign'
+import { configureApp } from '../src/utils/configure-app'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication

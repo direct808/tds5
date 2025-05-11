@@ -11,7 +11,7 @@ import {
   truncateTables,
 } from './utils'
 import { Source } from '../src/source'
-import { configureApp } from '../src/utils'
+import { configureApp } from '../src/utils/configure-app'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication

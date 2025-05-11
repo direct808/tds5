@@ -11,7 +11,7 @@ import {
   createTestContainer,
   truncateTables,
 } from './utils'
-import { configureApp } from '../src/utils'
+import { configureApp } from '../src/utils/configure-app'
 import { Offer } from '../src/offer'
 
 describe('OfferController (e2e)', () => {
