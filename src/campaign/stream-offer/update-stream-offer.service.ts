@@ -3,6 +3,8 @@ import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferDto } from '../dto'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from './stream-offer.repository'
+import { getIdsForDelete } from '../../utils/repository-utils'
+import { StreamOffer } from '../entity'
 
 @Injectable()
 export class UpdateStreamOfferService {
@@ -24,14 +26,27 @@ export class UpdateStreamOfferService {
     userId: string,
     input: UpdateStreamOfferDto[],
   ): Promise<void> {
+    await this.prepareInput(manager, streamId, userId, input)
+    const dataForSave = this.buildSaveData(streamId, input)
+    await this.saveStreamOffers(manager, dataForSave)
+  }
+
+  private async prepareInput(
+    manager: EntityManager,
+    streamId: string,
+    userId: string,
+    input: UpdateStreamOfferDto[],
+  ): Promise<void> {
     await this.deleteOldStreamOffers(manager, input, streamId)
-
     this.commonService.checkPercentSum(input)
-
     this.commonService.checkForRepeatOffers(input)
-
     await this.commonService.ensureOffersExists(input, userId)
+  }
 
+  private buildSaveData(
+    streamId: string,
+    input: UpdateStreamOfferDto[],
+  ): Partial<StreamOffer>[] {
     const dataForCreate = this.commonService.buildCreateData(
       streamId,
       input.filter((item) => !item.id),
@@ -42,8 +57,13 @@ export class UpdateStreamOfferService {
       input.filter((item) => Boolean(item.id)),
     )
 
-    const dataForSave = dataForCreate.concat(dataForUpdate)
+    return dataForCreate.concat(dataForUpdate)
+  }
 
+  private async saveStreamOffers(
+    manager: EntityManager,
+    dataForSave: Partial<StreamOffer>[],
+  ) {
     if (dataForSave.length > 0) {
       await this.streamOfferRepository.saveMany(manager, dataForSave)
     }
@@ -61,19 +81,7 @@ export class UpdateStreamOfferService {
     input: UpdateStreamOfferDto[],
     streamId: string,
   ): Promise<void> {
-    const existsStreamOffers = await this.streamOfferRepository.getByStreamId(
-      manager,
-      streamId,
-    )
-
-    const existsStreamOffersIds = existsStreamOffers.map((offer) => offer.id)
-    const inputStreamOffersIds = input
-      .filter((offer) => Boolean(offer.id))
-      .map((offer) => offer.id)
-
-    const idsForDelete = existsStreamOffersIds.filter(
-      (item) => !inputStreamOffersIds.includes(item),
-    )
+    const idsForDelete = await this.getIdsForDelete(manager, input, streamId)
 
     if (idsForDelete.length === 0) {
       return
@@ -96,5 +104,18 @@ export class UpdateStreamOfferService {
       active: d.active,
       percent: d.percent,
     }))
+  }
+
+  private async getIdsForDelete(
+    manager: EntityManager,
+    input: UpdateStreamOfferDto[],
+    streamId: string,
+  ): Promise<string[]> {
+    const existsStreamOffers = await this.streamOfferRepository.getByStreamId(
+      manager,
+      streamId,
+    )
+
+    return getIdsForDelete(existsStreamOffers, input)
   }
 }
