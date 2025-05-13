@@ -3,18 +3,21 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource } from 'typeorm'
-import {
-  createTestDataSource,
-  loadSourceFixtures,
-  loadUserFixtures,
-} from './utils'
+import { createTestContainer, loadUserFixtures, truncateTables } from './utils'
 import { configureApp } from '../src/utils/configure-app'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
 
+  beforeAll(async () => {
+    await createTestContainer()
+  })
+
+  afterEach(async () => {
+    await truncateTables(app)
+  })
+
   beforeEach(async () => {
-    await createTestDataSource()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
@@ -23,7 +26,6 @@ describe('AuthController (e2e)', () => {
     await app.init()
     const dataSource = app.get(DataSource)
     await loadUserFixtures(dataSource)
-    await loadSourceFixtures(dataSource)
   })
 
   describe('/auth/login (POST)', () => {

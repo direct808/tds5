@@ -54,3 +54,20 @@ export async function ensureEntityExists(
     throw new NotFoundException(message)
   }
 }
+
+/**
+ * Return ids for delete
+ * @param exists
+ * @param input
+ */
+export function getIdsForDelete<R>(
+  exists: { id: R }[],
+  input: { id?: R }[],
+): R[] {
+  const existsStreamsIds = exists.map((offer) => offer.id)
+  const inputStreamsIds = input
+    .filter((stream) => Boolean(stream.id))
+    .map((stream) => stream.id)
+
+  return existsStreamsIds.filter((item) => !inputStreamsIds.includes(item))
+}
