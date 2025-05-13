@@ -5,9 +5,10 @@ import {
   checkUniqueNameForUpdate,
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
+  getIdsForDelete,
 } from './repository-utils'
 
-describe('Utility Functions', () => {
+describe('repository-utils', () => {
   describe('checkUniqueNameForCreate', () => {
     it('should not throw when name is unique', async () => {
       const mockRepository: IGetEntityByNameAndUserId = {
@@ -117,6 +118,17 @@ describe('Utility Functions', () => {
       await expect(
         ensureEntityExists(mockRepository, args, 'Error message'),
       ).rejects.toThrow(new NotFoundException('Error message'))
+    })
+  })
+
+  describe('getIdsForDelete', () => {
+    it('check getIdsForDelete', async () => {
+      const exists = [{ id: '1' }, { id: '2' }, { id: '3' }]
+      const input = [{}, { id: '2' }, { id: '3' }, { id: '4' }]
+
+      const result = getIdsForDelete(exists, input)
+
+      expect(result).toEqual(['1'])
     })
   })
 })

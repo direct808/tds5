@@ -6,5 +6,6 @@ import { SourceService } from './source.service'
 @Module({
   controllers: [SourceController],
   providers: [SourceRepository, SourceService],
+  exports: [SourceRepository],
 })
 export class SourceModule {}

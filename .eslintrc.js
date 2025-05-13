@@ -17,6 +17,7 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
+    'curly': 'error',
     'no-console': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
@@ -24,7 +25,16 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     "padding-line-between-statements": [
       "error",
-      { "blankLine": "always", "prev": "function", "next": "*" }
+      { "blankLine": "always", "prev": "function", "next": "*" },
+      { blankLine: 'always', prev: 'import', next: '*' },
+      { blankLine: 'never', prev: 'import', next: 'import' },
+    ],
+    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "ignoreRestSiblings": true
+      }
     ]
   },
 };
