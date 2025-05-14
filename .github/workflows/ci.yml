@@ -44,6 +44,11 @@ jobs:
         run: |
           docker run tds5 yarn run test
 
+      - name: Test Docker
+        run: |
+          docker version
+          docker info
+
       - name: E2e tests
         run: |
           docker run tds5 yarn run test:e2e
