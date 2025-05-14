@@ -1,9 +1,9 @@
 name: PR Checks
 
 on:
-#  workflow_dispatch:
+  #  workflow_dispatch:
   pull_request:
-    branches: [main]
+    branches: [ main ]
   push:
     branches:
       - main
@@ -14,8 +14,8 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
 
-#    outputs:
-#      image-tag: ${{ steps.meta.outputs.image-tag }}
+    #    outputs:
+    #      image-tag: ${{ steps.meta.outputs.image-tag }}
 
     services:
       docker:
@@ -53,6 +53,10 @@ jobs:
         run: |
           sudo systemctl start docker
           docker run tds5 yarn run test:e2e
+        env:
+          # Важные переменные для работы Testcontainers
+          DOCKER_HOST: tcp://localhost:2375
+          DOCKER_TLS_VERIFY: ""
 #
 #      - name: Save image as tarball
 #        run: |
