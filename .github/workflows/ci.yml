@@ -29,9 +29,17 @@ jobs:
         run: |
           docker build -t tds5 --target builder .
 
+      - name: Lint
+        run: |
+          docker run tds5 yarn run lint
+
       - name: Unit tests
         run: |
           docker run tds5 yarn run test
+
+      - name: E2e tests
+        run: |
+          docker run tds5 yarn run e2e
 #
 #      - name: Save image as tarball
 #        run: |
