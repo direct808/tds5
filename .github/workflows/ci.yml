@@ -3,6 +3,10 @@ name: PR Checks
 on:
   pull_request:
     branches: [main]
+  push:
+    branches:
+      - main
+      - feature/ci # твоя ветка разработки пайплайна
 
 jobs:
   build:
