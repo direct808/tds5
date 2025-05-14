@@ -17,6 +17,11 @@ jobs:
 #    outputs:
 #      image-tag: ${{ steps.meta.outputs.image-tag }}
 
+    services:
+      docker:
+        image: docker:20.10.7-dind
+        privileged: true
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
