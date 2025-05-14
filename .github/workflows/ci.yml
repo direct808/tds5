@@ -27,7 +27,11 @@ jobs:
 #
       - name: Build Docker image
         run: |
-          docker build -t tds5 .
+          docker build -t tds5 --target builder .
+
+      - name: Unit tests
+        run: |
+          docker run tds5 yarn run test
 #
 #      - name: Save image as tarball
 #        run: |
