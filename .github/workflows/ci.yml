@@ -49,8 +49,9 @@ jobs:
           docker version
           docker info
 
-      - name: E2e tests
+      - name: e2e tests
         run: |
+          sudo systemctl start docker
           docker run tds5 yarn run test:e2e
 #
 #      - name: Save image as tarball
