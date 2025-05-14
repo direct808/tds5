@@ -39,7 +39,7 @@ jobs:
 
       - name: E2e tests
         run: |
-          docker run tds5 yarn run e2e
+          docker run tds5 yarn run test:e2e
 #
 #      - name: Save image as tarball
 #        run: |
