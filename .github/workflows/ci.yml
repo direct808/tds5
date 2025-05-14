@@ -1,7 +1,7 @@
 name: PR Checks
 
 on:
-  workflow_dispatch:
+#  workflow_dispatch:
   pull_request:
     branches: [main]
   push:
@@ -25,9 +25,9 @@ jobs:
 #        id: meta
 #        run: echo "image-tag=app-image-${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
 #
-#      - name: Build Docker image
-#        run: |
-#          docker build -t app-image:${{ steps.meta.outputs.image-tag }} .
+      - name: Build Docker image
+        run: |
+          docker build -t tds5 .
 #
 #      - name: Save image as tarball
 #        run: |
