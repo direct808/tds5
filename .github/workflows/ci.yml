@@ -54,7 +54,7 @@ jobs:
       - name: e2e tests
         run: |
           docker run tds5 yarn run test:e2e
-        env:
+#        env:
           # Важные переменные для работы Testcontainers
 #          DOCKER_HOST: tcp://localhost:2375
 #          DOCKER_TLS_VERIFY: ""
