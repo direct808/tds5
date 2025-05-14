@@ -9,30 +9,30 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
 
-    outputs:
-      image-tag: ${{ steps.meta.outputs.image-tag }}
+#    outputs:
+#      image-tag: ${{ steps.meta.outputs.image-tag }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Generate unique image tag
-        id: meta
-        run: echo "image-tag=app-image-${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image
-        run: |
-          docker build -t app-image:${{ steps.meta.outputs.image-tag }} .
-
-      - name: Save image as tarball
-        run: |
-          docker save app-image:${{ steps.meta.outputs.image-tag }} | gzip > image.tar.gz
-
-      - name: Upload Docker image artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-image
-          path: image.tar.gz
+#      - name: Generate unique image tag
+#        id: meta
+#        run: echo "image-tag=app-image-${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
+#
+#      - name: Build Docker image
+#        run: |
+#          docker build -t app-image:${{ steps.meta.outputs.image-tag }} .
+#
+#      - name: Save image as tarball
+#        run: |
+#          docker save app-image:${{ steps.meta.outputs.image-tag }} | gzip > image.tar.gz
+#
+#      - name: Upload Docker image artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: docker-image
+#          path: image.tar.gz
 
 #  lint:
 #    name: Run Linter
