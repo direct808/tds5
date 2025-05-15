@@ -5,3 +5,13 @@ services:
       - POSTGRES_PASSWORD=1234
     ports:
       - 8432:5432
+
+  app:
+    image: tds5
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    ports:
+      - ${PORT}:${PORT}
