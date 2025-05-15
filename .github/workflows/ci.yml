@@ -34,9 +34,15 @@ jobs:
       #        id: meta
       #        run: echo "image-tag=app-image-${GITHUB_RUN_ID}" >> $GITHUB_OUTPUT
       #
+#      - name: Build Docker image
+#        run: |
+#          docker build -t tds5 --target builder .
+
       - name: Build Docker image
-        run: |
-          docker build -t tds5 --target builder .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: tds5
 
       - name: Lint
         run: |
