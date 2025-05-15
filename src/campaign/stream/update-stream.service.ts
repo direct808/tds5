@@ -1,13 +1,13 @@
-import { UpdateStreamDto } from '../dto'
 import { EntityManager } from 'typeorm'
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { CommonStreamService } from './common-stream.service'
 import { StreamRepository } from './stream.repository'
-import { UpdateStreamOfferService } from '../stream-offer'
-import { CampaignStreamSchema } from '../entity'
 import { CreateStreamService } from './create-stream.service'
 import { getIdsForDelete } from '../../utils/repository-utils'
 import { arrayUnique } from '../../utils/helpers'
+import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
+import { UpdateStreamDto } from '../dto/update-stream.dto'
+import { CampaignStreamSchema } from '../entity/stream.entity'
 
 @Injectable()
 export class UpdateStreamService {

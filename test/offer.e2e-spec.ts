@@ -10,9 +10,9 @@ import {
   loadUserFixtures,
   createTestContainer,
   truncateTables,
-} from './utils'
+} from './utils/helpers'
 import { configureApp } from '../src/utils/configure-app'
-import { Offer } from '../src/offer'
+import { Offer } from '../src/offer/offer.entity'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication

@@ -1,4 +1,4 @@
-import { User } from '../../src/user'
+import { User } from '../../src/user/user.entity'
 
 export const userFixtures: Partial<User>[] = [
   {

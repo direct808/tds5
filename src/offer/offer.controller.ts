@@ -11,7 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 import { UserId } from '../auth/user-id.decorator'
 import { OfferService } from './offer.service'
-import { CreateOfferDto, UpdateOfferDto } from './dto'
+import { CreateOfferDto } from './dto/create-offer.dto'
+import { UpdateOfferDto } from './dto/update-offer.dto'
 
 @ApiTags('Оферы')
 @Controller('offer')

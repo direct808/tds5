@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { UpdateCampaignDto } from './dto'
 import { DataSource, EntityManager } from 'typeorm'
 import { checkUniqueNameForUpdate } from '../utils/repository-utils'
-import { Campaign } from './entity'
 import { CampaignRepository } from './campaign.repository'
 import { UpdateStreamService } from './stream/update-stream.service'
 import { CommonCampaignService } from './common-campaign.service'
+import { UpdateCampaignDto } from './dto/update-campaign.dto'
+import { Campaign } from './entity/campaign.entity'
 
 @Injectable()
 export class UpdateCampaignService {

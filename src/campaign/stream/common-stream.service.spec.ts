@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamService } from './common-stream.service'
 import { CampaignRepository } from '../campaign.repository'
 import { ensureEntityExists } from '../../utils/repository-utils'
-import { CreateStreamDto } from '../dto'
+import { CreateStreamDto } from '../dto/create-stream.dto'
 import {
   CampaignStreamSchema,
   StreamActionType,
   StreamRedirectType,
-} from '../entity'
+} from '../entity/stream.entity'
 
 jest.mock('../../utils/repository-utils')
 

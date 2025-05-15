@@ -3,6 +3,14 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource, Repository } from 'typeorm'
+import { configureApp } from '../src/utils/configure-app'
+import { Campaign } from '../src/campaign/entity/campaign.entity'
+import {
+  CampaignStreamSchema,
+  Stream,
+  StreamActionType,
+} from '../src/campaign/entity/stream.entity'
+import { StreamOffer } from '../src/campaign/entity/stream-offer.entity'
 import {
   authUser,
   createTestContainer,
@@ -12,15 +20,7 @@ import {
   loadSourceFixtures,
   loadUserFixtures,
   truncateTables,
-} from './utils'
-import {
-  Campaign,
-  CampaignStreamSchema,
-  Stream,
-  StreamActionType,
-  StreamOffer,
-} from '../src/campaign'
-import { configureApp } from '../src/utils/configure-app'
+} from './utils/helpers'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication

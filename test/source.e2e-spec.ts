@@ -9,8 +9,8 @@ import {
   loadUserFixtures,
   createTestContainer,
   truncateTables,
-} from './utils'
-import { Source } from '../src/source'
+} from './utils/helpers'
+import { Source } from '../src/source/source.entity'
 import { configureApp } from '../src/utils/configure-app'
 
 describe('SourceController (e2e)', () => {
