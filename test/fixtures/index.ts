@@ -1,5 +1,0 @@
-export * from './source.fixture'
-export * from './user.fixture'
-export * from './offer.fixture'
-export * from './campaign.fixture'
-export * from './affiliate-network.fixture'
