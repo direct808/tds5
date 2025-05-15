@@ -2,7 +2,7 @@ import { forwardRef, Module } from '@nestjs/common'
 import { StreamRepository } from './stream.repository'
 import { CommonStreamService } from './common-stream.service'
 import { UpdateStreamService } from './update-stream.service'
-import { StreamOfferModule } from '../stream-offer'
+import { StreamOfferModule } from '../stream-offer/stream-offer.module'
 import { CampaignModule } from '../campaign.module'
 import { CreateStreamService } from './create-stream.service'
 

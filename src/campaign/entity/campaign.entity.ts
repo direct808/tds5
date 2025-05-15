@@ -8,9 +8,9 @@ import {
   OneToMany,
   UpdateDateColumn,
 } from 'typeorm'
-import { User } from '../../user'
-import { Source } from '../../source'
 import { Stream } from './stream.entity'
+import { Source } from '../../source/source.entity'
+import { User } from '../../user/user.entity'
 
 @Entity()
 export class Campaign {

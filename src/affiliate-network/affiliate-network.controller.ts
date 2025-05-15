@@ -11,7 +11,8 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 import { UserId } from '../auth/user-id.decorator'
 import { AffiliateNetworkService } from './affiliate-network.service'
-import { CreateAffiliateNetworkDto, UpdateAffiliateNetworkDto } from './dto'
+import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
+import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
 
 @ApiTags('Партнерские сети')
 @Controller('affiliate-network')

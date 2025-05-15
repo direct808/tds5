@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { User } from '../user'
-import { AffiliateNetwork } from '../affiliate-network'
+import { AffiliateNetwork } from '../affiliate-network/affiliate-network.entity'
+import { User } from '../user/user.entity'
 
 @Entity()
 export class Offer {

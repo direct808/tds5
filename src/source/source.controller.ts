@@ -9,9 +9,10 @@ import {
   Post,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { CreateSourceDto, UpdateSourceDto } from './dto'
 import { SourceService } from './source.service'
 import { UserId } from '../auth/user-id.decorator'
+import { CreateSourceDto } from './dto/create-source.dto'
+import { UpdateSourceDto } from './dto/update-source.dto'
 
 @ApiTags('Источники трафика')
 @Controller('source')
