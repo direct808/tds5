@@ -1,0 +1,41 @@
+name: PR Checks
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches:
+      - main
+      - ci
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+#      - name: Build Docker image
+#        run: |
+#          docker build -t tds5 --target builder .
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: tds5
+          target: builder
+
+      - name: Lint
+        run: |
+          docker run tds5 yarn run lint
+
+      - name: Unit tests
+        run: |
+          docker run tds5 yarn run test
+
+      - name: Test Docker
+        run: |
+          docker version
+          docker info
