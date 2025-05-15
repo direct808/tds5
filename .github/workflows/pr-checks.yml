@@ -37,9 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-image
     steps:
-      - name: Run Lint
-        run: docker run tds5 yarn run lint
-
       - name: Download Docker image
         uses: actions/download-artifact@v4
         with:
@@ -47,19 +44,22 @@ jobs:
 
       - name: Load Docker image
         run: docker load -i image.tar
+
+      - name: Run Lint
+        run: docker run tds5 yarn run lint
 
   tests:
     name: Unit Tests
     runs-on: ubuntu-latest
     needs: build-image
     steps:
-      - name: Run Tests
-        run: docker run tds5 yarn run test
+      - name: Load Docker image
+        run: docker load -i image.tar
 
       - name: Download Docker image
         uses: actions/download-artifact@v4
         with:
           name: docker-image
 
-      - name: Load Docker image
-        run: docker load -i image.tar
+      - name: Run Tests
+        run: docker run tds5 yarn run test
