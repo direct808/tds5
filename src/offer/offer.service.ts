@@ -6,7 +6,7 @@ import {
 } from '../utils/repository-utils'
 import { OfferRepository } from './offer.repository'
 import { Offer } from './offer.entity'
-import { AffiliateNetworkRepository } from '../affiliate-network'
+import { AffiliateNetworkRepository } from '../affiliate-network/affiliate-network.repository'
 
 type CreateArgs = {
   name: string

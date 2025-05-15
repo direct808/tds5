@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { CreateStreamOfferDto } from '../dto'
+import { CreateStreamOfferDto } from '../dto/create-stream-offer.dto'
 import { OfferRepository } from '../../offer/offer.repository'
 import { arrayUnique } from '../../utils/helpers'
 

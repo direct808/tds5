@@ -1,11 +1,13 @@
 import { Global, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppConfig } from './app-config.service'
-import { AffiliateNetwork } from '../affiliate-network'
-import { Offer } from '../offer/'
-import { Source } from '../source'
-import { User } from '../user'
-import { Campaign, Stream, StreamOffer } from '../campaign'
+import { AffiliateNetwork } from '../affiliate-network/affiliate-network.entity'
+import { Offer } from '../offer/offer.entity'
+import { StreamOffer } from '../campaign/entity/stream-offer.entity'
+import * as Stream from 'node:stream'
+import { Campaign } from '../campaign/entity/campaign.entity'
+import { User } from '../user/user.entity'
+import { Source } from '../source/source.entity'
 
 @Global()
 @Module({

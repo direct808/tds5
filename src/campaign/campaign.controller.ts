@@ -6,10 +6,11 @@ import {
   Post,
   Put,
 } from '@nestjs/common'
-import { CreateCampaignDto, UpdateCampaignDto } from './dto/'
 import { UserId } from '../auth/user-id.decorator'
 import { CreateCampaignService } from './create-campaign.service'
 import { UpdateCampaignService } from './update-campaign.service'
+import { CreateCampaignDto } from './dto/create-campaign.dto'
+import { UpdateCampaignDto } from './dto/update-campaign.dto'
 
 @Controller('campaign')
 export class CampaignController {

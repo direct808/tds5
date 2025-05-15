@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common'
 import { CampaignController } from './campaign.controller'
 import { CommonCampaignService } from './common-campaign.service'
 import { CampaignRepository } from './campaign.repository'
-import { StreamModule } from './stream'
-import { SourceModule } from '../source'
 import { CreateCampaignService } from './create-campaign.service'
 import { UpdateCampaignService } from './update-campaign.service'
+import { StreamModule } from './stream/stream.module'
+import { SourceModule } from '../source/source.module'
 
 @Module({
   controllers: [CampaignController],

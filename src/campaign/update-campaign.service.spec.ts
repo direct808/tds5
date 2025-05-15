@@ -1,6 +1,6 @@
 import { CampaignRepository } from './campaign.repository'
 import { DataSource, EntityManager } from 'typeorm'
-import { UpdateStreamService } from './stream'
+import { UpdateStreamService } from './stream/update-stream.service'
 import { Test, TestingModule } from '@nestjs/testing'
 import { checkUniqueNameForUpdate } from '../utils/repository-utils'
 import { UpdateCampaignService } from './update-campaign.service'

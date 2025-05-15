@@ -1,4 +1,4 @@
-import { Source } from '../../src/source'
+import { Source } from '../../src/source/source.entity'
 
 export const sourceFixtures: Partial<Source>[] = [
   {
