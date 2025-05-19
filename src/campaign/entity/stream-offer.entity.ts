@@ -1,11 +1,17 @@
 import { Column, Entity, ManyToOne, Unique } from 'typeorm'
 import { Stream } from './stream.entity'
+import { Offer } from '../../offer/offer.entity'
 
 @Entity()
 @Unique(['offerId', 'streamId'])
 export class StreamOffer {
   @Column('uuid', { generated: 'uuid', primary: true })
   declare id: string
+
+  @ManyToOne(() => Offer, (offer) => offer.id, {
+    nullable: false,
+  })
+  declare offer: Offer
 
   @Column('uuid')
   declare offerId: string

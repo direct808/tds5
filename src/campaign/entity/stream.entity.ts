@@ -28,6 +28,11 @@ export enum StreamActionType {
   TO_CAMPAIGN = 'TO_CAMPAIGN',
 }
 
+export interface StreamDirectUrl extends Stream {
+  redirectType: StreamRedirectType
+  redirectUrl: string
+}
+
 @Entity()
 export class Stream {
   @Column('uuid', { generated: 'uuid', primary: true })
