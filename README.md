@@ -1,99 +1,101 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📊 TDS5 - система для управления трафиком и сбором статистики
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Это pet-проект, реализующий backend-систему для управления трафиком, сбора статистики и настройки гибких правил маршрутизации. Проект разработан на **NestJS** с использованием **PostgreSQL** и **TypeORM**. Основная цель — продемонстрировать навыки построения масштабируемого, модульного и расширяемого решения с акцентом на **чистую архитектуру**, **SOLID-принципы** и **паттерны проектирования**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Стек технологий
 
-## Description
+- **Node.js** / **TypeScript**
+- **NestJS** — масштабируемый backend-фреймворк
+- **TypeORM** — ORM для PostgreSQL
+- **PostgreSQL** — основная реляционная СУБД
+- **Docker / Docker Compose** — для локального запуска
+- **Jest** — для unit и е2е тестов
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Архитектура и подходы
 
-## Project setup
+Проект построен с фокусом на чистую архитектуру и масштабируемость:
 
-```bash
-$ yarn install
-```
+- **SOLID**:
 
-## Compile and run the project
+    - Каждый класс отвечает за одну зону ответственности
+    - Логика расширяема через абстракции и интерфейсы
+    - Все зависимости внедряются через DI
 
-```bash
-# development
-$ yarn run start
+- **Применяемые паттерны**:
 
-# watch mode
-$ yarn run start:dev
+    - **Repository Pattern** — изоляция бизнес-логики от доступа к данным
+    - **Service Layer** — логика вынесена из контроллеров
+    - **Factory** — для динамического создания объектов
+    - **Strategy** — для динамического изменения бизнес логики
 
-# production mode
-$ yarn run start:prod
-```
+- **Модульность**:
 
-## Run tests
+    - Каждый функциональный блок — отдельный Nest-модуль
+    - Легко масштабировать и заменять компоненты
 
-```bash
-# unit tests
-$ yarn run test
+## Основной функционал
 
-# e2e tests
-$ yarn run test:e2e
+- Создание и настройка кампаний
+- Управление потоками (flows)
+- Настройка условий маршрутизации на основе гео, устройств, IP и других параметров
+- Поддержка множественных оферов и сплит-тестирования
+- Подсчёт и хранение статистики по визитам/кликам
+- Интеграция с внешними источниками через постбэки
 
-# test coverage
-$ yarn run test:cov
-```
+---
 
-## Deployment
+## Тестирование
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+* Unit-тесты для сервисов
+* e2e-тесты для тестирования бизнес логики
+* Запуск тестов с помощью Jest
+* Использование <a href="https://testcontainers.com/" target="blank">testcontainers</a> для запуска окружения для e2e тестов
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+
+---
+
+## Установка и запуск
 
 ```bash
-$ yarn install -g mau
-$ mau deploy
+git clone https://github.com/direct808/tds5.git
+cd tds5
+cp .env.example .env
+
+# Установка зависимостей
+yarn install
+
+# Запуск окружения
+docker-compose up 
+
+# Запуск проекта
+yarn run start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Почему этот проект важен
 
-## Resources
+* Показывает моё понимание backend-архитектуры и модульного подхода
+* Используется реальный кейс с нетривиальной бизнес-логикой
+* Основан на production-подходах, которые можно применять в реальной работе
 
-Check out a few resources that may come in handy when working with NestJS:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Структура проекта
 
-## Support
+```bash
+src/
+├── affiliate-network/  # Партнерские сети
+├── auth/               # Аутентификация пользователя
+├── campaign/           # Управление кампаниями
+├── config]/            # Конфигурация приложения
+├── offer/              # Управление оферами
+├── source/             # Источники траффика
+├── user/               # Управление пользователями
+├── utils -             # общий модуль
+├── main.ts             # Точка входа
+├── app.module.ts       # Корневой модуль
+test                    # e2e тесты
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📬 Связь
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+* Telegram: [@direct808](https://t.me/direct808)
+* Email: [direct808@yandex.ru](mailto:direct808@yandex.ru)
