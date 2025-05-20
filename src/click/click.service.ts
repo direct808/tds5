@@ -26,7 +26,7 @@ export class ClickService {
     const requestData = this.requestDataMapper.convert(code, request)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
-    console.log(stream)
+    // console.log(stream)
     const streamResponse = await this.handleStreamService.handleStream(stream)
     this.responseHandlerFactory.handle(query, response, streamResponse)
   }

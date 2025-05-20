@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common'
-import { Stream } from '../campaign/entity/stream.entity'
 import { Response } from 'express'
+import { Stream } from '../campaign/entity/stream.entity'
 
 export type StreamResponse = StreamContentResponse | StreamRedirectResponse
 
@@ -16,6 +16,10 @@ export type StreamRedirectResponse = {
 
 export interface RedirectType {
   handle(url: string): Promise<StreamResponse>
+}
+
+export interface ActionType {
+  handle(stream: Stream): Promise<StreamResponse>
 }
 
 export interface ResponseHandler {

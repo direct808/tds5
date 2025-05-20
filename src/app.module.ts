@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { StartRequestInterceptor } from './start-request.interceptor'
 import { AppExceptionFilter } from './app-exception.filter'
