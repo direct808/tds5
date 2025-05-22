@@ -65,6 +65,11 @@ export class Stream {
   @Column('uuid', { nullable: true })
   declare actionCampaignId: string | null
 
+  @ManyToOne(() => Campaign, (campaign) => campaign.streams, {
+    nullable: true,
+  })
+  declare actionCampaign: Campaign | null
+
   @Column('text', { nullable: true })
   declare actionContent: string | null
 

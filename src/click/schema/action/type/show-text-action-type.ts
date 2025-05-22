@@ -1,6 +1,8 @@
 import { ActionType } from '../../../types'
 import { Stream } from '../../../../campaign/entity/stream.entity'
+import { Injectable } from '@nestjs/common'
 
+@Injectable()
 export class ShowTextActionType implements ActionType {
   async handle(stream: Stream) {
     return {

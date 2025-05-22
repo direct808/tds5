@@ -13,8 +13,14 @@ export class ClickController {
     @Param('code') code: string,
     @Query() query: Record<string, string>,
     @Req() request: Request,
-    @Res() res: Response,
+    @Res() response: Response,
   ) {
-    await this.clickService.handleClick(code, request, res, query)
+    await this.clickService.handleClick({
+      code,
+      request,
+      response,
+      query,
+      redirectCount: 0,
+    })
   }
 }

@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { RequestDataMapper } from './request-data-mapper'
-import { Request, Response } from 'express'
 import { CampaignRepository } from '../campaign/campaign.repository'
 import { SelectStreamService } from './select-stream.service'
 import { Campaign } from '../campaign/entity/campaign.entity'
 import { HandleStreamService } from './handle-stream.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
+import { ClickContext, StreamResponse } from './types'
 
 @Injectable()
 export class ClickService {
@@ -17,18 +17,25 @@ export class ClickService {
     private readonly responseHandlerFactory: ResponseHandlerFactory,
   ) {}
 
-  async handleClick(
-    code: string,
-    request: Request,
-    response: Response,
-    query: Record<string, string>,
-  ) {
+  async handleClick(cRequest: ClickContext) {
+    const streamResponse = await this.getStreamResponse(cRequest)
+    this.responseHandlerFactory.handle(
+      cRequest.query,
+      cRequest.response,
+      streamResponse,
+    )
+  }
+
+  public async getStreamResponse(
+    cContext: ClickContext,
+  ): Promise<StreamResponse> {
+    const { code, request } = cContext
+    this.processRedirectCount(cContext)
     const requestData = this.requestDataMapper.convert(code, request)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
     // console.log(stream)
-    const streamResponse = await this.handleStreamService.handleStream(stream)
-    this.responseHandlerFactory.handle(query, response, streamResponse)
+    return this.handleStreamService.handleStream(stream, cContext)
   }
 
   private async getFullCampaignByCode(code: string): Promise<Campaign> {
@@ -39,5 +46,12 @@ export class ClickService {
     }
 
     return campaign
+  }
+
+  private processRedirectCount(cContext: ClickContext) {
+    cContext.redirectCount++
+    if (cContext.redirectCount > 5) {
+      throw new HttpException('To many redirects', HttpStatus.BAD_REQUEST)
+    }
   }
 }

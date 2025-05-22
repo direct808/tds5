@@ -9,6 +9,15 @@ import { DirectUrlModule } from './schema/direct-url/direct-url.module'
 import { JsonResponseHandler } from './response-handler/json-response-handler'
 import { HttpResponseHandler } from './response-handler/http-response-handler'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
+import { ActionService } from './schema/action/action.service'
+import { ActionTypeFactory } from './schema/action/action-type-factory'
+import {
+  NothingActionType,
+  Show404ActionType,
+  ShowHtmlActionType,
+  ShowTextActionType,
+  ToCampaignActionType,
+} from './schema/action/type'
 
 @Module({
   controllers: [ClickController],
@@ -20,6 +29,13 @@ import { ResponseHandlerFactory } from './response-handler/response-handler-fact
     JsonResponseHandler,
     HttpResponseHandler,
     ResponseHandlerFactory,
+    ActionService,
+    ActionTypeFactory,
+    NothingActionType,
+    Show404ActionType,
+    ShowHtmlActionType,
+    ShowTextActionType,
+    ToCampaignActionType,
   ],
   imports: [CampaignModule, DirectUrlModule],
 })

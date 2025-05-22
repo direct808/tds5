@@ -57,6 +57,7 @@ export class CampaignRepository
         'streams',
         'streams.streamOffers',
         'streams.streamOffers.offer',
+        'streams.actionCampaign',
       ],
     })
   }

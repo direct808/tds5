@@ -1,45 +1,26 @@
-import {
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
-import { ActionType, StreamResponse } from '../../../types'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { ActionType, ClickContext, StreamResponse } from '../../../types'
 import { ClickService } from '../../../click.service'
 import { Stream } from '../../../../campaign/entity/stream.entity'
 
-// const MAX_REDIRECTS = 1
-
 @Injectable()
 export class ToCampaignActionType implements ActionType {
-  private redirectCount = 0
+  constructor(
+    @Inject(forwardRef(() => ClickService))
+    private readonly clickService: ClickService,
+  ) {}
 
-  constructor(private readonly clickService: ClickService) {}
-
-  async handle(stream: Stream): Promise<StreamResponse> {
-    if (!stream.actionCampaignId) {
-      throw new Error('No actionCampaignId')
+  async handle(
+    { actionCampaign }: Stream,
+    cRequest: ClickContext,
+  ): Promise<StreamResponse> {
+    if (!actionCampaign) {
+      throw new Error('No actionCampaign')
     }
 
-    // if (this.redirectCount >= MAX_REDIRECTS) {
-    //   // todo вывести это в браузер
-    //   throw new Error('To many redirects')
-    // }
-
-    const campaign = await this.getCampaignById(data.actionCampaignId)
-    this.redirectCount++
-    console.log('To campaign', campaign, 'redirectCount', this.redirectCount)
-
-    return this.clickService.addByCampaign(campaign, clickData)
-  }
-
-  private async getCampaignById(id: string) {
-    const { campaign } = await this.foreignService.getCampaignFull({ id })
-
-    if (!campaign) {
-      throw new NotFoundException('No campaign found')
-    }
-
-    return campaign
+    return this.clickService.getStreamResponse({
+      ...cRequest,
+      code: actionCampaign.code,
+    })
   }
 }
