@@ -4,6 +4,9 @@ import { JwtService } from '@nestjs/jwt'
 import { LoginUser } from './types'
 import { UserService } from '../user/user.service'
 
+const PASSWORD_1234 =
+  '$2b$10$Z0EGauNanl2jiCUBwcRhGuC6/QBC1Sl1.nqFINRn1Q.nDvuuZZF0K'
+
 describe('AuthService', () => {
   let authService: AuthService
   const userService = {
@@ -32,7 +35,7 @@ describe('AuthService', () => {
       const user = {
         id: '1',
         email: 'test@example.com',
-        password: '1234',
+        password: PASSWORD_1234,
         name: 'Test User',
       }
 
