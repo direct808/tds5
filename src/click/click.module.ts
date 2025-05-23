@@ -18,7 +18,7 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './schema/action/type'
-import { LandingsOffersService } from './schema/landings_offers/landings-offers.service'
+import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
 
 @Module({
   controllers: [ClickController],

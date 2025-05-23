@@ -7,7 +7,7 @@ import {
 import { ClickContext, StreamResponse } from './types'
 import { DirectUrlService } from './schema/direct-url/direct-url.service'
 import { ActionService } from './schema/action/action.service'
-import { LandingsOffersService } from './schema/landings_offers/landings-offers.service'
+import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
 
 @Injectable()
 export class HandleStreamService {
