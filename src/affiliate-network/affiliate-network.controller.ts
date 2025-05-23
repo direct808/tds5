@@ -13,9 +13,10 @@ import { UserId } from '../auth/user-id.decorator'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
 import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
+import { GLOBAL_PREFIX } from '../utils/constants'
 
 @ApiTags('Партнерские сети')
-@Controller('affiliate-network')
+@Controller(GLOBAL_PREFIX + 'affiliate-network')
 export class AffiliateNetworkController {
   constructor(
     private readonly affiliateNetworkService: AffiliateNetworkService,

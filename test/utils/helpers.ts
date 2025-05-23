@@ -66,7 +66,7 @@ export async function authUser(app: INestApplication) {
 
 export async function truncateTables(app: INestApplication) {
   const ds = app.get(DataSource)
-  const tables = await ds.query(
+  const tables: { tablename: string }[] = await ds.query(
     `SELECT tablename FROM pg_tables where schemaname = 'public'`,
   )
   const names = tables.map((row) => `"${row.tablename}"`).join(', ')

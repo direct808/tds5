@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module'
 import { AffiliateNetworkModule } from './affiliate-network/affiliate-network.module'
 import { OfferModule } from './offer/offer.module'
 import { CampaignModule } from './campaign/campaign.module'
+import { ClickModule } from './click/click.module'
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CampaignModule } from './campaign/campaign.module'
     AffiliateNetworkModule,
     OfferModule,
     CampaignModule,
+    ClickModule,
   ],
   providers: [
     {
