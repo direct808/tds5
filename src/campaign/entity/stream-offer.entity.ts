@@ -11,7 +11,7 @@ export class StreamOffer {
   @ManyToOne(() => Offer, (offer) => offer.id, {
     nullable: false,
   })
-  declare offer: Offer
+  declare offer?: Offer
 
   @Column('uuid')
   declare offerId: string
