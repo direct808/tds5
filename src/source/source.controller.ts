@@ -13,9 +13,10 @@ import { SourceService } from './source.service'
 import { UserId } from '../auth/user-id.decorator'
 import { CreateSourceDto } from './dto/create-source.dto'
 import { UpdateSourceDto } from './dto/update-source.dto'
+import { GLOBAL_PREFIX } from '../utils/constants'
 
 @ApiTags('Источники трафика')
-@Controller('source')
+@Controller(GLOBAL_PREFIX + 'source')
 export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
