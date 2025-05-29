@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
-import { Response } from 'express'
-import { ResponseHandler, StreamResponse } from '../types'
+import { ClickContext, ResponseHandler, StreamResponse } from '../types'
 import { HttpResponseHandler } from './http-response-handler'
 import { JsonResponseHandler } from './json-response-handler'
 
@@ -9,12 +8,8 @@ import { JsonResponseHandler } from './json-response-handler'
 export class ResponseHandlerFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  public handle(
-    query: Record<string, string>,
-    httpResponse: Response,
-    clickResponse: StreamResponse,
-  ) {
-    return this.create(query).handle(httpResponse, clickResponse)
+  public handle(cRequest: ClickContext, clickResponse: StreamResponse) {
+    return this.create(cRequest.query).handle(cRequest, clickResponse)
   }
 
   private create(query: Record<string, string>): ResponseHandler {

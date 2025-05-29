@@ -19,6 +19,8 @@ import {
   ToCampaignActionType,
 } from './schema/action/type'
 import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
+import { ClickIdService } from './click-id.service'
+import { UserAgentService } from './user-agent.service'
 
 @Module({
   controllers: [ClickController],
@@ -38,6 +40,8 @@ import { LandingsOffersService } from './schema/landings-offers/landings-offers.
     ShowTextActionType,
     ToCampaignActionType,
     LandingsOffersService,
+    ClickIdService,
+    UserAgentService,
   ],
   imports: [CampaignModule, DirectUrlModule],
 })

@@ -6,6 +6,8 @@ import { Campaign } from '../campaign/entity/campaign.entity'
 import { HandleStreamService } from './handle-stream.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
 import { ClickContext, StreamResponse } from './types'
+import { ClickIdService } from './click-id.service'
+import { UserAgentService } from './user-agent.service'
 
 @Injectable()
 export class ClickService {
@@ -15,15 +17,16 @@ export class ClickService {
     private readonly selectStreamService: SelectStreamService,
     private readonly handleStreamService: HandleStreamService,
     private readonly responseHandlerFactory: ResponseHandlerFactory,
+    private readonly clickIdService: ClickIdService,
+    private readonly userAgentService: UserAgentService,
   ) {}
 
   async handleClick(cRequest: ClickContext) {
+    await this.clickIdService.setVisitorId(cRequest)
+    this.userAgentService.setUserAgentInfo(cRequest)
+
     const streamResponse = await this.getStreamResponse(cRequest)
-    this.responseHandlerFactory.handle(
-      cRequest.query,
-      cRequest.response,
-      streamResponse,
-    )
+    this.responseHandlerFactory.handle(cRequest, streamResponse)
   }
 
   public async getStreamResponse(
@@ -35,6 +38,7 @@ export class ClickService {
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
     // console.log(stream)
+
     return this.handleStreamService.handleStream(stream, cContext)
   }
 
