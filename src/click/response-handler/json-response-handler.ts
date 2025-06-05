@@ -1,5 +1,4 @@
-import { Response } from 'express'
-import { ResponseHandler, StreamResponse } from '../types'
+import { ClickContext, ResponseHandler, StreamResponse } from '../types'
 import { Injectable } from '@nestjs/common'
 
 /**
@@ -7,7 +6,10 @@ import { Injectable } from '@nestjs/common'
  */
 @Injectable()
 export class JsonResponseHandler implements ResponseHandler {
-  public handle(httpResponse: Response, clickResponse: StreamResponse): void {
-    httpResponse.send(clickResponse)
+  public handle(
+    { response, clickData }: ClickContext,
+    clickResponse: StreamResponse,
+  ): void {
+    response.send({ ...clickResponse, clickData })
   }
 }
