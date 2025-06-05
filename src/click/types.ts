@@ -1,6 +1,7 @@
 import { HttpStatus } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { Stream } from '../campaign/entity/stream.entity'
+import { ClickData } from './click-data'
 
 export type StreamResponse = StreamContentResponse | StreamRedirectResponse
 
@@ -20,6 +21,7 @@ export type ClickContext = {
   response: Response
   query: Record<string, string>
   redirectCount: number
+  clickData: ClickData
 }
 
 export interface RedirectType {
@@ -31,5 +33,5 @@ export interface ActionType {
 }
 
 export interface ResponseHandler {
-  handle(httpResponse: Response, clickResponse: StreamResponse): void
+  handle(cRequest: ClickContext, clickResponse: StreamResponse): void
 }

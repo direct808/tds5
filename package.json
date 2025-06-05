@@ -33,6 +33,7 @@
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "cookie-parser": "^1.4.7",
     "nanoid": "3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
@@ -41,6 +42,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.22",
+    "ua-parser-js": "^2.0.3",
     "weighted": "^1.0.0"
   },
   "devDependencies": {
@@ -49,6 +51,7 @@
     "@nestjs/testing": "^10.0.0",
     "@testcontainers/postgresql": "^10.24.0",
     "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",

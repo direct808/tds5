@@ -2,6 +2,7 @@ import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common'
 import { ClickService } from './click.service'
 import { Request, Response } from 'express'
 import { SkipAuth } from '../auth/types'
+import { ClickData } from './click-data'
 
 @Controller()
 export class ClickController {
@@ -21,6 +22,7 @@ export class ClickController {
       response,
       query,
       redirectCount: 0,
+      clickData: new ClickData(),
     })
   }
 }
