@@ -25,7 +25,7 @@ export class HandleStreamService {
       case CampaignStreamSchema.ACTION:
         return this.actionService.handle(stream, cContext)
       case CampaignStreamSchema.LANDINGS_OFFERS:
-        return this.landingsOffersService.handle(stream)
+        return this.landingsOffersService.handle(cContext, stream)
       case CampaignStreamSchema.DIRECT_URL:
         return this.directUrlService.handle(stream as StreamDirectUrl)
     }
