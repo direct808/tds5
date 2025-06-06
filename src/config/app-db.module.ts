@@ -8,6 +8,7 @@ import { Campaign } from '../campaign/entity/campaign.entity'
 import { User } from '../user/user.entity'
 import { Source } from '../source/source.entity'
 import { Stream } from '../campaign/entity/stream.entity'
+import { Click } from '../click/click.entity'
 
 @Global()
 @Module({
@@ -23,6 +24,7 @@ import { Stream } from '../campaign/entity/stream.entity'
           database: config.dbName,
           entities: [
             AffiliateNetwork,
+            Click,
             Offer,
             Source,
             User,

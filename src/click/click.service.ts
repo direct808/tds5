@@ -8,6 +8,7 @@ import { ResponseHandlerFactory } from './response-handler/response-handler-fact
 import { ClickContext, StreamResponse } from './types'
 import { ClickIdService } from './click-id.service'
 import { UserAgentService } from './user-agent.service'
+import { RegisterClickService } from './register-click.service'
 
 @Injectable()
 export class ClickService {
@@ -19,25 +20,38 @@ export class ClickService {
     private readonly responseHandlerFactory: ResponseHandlerFactory,
     private readonly clickIdService: ClickIdService,
     private readonly userAgentService: UserAgentService,
+    private readonly registerClickService: RegisterClickService,
   ) {}
 
-  async handleClick(cRequest: ClickContext) {
-    await this.clickIdService.setVisitorId(cRequest)
-    this.userAgentService.setUserAgentInfo(cRequest)
+  async handleClick(cContext: ClickContext) {
+    const { request, clickData } = cContext
 
-    const streamResponse = await this.getStreamResponse(cRequest)
-    this.responseHandlerFactory.handle(cRequest, streamResponse)
+    const clickIds = await this.clickIdService.getVisitorIds(request)
+    const requestData = this.requestDataMapper.convert(request)
+    const deviceInfo = this.userAgentService.getUserAgentInfo(
+      requestData.userAgent,
+    )
+
+    Object.assign(clickData, clickIds)
+    Object.assign(clickData, requestData)
+    Object.assign(clickData, deviceInfo)
+
+    const streamResponse = await this.getStreamResponse(cContext)
+    this.responseHandlerFactory.handle(cContext, streamResponse)
   }
 
   public async getStreamResponse(
     cContext: ClickContext,
   ): Promise<StreamResponse> {
-    const { code } = cContext
+    const { code, clickData } = cContext
     this.processRedirectCount(cContext)
-    // const requestData = this.requestDataMapper.convert(code, request)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
-    // console.log(stream)
+
+    clickData.campaignId = campaign.id
+    clickData.streamId = stream.id
+
+    await this.registerClickService.register(clickData)
 
     return this.handleStreamService.handleStream(stream, cContext)
   }
