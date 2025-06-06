@@ -1,11 +1,15 @@
 import * as weighted from 'weighted'
-import { StreamResponse } from '../../types'
+import { ClickContext, StreamResponse } from '../../types'
 import { Stream } from '../../../campaign/entity/stream.entity'
 import { StreamOffer } from '../../../campaign/entity/stream-offer.entity'
 import { HttpStatus } from '@nestjs/common'
+import { ClickData } from '../../click-data'
 
 export class LandingsOffersService {
-  public async handle(stream: Stream): Promise<StreamResponse> {
+  public async handle(
+    cContext: ClickContext,
+    stream: Stream,
+  ): Promise<StreamResponse> {
     if (!stream.streamOffers || !stream.streamOffers.length) {
       throw new Error('No streamOffers')
     }
@@ -15,6 +19,8 @@ export class LandingsOffersService {
     if (!streamOffer.offer) {
       throw new Error('No offer')
     }
+
+    this.setClickData(cContext.clickData, streamOffer.offer.id)
 
     return {
       status: HttpStatus.MOVED_PERMANENTLY,
@@ -31,5 +37,9 @@ export class LandingsOffersService {
       streamOffers,
       streamOffers.map((o) => o.percent),
     )
+  }
+
+  private setClickData(clickData: ClickData, offerId: string): void {
+    clickData.offerId = offerId
   }
 }
