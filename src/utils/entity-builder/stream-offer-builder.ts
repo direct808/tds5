@@ -1,0 +1,30 @@
+import { StreamOffer } from '../../campaign/entity/stream-offer.entity'
+import { OfferBuilder } from './offer-builder'
+import { DataSource } from 'typeorm'
+
+export class StreamOfferBuilder {
+  private fields: Partial<StreamOffer> = { active: true }
+  private builder?: OfferBuilder
+
+  percent(value: number) {
+    this.fields.percent = value
+    return this
+  }
+
+  createOffer(callback: (builder: OfferBuilder) => void) {
+    const builder = new OfferBuilder()
+    this.builder = builder
+    callback(builder)
+    return this
+  }
+
+  async save(ds: DataSource, streamId: string) {
+    this.fields.streamId = streamId
+    if (this.builder) {
+      const res = await this.builder.save(ds)
+      this.fields.offerId = res.id
+    }
+
+    return ds.getRepository(StreamOffer).save(this.fields)
+  }
+}

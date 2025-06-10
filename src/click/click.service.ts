@@ -32,9 +32,9 @@ export class ClickService {
   public async getStreamResponse(
     cContext: ClickContext,
   ): Promise<StreamResponse> {
-    const { code, request } = cContext
+    const { code } = cContext
     this.processRedirectCount(cContext)
-    const requestData = this.requestDataMapper.convert(code, request)
+    // const requestData = this.requestDataMapper.convert(code, request)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
     // console.log(stream)

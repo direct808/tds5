@@ -12,24 +12,24 @@ import { User } from '../user/user.entity'
 @Entity()
 export class Source {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  declare id: string
 
   @Column({ type: 'text', nullable: false })
-  name: string
+  declare name: string
 
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
   })
-  user: User
+  declare user: User
 
   @Column()
-  userId: string
+  declare userId: string
 
   @CreateDateColumn()
-  createdAt: Date
+  declare createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt: Date
+  declare updatedAt: Date
 
   @DeleteDateColumn()
   deletedAt?: Date

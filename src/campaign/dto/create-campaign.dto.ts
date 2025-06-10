@@ -14,18 +14,18 @@ import { CreateStreamDto } from './create-stream.dto'
 export class CreateCampaignDto {
   @IsString()
   @IsNotEmpty()
-  name: string
+  declare name: string
 
   @IsUUID('4')
   @IsOptional()
   sourceId?: string
 
   @IsBoolean()
-  active: boolean
+  declare active: boolean
 
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested()
   @Type(() => CreateStreamDto)
-  streams: CreateStreamDto[]
+  declare streams: CreateStreamDto[]
 }

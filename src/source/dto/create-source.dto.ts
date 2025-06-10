@@ -5,5 +5,5 @@ export class CreateSourceDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string
+  declare name: string
 }

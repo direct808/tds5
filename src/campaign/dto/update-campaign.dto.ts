@@ -11,5 +11,5 @@ export class UpdateCampaignDto extends OmitType(CreateCampaignDto, [
   @ArrayMinSize(1)
   @ValidateNested()
   @Type(() => UpdateStreamDto)
-  streams: UpdateStreamDto[]
+  declare streams: UpdateStreamDto[]
 }

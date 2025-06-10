@@ -5,7 +5,7 @@ export class CreateAffiliateNetworkDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string
+  declare name: string
 
   @ApiProperty()
   @IsString()

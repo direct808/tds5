@@ -20,10 +20,10 @@ import {
 export class CreateStreamDto {
   @IsString()
   @IsNotEmpty()
-  name: string
+  declare name: string
 
   @IsEnum(CampaignStreamSchema)
-  schema: CampaignStreamSchema
+  declare schema: CampaignStreamSchema
 
   @ValidateIf(
     (data: CreateStreamDto) => data.schema === CampaignStreamSchema.ACTION,
