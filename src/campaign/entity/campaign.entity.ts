@@ -41,16 +41,16 @@ export class Campaign {
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
   })
-  user: User
+  declare user: User
 
   @Column()
-  userId: string
+  declare userId: string
 
   @CreateDateColumn()
-  createdAt: Date
+  declare createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt: Date
+  declare updatedAt: Date
 
   @DeleteDateColumn()
   deletedAt?: Date

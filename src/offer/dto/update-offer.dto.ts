@@ -12,15 +12,15 @@ export class UpdateOfferDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  name: string
+  declare name: string
 
   @ApiProperty()
   @IsUrl()
   @IsOptional()
-  url: string
+  declare url: string
 
   @ApiProperty()
   @IsUUID()
   @IsOptional()
-  affiliateNetworkId: string
+  declare affiliateNetworkId: string
 }

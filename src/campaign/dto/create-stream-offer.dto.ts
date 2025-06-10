@@ -2,13 +2,13 @@ import { IsBoolean, IsInt, IsUUID, Max, Min } from 'class-validator'
 
 export class CreateStreamOfferDto {
   @IsUUID('4')
-  offerId: string
+  declare offerId: string
 
   @IsInt()
   @Min(1)
   @Max(100)
-  percent: number
+  declare percent: number
 
   @IsBoolean()
-  active: boolean
+  declare active: boolean
 }
