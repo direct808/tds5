@@ -4,33 +4,33 @@ import { IsPort, IsString } from 'class-validator'
 export class AppConfig {
   @IsPort()
   @Expose({ name: 'PORT' })
-  port: string
+  declare port: string
 
   @IsString()
   @Expose({ name: 'SECRET' })
-  secret: string
+  declare secret: string
 
   @IsString()
   @Expose({ name: 'JWT_EXPIRES' })
-  jwtExpires: string
+  declare jwtExpires: string
 
   @IsString()
   @Expose({ name: 'DB_HOST' })
-  dbHost: string
+  declare dbHost: string
 
   @IsPort()
   @Expose({ name: 'DB_PORT' })
-  dbPort: string
+  declare dbPort: string
 
   @IsString()
   @Expose({ name: 'DB_USER' })
-  dbUser: string
+  declare dbUser: string
 
   @IsString()
   @Expose({ name: 'DB_PASS' })
-  dbPass: string
+  declare dbPass: string
 
   @IsString()
   @Expose({ name: 'DB_NAME' })
-  dbName: string
+  declare dbName: string
 }

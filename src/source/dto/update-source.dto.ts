@@ -6,5 +6,5 @@ export class UpdateSourceDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  name: string
+  declare name: string
 }

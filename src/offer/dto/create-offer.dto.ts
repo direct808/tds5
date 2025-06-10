@@ -11,14 +11,14 @@ export class CreateOfferDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string
+  declare name: string
 
   @ApiProperty()
   @IsUrl()
-  url: string
+  declare url: string
 
   @ApiProperty()
   @IsUUID()
   @IsOptional()
-  affiliateNetworkId: string
+  declare affiliateNetworkId: string
 }

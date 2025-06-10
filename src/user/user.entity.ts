@@ -9,17 +9,17 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  declare id: string
 
   @Column({ type: 'text', nullable: false, unique: true })
-  email: string
+  declare email: string
 
   @Column({ type: 'text', nullable: false })
-  password: string
+  declare password: string
 
   @CreateDateColumn()
-  createdAt: Date
+  declare createdAt: Date
 
   @UpdateDateColumn()
-  updatedAt: Date
+  declare updatedAt: Date
 }
