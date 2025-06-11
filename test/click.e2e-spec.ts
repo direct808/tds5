@@ -181,6 +181,32 @@ describe('Click (e2e)', () => {
       expect(response.text).toBe('From sub campaign')
     })
   })
+
+  describe('Schema type offers', () => {
+    it('Should be redirect', async () => {
+      await CampaignBuilder.create()
+        .name('Test campaign 1')
+        .code('abcdif')
+        .userId('00000000-0000-4000-8000-000000000001')
+        .addStreamTypeOffers((stream) => {
+          stream.name('Stream 1').addOffer((so) => {
+            so.percent(50).createOffer((offer) => {
+              offer
+                .name('Offer 2')
+                .url(redirectUrl)
+                .userId('00000000-0000-4000-8000-000000000001')
+            })
+          })
+        })
+        .save(dataSource)
+
+      const response = await request(app.getHttpServer())
+        .get('/abcdif')
+        .expect(302)
+
+      expect(response.headers.location).toBe(redirectUrl)
+    })
+  })
 })
 
 function createRedirectCampaign(
