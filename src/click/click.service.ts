@@ -14,6 +14,11 @@ import { ClickContext, StreamResponse } from './types'
 import { ClickIdService } from './click-id.service'
 import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
+import {
+  CampaignStreamSchema,
+  Stream,
+  StreamActionType,
+} from '../campaign/entity/stream.entity'
 
 @Injectable()
 export class ClickService {
@@ -31,20 +36,17 @@ export class ClickService {
   async handleClick(cContext: ClickContext) {
     const { request, clickData } = cContext
 
-    const clickIds = await this.clickIdService.getVisitorIds(request)
     const requestData = this.requestDataMapper.convert(request)
     const deviceInfo = this.userAgentService.getUserAgentInfo(
       requestData.userAgent,
     )
 
-    Object.assign(clickData, clickIds)
+    clickData.visitorId = await this.clickIdService.getVisitorIds(request)
     Object.assign(clickData, requestData)
     Object.assign(clickData, deviceInfo)
 
     const streamResponse = await this.getStreamResponse(cContext)
     this.responseHandlerFactory.handle(cContext, streamResponse)
-
-    await this.registerClickService.register(clickData)
   }
 
   public async getStreamResponse(
@@ -55,10 +57,22 @@ export class ClickService {
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
 
+    stream.campaign = campaign
     clickData.campaignId = campaign.id
     clickData.streamId = stream.id
+    clickData.id = await this.clickIdService.getClickId(clickData.visitorId)
 
-    return this.handleStreamService.handleStream(stream, cContext)
+    const result = await this.handleStreamService.handleStream(stream, cContext)
+
+    if ('url' in result) {
+      clickData.destination = result.url
+    }
+
+    // if (!this.isToCampaignType(stream)) {
+    await this.registerClickService.register(clickData)
+    // }
+
+    return result
   }
 
   private async getFullCampaignByCode(code: string): Promise<Campaign> {
@@ -76,5 +90,12 @@ export class ClickService {
     if (cContext.redirectCount > 5) {
       throw new HttpException('To many redirects', HttpStatus.BAD_REQUEST)
     }
+  }
+
+  private isToCampaignType(stream: Stream): boolean {
+    return (
+      stream.schema === CampaignStreamSchema.ACTION &&
+      stream.actionType === StreamActionType.TO_CAMPAIGN
+    )
   }
 }

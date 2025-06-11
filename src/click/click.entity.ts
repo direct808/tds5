@@ -31,6 +31,9 @@ export class Click implements Nullable<IClick> {
   @Column('uuid', { nullable: true })
   declare streamId: string | null
 
+  @Column('text', { nullable: true })
+  declare destination: string | null
+
   // unic
   @Column('boolean', { nullable: true })
   declare isUniqueGlobal: boolean | null
