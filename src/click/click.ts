@@ -7,6 +7,7 @@ export interface IClick {
   affiliateNetworkId: string
   trafficSourceId: string
   streamId: string
+  destination: string
   // unic
   isUniqueGlobal: boolean
   isUniqueCampaign: boolean

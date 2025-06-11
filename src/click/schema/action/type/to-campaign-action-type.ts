@@ -11,16 +11,22 @@ export class ToCampaignActionType implements ActionType {
   ) {}
 
   async handle(
-    { actionCampaign }: Stream,
+    { actionCampaign, campaign }: Stream,
     cRequest: ClickContext,
   ): Promise<StreamResponse> {
     if (!actionCampaign) {
       throw new Error('No actionCampaign')
     }
+    // const currentClickData = cRequest.clickData
+    const nextClickData = structuredClone(cRequest.clickData)
+
+    nextClickData.previousCampaignId = cRequest.clickData.campaignId
+    cRequest.clickData.destination = campaign.name
 
     return this.clickService.getStreamResponse({
       ...cRequest,
       code: actionCampaign.code,
+      clickData: nextClickData,
     })
   }
 }
