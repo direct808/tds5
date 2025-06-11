@@ -46,13 +46,13 @@ export class Click implements Nullable<IClick> {
   declare isProxy: boolean | null
 
   @ColumnTextNullable()
-  country: string | null
+  declare country: string | null
 
   @ColumnTextNullable()
-  region: string | null
+  declare region: string | null
 
   @ColumnTextNullable()
-  city: string | null
+  declare city: string | null
 
   @Column('inet', { nullable: true })
   declare ip: string | null

@@ -17,10 +17,8 @@ export class Meta2RedirectType implements RedirectType {
     return {
       content: `<html>
 <head>
-  <meta http-equiv="REFRESH"
-        content="1; URL='${url}'">
-  <script
-    type="application/javascript">window.location = "${gatewayUrl}";</script>
+  <meta http-equiv="REFRESH" content="1; URL='${gatewayUrl}'">
+  <script type="application/javascript">window.location = "${gatewayUrl}";</script>
 </head>
 </html>`,
     }

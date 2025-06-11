@@ -14,12 +14,12 @@ export class StreamTypeActionBuilder extends StreamBuilder {
     this.fields.schema = CampaignStreamSchema.ACTION
   }
 
-  actionType(type: StreamActionType) {
+  type(type: StreamActionType) {
     this.fields.actionType = type
     return this
   }
 
-  actionContent(actionContent: string) {
+  content(actionContent: string) {
     this.fields.actionContent = actionContent
     return this
   }

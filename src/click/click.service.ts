@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { RequestDataMapper } from './request-data-mapper'
 import { CampaignRepository } from '../campaign/campaign.repository'
 import { SelectStreamService } from './select-stream.service'
@@ -38,20 +43,20 @@ export class ClickService {
 
     const streamResponse = await this.getStreamResponse(cContext)
     this.responseHandlerFactory.handle(cContext, streamResponse)
+
+    await this.registerClickService.register(clickData)
   }
 
   public async getStreamResponse(
     cContext: ClickContext,
   ): Promise<StreamResponse> {
     const { code, clickData } = cContext
-    this.processRedirectCount(cContext)
+    this.checkIncrementRedirectCount(cContext)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
 
     clickData.campaignId = campaign.id
     clickData.streamId = stream.id
-
-    await this.registerClickService.register(clickData)
 
     return this.handleStreamService.handleStream(stream, cContext)
   }
@@ -60,13 +65,13 @@ export class ClickService {
     const campaign = await this.campaignRepository.getFullByCode(code)
 
     if (!campaign) {
-      throw new Error('No campaign')
+      throw new NotFoundException('No campaign')
     }
 
     return campaign
   }
 
-  private processRedirectCount(cContext: ClickContext) {
+  private checkIncrementRedirectCount(cContext: ClickContext) {
     cContext.redirectCount++
     if (cContext.redirectCount > 5) {
       throw new HttpException('To many redirects', HttpStatus.BAD_REQUEST)
