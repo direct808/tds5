@@ -62,15 +62,18 @@ export class ClickService {
     clickData.streamId = stream.id
     clickData.id = await this.clickIdService.getClickId(clickData.visitorId)
 
-    const result = await this.handleStreamService.handleStream(stream, cContext)
+    const streamResponse = await this.handleStreamService.handleStream(
+      stream,
+      cContext,
+    )
 
-    if ('url' in result && !clickData.destination) {
-      clickData.destination = result.url
+    if ('url' in streamResponse && !clickData.destination) {
+      clickData.destination = streamResponse.url
     }
 
     await this.registerClickService.register(clickData)
 
-    return result
+    return streamResponse
   }
 
   private async getFullCampaignByCode(code: string): Promise<Campaign> {
