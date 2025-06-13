@@ -15,10 +15,12 @@ import {
   StreamRedirectType,
 } from '../src/campaign/entity/stream.entity'
 import * as express from 'express'
+import { ClickRepository } from '../src/click/click.repository'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
+  let clickRepo: ClickRepository
   const redirectUrl = 'https://example.com/'
 
   beforeAll(async () => {
@@ -37,6 +39,7 @@ describe('Click (e2e)', () => {
     configureApp(app)
     await app.init()
     dataSource = app.get(DataSource)
+    clickRepo = app.get(ClickRepository)
     await loadUserFixtures(dataSource)
   })
 
@@ -151,7 +154,7 @@ describe('Click (e2e)', () => {
     )
 
     it('type TO_CAMPAIGN', async () => {
-      await CampaignBuilder.create()
+      const res = await CampaignBuilder.create()
         .name('Test campaign 1')
         .code('abcdif')
         .userId('00000000-0000-4000-8000-000000000001')
@@ -164,11 +167,11 @@ describe('Click (e2e)', () => {
                 .name('Sub campaign')
                 .userId('00000000-0000-4000-8000-000000000001')
                 .code('subCampaign')
-                .addStreamTypeAction((stream) => {
+                .addStreamTypeDirectUrl((stream) => {
                   stream
                     .name('s1')
-                    .type(StreamActionType.SHOW_TEXT)
-                    .content('From sub campaign')
+                    .url(redirectUrl)
+                    .redirectType(StreamRedirectType.HTTP)
                 })
             })
         })
@@ -176,9 +179,23 @@ describe('Click (e2e)', () => {
 
       const response = await request(app.getHttpServer())
         .get('/abcdif')
-        .expect(200)
+        .expect(302)
 
-      expect(response.text).toBe('From sub campaign')
+      expect(response.headers.location).toBe(redirectUrl)
+
+      const lastCampaign = res.streams[0].actionCampaign!
+
+      const firstClicks = await clickRepo.getByCampaignId(res.id)
+      const lastClicks = await clickRepo.getByCampaignId(lastCampaign.id)
+
+      expect(firstClicks.length).toBe(1)
+      expect(lastClicks.length).toBe(1)
+
+      expect(firstClicks[0].previousCampaignId).toBeNull()
+      expect(lastClicks[0].previousCampaignId).toBe(res.id)
+
+      expect(firstClicks[0].destination).toBe(lastCampaign.name)
+      expect(lastClicks[0].destination).toBe(redirectUrl)
     })
   })
 
