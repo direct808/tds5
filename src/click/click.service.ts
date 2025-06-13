@@ -64,13 +64,11 @@ export class ClickService {
 
     const result = await this.handleStreamService.handleStream(stream, cContext)
 
-    if ('url' in result) {
+    if ('url' in result && !clickData.destination) {
       clickData.destination = result.url
     }
 
-    // if (!this.isToCampaignType(stream)) {
     await this.registerClickService.register(clickData)
-    // }
 
     return result
   }

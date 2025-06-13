@@ -4,6 +4,7 @@ import { StreamBuilder } from './stream-builder/stream-builder'
 import { StreamTypeDirectUrlBuilder } from './stream-builder/stream-type-direct-url-builder'
 import { StreamTypeActionBuilder } from './stream-builder/stream-type-action-builder'
 import { StreamTypeOffersBuilder } from './stream-builder/stream-type-offers-builder'
+import { Stream } from '../../campaign/entity/stream.entity'
 
 type CampaignFields = Partial<
   Pick<Campaign, 'name' | 'code' | 'userId' | 'active'>
@@ -17,11 +18,14 @@ export class CampaignBuilder {
     return new this()
   }
 
-  public async save(ds: DataSource) {
+  public async save(ds: DataSource): Promise<Campaign> {
+    const streams: Stream[] = []
     const campaign = await ds.getRepository(Campaign).save(this.fields)
     for (const builder of this.streamBuilders) {
-      await builder.save(ds, campaign.id)
+      const stream = await builder.save(ds, campaign.id)
+      streams.push(stream)
     }
+    campaign.streams = streams
     return campaign
   }
 

@@ -21,8 +21,9 @@ export class StreamOfferBuilder {
   async save(ds: DataSource, streamId: string) {
     this.fields.streamId = streamId
     if (this.builder) {
-      const res = await this.builder.save(ds)
-      this.fields.offerId = res.id
+      const offer = await this.builder.save(ds)
+      this.fields.offerId = offer.id
+      this.fields.offer = offer
     }
 
     return ds.getRepository(StreamOffer).save(this.fields)
