@@ -21,6 +21,7 @@ import {
   loadUserFixtures,
   truncateTables,
 } from './utils/helpers'
+import { createTestDatabase } from './jest.global-setup'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -30,14 +31,15 @@ describe('CampaignController (e2e)', () => {
   let streamOfferRepository: Repository<StreamOffer>
 
   beforeAll(async () => {
-    await createTestContainer()
+    // await createTestContainer()
   })
 
   afterEach(async () => {
-    await truncateTables(app)
+    // await truncateTables(app)
   })
 
   beforeEach(async () => {
+    process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

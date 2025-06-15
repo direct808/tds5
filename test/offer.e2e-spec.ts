@@ -13,6 +13,7 @@ import {
 } from './utils/helpers'
 import { configureApp } from '../src/utils/configure-app'
 import { Offer } from '../src/offer/offer.entity'
+import { createTestDatabase } from './jest.global-setup'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
@@ -20,14 +21,15 @@ describe('OfferController (e2e)', () => {
   let offerRepository: Repository<Offer>
 
   beforeAll(async () => {
-    await createTestContainer()
+    // await createTestContainer()
   })
 
   afterEach(async () => {
-    await truncateTables(app)
+    // await truncateTables(app)
   })
 
   beforeEach(async () => {
+    process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

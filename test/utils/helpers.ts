@@ -75,11 +75,17 @@ export async function truncateTables(app: INestApplication) {
 }
 
 export async function createTestContainer(): Promise<void> {
-  const container = await new PostgreSqlContainer().start()
+  // const container = await new PostgreSqlContainer().start()
 
-  process.env.DB_HOST = container.getHost()
-  process.env.DB_PORT = container.getPort() + ''
-  process.env.DB_NAME = container.getDatabase()
-  process.env.DB_USER = container.getUsername()
-  process.env.DB_PASS = container.getPassword()
+  // process.env.DB_HOST = container.getHost()
+  // process.env.DB_PORT = container.getPort() + ''
+  // process.env.DB_NAME = container.getDatabase()
+  // process.env.DB_USER = container.getUsername()
+  // process.env.DB_PASS = container.getPassword()
+
+  process.env.DB_HOST = 'localhost'
+  process.env.DB_PORT = '8432'
+  process.env.DB_NAME = 'test'
+  process.env.DB_USER = 'postgres'
+  process.env.DB_PASS = '1234'
 }
