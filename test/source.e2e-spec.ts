@@ -12,6 +12,7 @@ import {
 } from './utils/helpers'
 import { Source } from '../src/source/source.entity'
 import { configureApp } from '../src/utils/configure-app'
+import { createTestDatabase } from './jest.global-setup'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
@@ -19,14 +20,15 @@ describe('SourceController (e2e)', () => {
   let sourceRepository: Repository<Source>
 
   beforeAll(async () => {
-    await createTestContainer()
+    // await createTestContainer()
   })
 
   afterEach(async () => {
-    await truncateTables(app)
+    // await truncateTables(app)
   })
 
   beforeEach(async () => {
+    process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
