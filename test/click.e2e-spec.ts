@@ -177,8 +177,11 @@ describe('Click (e2e)', () => {
         })
         .save(dataSource)
 
+      const q = new URLSearchParams()
+      q.append('cost', '5.3496876')
+
       const response = await request(app.getHttpServer())
-        .get('/abcdif')
+        .get('/abcdif?' + q.toString())
         .expect(302)
 
       expect(response.headers.location).toBe(redirectUrl)
@@ -196,6 +199,47 @@ describe('Click (e2e)', () => {
 
       expect(firstClicks[0].destination).toBe(lastCampaign.name)
       expect(lastClicks[0].destination).toBe(redirectUrl)
+
+      expect(firstClicks[0]).toEqual({
+        adCampaignId: null,
+        affiliateNetworkId: null,
+        browser: null,
+        browserVersion: null,
+        campaignId: res.id,
+        city: null,
+        cost: '5.35',
+        country: null,
+        createdAt: firstClicks[0].createdAt,
+        creativeId: null,
+        destination: 'Sub campaign',
+        deviceModel: null,
+        deviceType: null,
+        externalId: null,
+        extraParam1: null,
+        extraParam2: null,
+        id: firstClicks[0].id,
+        ip: firstClicks[0].ip,
+        isBot: null,
+        isProxy: null,
+        isUniqueCampaign: null,
+        isUniqueGlobal: null,
+        isUniqueStream: null,
+        keyword: null,
+        language: null,
+        offerId: null,
+        os: null,
+        osVersion: null,
+        previousCampaignId: null,
+        referer: null,
+        region: null,
+        source: null,
+        streamId: firstClicks[0].streamId,
+        subId1: null,
+        subId2: null,
+        trafficSourceId: null,
+        userAgent: null,
+        visitorId: firstClicks[0].visitorId,
+      })
     })
   })
 
