@@ -107,7 +107,7 @@ export class Click implements Nullable<IClick> {
   @Column('text', { nullable: true, comment: 'Источник (из параметров)' })
   declare source: string | null
 
-  @Column('decimal', { nullable: true, precision: 13, scale: 6 })
+  @Column('decimal', { nullable: true, precision: 13, scale: 2 })
   declare cost: number | null
 
   @ColumnTextNullable()
