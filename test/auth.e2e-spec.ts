@@ -4,23 +4,17 @@ import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource } from 'typeorm'
 import { configureApp } from '../src/utils/configure-app'
-import { loadUserFixtures } from './utils/helpers'
+import { loadUserFixtures, truncateTables } from './utils/helpers'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
-  // let ds: DataSource
-
-  beforeAll(async () => {
-    // await createTestContainer()
-  })
 
   afterEach(async () => {
-    // await truncateTables(app)
+    await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {
-    // process.env.DB_NAME = await createTestDatabase()
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

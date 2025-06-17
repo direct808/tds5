@@ -3,7 +3,12 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource, Repository } from 'typeorm'
-import { authUser, loadSourceFixtures, loadUserFixtures } from './utils/helpers'
+import {
+  authUser,
+  loadSourceFixtures,
+  loadUserFixtures,
+  truncateTables,
+} from './utils/helpers'
 import { Source } from '../src/source/source.entity'
 import { configureApp } from '../src/utils/configure-app'
 
@@ -12,16 +17,12 @@ describe('SourceController (e2e)', () => {
   let accessToken: string
   let sourceRepository: Repository<Source>
 
-  beforeAll(async () => {
-    // await createTestContainer()
-  })
-
   afterEach(async () => {
-    // await truncateTables(app)
+    await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {
-    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
@@ -80,6 +81,6 @@ describe('SourceController (e2e)', () => {
       id: '00000000-0000-4000-8000-000000000001',
     })
 
-    await expect(source).toBeNull()
+    expect(source).toBeNull()
   })
 })

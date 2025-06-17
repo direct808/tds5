@@ -18,6 +18,7 @@ import {
   loadOfferFixtures,
   loadSourceFixtures,
   loadUserFixtures,
+  truncateTables,
 } from './utils/helpers'
 
 describe('CampaignController (e2e)', () => {
@@ -27,16 +28,12 @@ describe('CampaignController (e2e)', () => {
   let streamRepository: Repository<Stream>
   let streamOfferRepository: Repository<StreamOffer>
 
-  beforeAll(async () => {
-    // await createTestContainer()
-  })
-
   afterEach(async () => {
-    // await truncateTables(app)
+    await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {
-    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

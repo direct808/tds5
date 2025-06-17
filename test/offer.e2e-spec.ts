@@ -8,6 +8,7 @@ import {
   loadAffiliateNetworkFixtures,
   loadOfferFixtures,
   loadUserFixtures,
+  truncateTables,
 } from './utils/helpers'
 import { configureApp } from '../src/utils/configure-app'
 import { Offer } from '../src/offer/offer.entity'
@@ -17,12 +18,9 @@ describe('OfferController (e2e)', () => {
   let accessToken: string
   let offerRepository: Repository<Offer>
 
-  beforeAll(async () => {
-    // await createTestContainer()
-  })
-
   afterEach(async () => {
-    // await truncateTables(app)
+    await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {
