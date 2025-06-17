@@ -8,12 +8,9 @@ import {
   loadAffiliateNetworkFixtures,
   loadOfferFixtures,
   loadUserFixtures,
-  createTestContainer,
-  truncateTables,
 } from './utils/helpers'
 import { configureApp } from '../src/utils/configure-app'
 import { Offer } from '../src/offer/offer.entity'
-import { createTestDatabase } from './jest.global-setup'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
@@ -29,7 +26,7 @@ describe('OfferController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    process.env.DB_NAME = await createTestDatabase()
+    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

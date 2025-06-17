@@ -5,7 +5,6 @@ import { AppModule } from '../src/app.module'
 import { DataSource } from 'typeorm'
 import { configureApp } from '../src/utils/configure-app'
 import { loadUserFixtures } from './utils/helpers'
-import { createTestDatabase } from './jest.global-setup'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
@@ -20,7 +19,7 @@ describe('AuthController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    process.env.DB_NAME = await createTestDatabase()
+    // process.env.DB_NAME = await createTestDatabase()
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

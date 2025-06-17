@@ -13,15 +13,12 @@ import {
 import { StreamOffer } from '../src/campaign/entity/stream-offer.entity'
 import {
   authUser,
-  createTestContainer,
   loadAffiliateNetworkFixtures,
   loadCampaignFixtures,
   loadOfferFixtures,
   loadSourceFixtures,
   loadUserFixtures,
-  truncateTables,
 } from './utils/helpers'
-import { createTestDatabase } from './jest.global-setup'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -39,7 +36,7 @@ describe('CampaignController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    process.env.DB_NAME = await createTestDatabase()
+    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

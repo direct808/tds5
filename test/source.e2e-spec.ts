@@ -3,16 +3,9 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource, Repository } from 'typeorm'
-import {
-  authUser,
-  loadSourceFixtures,
-  loadUserFixtures,
-  createTestContainer,
-  truncateTables,
-} from './utils/helpers'
+import { authUser, loadSourceFixtures, loadUserFixtures } from './utils/helpers'
 import { Source } from '../src/source/source.entity'
 import { configureApp } from '../src/utils/configure-app'
-import { createTestDatabase } from './jest.global-setup'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
@@ -28,7 +21,7 @@ describe('SourceController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    process.env.DB_NAME = await createTestDatabase()
+    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()

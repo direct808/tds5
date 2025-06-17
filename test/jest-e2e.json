@@ -7,5 +7,6 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "testTimeout": 30000,
-  "globalSetup": "<rootDir>/jest.global-setup.ts"
+  "globalSetup": "<rootDir>/jest.global-setup.ts",
+  "setupFilesAfterEnv": ["<rootDir>/jest.setup-files.ts"]
 }
