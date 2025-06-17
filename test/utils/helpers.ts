@@ -80,8 +80,12 @@ async function createTestContainer() {
 }
 
 export async function globalSetup() {
-  const data = await createTestContainer()
-  setEnv(data)
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('dotenv').config({ path: '.env.e2e' })
+  if (process.env.DISABLE_TESTCONTAINERS !== 'Y') {
+    const data = await createTestContainer()
+    setEnv(data)
+  }
 }
 
 function setEnv(data: StartedPostgreSqlContainer) {
