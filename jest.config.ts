@@ -7,6 +7,7 @@ const config: Config = {
   testRegex: '.*spec\\.ts$',
   testTimeout: 30000,
   maxWorkers: 1,
+  globalSetup: '<rootDir>/test/utils/jest.global-setup.ts',
 }
 
 export default config
