@@ -22,6 +22,7 @@ function validate(config: Record<string, unknown>) {
 @Module({
   imports: [
     ConfigModule.forRoot({
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
       envFilePath: resolve(process.cwd(), './.env'),
     }),
   ],
