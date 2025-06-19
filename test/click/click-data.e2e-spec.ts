@@ -47,7 +47,13 @@ describe('Click-data (e2e)', () => {
         .addStreamTypeOffers((stream) => {
           stream.name('Stream 1').addOffer((of) => {
             of.percent(100).createOffer((off) => {
-              off.name('Offer 1').url(redirectUrl).userId(userId)
+              off
+                .name('Offer 1')
+                .url(redirectUrl)
+                .userId(userId)
+                .createAffiliateNetwork((an) => {
+                  an.name('Affiliate network 1').userId(userId)
+                })
             })
           })
         })
@@ -82,7 +88,7 @@ describe('Click-data (e2e)', () => {
 
       expect(clicks[0]).toEqual({
         adCampaignId: 'ad Campaign Id',
-        affiliateNetworkId: null,
+        affiliateNetworkId: offer.affiliateNetwork!.id,
         browser: 'Chrome',
         browserVersion: '137.0.0.0',
         campaignId: res.id,

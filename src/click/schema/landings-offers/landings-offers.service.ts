@@ -4,6 +4,7 @@ import { Stream } from '../../../campaign/entity/stream.entity'
 import { StreamOffer } from '../../../campaign/entity/stream-offer.entity'
 import { HttpStatus } from '@nestjs/common'
 import { ClickData } from '../../click-data'
+import { Offer } from '../../../offer/offer.entity'
 
 export class LandingsOffersService {
   public async handle(
@@ -20,7 +21,7 @@ export class LandingsOffersService {
       throw new Error('No offer')
     }
 
-    this.setClickData(cContext.clickData, streamOffer.offer.id)
+    this.setClickData(cContext.clickData, streamOffer.offer)
 
     return {
       status: HttpStatus.MOVED_PERMANENTLY,
@@ -39,7 +40,8 @@ export class LandingsOffersService {
     )
   }
 
-  private setClickData(clickData: ClickData, offerId: string): void {
-    clickData.offerId = offerId
+  private setClickData(clickData: ClickData, offer: Offer): void {
+    clickData.offerId = offer.id
+    clickData.affiliateNetworkId = offer.affiliateNetworkId
   }
 }
