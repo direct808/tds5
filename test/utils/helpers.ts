@@ -18,6 +18,7 @@ import {
 } from '../fixtures/campaign.fixture'
 import { StreamOffer } from '../../src/campaign/entity/stream-offer.entity'
 import { Stream } from '../../src/campaign/entity/stream.entity'
+import { StartedPostgreSqlContainer } from '@testcontainers/postgresql/build/postgresql-container'
 
 export async function loadSourceFixtures(ds: DataSource) {
   const repo = ds.getRepository(Source)
@@ -67,19 +68,30 @@ export async function authUser(app: INestApplication) {
 export async function truncateTables(app: INestApplication) {
   const ds = app.get(DataSource)
   const tables: { tablename: string }[] = await ds.query(
-    `SELECT tablename FROM pg_tables where schemaname = 'public'`,
+    `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
   )
   const names = tables.map((row) => `"${row.tablename}"`).join(', ')
   const sql = `TRUNCATE TABLE ${names} CASCADE;`
   await ds.query(sql)
 }
 
-export async function createTestContainer(): Promise<void> {
-  const container = await new PostgreSqlContainer().start()
+async function createTestContainer() {
+  return new PostgreSqlContainer().start()
+}
 
-  process.env.DB_HOST = container.getHost()
-  process.env.DB_PORT = container.getPort() + ''
-  process.env.DB_NAME = container.getDatabase()
-  process.env.DB_USER = container.getUsername()
-  process.env.DB_PASS = container.getPassword()
+export async function globalSetup() {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('dotenv').config({ path: '.env.e2e' })
+  if (process.env.DISABLE_TESTCONTAINERS !== 'Y') {
+    const data = await createTestContainer()
+    setEnv(data)
+  }
+}
+
+function setEnv(data: StartedPostgreSqlContainer) {
+  process.env.DB_HOST = data.getHost()
+  process.env.DB_PORT = String(data.getPort())
+  process.env.DB_NAME = data.getDatabase()
+  process.env.DB_USER = data.getUsername()
+  process.env.DB_PASS = data.getPassword()
 }

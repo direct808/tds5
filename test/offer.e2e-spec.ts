@@ -8,7 +8,6 @@ import {
   loadAffiliateNetworkFixtures,
   loadOfferFixtures,
   loadUserFixtures,
-  createTestContainer,
   truncateTables,
 } from './utils/helpers'
 import { configureApp } from '../src/utils/configure-app'
@@ -19,15 +18,13 @@ describe('OfferController (e2e)', () => {
   let accessToken: string
   let offerRepository: Repository<Offer>
 
-  beforeAll(async () => {
-    await createTestContainer()
-  })
-
   afterEach(async () => {
     await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {
+    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
