@@ -3,11 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
 import { DataSource } from 'typeorm'
-import {
-  createTestContainer,
-  loadUserFixtures,
-  truncateTables,
-} from './utils/helpers'
+import { loadUserFixtures, truncateTables } from './utils/helpers'
 import { configureApp } from '../src/utils/configure-app'
 import { CampaignBuilder } from '../src/utils/entity-builder/campaign-builder'
 import {
@@ -23,12 +19,9 @@ describe('Click (e2e)', () => {
   let clickRepo: ClickRepository
   const redirectUrl = 'https://example.com/'
 
-  beforeAll(async () => {
-    await createTestContainer()
-  })
-
   afterEach(async () => {
     await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {

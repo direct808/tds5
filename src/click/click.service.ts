@@ -61,6 +61,7 @@ export class ClickService {
     clickData.campaignId = campaign.id
     clickData.streamId = stream.id
     clickData.id = await this.clickIdService.getClickId(clickData.visitorId)
+    clickData.trafficSourceId = campaign.sourceId
 
     const streamResponse = await this.handleStreamService.handleStream(
       stream,
