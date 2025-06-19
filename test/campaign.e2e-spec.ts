@@ -13,7 +13,6 @@ import {
 import { StreamOffer } from '../src/campaign/entity/stream-offer.entity'
 import {
   authUser,
-  createTestContainer,
   loadAffiliateNetworkFixtures,
   loadCampaignFixtures,
   loadOfferFixtures,
@@ -29,12 +28,9 @@ describe('CampaignController (e2e)', () => {
   let streamRepository: Repository<Stream>
   let streamOfferRepository: Repository<StreamOffer>
 
-  beforeAll(async () => {
-    await createTestContainer()
-  })
-
   afterEach(async () => {
     await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {

@@ -7,7 +7,6 @@ import {
   authUser,
   loadSourceFixtures,
   loadUserFixtures,
-  createTestContainer,
   truncateTables,
 } from './utils/helpers'
 import { Source } from '../src/source/source.entity'
@@ -18,12 +17,9 @@ describe('SourceController (e2e)', () => {
   let accessToken: string
   let sourceRepository: Repository<Source>
 
-  beforeAll(async () => {
-    await createTestContainer()
-  })
-
   afterEach(async () => {
     await truncateTables(app)
+    await app.close()
   })
 
   beforeEach(async () => {
@@ -85,6 +81,6 @@ describe('SourceController (e2e)', () => {
       id: '00000000-0000-4000-8000-000000000001',
     })
 
-    await expect(source).toBeNull()
+    expect(source).toBeNull()
   })
 })
