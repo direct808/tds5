@@ -17,10 +17,15 @@ export class ToCampaignActionType implements ActionType {
     if (!actionCampaign) {
       throw new Error('No actionCampaign')
     }
+    const nextClickData = structuredClone(cRequest.clickData)
+
+    nextClickData.previousCampaignId = cRequest.clickData.campaignId
+    cRequest.clickData.destination = actionCampaign.name
 
     return this.clickService.getStreamResponse({
       ...cRequest,
       code: actionCampaign.code,
+      clickData: nextClickData,
     })
   }
 }

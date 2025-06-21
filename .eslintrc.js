@@ -35,6 +35,7 @@ module.exports = {
       {
         "ignoreRestSiblings": true
       }
-    ]
+    ],
+    "no-unused-private-class-members": "error"
   },
 };

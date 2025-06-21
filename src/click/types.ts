@@ -1,7 +1,7 @@
-import { HttpStatus } from '@nestjs/common'
-import { Request, Response } from 'express'
-import { Stream } from '../campaign/entity/stream.entity'
-import { ClickData } from './click-data'
+import type { HttpStatus } from '@nestjs/common'
+import type { Request, Response } from 'express'
+import type { Stream } from '../campaign/entity/stream.entity'
+import type { ClickData } from './click-data'
 
 export type StreamResponse = StreamContentResponse | StreamRedirectResponse
 

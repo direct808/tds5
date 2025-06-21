@@ -1,28 +1,28 @@
 import { Injectable } from '@nestjs/common'
 import { customAlphabet } from 'nanoid/async'
 import { Request } from 'express'
-import { ClickData } from './click-data'
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
-const visitorIdSize = 7
-const clickIdSize = 7
-
-type SetVisitorIdArgs = {
-  request: Request
-  clickData: ClickData
-}
+export const VISITOR_ID_SIZE = 6
+export const CLICK_ID_SIZE = 12
 
 @Injectable()
 export class ClickIdService {
   private readonly generateId = customAlphabet(alphabet)
 
-  public async setVisitorId(args: SetVisitorIdArgs): Promise<void> {
-    const { request, clickData } = args
+  public async getVisitorIds(request: Request): Promise<string> {
     let visitorId: string | undefined = request.cookies.visitorId
-    if (!visitorId || visitorId.length !== visitorIdSize) {
-      visitorId = await this.generateId(visitorIdSize)
+    if (!visitorId || visitorId.length !== VISITOR_ID_SIZE) {
+      visitorId = await this.generateId(VISITOR_ID_SIZE)
     }
-    clickData.visitorId = visitorId
-    clickData.clickId = visitorId + (await this.generateId(clickIdSize))
+
+    return visitorId
+  }
+
+  async getClickId(visitorId?: string): Promise<string> {
+    if (!visitorId) {
+      throw new Error('No visitorId')
+    }
+    return visitorId + (await this.generateId(CLICK_ID_SIZE - VISITOR_ID_SIZE))
   }
 }

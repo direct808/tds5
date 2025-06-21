@@ -1,6 +1,7 @@
 import { StreamBuilder } from './stream-builder'
 import {
   CampaignStreamSchema,
+  Stream,
   StreamActionType,
 } from '../../../campaign/entity/stream.entity'
 import { CampaignBuilder } from '../campaign-builder'
@@ -14,12 +15,12 @@ export class StreamTypeActionBuilder extends StreamBuilder {
     this.fields.schema = CampaignStreamSchema.ACTION
   }
 
-  actionType(type: StreamActionType) {
+  type(type: StreamActionType) {
     this.fields.actionType = type
     return this
   }
 
-  actionContent(actionContent: string) {
+  content(actionContent: string) {
     this.fields.actionContent = actionContent
     return this
   }
@@ -30,10 +31,11 @@ export class StreamTypeActionBuilder extends StreamBuilder {
     callback(builder)
   }
 
-  async save(ds: DataSource, campaignId: string) {
+  async save(ds: DataSource, campaignId: string): Promise<Stream> {
     if (this.actionCampaignBuilder) {
       const campaign = await this.actionCampaignBuilder.save(ds)
       this.fields.actionCampaignId = campaign.id
+      this.fields.actionCampaign = campaign
     }
 
     return super.save(ds, campaignId)

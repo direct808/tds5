@@ -1,21 +1,41 @@
 import { Request } from 'express'
 import { Injectable } from '@nestjs/common'
-
-export interface AppRequestData {
-  ip?: string
-  code: string
-}
+import { IClick } from './click'
 
 @Injectable()
 export class RequestDataMapper {
-  convert(code: string, request: Request): AppRequestData {
-    const data = {
-      code,
+  convert(request: Request): Partial<IClick> {
+    return {
       ip: request.ip,
-      // headers: this.makeKeyValHeaders(request),
-      // query: request.url.split('?')[1],
-    }
 
-    return data
+      referer: request.headers.referer,
+      userAgent: request.headers['user-agent'],
+
+      keyword: this.toOptionalString(request.query.keyword),
+      source: this.toOptionalString(request.query.source),
+      cost: this.getCost(request.query.cost),
+      externalId: this.toOptionalString(request.query.external_id),
+      creativeId: this.toOptionalString(request.query.creative_id),
+      adCampaignId: this.toOptionalString(request.query.ad_campaign_id),
+
+      extraParam1: this.toOptionalString(request.query.extra_param_1),
+      extraParam2: this.toOptionalString(request.query.extra_param_2),
+
+      subId1: this.toOptionalString(request.query.sub_id_1),
+      subId2: this.toOptionalString(request.query.sub_id_2),
+    }
+  }
+
+  private getCost(val: unknown) {
+    let costStr = this.toOptionalString(val)
+    costStr = costStr ? costStr.replace(',', '.') : costStr
+    const costRaw = costStr ? parseFloat(costStr) : undefined
+    return Number.isNaN(costRaw) ? undefined : costRaw
+  }
+
+  private toOptionalString(val: unknown): string | undefined {
+    if (typeof val === 'string') {
+      return val
+    }
   }
 }

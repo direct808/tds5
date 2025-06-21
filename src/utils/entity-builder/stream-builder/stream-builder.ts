@@ -9,7 +9,7 @@ export abstract class StreamBuilder {
     return this
   }
 
-  async save(ds: DataSource, campaignId: string) {
+  async save(ds: DataSource, campaignId: string): Promise<Stream> {
     return ds
       .getRepository(Stream)
       .save({ ...this.fields, campaignId: campaignId })
