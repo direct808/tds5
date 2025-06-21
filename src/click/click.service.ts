@@ -14,11 +14,6 @@ import { ClickContext, StreamResponse } from './types'
 import { ClickIdService } from './click-id.service'
 import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
-import {
-  CampaignStreamSchema,
-  Stream,
-  StreamActionType,
-} from '../campaign/entity/stream.entity'
 
 @Injectable()
 export class ClickService {
