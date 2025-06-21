@@ -93,11 +93,4 @@ export class ClickService {
       throw new HttpException('To many redirects', HttpStatus.BAD_REQUEST)
     }
   }
-
-  private isToCampaignType(stream: Stream): boolean {
-    return (
-      stream.schema === CampaignStreamSchema.ACTION &&
-      stream.actionType === StreamActionType.TO_CAMPAIGN
-    )
-  }
 }
