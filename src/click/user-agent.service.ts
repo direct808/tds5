@@ -1,27 +1,32 @@
 import { UAParser } from 'ua-parser-js'
-import { Request } from 'express'
-import { ClickData } from './click-data'
+import { IClick } from './click'
+
+type GetUserAgentInfoResult = Pick<
+  Partial<IClick>,
+  | 'userAgent'
+  | 'os'
+  | 'osVersion'
+  | 'browser'
+  | 'browserVersion'
+  | 'deviceModel'
+  | 'deviceType'
+>
 
 export class UserAgentService {
-  public setUserAgentInfo({
-    clickData,
-    request,
-  }: {
-    clickData: ClickData
-    request: Request
-  }): void {
-    const userAgent = request.headers['user-agent']
+  public getUserAgentInfo(userAgent?: string): GetUserAgentInfoResult {
     if (!userAgent) {
-      return
+      return {}
     }
     const parser = UAParser(userAgent)
 
-    clickData.userAgent = userAgent
-    clickData.os = parser.os.name
-    clickData.osVersion = parser.os.version
-    clickData.browser = parser.browser.name
-    clickData.browserVersion = parser.browser.version
-    clickData.deviceModel = parser.device.model
-    clickData.deviceType = parser.device.type
+    return {
+      userAgent: userAgent,
+      os: parser.os.name,
+      osVersion: parser.os.version,
+      browser: parser.browser.name,
+      browserVersion: parser.browser.version,
+      deviceModel: parser.device.model,
+      deviceType: parser.device.type,
+    }
   }
 }

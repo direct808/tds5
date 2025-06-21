@@ -21,6 +21,8 @@ import {
 import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
 import { ClickIdService } from './click-id.service'
 import { UserAgentService } from './user-agent.service'
+import { RegisterClickService } from './register-click.service'
+import { ClickRepository } from './click.repository'
 
 @Module({
   controllers: [ClickController],
@@ -42,6 +44,8 @@ import { UserAgentService } from './user-agent.service'
     LandingsOffersService,
     ClickIdService,
     UserAgentService,
+    RegisterClickService,
+    ClickRepository,
   ],
   imports: [CampaignModule, DirectUrlModule],
 })
