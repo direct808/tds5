@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '../src/app.module'
+import { AppModule } from '../../src/app.module'
 import { DataSource } from 'typeorm'
-import { loadUserFixtures, truncateTables } from './utils/helpers'
-import { configureApp } from '../src/utils/configure-app'
-import { CampaignBuilder } from '../src/utils/entity-builder/campaign-builder'
+import { configureApp } from '../../src/utils/configure-app'
+import { CampaignBuilder } from '../../src/utils/entity-builder/campaign-builder'
 import {
   StreamActionType,
   StreamRedirectType,
-} from '../src/campaign/entity/stream.entity'
+} from '../../src/campaign/entity/stream.entity'
 import * as express from 'express'
-import { ClickRepository } from '../src/click/click.repository'
+import { ClickRepository } from '../../src/click/click.repository'
+import { loadUserFixtures, truncateTables } from '../utils/helpers'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
