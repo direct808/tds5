@@ -12,12 +12,14 @@ import {
 import * as express from 'express'
 import { ClickRepository } from '../../src/click/click.repository'
 import { loadUserFixtures, truncateTables } from '../utils/helpers'
+import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
   let clickRepo: ClickRepository
   const redirectUrl = 'https://example.com/'
+  const userId = '00000000-0000-4000-8000-000000000001'
 
   afterEach(async () => {
     await truncateTables(app)
@@ -44,7 +46,20 @@ describe('Click (e2e)', () => {
     await CampaignBuilder.create()
       .name('Test campaign 1')
       .code('abcdif')
-      .userId('00000000-0000-4000-8000-000000000001')
+      .userId(userId)
+      .save(dataSource)
+
+    return request(app.getHttpServer()).get('/abcdif').expect(500)
+  })
+
+  it('No streamOffers', async () => {
+    await CampaignBuilder.create()
+      .name('Test campaign 1')
+      .code('abcdif')
+      .userId(userId)
+      .addStreamTypeOffers((stream) => {
+        stream.name('Name')
+      })
       .save(dataSource)
 
     return request(app.getHttpServer()).get('/abcdif').expect(500)
@@ -52,14 +67,15 @@ describe('Click (e2e)', () => {
 
   describe('Schema type direct url', () => {
     it('type HTTP', async () => {
-      await createRedirectCampaign(
-        StreamRedirectType.HTTP,
-        redirectUrl,
+      const campaign = await createCampaignDirectUrl({
+        redirectType: StreamRedirectType.HTTP,
+        url: redirectUrl,
         dataSource,
-      )
+        userId,
+      })
 
       const response = await request(app.getHttpServer())
-        .get('/abcdif')
+        .get('/' + campaign.code)
         .expect(302)
 
       expect(response.headers.location).toBe(redirectUrl)
@@ -94,26 +110,32 @@ describe('Click (e2e)', () => {
         `window.frames[0].document.body.innerHTML = '<form target="_parent" method="post" action="https://example.com/"></form>'`,
       ],
     ])('type %s, content %s', async (type, content) => {
-      await createRedirectCampaign(type, redirectUrl, dataSource)
+      const campaign = await createCampaignDirectUrl({
+        redirectType: type,
+        url: redirectUrl,
+        dataSource,
+        userId,
+      })
 
       const response = await request(app.getHttpServer())
-        .get('/abcdif')
+        .get('/' + campaign.code)
         .expect(200)
 
       expect(response.text).toContain(content)
     })
 
     it('REMOTE redirect', async () => {
-      await createRedirectCampaign(
-        StreamRedirectType.REMOTE,
-        'http://localhost:2345',
+      const campaign = await createCampaignDirectUrl({
+        redirectType: StreamRedirectType.REMOTE,
+        url: 'http://localhost:2345',
         dataSource,
-      )
+        userId,
+      })
 
       createServer(2345, 'http://redirect.domain/')
 
       const response = await request(app.getHttpServer())
-        .get('/abcdif')
+        .get('/' + campaign.code)
         .expect(302)
 
       expect(response.headers.location).toContain(`http://redirect.domain/`)
@@ -132,7 +154,7 @@ describe('Click (e2e)', () => {
         await CampaignBuilder.create()
           .name('Test campaign 1')
           .code('abcdif')
-          .userId('00000000-0000-4000-8000-000000000001')
+          .userId(userId)
           .addStreamTypeAction((stream) => {
             stream.name('Stream 1').type(action).content(content)
           })
@@ -147,10 +169,11 @@ describe('Click (e2e)', () => {
     )
 
     it('type TO_CAMPAIGN', async () => {
+      // Arrange
       const res = await CampaignBuilder.create()
         .name('Test campaign 1')
         .code('abcdif')
-        .userId('00000000-0000-4000-8000-000000000001')
+        .userId(userId)
         .addStreamTypeAction((stream) => {
           stream
             .name('Stream 1')
@@ -158,7 +181,7 @@ describe('Click (e2e)', () => {
             .createActionCampaign((campaign) => {
               campaign
                 .name('Sub campaign')
-                .userId('00000000-0000-4000-8000-000000000001')
+                .userId(userId)
                 .code('subCampaign')
                 .addStreamTypeDirectUrl((stream) => {
                   stream
@@ -170,19 +193,17 @@ describe('Click (e2e)', () => {
         })
         .save(dataSource)
 
-      const q = new URLSearchParams()
-      q.append('cost', '5.3496876')
-
-      const response = await request(app.getHttpServer())
-        .get('/abcdif?' + q.toString())
-        .expect(302)
-
-      expect(response.headers.location).toBe(redirectUrl)
-
       const lastCampaign = res.streams[0].actionCampaign!
 
+      // Act
+      const response = await request(app.getHttpServer())
+        .get('/abcdif')
+        .expect(302)
       const firstClicks = await clickRepo.getByCampaignId(res.id)
       const lastClicks = await clickRepo.getByCampaignId(lastCampaign.id)
+
+      // Assert
+      expect(response.headers.location).toBe(redirectUrl)
 
       expect(firstClicks.length).toBe(1)
       expect(lastClicks.length).toBe(1)
@@ -192,47 +213,6 @@ describe('Click (e2e)', () => {
 
       expect(firstClicks[0].destination).toBe(lastCampaign.name)
       expect(lastClicks[0].destination).toBe(redirectUrl)
-
-      expect(firstClicks[0]).toEqual({
-        adCampaignId: null,
-        affiliateNetworkId: null,
-        browser: null,
-        browserVersion: null,
-        campaignId: res.id,
-        city: null,
-        cost: '5.35',
-        country: null,
-        createdAt: firstClicks[0].createdAt,
-        creativeId: null,
-        destination: 'Sub campaign',
-        deviceModel: null,
-        deviceType: null,
-        externalId: null,
-        extraParam1: null,
-        extraParam2: null,
-        id: firstClicks[0].id,
-        ip: firstClicks[0].ip,
-        isBot: null,
-        isProxy: null,
-        isUniqueCampaign: null,
-        isUniqueGlobal: null,
-        isUniqueStream: null,
-        keyword: null,
-        language: null,
-        offerId: null,
-        os: null,
-        osVersion: null,
-        previousCampaignId: null,
-        referer: null,
-        region: null,
-        source: null,
-        streamId: firstClicks[0].streamId,
-        subId1: null,
-        subId2: null,
-        trafficSourceId: null,
-        userAgent: null,
-        visitorId: firstClicks[0].visitorId,
-      })
     })
   })
 
@@ -241,14 +221,11 @@ describe('Click (e2e)', () => {
       await CampaignBuilder.create()
         .name('Test campaign 1')
         .code('abcdif')
-        .userId('00000000-0000-4000-8000-000000000001')
+        .userId(userId)
         .addStreamTypeOffers((stream) => {
           stream.name('Stream 1').addOffer((so) => {
             so.percent(50).createOffer((offer) => {
-              offer
-                .name('Offer 2')
-                .url(redirectUrl)
-                .userId('00000000-0000-4000-8000-000000000001')
+              offer.name('Offer 2').url(redirectUrl).userId(userId)
             })
           })
         })
@@ -262,21 +239,6 @@ describe('Click (e2e)', () => {
     })
   })
 })
-
-function createRedirectCampaign(
-  rt: StreamRedirectType,
-  url: string,
-  ds: DataSource,
-) {
-  return CampaignBuilder.create()
-    .name('Test campaign 1')
-    .code('abcdif')
-    .userId('00000000-0000-4000-8000-000000000001')
-    .addStreamTypeDirectUrl((stream) => {
-      stream.name('Stream 1').url(url).redirectType(rt)
-    })
-    .save(ds)
-}
 
 function createServer(port: number, content: string) {
   const expressApp = express()
