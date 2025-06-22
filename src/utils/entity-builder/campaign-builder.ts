@@ -7,6 +7,8 @@ import { StreamTypeOffersBuilder } from './stream-builder/stream-type-offers-bui
 import { Stream } from '../../campaign/entity/stream.entity'
 import { SourceBuilder } from './source-builder'
 import { Source } from '../../source/source.entity'
+import { UserBuilder } from './user-builder'
+import { User } from '../../user/user.entity'
 
 type CampaignFields = Partial<
   Pick<Campaign, 'name' | 'code' | 'userId' | 'active' | 'sourceId'>
@@ -16,6 +18,7 @@ export class CampaignBuilder {
   private readonly streamBuilders: StreamBuilder[] = []
   private readonly fields: CampaignFields = { active: true }
   private sourceBuilder?: SourceBuilder
+  private userBuilder?: UserBuilder
 
   static create() {
     return new this()
@@ -24,6 +27,12 @@ export class CampaignBuilder {
   public async save(ds: DataSource): Promise<Campaign> {
     const streams: Stream[] = []
     let source: Source | undefined
+    let user: User | undefined
+
+    if (this.userBuilder) {
+      user = await this.userBuilder.save(ds)
+      this.fields.userId = user.id
+    }
 
     if (this.sourceBuilder) {
       source = await this.sourceBuilder.save(ds)
@@ -37,6 +46,10 @@ export class CampaignBuilder {
     }
     campaign.streams = streams
     campaign.source = source
+
+    if (user) {
+      campaign.user = user
+    }
 
     return campaign
   }
@@ -86,6 +99,13 @@ export class CampaignBuilder {
   createSource(callback: (builder: SourceBuilder) => void) {
     const builder = new SourceBuilder()
     this.sourceBuilder = builder
+    callback(builder)
+    return this
+  }
+
+  createUser(callback: (builder: UserBuilder) => void) {
+    const builder = new UserBuilder()
+    this.userBuilder = builder
     callback(builder)
     return this
   }
