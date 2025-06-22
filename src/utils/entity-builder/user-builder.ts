@@ -4,6 +4,10 @@ import { User } from '../../user/user.entity'
 export class UserBuilder {
   private fields: Partial<User> = {}
 
+  static create() {
+    return new this()
+  }
+
   email(email: string) {
     this.fields.email = email
     return this
