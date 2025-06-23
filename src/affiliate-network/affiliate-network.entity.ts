@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -26,6 +27,7 @@ export class AffiliateNetwork {
   declare user: User
 
   @Column()
+  @Index()
   declare userId: string
 
   @CreateDateColumn()

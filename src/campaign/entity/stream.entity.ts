@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
 import { Campaign } from './campaign.entity'
 import { StreamOffer } from './stream-offer.entity'
 
@@ -48,6 +48,7 @@ export class Stream {
   declare campaign: Campaign
 
   @Column()
+  @Index()
   declare campaignId: string
 
   @Column('enum', { nullable: false, enum: CampaignStreamSchema })
