@@ -44,6 +44,7 @@ export class Campaign {
   declare user: User
 
   @Column()
+  @Index()
   declare userId: string
 
   @CreateDateColumn()
