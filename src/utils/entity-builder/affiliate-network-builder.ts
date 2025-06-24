@@ -4,6 +4,10 @@ import { AffiliateNetwork } from '../../affiliate-network/affiliate-network.enti
 export class AffiliateNetworkBuilder {
   private fields: Partial<AffiliateNetwork> = {}
 
+  public static create() {
+    return new this()
+  }
+
   name(name: string) {
     this.fields.name = name
     return this

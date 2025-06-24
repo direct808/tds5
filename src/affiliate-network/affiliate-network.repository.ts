@@ -16,11 +16,12 @@ export class AffiliateNetworkRepository
   constructor(private readonly dataSource: DataSource) {}
 
   public async create(
-    args: Pick<AffiliateNetwork, 'name' | 'params' | 'userId'>,
-  ): Promise<void> {
+    args: Pick<AffiliateNetwork, 'name' | 'offerParams' | 'userId'>,
+  ): Promise<string> {
     const source = this.repository.create(args)
 
-    await this.repository.insert(source)
+    const res = await this.repository.insert(source)
+    return res.identifiers[0].id
   }
 
   public async getByNameAndUserId({
