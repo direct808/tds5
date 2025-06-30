@@ -18,11 +18,11 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './schema/action/type'
-import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
 import { ClickIdService } from './click-id.service'
 import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
 import { ClickRepository } from './click.repository'
+import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
 
 @Module({
   controllers: [ClickController],
@@ -41,12 +41,11 @@ import { ClickRepository } from './click.repository'
     ShowHtmlActionType,
     ShowTextActionType,
     ToCampaignActionType,
-    LandingsOffersService,
     ClickIdService,
     UserAgentService,
     RegisterClickService,
     ClickRepository,
   ],
-  imports: [CampaignModule, DirectUrlModule],
+  imports: [CampaignModule, DirectUrlModule, LandingsOfferModule],
 })
 export class ClickModule {}

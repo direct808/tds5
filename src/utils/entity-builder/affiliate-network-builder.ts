@@ -18,6 +18,11 @@ export class AffiliateNetworkBuilder {
     return this
   }
 
+  offerParams(offerParams: string) {
+    this.fields.offerParams = offerParams
+    return this
+  }
+
   async save(ds: DataSource): Promise<AffiliateNetwork> {
     return ds.getRepository(AffiliateNetwork).save(this.fields)
   }
