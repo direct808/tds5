@@ -59,5 +59,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Создать .env файл из секрета
+        run: echo "${{ secrets.ENV_FILE_E2E }}" > .env.e2e
+
       - name: Run tests
         run: npm run test:e2e
