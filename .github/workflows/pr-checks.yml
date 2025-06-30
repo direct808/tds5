@@ -42,3 +42,25 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
+  e2e-tests:
+    name: E2E tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Создать .env файл из секрета
+        run: echo "${{ secrets.ENV_FILE_E2E }}" > .env.e2e
+
+      - name: Run tests
+        run: npm run test:e2e
