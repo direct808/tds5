@@ -44,7 +44,7 @@ jobs:
         run: npm run test
 
   e2e-tests:
-    name: E2e tests
+    name: E2E tests
     runs-on: ubuntu-latest
 
     steps:
