@@ -14,6 +14,7 @@ import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
 import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
 import { GLOBAL_PREFIX } from '../utils/constants'
+import { AffiliateNetwork } from './affiliate-network.entity'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')
@@ -31,8 +32,8 @@ export class AffiliateNetworkController {
   async createAffiliateNetwork(
     @Body() args: CreateAffiliateNetworkDto,
     @UserId() userId: string,
-  ) {
-    await this.affiliateNetworkService.create({ ...args, userId })
+  ): Promise<AffiliateNetwork> {
+    return this.affiliateNetworkService.create({ ...args, userId })
   }
 
   @Patch(':id')

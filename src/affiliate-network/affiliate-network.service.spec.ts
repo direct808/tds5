@@ -25,6 +25,7 @@ describe('AffiliateNetworkService', () => {
             update: jest.fn(),
             delete: jest.fn(),
             getListByUserId: jest.fn(),
+            getByIdAndUserId: jest.fn().mockReturnValue({ id: 'ID 1' }),
           },
         },
       ],

@@ -19,7 +19,7 @@ export class AffiliateNetwork {
   declare name: string
 
   @Column({ type: 'text', nullable: true })
-  params?: string
+  offerParams?: string
 
   @ManyToOne(() => User, (user) => user.id, {
     nullable: false,
