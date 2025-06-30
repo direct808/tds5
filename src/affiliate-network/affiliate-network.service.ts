@@ -9,7 +9,7 @@ import {
 
 type CreateArgs = {
   name: string
-  params?: string
+  offerParams?: string
   userId: string
 }
 
@@ -17,7 +17,7 @@ type UpdatedArgs = {
   id: string
   userId: string
   name?: string
-  params?: string
+  offerParams?: string
 }
 
 type DeleteArgs = {
@@ -29,10 +29,12 @@ type DeleteArgs = {
 export class AffiliateNetworkService {
   constructor(private readonly repository: AffiliateNetworkRepository) {}
 
-  public async create(args: CreateArgs): Promise<void> {
+  public async create(args: CreateArgs): Promise<AffiliateNetwork> {
     await checkUniqueNameForCreate(this.repository, args)
 
-    await this.repository.create(args)
+    const id = await this.repository.create(args)
+
+    return this.getByIdAndUserIdOrFail(id, args.userId)
   }
 
   public async update(args: UpdatedArgs): Promise<void> {
@@ -56,5 +58,18 @@ export class AffiliateNetworkService {
     await ensureEntityExists(this.repository, args)
 
     await this.repository.delete(args.id)
+  }
+
+  public async getByIdAndUserIdOrFail(
+    id: string,
+    userId: string,
+  ): Promise<AffiliateNetwork> {
+    const result = await this.repository.getByIdAndUserId({ id, userId })
+
+    if (!result) {
+      throw new Error('No result')
+    }
+
+    return result
   }
 }
