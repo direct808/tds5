@@ -14,6 +14,7 @@ import { ClickContext, StreamResponse } from './types'
 import { ClickIdService } from './click-id.service'
 import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
+import { LanguageParser } from '@/click/language-parser'
 
 @Injectable()
 export class ClickService {
@@ -26,6 +27,7 @@ export class ClickService {
     private readonly clickIdService: ClickIdService,
     private readonly userAgentService: UserAgentService,
     private readonly registerClickService: RegisterClickService,
+    private readonly languageParser: LanguageParser,
   ) {}
 
   async handleClick(cContext: ClickContext) {
@@ -35,6 +37,7 @@ export class ClickService {
     const deviceInfo = this.userAgentService.getUserAgentInfo(
       requestData.userAgent,
     )
+    this.languageParser.parse(cContext)
 
     clickData.visitorId = await this.clickIdService.getVisitorIds(request)
     Object.assign(clickData, requestData)
