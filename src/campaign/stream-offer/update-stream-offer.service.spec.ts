@@ -3,7 +3,7 @@ import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from './stream-offer.repository'
 import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferService } from './update-stream-offer.service'
-import { getIdsForDelete } from '../../utils/repository-utils'
+import { getIdsForDelete } from '@/utils/repository-utils'
 
 jest.mock('../../utils/repository-utils')
 

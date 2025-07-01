@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForCreate } from '../utils/repository-utils'
+import { checkUniqueNameForCreate } from '@/utils/repository-utils'
 import { CampaignRepository } from './campaign.repository'
 import { CommonCampaignService } from './common-campaign.service'
 import { nanoid } from 'nanoid'

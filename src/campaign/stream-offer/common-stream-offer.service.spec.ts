@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamOfferService } from './common-stream-offer.service'
-import { OfferRepository } from '../../offer/offer.repository'
+import { OfferRepository } from '@/offer/offer.repository'
 
 describe('CommonStreamService', () => {
   let service: CommonStreamOfferService

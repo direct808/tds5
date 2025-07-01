@@ -3,7 +3,7 @@ import {
   CampaignStreamSchema,
   Stream,
   StreamDirectUrl,
-} from '../campaign/entity/stream.entity'
+} from '@/campaign/entity/stream.entity'
 import { ClickContext, StreamResponse } from './types'
 import { DirectUrlService } from './schema/direct-url/direct-url.service'
 import { ActionService } from './schema/action/action.service'

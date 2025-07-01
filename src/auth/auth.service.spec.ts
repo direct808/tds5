@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AuthService } from './auth.service'
 import { JwtService } from '@nestjs/jwt'
 import { LoginUser } from './types'
-import { UserService } from '../user/user.service'
+import { UserService } from '@/user/user.service'
 
 const PASSWORD_1234 =
   '$2b$10$Z0EGauNanl2jiCUBwcRhGuC6/QBC1Sl1.nqFINRn1Q.nDvuuZZF0K'

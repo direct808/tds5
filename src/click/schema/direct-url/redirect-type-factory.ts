@@ -15,7 +15,7 @@ import { RedirectType, StreamResponse } from '../../types'
 import {
   StreamDirectUrl,
   StreamRedirectType,
-} from '../../../campaign/entity/stream.entity'
+} from '@/campaign/entity/stream.entity'
 
 @Injectable()
 export class RedirectTypeFactory {

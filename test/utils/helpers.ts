@@ -1,24 +1,22 @@
 import { DataSource } from 'typeorm'
 import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
-import { PostgreSqlContainer } from '@testcontainers/postgresql'
-import { Source } from '../../src/source/source.entity'
+import { Source } from '@/source/source.entity'
 import { sourceFixtures } from '../fixtures/source.fixture'
 import { offerFixtures } from '../fixtures/offer.fixture'
-import { AffiliateNetwork } from '../../src/affiliate-network/affiliate-network.entity'
+import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 import { affiliateNetworkFixtures } from '../fixtures/affiliate-network.fixture'
-import { User } from '../../src/user/user.entity'
-import { Offer } from '../../src/offer/offer.entity'
+import { User } from '@/user/user.entity'
+import { Offer } from '@/offer/offer.entity'
 import { userFixtures } from '../fixtures/user.fixture'
-import { Campaign } from '../../src/campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import {
   campaignFixtures,
   streamFixtures,
   streamOfferFixtures,
 } from '../fixtures/campaign.fixture'
-import { StreamOffer } from '../../src/campaign/entity/stream-offer.entity'
-import { Stream } from '../../src/campaign/entity/stream.entity'
-import { StartedPostgreSqlContainer } from '@testcontainers/postgresql/build/postgresql-container'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
+import { Stream } from '@/campaign/entity/stream.entity'
 
 export async function loadSourceFixtures(ds: DataSource) {
   const repo = ds.getRepository(Source)
@@ -73,25 +71,4 @@ export async function truncateTables(app: INestApplication) {
   const names = tables.map((row) => `"${row.tablename}"`).join(', ')
   const sql = `TRUNCATE TABLE ${names} CASCADE;`
   await ds.query(sql)
-}
-
-async function createTestContainer() {
-  return new PostgreSqlContainer().start()
-}
-
-export async function globalSetup() {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('dotenv').config({ path: 'test/.env.e2e' })
-  if (process.env.DISABLE_TESTCONTAINERS !== 'Y') {
-    const data = await createTestContainer()
-    setEnv(data)
-  }
-}
-
-function setEnv(data: StartedPostgreSqlContainer) {
-  process.env.DB_HOST = data.getHost()
-  process.env.DB_PORT = String(data.getPort())
-  process.env.DB_NAME = data.getDatabase()
-  process.env.DB_USER = data.getUsername()
-  process.env.DB_PASS = data.getPassword()
 }

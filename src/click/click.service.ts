@@ -5,9 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { RequestDataMapper } from './request-data-mapper'
-import { CampaignRepository } from '../campaign/campaign.repository'
+import { CampaignRepository } from '@/campaign/campaign.repository'
 import { SelectStreamService } from './select-stream.service'
-import { Campaign } from '../campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import { HandleStreamService } from './handle-stream.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
 import { ClickContext, StreamResponse } from './types'

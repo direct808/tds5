@@ -3,7 +3,7 @@ import {
   CampaignStreamSchema,
   Stream,
   StreamActionType,
-} from '../../../campaign/entity/stream.entity'
+} from '@/campaign/entity/stream.entity'
 import { CampaignBuilder } from '../campaign-builder'
 import { DataSource } from 'typeorm'
 

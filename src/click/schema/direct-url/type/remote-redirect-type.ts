@@ -1,6 +1,6 @@
 import { isURL } from 'class-validator'
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { RedirectType, StreamResponse } from '../../../types'
+import { RedirectType, StreamResponse } from '@/click/types'
 import { HttpService } from '@nestjs/axios'
 import { firstValueFrom } from 'rxjs'
 

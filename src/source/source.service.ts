@@ -2,10 +2,10 @@ import { SourceRepository } from './source.repository'
 import { Injectable } from '@nestjs/common'
 import { Source } from './source.entity'
 import {
-  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
-} from '../utils/repository-utils'
+  ensureEntityExists,
+} from '@/utils/repository-utils'
 
 type CreateArgs = {
   name: string

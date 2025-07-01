@@ -1,4 +1,4 @@
-import { AffiliateNetwork } from '../../src/affiliate-network/affiliate-network.entity'
+import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 
 export const affiliateNetworkFixtures: Partial<AffiliateNetwork>[] = [
   {

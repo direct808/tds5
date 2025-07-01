@@ -1,4 +1,4 @@
-import { Offer } from '../../src/offer/offer.entity'
+import { Offer } from '@/offer/offer.entity'
 
 export const offerFixtures: Partial<Offer>[] = [
   {

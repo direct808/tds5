@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource } from 'typeorm'
-import { ClickRepository } from '../../src/click/click.repository'
+import { ClickRepository } from '@/click/click.repository'
 import { loadUserFixtures, truncateTables } from '../utils/helpers'
-import { AppModule } from '../../src/app.module'
-import { configureApp } from '../../src/utils/configure-app'
-import { CampaignBuilder } from '../../src/utils/entity-builder/campaign-builder'
+import { AppModule } from '@/app.module'
+import { configureApp } from '@/utils/configure-app'
+import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 
 describe('Offer params (e2e)', () => {
   let app: INestApplication
