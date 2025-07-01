@@ -8,6 +8,9 @@ const config: Config = {
   testTimeout: 30000,
   maxWorkers: 1,
   globalSetup: '<rootDir>/test/utils/jest.global-setup.ts',
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
 }
 
 export default config
