@@ -10,7 +10,7 @@ export class ClickData implements Partial<IClick> {
   trafficSourceId?: string
   streamId?: string
   destination?: string
-  // unic
+  // uniq
   isUniqueGlobal?: boolean
   isUniqueCampaign?: boolean
   isUniqueStream?: boolean

@@ -6,12 +6,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common'
-import { UserId } from '../auth/user-id.decorator'
+import { UserId } from '@/auth/user-id.decorator'
 import { CreateCampaignService } from './create-campaign.service'
 import { UpdateCampaignService } from './update-campaign.service'
 import { CreateCampaignDto } from './dto/create-campaign.dto'
 import { UpdateCampaignDto } from './dto/update-campaign.dto'
-import { GLOBAL_PREFIX } from '../utils/constants'
+import { GLOBAL_PREFIX } from '@/utils/constants'
 
 @Controller(GLOBAL_PREFIX + 'campaign')
 export class CampaignController {

@@ -3,7 +3,7 @@ import { CreateCampaignService } from './create-campaign.service'
 import { CampaignRepository } from './campaign.repository'
 import { CommonCampaignService } from './common-campaign.service'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForCreate } from '../utils/repository-utils'
+import { checkUniqueNameForCreate } from '@/utils/repository-utils'
 import { CreateStreamService } from './stream/create-stream.service'
 
 jest.mock('../utils/repository-utils')

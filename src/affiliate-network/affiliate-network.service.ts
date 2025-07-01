@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { AffiliateNetworkRepository } from './affiliate-network.repository'
 import { AffiliateNetwork } from './affiliate-network.entity'
 import {
-  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
-} from '../utils/repository-utils'
+  ensureEntityExists,
+} from '@/utils/repository-utils'
 
 type CreateArgs = {
   name: string

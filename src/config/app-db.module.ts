@@ -1,14 +1,14 @@
 import { Global, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { AppConfig } from './app-config.service'
-import { AffiliateNetwork } from '../affiliate-network/affiliate-network.entity'
-import { Offer } from '../offer/offer.entity'
-import { StreamOffer } from '../campaign/entity/stream-offer.entity'
-import { Campaign } from '../campaign/entity/campaign.entity'
-import { User } from '../user/user.entity'
-import { Source } from '../source/source.entity'
-import { Stream } from '../campaign/entity/stream.entity'
-import { Click } from '../click/click.entity'
+import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
+import { Offer } from '@/offer/offer.entity'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
+import { User } from '@/user/user.entity'
+import { Source } from '@/source/source.entity'
+import { Stream } from '@/campaign/entity/stream.entity'
+import { Click } from '@/click/click.entity'
 
 @Global()
 @Module({

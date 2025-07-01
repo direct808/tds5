@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import * as weighted from 'weighted'
-import { StreamOffer } from '../../../campaign/entity/stream-offer.entity'
-import { Offer } from '../../../offer/offer.entity'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
+import { Offer } from '@/offer/offer.entity'
 
 @Injectable()
 export class SelectOfferService {

@@ -7,5 +7,8 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "testTimeout": 30000,
-  "globalSetup": "<rootDir>/utils/jest.global-setup.ts"
+  "globalSetup": "<rootDir>/utils/jest.global-setup.ts",
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/../src/$1"
+  }
 }

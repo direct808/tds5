@@ -1,6 +1,6 @@
 import { SelectOfferService } from './select-offer.service'
-import { StreamOffer } from '../../../campaign/entity/stream-offer.entity'
-import { Offer } from '../../../offer/offer.entity'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
+import { Offer } from '@/offer/offer.entity'
 import * as weighted from 'weighted'
 
 jest.mock('weighted')

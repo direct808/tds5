@@ -1,10 +1,10 @@
-import { Campaign } from '../../src/campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import {
   CampaignStreamSchema,
   Stream,
   StreamActionType,
-} from '../../src/campaign/entity/stream.entity'
-import { StreamOffer } from '../../src/campaign/entity/stream-offer.entity'
+} from '@/campaign/entity/stream.entity'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
 
 export const campaignFixtures: Partial<Campaign>[] = [
   {

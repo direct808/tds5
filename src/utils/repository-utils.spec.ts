@@ -1,11 +1,11 @@
 import { ConflictException, NotFoundException } from '@nestjs/common'
 import {
-  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
+  ensureEntityExists,
+  getIdsForDelete,
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
-  getIdsForDelete,
 } from './repository-utils'
 
 describe('repository-utils', () => {

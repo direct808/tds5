@@ -3,7 +3,7 @@ import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferDto } from '../dto/update-stream-offer.dto'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from './stream-offer.repository'
-import { getIdsForDelete } from '../../utils/repository-utils'
+import { getIdsForDelete } from '@/utils/repository-utils'
 import { StreamOffer } from '../entity/stream-offer.entity'
 
 @Injectable()

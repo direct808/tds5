@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, Unique } from 'typeorm'
 import { Stream } from './stream.entity'
-import { Offer } from '../../offer/offer.entity'
+import { Offer } from '@/offer/offer.entity'
 
 @Entity()
 @Unique(['offerId', 'streamId'])

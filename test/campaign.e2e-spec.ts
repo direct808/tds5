@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '../src/app.module'
+import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
-import { configureApp } from '../src/utils/configure-app'
-import { Campaign } from '../src/campaign/entity/campaign.entity'
+import { configureApp } from '@/utils/configure-app'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import {
   CampaignStreamSchema,
   Stream,
   StreamActionType,
-} from '../src/campaign/entity/stream.entity'
-import { StreamOffer } from '../src/campaign/entity/stream-offer.entity'
+} from '@/campaign/entity/stream.entity'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
 import {
   authUser,
   loadAffiliateNetworkFixtures,

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '../src/app.module'
+import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
 import { authUser, loadUserFixtures, truncateTables } from './utils/helpers'
-import { configureApp } from '../src/utils/configure-app'
-import { AffiliateNetwork } from '../src/affiliate-network/affiliate-network.entity'
-import { AffiliateNetworkBuilder } from '../src/utils/entity-builder/affiliate-network-builder'
+import { configureApp } from '@/utils/configure-app'
+import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
+import { AffiliateNetworkBuilder } from '@/utils/entity-builder/affiliate-network-builder'
 
 describe('AffiliateNetworkController (e2e)', () => {
   let app: INestApplication
@@ -62,12 +62,12 @@ describe('AffiliateNetworkController (e2e)', () => {
       .userId(userId)
       .save(dataSource)
 
-    const responce = await request(app.getHttpServer())
+    const response = await request(app.getHttpServer())
       .get('/api/affiliate-network')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(responce.body[0]).toEqual({
+    expect(response.body[0]).toEqual({
       ...affiliateNetwork,
       createdAt: affiliateNetwork.createdAt.toISOString(),
       updatedAt: affiliateNetwork.updatedAt.toISOString(),
