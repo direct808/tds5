@@ -26,6 +26,23 @@ describe('CommonStreamService', () => {
   })
 
   describe('checkPercentSum', () => {
+    it('should return void if activeInput.length === 0', () => {
+      expect(() =>
+        service.checkPercentSum([
+          {
+            offerId: 'offer-id',
+            active: false,
+            percent: 75,
+          },
+          {
+            offerId: 'offer-id',
+            active: false,
+            percent: 15,
+          },
+        ]),
+      ).not.toThrow()
+    })
+
     it('should be an error if sum of percent is less than 100', () => {
       expect(() =>
         service.checkPercentSum([

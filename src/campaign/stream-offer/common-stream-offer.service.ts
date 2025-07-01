@@ -16,7 +16,7 @@ export class CommonStreamOfferService {
    * @param input
    * @private
    */
-  public checkPercentSum(input: CreateStreamOfferDto[]) {
+  public checkPercentSum(input: CreateStreamOfferDto[]): void {
     const activeInput = input.filter((item) => item.active)
     if (activeInput.length === 0) {
       return
