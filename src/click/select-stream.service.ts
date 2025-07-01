@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Stream } from '../campaign/entity/stream.entity'
+import { Stream } from '@/campaign/entity/stream.entity'
 
 @Injectable()
 export class SelectStreamService {

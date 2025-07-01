@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '../src/app.module'
+import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
 import {
   authUser,
@@ -9,8 +9,8 @@ import {
   loadUserFixtures,
   truncateTables,
 } from './utils/helpers'
-import { Source } from '../src/source/source.entity'
-import { configureApp } from '../src/utils/configure-app'
+import { Source } from '@/source/source.entity'
+import { configureApp } from '@/utils/configure-app'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication

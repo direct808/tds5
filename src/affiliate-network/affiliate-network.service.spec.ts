@@ -3,12 +3,12 @@ import { AffiliateNetworkService } from './affiliate-network.service'
 import { AffiliateNetworkRepository } from './affiliate-network.repository'
 import { AffiliateNetwork } from './affiliate-network.entity'
 import {
-  ensureEntityExists,
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
-} from '../utils/repository-utils'
+  ensureEntityExists,
+} from '@/utils/repository-utils'
 
-jest.mock('../utils/repository-utils')
+jest.mock('@/utils/repository-utils')
 
 describe('AffiliateNetworkService', () => {
   let service: AffiliateNetworkService

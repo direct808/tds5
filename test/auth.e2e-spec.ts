@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '../src/app.module'
+import { AppModule } from '@/app.module'
 import { DataSource } from 'typeorm'
-import { configureApp } from '../src/utils/configure-app'
+import { configureApp } from '@/utils/configure-app'
 import { loadUserFixtures, truncateTables } from './utils/helpers'
 
 describe('AuthController (e2e)', () => {

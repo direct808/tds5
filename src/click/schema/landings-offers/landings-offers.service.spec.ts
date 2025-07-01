@@ -3,12 +3,12 @@ import { SelectOfferService } from './select-offer.service'
 import { OfferParamsService } from './offer-params.service'
 import { OfferParamDataMapper } from './offer-params-data-mapper'
 import { ClickContext } from '../../types'
-import { Stream } from '../../../campaign/entity/stream.entity'
-import { Offer } from '../../../offer/offer.entity'
+import { Stream } from '@/campaign/entity/stream.entity'
+import { Offer } from '@/offer/offer.entity'
 import { HttpStatus } from '@nestjs/common'
-import { Campaign } from '../../../campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import { ClickData } from '../../click-data'
-import { StreamOffer } from '../../../campaign/entity/stream-offer.entity'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
 
 describe('LandingsOffersService', () => {
   let service: LandingsOffersService

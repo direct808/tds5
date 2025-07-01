@@ -1,5 +1,5 @@
 import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { Campaign } from '../../../campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import { ClickData } from '../../click-data'
 import { OfferParams } from './offer-params.service'
 

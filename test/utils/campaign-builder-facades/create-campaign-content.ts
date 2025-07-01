@@ -1,8 +1,8 @@
-import { CampaignBuilder } from '../../../src/utils/entity-builder/campaign-builder'
-import { StreamActionType } from '../../../src/campaign/entity/stream.entity'
+import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { DataSource } from 'typeorm'
 import { faker } from '@faker-js/faker'
-import { Campaign } from '../../../src/campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 
 type CreateCampaignContentArgs = {
   dataSource: DataSource

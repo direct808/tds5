@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity } from 'typeorm'
 import { CLICK_ID_SIZE, VISITOR_ID_SIZE } from './click-id.service'
 import { IClick } from './click'
-import { Nullable } from '../utils/types'
+import { Nullable } from '@/utils/types'
 
 const ColumnTextNullable = () => Column('text', { nullable: true })
 
@@ -34,7 +34,7 @@ export class Click implements Nullable<IClick> {
   @Column('text', { nullable: true })
   declare destination: string | null
 
-  // unic
+  // uniq
   @Column('boolean', { nullable: true })
   declare isUniqueGlobal: boolean | null
 

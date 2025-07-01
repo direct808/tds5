@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '../../src/app.module'
+import { AppModule } from '@/app.module'
 import { DataSource } from 'typeorm'
-import { configureApp } from '../../src/utils/configure-app'
-import { CampaignBuilder } from '../../src/utils/entity-builder/campaign-builder'
+import { configureApp } from '@/utils/configure-app'
+import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import {
   StreamActionType,
   StreamRedirectType,
-} from '../../src/campaign/entity/stream.entity'
+} from '@/campaign/entity/stream.entity'
 import * as express from 'express'
-import { ClickRepository } from '../../src/click/click.repository'
+import { ClickRepository } from '@/click/click.repository'
 import { loadUserFixtures, truncateTables } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 

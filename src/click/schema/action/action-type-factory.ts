@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ActionType, ClickContext, StreamResponse } from '../../types'
-import {
-  Stream,
-  StreamActionType,
-} from '../../../campaign/entity/stream.entity'
+import { Stream, StreamActionType } from '@/campaign/entity/stream.entity'
 import { ModuleRef } from '@nestjs/core'
 import {
   NothingActionType,

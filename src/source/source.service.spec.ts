@@ -6,7 +6,7 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../utils/repository-utils'
+} from '@/utils/repository-utils'
 
 jest.mock('../utils/repository-utils')
 

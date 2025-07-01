@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Campaign } from '../../../campaign/entity/campaign.entity'
+import { Campaign } from '@/campaign/entity/campaign.entity'
 import { OfferParams } from './offer-params.service'
 import { ClickData } from '../../click-data'
 
