@@ -81,7 +81,7 @@ async function createTestContainer() {
 
 export async function globalSetup() {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('dotenv').config({ path: '.env.e2e' })
+  require('dotenv').config({ path: 'test/.env.e2e' })
   if (process.env.DISABLE_TESTCONTAINERS !== 'Y') {
     const data = await createTestContainer()
     setEnv(data)
