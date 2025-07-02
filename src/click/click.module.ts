@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { ClickController } from './click.controller'
 import { ClickService } from './click.service'
-import { RequestDataMapper } from './request-data-mapper'
 import { CampaignModule } from '@/campaign/campaign.module'
 import { SelectStreamService } from './select-stream.service'
 import { HandleStreamService } from './handle-stream.service'
@@ -18,18 +17,15 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './schema/action/type'
-import { ClickIdService } from './click-id.service'
-import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
 import { ClickRepository } from './click.repository'
 import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
-import { LanguageParser } from '@/click/language-parser'
+import { ObserverModule } from '@/click/observers/observer.module'
 
 @Module({
   controllers: [ClickController],
   providers: [
     ClickService,
-    RequestDataMapper,
     SelectStreamService,
     HandleStreamService,
     JsonResponseHandler,
@@ -42,12 +38,14 @@ import { LanguageParser } from '@/click/language-parser'
     ShowHtmlActionType,
     ShowTextActionType,
     ToCampaignActionType,
-    ClickIdService,
-    UserAgentService,
     RegisterClickService,
     ClickRepository,
-    LanguageParser,
   ],
-  imports: [CampaignModule, DirectUrlModule, LandingsOfferModule],
+  imports: [
+    CampaignModule,
+    DirectUrlModule,
+    LandingsOfferModule,
+    ObserverModule,
+  ],
 })
 export class ClickModule {}

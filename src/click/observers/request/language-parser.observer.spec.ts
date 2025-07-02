@@ -1,20 +1,20 @@
-import { LanguageParser } from './language-parser'
+import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
 
-describe('LanguageParser', () => {
-  let parser: LanguageParser
+describe('LanguageParserObserver', () => {
+  let parser: LanguageParserObserver
   let checkValue: (arg: unknown) => boolean
 
   beforeEach(() => {
-    parser = new LanguageParser()
+    parser = new LanguageParserObserver()
     checkValue = parser['checkValue']
   })
 
   describe('checkValue', () => {
     it('should return false if acceptLanguage is not a string', () => {
-      expect(checkValue(123 as any)).toBe(false)
-      expect(checkValue(null as any)).toBe(false)
-      expect(checkValue(undefined as any)).toBe(false)
-      expect(checkValue({} as any)).toBe(false)
+      expect(checkValue(123)).toBe(false)
+      expect(checkValue(null)).toBe(false)
+      expect(checkValue(undefined)).toBe(false)
+      expect(checkValue({})).toBe(false)
     })
 
     it('should return false if acceptLanguage length is less than 2', () => {
@@ -37,7 +37,7 @@ describe('LanguageParser', () => {
     })
   })
 
-  describe('parse', () => {
+  describe('handle', () => {
     it('should not set language if accept-language is invalid', () => {
       const args: any = {
         request: {
@@ -48,7 +48,7 @@ describe('LanguageParser', () => {
         clickData: {},
       }
 
-      parser.parse(args)
+      parser.handle(args)
 
       expect(args.clickData.language).toBeUndefined()
     })
@@ -63,7 +63,7 @@ describe('LanguageParser', () => {
         clickData: {},
       }
 
-      parser.parse(args)
+      parser.handle(args)
 
       expect(args.clickData.language).toBe('en')
     })
@@ -76,7 +76,7 @@ describe('LanguageParser', () => {
         clickData: {},
       }
 
-      parser.parse(args)
+      parser.handle(args)
 
       expect(args.clickData.language).toBeUndefined()
     })

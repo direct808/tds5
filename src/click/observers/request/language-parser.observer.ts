@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { Request } from 'express'
-import { ClickData } from '@/click/click-data'
-
-type Args = {
-  request: Request
-  clickData: ClickData
-}
+import { ClickObserver, RequestObserverData } from '@/click/observers/subject'
 
 @Injectable()
-export class LanguageParser {
-  public parse(args: Args) {
+export class LanguageParserObserver
+  implements ClickObserver<RequestObserverData>
+{
+  public async handle(args: RequestObserverData) {
     const acceptLanguage = args.request.headers['accept-language']
 
     if (!this.checkValue(acceptLanguage)) {

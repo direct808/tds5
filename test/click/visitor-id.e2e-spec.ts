@@ -6,7 +6,7 @@ import { ClickRepository } from '@/click/click.repository'
 import { loadUserFixtures, truncateTables } from '../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
-import { VISITOR_ID_SIZE } from '@/click/click-id.service'
+import { VISITOR_ID_SIZE } from '@/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
 
 describe('visitorId (e2e)', () => {
