@@ -23,6 +23,7 @@ import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
 import { ClickRepository } from './click.repository'
 import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
+import { LanguageParser } from '@/click/language-parser'
 
 @Module({
   controllers: [ClickController],
@@ -45,6 +46,7 @@ import { LandingsOfferModule } from './schema/landings-offers/landings-offer.mod
     UserAgentService,
     RegisterClickService,
     ClickRepository,
+    LanguageParser,
   ],
   imports: [CampaignModule, DirectUrlModule, LandingsOfferModule],
 })

@@ -76,6 +76,7 @@ describe('Click-data (e2e)', () => {
       .set({
         'User-Agent': userAgent,
         Referer: 'Referer value',
+        'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8,fr;q=0.7',
       })
       .set('Cookie', ['visitorId=' + existsVisitorId])
       .expect(302)
@@ -114,7 +115,7 @@ describe('Click-data (e2e)', () => {
       isUniqueGlobal: null,
       isUniqueStream: null,
       keyword: 'keyword',
-      language: null,
+      language: 'en',
       offerId: offer.id,
       os: 'Windows',
       osVersion: '10',
