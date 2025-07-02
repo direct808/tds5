@@ -1,11 +1,11 @@
-import { Request } from 'express'
 import { Injectable } from '@nestjs/common'
-import { IClick } from './click'
+import { ClickData } from '@/click/click-data'
+import { ClickObserver, RequestObserverData } from '@/click/observers/subject'
 
 @Injectable()
-export class RequestDataMapper {
-  convert(request: Request): Partial<IClick> {
-    return {
+export class QueryStringObserver implements ClickObserver<RequestObserverData> {
+  public async handle({ request, clickData }: RequestObserverData) {
+    const data: ClickData = {
       ip: request.ip,
 
       referer: request.headers.referer,
@@ -24,6 +24,8 @@ export class RequestDataMapper {
       subId1: this.toOptionalString(request.query.sub_id_1),
       subId2: this.toOptionalString(request.query.sub_id_2),
     }
+
+    Object.assign(clickData, data)
   }
 
   private getCost(val: unknown) {

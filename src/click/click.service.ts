@@ -4,45 +4,28 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { RequestDataMapper } from './request-data-mapper'
 import { CampaignRepository } from '@/campaign/campaign.repository'
 import { SelectStreamService } from './select-stream.service'
 import { Campaign } from '@/campaign/entity/campaign.entity'
 import { HandleStreamService } from './handle-stream.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
 import { ClickContext, StreamResponse } from './types'
-import { ClickIdService } from './click-id.service'
-import { UserAgentService } from './user-agent.service'
 import { RegisterClickService } from './register-click.service'
-import { LanguageParser } from '@/click/language-parser'
+import { SetupSubject } from '@/click/observers/setup-subject'
 
 @Injectable()
 export class ClickService {
   constructor(
-    private readonly requestDataMapper: RequestDataMapper,
     private readonly campaignRepository: CampaignRepository,
     private readonly selectStreamService: SelectStreamService,
     private readonly handleStreamService: HandleStreamService,
     private readonly responseHandlerFactory: ResponseHandlerFactory,
-    private readonly clickIdService: ClickIdService,
-    private readonly userAgentService: UserAgentService,
     private readonly registerClickService: RegisterClickService,
-    private readonly languageParser: LanguageParser,
+    private readonly setupSubject: SetupSubject,
   ) {}
 
   async handleClick(cContext: ClickContext) {
-    const { request, clickData } = cContext
-
-    const requestData = this.requestDataMapper.convert(request)
-    const deviceInfo = this.userAgentService.getUserAgentInfo(
-      requestData.userAgent,
-    )
-    this.languageParser.parse(cContext)
-
-    clickData.visitorId = await this.clickIdService.getVisitorIds(request)
-    Object.assign(clickData, requestData)
-    Object.assign(clickData, deviceInfo)
-
+    await this.setupSubject.setupRequestSubject(cContext)
     const streamResponse = await this.getStreamResponse(cContext)
     this.responseHandlerFactory.handle(cContext, streamResponse)
   }
@@ -54,12 +37,9 @@ export class ClickService {
     this.checkIncrementRedirectCount(cContext)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
-
     stream.campaign = campaign
-    clickData.campaignId = campaign.id
-    clickData.streamId = stream.id
-    clickData.id = await this.clickIdService.getClickId(clickData.visitorId)
-    clickData.trafficSourceId = campaign.sourceId
+
+    await this.setupSubject.setupStreamSubject(clickData, stream)
 
     const streamResponse = await this.handleStreamService.handleStream(
       stream,

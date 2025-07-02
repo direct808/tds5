@@ -1,0 +1,28 @@
+import { Module } from '@nestjs/common'
+import { SetupSubject } from '@/click/observers/setup-subject'
+import { StreamSetupSubject } from '@/click/observers/stream-setup-subject'
+import { RequestSetupSubject } from '@/click/observers/request-setup-subject'
+import { StreamIdsObserver } from '@/click/observers/stream/stream-ids-observer'
+import { ClickIdObserver } from '@/click/observers/stream/click-id.observer'
+import { QueryStringObserver } from '@/click/observers/request/query-string.observer'
+import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
+import { VisitorIdObserver } from '@/click/observers/request/visitor-id.observer'
+import { UserAgentObserver } from '@/click/observers/request/user-agent.observer'
+import { IdGenerator } from '@/click/observers/id-generator'
+
+@Module({
+  exports: [SetupSubject],
+  providers: [
+    SetupSubject,
+    StreamSetupSubject,
+    RequestSetupSubject,
+    StreamIdsObserver,
+    ClickIdObserver,
+    QueryStringObserver,
+    LanguageParserObserver,
+    VisitorIdObserver,
+    UserAgentObserver,
+    IdGenerator,
+  ],
+})
+export class ObserverModule {}
