@@ -21,6 +21,7 @@ import { RegisterClickService } from './register-click.service'
 import { ClickRepository } from './click.repository'
 import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
 import { ObserverModule } from '@/click/observers/observer.module'
+import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
 
 @Module({
   controllers: [ClickController],
@@ -46,6 +47,7 @@ import { ObserverModule } from '@/click/observers/observer.module'
     DirectUrlModule,
     LandingsOfferModule,
     ObserverModule,
+    StreamFilterModule,
   ],
 })
 export class ClickModule {}
