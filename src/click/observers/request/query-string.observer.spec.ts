@@ -1,7 +1,10 @@
 import { RequestObserverData } from '@/click/observers/subject'
 import { ClickData } from '@/click/click-data'
-import { Request } from 'express'
 import { QueryStringObserver } from '@/click/observers/request/query-string.observer'
+import {
+  MockRequestAdapter,
+  MockRequestAdapterData,
+} from '@/utils/request-adapter'
 
 describe('QueryStringObserver', () => {
   let observer: QueryStringObserver
@@ -11,7 +14,7 @@ describe('QueryStringObserver', () => {
   })
 
   it('should correctly map request query parameters into ClickData', async () => {
-    const mockRequest = {
+    const mockRequest: MockRequestAdapterData = {
       headers: {
         referer: 'http://example.com',
         'user-agent': 'Mozilla/5.0',
@@ -29,12 +32,12 @@ describe('QueryStringObserver', () => {
         sub_id_1: 'sub1',
         sub_id_2: 'sub2',
       },
-    } as unknown as Request
+    }
 
     const clickData: ClickData = {} as ClickData
 
     const data: RequestObserverData = {
-      request: mockRequest,
+      request: new MockRequestAdapter(mockRequest),
       clickData,
     }
 
