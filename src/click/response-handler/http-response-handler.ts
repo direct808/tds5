@@ -1,7 +1,7 @@
 import { ClickContext, ResponseHandler, StreamResponse } from '../types'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ClickData } from '../click-data'
-import { Response } from 'express'
+import { ResponseAdapter } from '@/utils/request-adapter'
 
 const cookieAge = 30 * 24 * 60 * 60 * 1000 // 30 days
 
@@ -20,7 +20,7 @@ export class HttpResponseHandler implements ResponseHandler {
     }
   }
 
-  private setCookies(response: Response, clickData: ClickData) {
+  private setCookies(response: ResponseAdapter, clickData: ClickData) {
     if (typeof clickData.visitorId === 'undefined') {
       throw new Error('clickData.visitorId undefined')
     }
