@@ -1,9 +1,9 @@
-import { Request } from 'express'
 import { ClickData } from '@/click/click-data'
 import { Stream } from '@/campaign/entity/stream.entity'
+import { RequestAdapter } from '@/utils/request-adapter'
 
 export interface RequestObserverData {
-  request: Request
+  request: RequestAdapter
   clickData: ClickData
 }
 

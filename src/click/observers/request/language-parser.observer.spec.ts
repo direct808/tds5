@@ -1,4 +1,9 @@
 import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
+import {
+  MockRequestAdapter,
+  MockRequestAdapterData,
+} from '@/utils/request-adapter'
+import { ClickData } from '@/click/click-data'
 
 describe('LanguageParserObserver', () => {
   let parser: LanguageParserObserver
@@ -39,13 +44,13 @@ describe('LanguageParserObserver', () => {
 
   describe('handle', () => {
     it('should not set language if accept-language is invalid', () => {
-      const args: any = {
-        request: {
+      const args = {
+        request: new MockRequestAdapter({
           headers: {
             'accept-language': 'x',
           },
-        },
-        clickData: {},
+        }),
+        clickData: {} as ClickData,
       }
 
       parser.handle(args)
@@ -54,13 +59,14 @@ describe('LanguageParserObserver', () => {
     })
 
     it('should set ClickData.language if accept-language is valid', () => {
-      const args: any = {
-        request: {
-          headers: {
-            'accept-language': 'en-US',
-          },
+      const requestData: MockRequestAdapterData = {
+        headers: {
+          'accept-language': 'en-US',
         },
-        clickData: {},
+      }
+      const args = {
+        request: new MockRequestAdapter(requestData),
+        clickData: {} as ClickData,
       }
 
       parser.handle(args)
@@ -69,11 +75,11 @@ describe('LanguageParserObserver', () => {
     })
 
     it('should do nothing if accept-language header is missing', () => {
-      const args: any = {
-        request: {
+      const args = {
+        request: new MockRequestAdapter({
           headers: {},
-        },
-        clickData: {},
+        }),
+        clickData: {} as ClickData,
       }
 
       parser.handle(args)

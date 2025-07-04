@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { UAParser } from 'ua-parser-js'
-import { Request } from 'express'
 import { ClickData } from '@/click/click-data'
 import { ClickObserver, RequestObserverData } from '@/click/observers/subject'
 
 @Injectable()
 export class UserAgentObserver implements ClickObserver<RequestObserverData> {
   public async handle({ request, clickData }: RequestObserverData) {
-    const userAgent = this.getUserAgent(request)
+    const userAgent = request.header('user-agent')
     if (!userAgent) {
       return
     }
@@ -24,9 +23,5 @@ export class UserAgentObserver implements ClickObserver<RequestObserverData> {
     }
 
     Object.assign(clickData, data)
-  }
-
-  private getUserAgent(request: Request) {
-    return request.headers['user-agent']
   }
 }

@@ -7,7 +7,7 @@ export class VisitorIdObserver implements ClickObserver<RequestObserverData> {
   constructor(private readonly generator: IdGenerator) {}
 
   public async handle({ request, clickData }: RequestObserverData) {
-    let visitorId: string | undefined = request.cookies.visitorId
+    let visitorId: string | undefined = request.cookie('visitorId')
     if (!visitorId || visitorId.length !== VISITOR_ID_SIZE) {
       visitorId = await this.generator.generate(VISITOR_ID_SIZE)
     }
