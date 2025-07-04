@@ -5,14 +5,14 @@ import { ClickObserver, RequestObserverData } from '@/click/observers/subject'
 export class LanguageParserObserver
   implements ClickObserver<RequestObserverData>
 {
-  public async handle(args: RequestObserverData) {
-    const acceptLanguage = args.request.headers['accept-language']
+  public async handle({ request, clickData }: RequestObserverData) {
+    const acceptLanguage = request.header('accept-language')
 
     if (!this.checkValue(acceptLanguage)) {
       return
     }
 
-    args.clickData.language = this.parseLang(acceptLanguage)
+    clickData.language = this.parseLang(acceptLanguage)
   }
 
   private checkValue(acceptLanguage: unknown): acceptLanguage is string {
