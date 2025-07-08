@@ -72,3 +72,11 @@ export async function truncateTables(app: INestApplication) {
   const sql = `TRUNCATE TABLE ${names} CASCADE;`
   await ds.query(sql)
 }
+
+export function spyOn<T extends object>(service: T, key: string) {
+  return jest.spyOn(service, key as any)
+}
+
+export function mockWrap(method: (...args: any[]) => any): jest.Mock {
+  return method as jest.Mock
+}

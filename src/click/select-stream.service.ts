@@ -1,13 +1,42 @@
 import { Injectable } from '@nestjs/common'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { ClickData } from '@/click/click-data'
+import { Filters } from '@/stream-filter/types'
+import { StreamFilterService } from '@/stream-filter/stream-filter.service'
+
+interface StreamWithFilters {
+  filters: Filters | null
+}
 
 @Injectable()
 export class SelectStreamService {
-  async selectStream(streams: Stream[]): Promise<Stream> {
+  constructor(private readonly streamFilterService: StreamFilterService) {}
+
+  public selectStream<T extends StreamWithFilters>(
+    streams: T[],
+    clickData: ClickData,
+  ): T {
     if (streams.length === 0) {
       throw new Error('No streams')
     }
 
-    return streams[0]
+    for (const stream of streams) {
+      if (this.checkStreamFilters(stream, clickData)) {
+        return stream
+      }
+    }
+
+    throw new Error(`Can't select stream`)
+  }
+
+  private checkStreamFilters(
+    stream: StreamWithFilters,
+    clickData: ClickData,
+  ): boolean {
+    const filters = stream.filters
+    if (!filters || filters.items.length === 0) {
+      return true
+    }
+
+    return this.streamFilterService.checkFilters(filters, clickData)
   }
 }

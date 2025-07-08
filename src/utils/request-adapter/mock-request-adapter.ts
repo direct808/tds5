@@ -8,19 +8,19 @@ export type MockRequestAdapterData = {
 }
 
 export class MockRequestAdapter implements RequestAdapter {
-  public readonly ip = this.data.ip
+  public readonly ip = this.data?.ip
 
-  constructor(private readonly data: MockRequestAdapterData) {}
+  constructor(private readonly data?: MockRequestAdapterData) {}
 
   public query(name: string): string | undefined {
-    return this.data.query?.[name]
+    return this.data?.query?.[name]
   }
 
   public cookie(name: string): string | undefined {
-    return this.data.cookies?.[name]
+    return this.data?.cookies?.[name]
   }
 
   public header(name: HeaderName): string | undefined {
-    return this.data.headers?.[name]
+    return this.data?.headers?.[name]
   }
 }
