@@ -1,4 +1,4 @@
-import { StreamFilter } from '@/stream-filter/types'
+import { BaseFilterObject, StreamFilter } from '@/stream-filter/types'
 import { DateTime } from 'luxon'
 
 interface Item {
@@ -8,7 +8,8 @@ interface Item {
   toTime: string
 }
 
-export interface ScheduleFilterObj {
+export interface ScheduleFilterObj extends BaseFilterObject {
+  type: 'schedule'
   timezone: string
   items: Item[]
 }

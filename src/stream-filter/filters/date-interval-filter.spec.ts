@@ -1,32 +1,11 @@
-import { DateIntervalFilter } from '@/stream-filter/filters/date-interval-filter'
+import {
+  DateIntervalFilter,
+  DateIntervalFilterObject,
+} from '@/stream-filter/filters/date-interval-filter'
 import { DateTime } from 'luxon'
-import { DateIntervalFilterObject } from '@/stream-filter/types'
-import { spyOn } from '../../../test/utils/helpers'
 
 describe('DateIntervalFilter', () => {
-  describe('handle', () => {
-    it('Should return true', () => {
-      const from = '2025-07-04T09:00:00'
-      const to = '2025-07-04T11:00:00'
-      const timezone = 'Europe/Moscow'
-      const filter = new DateIntervalFilter({
-        from,
-        to,
-        timezone,
-        type: 'date',
-      })
-
-      const diffDates = spyOn(filter, 'diffDates').mockReturnValue(true)
-
-      const result = filter.handle()
-
-      expect(diffDates).toHaveBeenCalledWith(from, to, timezone)
-      expect(result).toBeTruthy()
-    })
-  })
-
   describe('diffDates', () => {
-    const filter = new DateIntervalFilter({} as DateIntervalFilterObject)
     afterEach(() => {
       jest.useRealTimers()
     })
@@ -42,7 +21,13 @@ describe('DateIntervalFilter', () => {
       const to = '2025-07-04T11:00:00'
       const timezone = 'Europe/Moscow'
 
-      const result = filter['diffDates'](from, to, timezone)
+      const filter = new DateIntervalFilter({
+        from,
+        to,
+        timezone,
+      } as DateIntervalFilterObject)
+
+      const result = filter['handle']()
 
       expect(result).toBe(true)
     })
@@ -58,7 +43,13 @@ describe('DateIntervalFilter', () => {
       const to = '2025-07-04T11:00:00'
       const timezone = 'Europe/Moscow'
 
-      const result = filter['diffDates'](from, to, timezone)
+      const filter = new DateIntervalFilter({
+        from,
+        to,
+        timezone,
+      } as DateIntervalFilterObject)
+
+      const result = filter['handle']()
 
       expect(result).toBe(false)
     })
@@ -74,7 +65,13 @@ describe('DateIntervalFilter', () => {
       const to = '2025-07-04T11:00:00'
       const timezone = 'Europe/Moscow'
 
-      const result = filter['diffDates'](from, to, timezone)
+      const filter = new DateIntervalFilter({
+        from,
+        to,
+        timezone,
+      } as DateIntervalFilterObject)
+
+      const result = filter['handle']()
 
       expect(result).toBe(false)
     })
@@ -90,7 +87,13 @@ describe('DateIntervalFilter', () => {
       const to = '2025-07-04T08:00:00'
       const timezone = 'UTC+3'
 
-      const result = filter['diffDates'](from, to, timezone)
+      const filter = new DateIntervalFilter({
+        from,
+        to,
+        timezone,
+      } as DateIntervalFilterObject)
+
+      const result = filter['handle']()
 
       expect(result).toBe(true)
     })

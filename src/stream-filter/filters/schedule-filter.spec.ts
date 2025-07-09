@@ -5,6 +5,10 @@ import {
 } from '@/stream-filter/filters/schedule-filter'
 
 describe('ScheduleFilter', () => {
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
   describe('checkSchedule', () => {
     it.each([
       ['2024-07-02T11:00:00', 2, '10:30', 2, '11:30', true],
@@ -37,9 +41,10 @@ describe('ScheduleFilter', () => {
         const filter = new ScheduleFilter({} as ScheduleFilterObj)
 
         const obj = {
+          type: 'schedule',
           timezone,
           items: [{ fromDay, formTime, toDay, toTime }],
-        }
+        } as ScheduleFilterObj
 
         const result = filter['checkSchedule'](obj)
 

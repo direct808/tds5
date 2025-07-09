@@ -11,16 +11,16 @@ interface StreamWithFilters {
 export class SelectStreamService {
   constructor(private readonly streamFilterService: StreamFilterService) {}
 
-  public selectStream<T extends StreamWithFilters>(
+  public async selectStream<T extends StreamWithFilters>(
     streams: T[],
     clickData: ClickData,
-  ): T {
+  ): Promise<T> {
     if (streams.length === 0) {
       throw new Error('No streams')
     }
 
     for (const stream of streams) {
-      if (this.checkStreamFilters(stream, clickData)) {
+      if (await this.checkStreamFilters(stream, clickData)) {
         return stream
       }
     }
@@ -28,10 +28,10 @@ export class SelectStreamService {
     throw new Error(`Can't select stream`)
   }
 
-  private checkStreamFilters(
+  private async checkStreamFilters(
     stream: StreamWithFilters,
     clickData: ClickData,
-  ): boolean {
+  ): Promise<boolean> {
     const filters = stream.filters
     if (!filters || filters.items.length === 0) {
       return true

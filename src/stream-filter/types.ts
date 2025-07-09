@@ -1,3 +1,7 @@
+import { ScheduleFilterObj } from '@/stream-filter/filters/schedule-filter'
+import { DateIntervalFilterObject } from '@/stream-filter/filters/date-interval-filter'
+import { ClickLimitFilterObj } from '@/stream-filter/filters/click-limit-filter'
+
 export type TextFilterTypes =
   | 'referer'
   | 'source'
@@ -13,6 +17,8 @@ export type FilterObject =
   | TextFilterObject
   | QueryParamFilterObject
   | DateIntervalFilterObject
+  | ScheduleFilterObj
+  | ClickLimitFilterObj
 
 export interface TextFilterObject extends BaseFilterObject {
   type: TextFilterTypes
@@ -28,19 +34,13 @@ export interface QueryParamFilterObject extends BaseFilterObject {
 export interface BoolFilterObject extends BaseFilterObject {
   type: 'ipv6'
 }
-export interface DateIntervalFilterObject extends BaseFilterObject {
-  type: 'date'
-  from: string
-  to: string
-  timezone: string
-}
 
-interface BaseFilterObject {
+export interface BaseFilterObject {
   exclude?: boolean
 }
 
 export interface StreamFilter {
-  handle(): boolean
+  handle(): boolean | Promise<boolean>
 }
 
 export interface Filters {

@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { FilterObject, StreamFilter } from '@/stream-filter/types'
-import { TextFilter } from './text-filter'
-import { QueryParamFilter } from './query-param-filter'
 import { ClickData } from '@/click/click-data'
 import { RequestAdapter } from '@/utils/request-adapter'
-import { IpFilter } from './ip-filter'
 import { BoolFilter } from '@/stream-filter/filters/bool-filter'
 import { DateIntervalFilter } from '@/stream-filter/filters/date-interval-filter'
+import { TextFilter } from '@/stream-filter/filters/text-filter'
+import { IpFilter } from '@/stream-filter/filters/ip-filter'
+import { QueryParamFilter } from '@/stream-filter/filters/query-param-filter'
+import { ScheduleFilter } from '@/stream-filter/filters/schedule-filter'
+import {
+  ClickLimitFilter,
+  ClickLimitProvider,
+} from '@/stream-filter/filters/click-limit-filter'
 
 @Injectable()
 export class StreamFilterFactory {
@@ -14,10 +19,15 @@ export class StreamFilterFactory {
     filterObj: FilterObject,
     clickData: ClickData,
     request: RequestAdapter,
+    clickLimitProvider: ClickLimitProvider,
   ): StreamFilter {
     switch (filterObj.type) {
       case 'date':
         return new DateIntervalFilter(filterObj)
+      case 'schedule':
+        return new ScheduleFilter(filterObj)
+      case 'click-limit':
+        return new ClickLimitFilter(filterObj, clickLimitProvider)
       case 'referer':
         return new TextFilter(filterObj, clickData.referer)
       case 'source':

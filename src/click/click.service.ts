@@ -36,7 +36,7 @@ export class ClickService {
     const { code, clickData } = cContext
     this.checkIncrementRedirectCount(cContext)
     const campaign = await this.getFullCampaignByCode(code)
-    const stream = this.selectStreamService.selectStream(
+    const stream = await this.selectStreamService.selectStream(
       campaign.streams,
       clickData,
     )

@@ -2,13 +2,14 @@ import { FilterLogic, FilterObject, Filters } from '@/stream-filter/types'
 import { ClickData } from '@/click/click-data'
 import { Injectable } from '@nestjs/common'
 import { RequestAdapter } from '@/utils/request-adapter'
-import { StreamFilterFactory } from '@/stream-filter/filters/stream-filter-factory'
+import { StreamFilterFactory } from '@/stream-filter/stream-filter-factory'
+import { ClickLimitProvider } from '@/stream-filter/filters/click-limit-filter'
 
 @Injectable()
 export class StreamFilterService {
   constructor(private readonly streamFilterFactory: StreamFilterFactory) {}
 
-  public checkFilters(
+  public async checkFilters(
     filters: Filters,
     clickData: ClickData,
     request: RequestAdapter,
@@ -16,7 +17,12 @@ export class StreamFilterService {
     let resultValue = true
 
     for (const filter of filters.items) {
-      const result = this.checkFilter(filter, clickData, filters.logic, request)
+      const result = await this.checkFilter(
+        filter,
+        clickData,
+        filters.logic,
+        request,
+      )
 
       if (result.break) {
         return result.value
@@ -28,13 +34,13 @@ export class StreamFilterService {
     return resultValue
   }
 
-  private checkFilter(
+  private async checkFilter(
     filter: FilterObject,
     clickData: ClickData,
     logic: FilterLogic,
     request: RequestAdapter,
-  ): { value: boolean; break?: true } {
-    const result = this.filter(filter, clickData, request)
+  ): Promise<{ value: boolean; break?: true }> {
+    const result = await this.filter(filter, clickData, request)
 
     if (result && logic === FilterLogic.Or) {
       return { value: result, break: true }
@@ -47,12 +53,18 @@ export class StreamFilterService {
     return { value: result }
   }
 
-  private filter(
+  private async filter(
     filter: FilterObject,
     clickData: ClickData,
     request: RequestAdapter,
-  ): boolean {
-    const result = this.handle(filter, clickData, request)
+    clickLimitProvider: ClickLimitProvider,
+  ): Promise<boolean> {
+    const result = await this.handle(
+      filter,
+      clickData,
+      request,
+      clickLimitProvider,
+    )
     return this.processExclude(result, filter.exclude)
   }
 
@@ -64,7 +76,10 @@ export class StreamFilterService {
     filter: FilterObject,
     clickData: ClickData,
     request: RequestAdapter,
+    clickLimitProvider: ClickLimitProvider,
   ) {
-    return this.streamFilterFactory.create(filter, clickData, request).handle()
+    return this.streamFilterFactory
+      .create(filter, clickData, request, clickLimitProvider)
+      .handle()
   }
 }
