@@ -46,11 +46,19 @@ export class ClickService {
       cContext,
     )
 
-    if ('url' in streamResponse && !clickData.destination) {
+    if ('url' in streamResponse) {
       clickData.destination = streamResponse.url
     }
 
     await this.registerClickService.register(clickData)
+
+    if ('campaignCode' in streamResponse) {
+      cContext.clickData.previousCampaignId = campaign.id
+      return this.getStreamResponse({
+        ...cContext,
+        code: streamResponse.campaignCode,
+      })
+    }
 
     return streamResponse
   }

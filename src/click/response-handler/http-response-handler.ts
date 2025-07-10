@@ -12,6 +12,11 @@ export class HttpResponseHandler implements ResponseHandler {
     clickResponse: StreamResponse,
   ): void {
     this.setCookies(response, clickData)
+
+    if ('campaignCode' in clickResponse) {
+      throw new Error('Action type to campaign not processed')
+    }
+
     response.status(clickResponse.status || HttpStatus.OK)
     if ('url' in clickResponse) {
       response.redirect(clickResponse.url)
