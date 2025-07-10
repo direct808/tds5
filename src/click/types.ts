@@ -3,7 +3,10 @@ import type { Stream } from '@/campaign/entity/stream.entity'
 import type { ClickData } from './click-data'
 import { RequestAdapter, ResponseAdapter } from '@/utils/request-adapter'
 
-export type StreamResponse = StreamContentResponse | StreamRedirectResponse
+export type StreamResponse =
+  | StreamContentResponse
+  | StreamRedirectResponse
+  | ToCampaignResponse
 
 export type StreamContentResponse = {
   status?: HttpStatus
@@ -13,6 +16,10 @@ export type StreamContentResponse = {
 export type StreamRedirectResponse = {
   status: HttpStatus
   url: string
+}
+
+export type ToCampaignResponse = {
+  campaignCode: string
 }
 
 export type ClickContext = {
