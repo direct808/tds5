@@ -9,6 +9,7 @@ import { LanguageParserObserver } from '@/click/observers/request/language-parse
 import { VisitorIdObserver } from '@/click/observers/request/visitor-id.observer'
 import { UserAgentObserver } from '@/click/observers/request/user-agent.observer'
 import { IdGenerator } from '@/click/observers/id-generator'
+import { ClickSharedModule } from '@/click/shared/clickSharedModule'
 
 @Module({
   exports: [SetupSubject],
@@ -24,5 +25,6 @@ import { IdGenerator } from '@/click/observers/id-generator'
     UserAgentObserver,
     IdGenerator,
   ],
+  imports: [ClickSharedModule],
 })
 export class ObserverModule {}

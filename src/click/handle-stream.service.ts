@@ -4,7 +4,7 @@ import {
   Stream,
   StreamDirectUrl,
 } from '@/campaign/entity/stream.entity'
-import { ClickContext, StreamResponse } from './types'
+import { StreamResponse } from './types'
 import { DirectUrlService } from './schema/direct-url/direct-url.service'
 import { ActionService } from './schema/action/action.service'
 import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
@@ -17,15 +17,12 @@ export class HandleStreamService {
     private readonly landingsOffersService: LandingsOffersService,
   ) {}
 
-  public async handleStream(
-    stream: Stream,
-    cContext: ClickContext,
-  ): Promise<StreamResponse> {
+  public async handleStream(stream: Stream): Promise<StreamResponse> {
     switch (stream.schema) {
       case CampaignStreamSchema.ACTION:
-        return this.actionService.handle(stream, cContext)
+        return this.actionService.handle(stream)
       case CampaignStreamSchema.LANDINGS_OFFERS:
-        return this.landingsOffersService.handle(cContext, stream)
+        return this.landingsOffersService.handle(stream)
       case CampaignStreamSchema.DIRECT_URL:
         return this.directUrlService.handle(stream as StreamDirectUrl)
     }

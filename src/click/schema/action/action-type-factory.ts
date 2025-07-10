@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ActionType, ClickContext, StreamResponse } from '../../types'
+import { ActionType, StreamResponse } from '../../types'
 import { Stream, StreamActionType } from '@/campaign/entity/stream.entity'
 import { ModuleRef } from '@nestjs/core'
 import {
@@ -14,11 +14,11 @@ import {
 export class ActionTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  handle(stream: Stream, cRequest: ClickContext): Promise<StreamResponse> {
+  handle(stream: Stream): Promise<StreamResponse> {
     if (!stream.actionType) {
       throw new Error('No actionType')
     }
-    return this.create(stream.actionType).handle(stream, cRequest)
+    return this.create(stream.actionType).handle(stream)
   }
 
   private create(actionType: StreamActionType): ActionType {

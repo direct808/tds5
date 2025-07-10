@@ -3,6 +3,7 @@ import { LandingsOffersService } from './landings-offers.service'
 import { OfferParamsService } from './offer-params.service'
 import { OfferParamDataMapper } from './offer-params-data-mapper'
 import { SelectOfferService } from './select-offer.service'
+import { ClickSharedModule } from '@/click/shared/clickSharedModule'
 
 @Module({
   exports: [LandingsOffersService],
@@ -12,5 +13,6 @@ import { SelectOfferService } from './select-offer.service'
     OfferParamDataMapper,
     SelectOfferService,
   ],
+  imports: [ClickSharedModule],
 })
 export class LandingsOfferModule {}
