@@ -4,15 +4,21 @@ import {
   IdGenerator,
   VISITOR_ID_SIZE,
 } from '@/click/observers/id-generator'
-import { ClickObserver, StreamObserverData } from '@/click/observers/subject'
+import { ClickObserver } from '@/click/observers/subject'
+import { ClickContextService } from '@/click/click-context.service'
 
 const SIZE = CLICK_ID_SIZE - VISITOR_ID_SIZE
 
 @Injectable()
-export class ClickIdObserver implements ClickObserver<StreamObserverData> {
-  constructor(private readonly generator: IdGenerator) {}
+export class ClickIdObserver implements ClickObserver<void> {
+  constructor(
+    private readonly generator: IdGenerator,
+    private readonly clickContext: ClickContextService,
+  ) {}
 
-  public async handle({ clickData }: StreamObserverData) {
+  public async handle() {
+    const clickData = this.clickContext.getClickData()
+
     if (!clickData.visitorId) {
       throw new Error('No visitorId')
     }

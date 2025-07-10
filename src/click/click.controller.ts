@@ -4,10 +4,14 @@ import { Request, Response } from 'express'
 import { SkipAuth } from '@/auth/types'
 import { ClickData } from './click-data'
 import { ExpressRequestAdapter } from '@/utils/request-adapter'
+import { ClickContextService } from '@/click/click-context.service'
 
 @Controller()
 export class ClickController {
-  constructor(private readonly clickService: ClickService) {}
+  constructor(
+    private readonly clickService: ClickService,
+    private readonly clickContext: ClickContextService,
+  ) {}
 
   @Get(':code([a-zA-Z0-9]{6})')
   @SkipAuth()
@@ -16,12 +20,16 @@ export class ClickController {
     @Req() request: Request,
     @Res() response: Response,
   ) {
-    await this.clickService.handleClick({
+    this.clickContext.setRequestAdapter(new ExpressRequestAdapter(request))
+    await this.clickService.handleClick(
       code,
-      request: new ExpressRequestAdapter(request),
-      response,
-      redirectCount: 0,
-      clickData: new ClickData(),
-    })
+      //   {
+      //   code,
+      //   // request: new ExpressRequestAdapter(request),
+      //   response,
+      //   redirectCount: 0,
+      //   clickData: new ClickData(),
+      // }
+    )
   }
 }

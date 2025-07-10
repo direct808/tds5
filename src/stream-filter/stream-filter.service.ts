@@ -1,28 +1,16 @@
 import { FilterLogic, FilterObject, Filters } from '@/stream-filter/types'
-import { ClickData } from '@/click/click-data'
 import { Injectable } from '@nestjs/common'
-import { RequestAdapter } from '@/utils/request-adapter'
 import { StreamFilterFactory } from '@/stream-filter/stream-filter-factory'
-import { ClickLimitProvider } from '@/stream-filter/filters/click-limit-filter'
 
 @Injectable()
 export class StreamFilterService {
   constructor(private readonly streamFilterFactory: StreamFilterFactory) {}
 
-  public async checkFilters(
-    filters: Filters,
-    clickData: ClickData,
-    request: RequestAdapter,
-  ) {
+  public async checkFilters(filters: Filters) {
     let resultValue = true
 
     for (const filter of filters.items) {
-      const result = await this.checkFilter(
-        filter,
-        clickData,
-        filters.logic,
-        request,
-      )
+      const result = await this.checkFilter(filter, filters.logic)
 
       if (result.break) {
         return result.value
@@ -36,11 +24,9 @@ export class StreamFilterService {
 
   private async checkFilter(
     filter: FilterObject,
-    clickData: ClickData,
     logic: FilterLogic,
-    request: RequestAdapter,
   ): Promise<{ value: boolean; break?: true }> {
-    const result = await this.filter(filter, clickData, request)
+    const result = await this.filter(filter)
 
     if (result && logic === FilterLogic.Or) {
       return { value: result, break: true }
@@ -53,18 +39,8 @@ export class StreamFilterService {
     return { value: result }
   }
 
-  private async filter(
-    filter: FilterObject,
-    clickData: ClickData,
-    request: RequestAdapter,
-    clickLimitProvider: ClickLimitProvider,
-  ): Promise<boolean> {
-    const result = await this.handle(
-      filter,
-      clickData,
-      request,
-      clickLimitProvider,
-    )
+  private async filter(filter: FilterObject): Promise<boolean> {
+    const result = await this.handle(filter)
     return this.processExclude(result, filter.exclude)
   }
 
@@ -72,14 +48,7 @@ export class StreamFilterService {
     return exclude ? !result : result
   }
 
-  private handle(
-    filter: FilterObject,
-    clickData: ClickData,
-    request: RequestAdapter,
-    clickLimitProvider: ClickLimitProvider,
-  ) {
-    return this.streamFilterFactory
-      .create(filter, clickData, request, clickLimitProvider)
-      .handle()
+  private handle(filter: FilterObject) {
+    return this.streamFilterFactory.create(filter).handle()
   }
 }

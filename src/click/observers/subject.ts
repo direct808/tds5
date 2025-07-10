@@ -1,16 +1,18 @@
-import { ClickData } from '@/click/click-data'
+// import { ClickData } from '@/click/click-data'
+// import { Stream } from '@/campaign/entity/stream.entity'
+// import { RequestAdapter } from '@/utils/request-adapter'
+
+// export interface RequestObserverData {
+//   request: RequestAdapter
+//   clickData: ClickData
+// }
+
+// export interface StreamObserverData {
+//   stream: Stream
+//   clickData: ClickData
+// }
+
 import { Stream } from '@/campaign/entity/stream.entity'
-import { RequestAdapter } from '@/utils/request-adapter'
-
-export interface RequestObserverData {
-  request: RequestAdapter
-  clickData: ClickData
-}
-
-export interface StreamObserverData {
-  stream: Stream
-  clickData: ClickData
-}
 
 export interface ClickObserver<T> {
   handle(data: T): Promise<void>

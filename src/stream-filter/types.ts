@@ -1,29 +1,32 @@
 import { ScheduleFilterObj } from '@/stream-filter/filters/schedule-filter'
 import { DateIntervalFilterObject } from '@/stream-filter/filters/date-interval-filter'
 import { ClickLimitFilterObj } from '@/stream-filter/filters/click-limit-filter'
+import { ClickDataTextFilterObject } from '@/stream-filter/filters/click-data-text-filter'
+import { IpFilterObject } from '@/stream-filter/filters/ip-filter'
 
-export type TextFilterTypes =
-  | 'referer'
-  | 'source'
-  | 'keyword'
-  | 'searchEngine'
-  | 'adCampaignId'
-  | 'creativeId'
-  | 'city'
-  | 'region'
-  | 'country'
+// export type TextFilterTypes =
+//   | 'referer'
+//   | 'source'
+//   | 'keyword'
+//   | 'searchEngine'
+//   | 'adCampaignId'
+//   | 'creativeId'
+//   | 'city'
+//   | 'region'
+//   | 'country'
 
 export type FilterObject =
-  | TextFilterObject
+  | ClickDataTextFilterObject
   | QueryParamFilterObject
   | DateIntervalFilterObject
   | ScheduleFilterObj
   | ClickLimitFilterObj
+  | IpFilterObject
 
-export interface TextFilterObject extends BaseFilterObject {
-  type: TextFilterTypes
-  values: string[]
-}
+// export interface TextFilterObject extends BaseFilterObject {
+//   type: TextFilterTypes
+//   values: string[]
+// }
 
 export interface QueryParamFilterObject extends BaseFilterObject {
   type: 'query-param'

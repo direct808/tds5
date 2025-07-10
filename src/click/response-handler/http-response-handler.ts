@@ -1,16 +1,19 @@
-import { ClickContext, ResponseHandler, StreamResponse } from '../types'
+import { ResponseHandler, StreamResponse } from '../types'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ClickData } from '../click-data'
 import { ResponseAdapter } from '@/utils/request-adapter'
+import { ClickContextService } from '@/click/click-context.service'
 
 const cookieAge = 30 * 24 * 60 * 60 * 1000 // 30 days
 
 @Injectable()
 export class HttpResponseHandler implements ResponseHandler {
-  public handle(
-    { response, clickData }: ClickContext,
-    clickResponse: StreamResponse,
-  ): void {
+  constructor(private readonly clickContext: ClickContextService) {}
+
+  public handle(clickResponse: StreamResponse): void {
+    const response = this.clickContext.getResponseAdapter()
+    const clickData = this.clickContext.getClickData()
+
     this.setCookies(response, clickData)
     response.status(clickResponse.status || HttpStatus.OK)
     if ('url' in clickResponse) {
