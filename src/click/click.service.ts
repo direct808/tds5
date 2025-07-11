@@ -12,11 +12,9 @@ import { ResponseHandlerFactory } from './response-handler/response-handler-fact
 import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from '@/click/observers/setup-subject'
-import { ClickContextService } from '@/click/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
-type RedirectData = {
-  count: number
-}
+type RedirectData = { count: number }
 
 @Injectable()
 export class ClickService {
@@ -27,12 +25,12 @@ export class ClickService {
     private readonly responseHandlerFactory: ResponseHandlerFactory,
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   async handleClick(code: string) {
-    const redirectData = { count: 0 }
     await this.setupSubject.setupRequestSubject()
+    const redirectData: RedirectData = { count: 0 }
     const streamResponse = await this.getStreamResponse(code, redirectData)
     this.responseHandlerFactory.handle(streamResponse)
   }
@@ -41,6 +39,8 @@ export class ClickService {
     code: string,
     redirectData: RedirectData,
   ): Promise<StreamResponse> {
+    const clickData = this.clickContext.getClickData()
+
     this.checkIncrementRedirectCount(redirectData)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
@@ -50,12 +50,16 @@ export class ClickService {
 
     const streamResponse = await this.handleStreamService.handleStream(stream)
 
-    const clickData = this.clickContext.getClickData()
-    if ('url' in streamResponse && !clickData.destination) {
+    if ('url' in streamResponse) {
       clickData.destination = streamResponse.url
     }
 
     await this.registerClickService.register(clickData)
+
+    if ('campaignCode' in streamResponse) {
+      clickData.previousCampaignId = campaign.id
+      return this.getStreamResponse(streamResponse.campaignCode, redirectData)
+    }
 
     return streamResponse
   }

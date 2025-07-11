@@ -1,24 +1,8 @@
-// import { ClickData } from '@/click/click-data'
-// import { Stream } from '@/campaign/entity/stream.entity'
-// import { RequestAdapter } from '@/utils/request-adapter'
-
-// export interface RequestObserverData {
-//   request: RequestAdapter
-//   clickData: ClickData
-// }
-
-// export interface StreamObserverData {
-//   stream: Stream
-//   clickData: ClickData
-// }
-
-import { Stream } from '@/campaign/entity/stream.entity'
-
-export interface ClickObserver<T> {
+export interface ClickObserver<T = void> {
   handle(data: T): Promise<void>
 }
 
-export class ClickSubject<T> {
+export class ClickSubject<T = void> {
   private observers: ClickObserver<T>[] = []
 
   public attach(observer: ClickObserver<T>): void {

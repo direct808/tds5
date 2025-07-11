@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { ClickData } from '@/click/click-data'
 import { ClickObserver } from '@/click/observers/subject'
-import { ClickContextService } from '@/click/click-context.service'
+import {
+  ClickContext,
+  IClickContext,
+} from '@/click/shared/click-context.service'
 
 @Injectable()
-export class QueryStringObserver implements ClickObserver<void> {
-  constructor(private readonly clickContext: ClickContextService) {}
+export class QueryStringObserver implements ClickObserver {
+  constructor(
+    @Inject(ClickContext) private readonly clickContext: IClickContext,
+  ) {}
 
   public async handle() {
     const request = this.clickContext.getRequestAdapter()

@@ -1,4 +1,3 @@
-import { ClickData } from '@/click/click-data'
 import { Stream } from '@/campaign/entity/stream.entity'
 import { Injectable } from '@nestjs/common'
 import { StreamSetupSubject } from '@/click/observers/stream-setup-subject'

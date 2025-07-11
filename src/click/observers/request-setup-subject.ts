@@ -15,7 +15,7 @@ export class RequestSetupSubject {
   ) {}
 
   public async setup() {
-    const requestSubject = new ClickSubject<void>()
+    const requestSubject = new ClickSubject()
 
     requestSubject.attach(this.queryStringObserver)
     requestSubject.attach(this.languageParserObserver)

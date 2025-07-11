@@ -2,15 +2,14 @@ import { Controller, Get, Param, Req, Res } from '@nestjs/common'
 import { ClickService } from './click.service'
 import { Request, Response } from 'express'
 import { SkipAuth } from '@/auth/types'
-import { ClickData } from './click-data'
 import { ExpressRequestAdapter } from '@/utils/request-adapter'
-import { ClickContextService } from '@/click/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 @Controller()
 export class ClickController {
   constructor(
     private readonly clickService: ClickService,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   @Get(':code([a-zA-Z0-9]{6})')
@@ -21,15 +20,9 @@ export class ClickController {
     @Res() response: Response,
   ) {
     this.clickContext.setRequestAdapter(new ExpressRequestAdapter(request))
-    await this.clickService.handleClick(
-      code,
-      //   {
-      //   code,
-      //   // request: new ExpressRequestAdapter(request),
-      //   response,
-      //   redirectCount: 0,
-      //   clickData: new ClickData(),
-      // }
-    )
+    this.clickContext.setResponseAdapter(response)
+    this.clickContext.createClickData()
+
+    await this.clickService.handleClick(code)
   }
 }

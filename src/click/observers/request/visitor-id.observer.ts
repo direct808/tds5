@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { ClickObserver } from '@/click/observers/subject'
 import { IdGenerator, VISITOR_ID_SIZE } from '@/click/observers/id-generator'
-import { ClickContextService } from '@/click/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 @Injectable()
-export class VisitorIdObserver implements ClickObserver<void> {
+export class VisitorIdObserver implements ClickObserver {
   constructor(
     private readonly generator: IdGenerator,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   public async handle() {

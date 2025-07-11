@@ -1,16 +1,15 @@
 import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
-import {
-  MockRequestAdapter,
-  MockRequestAdapterData,
-} from '@/utils/request-adapter'
-import { ClickData } from '@/click/click-data'
+import { MockRequestAdapter } from '@/utils/request-adapter'
+import { MockClickContext } from '../../../../test/utils/mock-click-context.service'
 
 describe('LanguageParserObserver', () => {
   let parser: LanguageParserObserver
+  let clickContext: MockClickContext
   let checkValue: (arg: unknown) => boolean
 
   beforeEach(() => {
-    parser = new LanguageParserObserver()
+    clickContext = MockClickContext.create().createClickData()
+    parser = new LanguageParserObserver(clickContext)
     checkValue = parser['checkValue']
   })
 
@@ -44,47 +43,33 @@ describe('LanguageParserObserver', () => {
 
   describe('handle', () => {
     it('should not set language if accept-language is invalid', () => {
-      const args = {
-        request: new MockRequestAdapter({
-          headers: {
-            'accept-language': 'x',
-          },
-        }),
-        clickData: {} as ClickData,
-      }
+      clickContext.setRequestAdapter(
+        MockRequestAdapter.create().setHeader('accept-language', 'x'),
+      )
 
-      parser.handle(args)
+      parser.handle()
 
-      expect(args.clickData.language).toBeUndefined()
+      const language = clickContext.getClickData().language
+
+      expect(language).toBeUndefined()
     })
 
     it('should set ClickData.language if accept-language is valid', () => {
-      const requestData: MockRequestAdapterData = {
-        headers: {
-          'accept-language': 'en-US',
-        },
-      }
-      const args = {
-        request: new MockRequestAdapter(requestData),
-        clickData: {} as ClickData,
-      }
+      clickContext.setRequestAdapter(
+        MockRequestAdapter.create().setHeader('accept-language', 'en-US'),
+      )
 
-      parser.handle(args)
+      parser.handle()
 
-      expect(args.clickData.language).toBe('en')
+      expect(clickContext.getClickData().language).toBe('en')
     })
 
     it('should do nothing if accept-language header is missing', () => {
-      const args = {
-        request: new MockRequestAdapter({
-          headers: {},
-        }),
-        clickData: {} as ClickData,
-      }
+      clickContext.setRequestAdapter(MockRequestAdapter.create())
 
-      parser.handle(args)
+      parser.handle()
 
-      expect(args.clickData.language).toBeUndefined()
+      expect(clickContext.getClickData().language).toBeUndefined()
     })
   })
 })

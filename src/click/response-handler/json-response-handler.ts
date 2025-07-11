@@ -1,13 +1,13 @@
 import { ResponseHandler, StreamResponse } from '../types'
 import { Injectable } from '@nestjs/common'
-import { ClickContextService } from '@/click/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 /**
  * Handler for debug, without real redirects
  */
 @Injectable()
 export class JsonResponseHandler implements ResponseHandler {
-  constructor(private readonly clickContext: ClickContextService) {}
+  constructor(private readonly clickContext: ClickContext) {}
 
   public handle(clickResponse: StreamResponse): void {
     const response = this.clickContext.getResponseAdapter()
