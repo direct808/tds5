@@ -3,13 +3,13 @@ import { ClickService } from './click.service'
 import { Request, Response } from 'express'
 import { SkipAuth } from '@/auth/types'
 import { ExpressRequestAdapter } from '@/utils/request-adapter'
-import { ClickContextService } from '@/click/shared/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 @Controller()
 export class ClickController {
   constructor(
     private readonly clickService: ClickService,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   @Get(':code([a-zA-Z0-9]{6})')

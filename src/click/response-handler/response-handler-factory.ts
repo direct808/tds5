@@ -3,13 +3,13 @@ import { ModuleRef } from '@nestjs/core'
 import { ResponseHandler, StreamResponse } from '../types'
 import { HttpResponseHandler } from './http-response-handler'
 import { JsonResponseHandler } from './json-response-handler'
-import { ClickContextService } from '@/click/shared/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 @Injectable()
 export class ResponseHandlerFactory {
   constructor(
     private readonly moduleRef: ModuleRef,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   public handle(clickResponse: StreamResponse) {

@@ -1,20 +1,19 @@
-import { RequestObserverData } from '@/click/observers/subject'
-import { ClickData } from '@/click/click-data'
 import { QueryStringObserver } from '@/click/observers/request/query-string.observer'
 import {
   MockRequestAdapter,
   MockRequestAdapterData,
 } from '@/utils/request-adapter'
+import { MockClickContext } from '../../../../test/utils/mock-click-context.service'
 
 describe('QueryStringObserver', () => {
   let observer: QueryStringObserver
 
   beforeEach(() => {
-    observer = new QueryStringObserver()
+    observer = new QueryStringObserver({} as any)
   })
 
   it('should correctly map request query parameters into ClickData', async () => {
-    const mockRequest: MockRequestAdapterData = {
+    const mockRequestData: MockRequestAdapterData = {
       headers: {
         referer: 'http://example.com',
         'user-agent': 'Mozilla/5.0',
@@ -34,16 +33,15 @@ describe('QueryStringObserver', () => {
       },
     }
 
-    const clickData: ClickData = {} as ClickData
+    const clickContext = MockClickContext.create()
+      .setRequestAdapter(MockRequestAdapter.create(mockRequestData))
+      .createClickData()
 
-    const data: RequestObserverData = {
-      request: new MockRequestAdapter(mockRequest),
-      clickData,
-    }
+    const observer = new QueryStringObserver(clickContext)
 
-    await observer.handle(data)
+    await observer.handle()
 
-    expect(clickData).toEqual({
+    expect(clickContext.getClickData()).toEqual({
       ip: '127.0.0.1',
       referer: 'http://example.com',
       userAgent: 'Mozilla/5.0',

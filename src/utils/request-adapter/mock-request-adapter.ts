@@ -10,7 +10,11 @@ export type MockRequestAdapterData = {
 export class MockRequestAdapter implements RequestAdapter {
   public readonly ip = this.data.ip
 
-  constructor(private readonly data: MockRequestAdapterData) {}
+  static create(data: MockRequestAdapterData) {
+    return new MockRequestAdapter(data)
+  }
+
+  private constructor(private readonly data: MockRequestAdapterData) {}
 
   public query(name: string): string | undefined {
     return this.data.query?.[name]

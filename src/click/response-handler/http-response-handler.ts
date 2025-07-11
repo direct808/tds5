@@ -2,13 +2,13 @@ import { ResponseHandler, StreamResponse } from '../types'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ClickData } from '../click-data'
 import { ResponseAdapter } from '@/utils/request-adapter'
-import { ClickContextService } from '@/click/shared/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 const cookieAge = 30 * 24 * 60 * 60 * 1000 // 30 days
 
 @Injectable()
 export class HttpResponseHandler implements ResponseHandler {
-  constructor(private readonly clickContext: ClickContextService) {}
+  constructor(private readonly clickContext: ClickContext) {}
 
   public handle(clickResponse: StreamResponse): void {
     const response = this.clickContext.getResponseAdapter()

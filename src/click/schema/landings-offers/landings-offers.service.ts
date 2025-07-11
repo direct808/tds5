@@ -1,13 +1,16 @@
 import { StreamResponse } from '../../types'
 import { Stream } from '@/campaign/entity/stream.entity'
-import { HttpStatus, Injectable } from '@nestjs/common'
+import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { ClickData } from '../../click-data'
 import { Offer } from '@/offer/offer.entity'
 import { SelectOfferService } from './select-offer.service'
 import { OfferParamsService } from './offer-params.service'
 import { OfferParamDataMapper } from './offer-params-data-mapper'
 import { Campaign } from '@/campaign/entity/campaign.entity'
-import { ClickContextService } from '@/click/shared/click-context.service'
+import {
+  ClickContext,
+  IClickContext,
+} from '@/click/shared/click-context.service'
 
 @Injectable()
 export class LandingsOffersService {
@@ -15,7 +18,7 @@ export class LandingsOffersService {
     private readonly selectOfferService: SelectOfferService,
     private readonly offerParamsService: OfferParamsService,
     private readonly offerParamDataMapper: OfferParamDataMapper,
-    private readonly clickContext: ClickContextService,
+    @Inject(ClickContext) private readonly clickContext: IClickContext,
   ) {}
 
   public async handle(stream: Stream): Promise<StreamResponse> {

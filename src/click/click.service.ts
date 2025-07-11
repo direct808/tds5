@@ -12,7 +12,7 @@ import { ResponseHandlerFactory } from './response-handler/response-handler-fact
 import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from '@/click/observers/setup-subject'
-import { ClickContextService } from '@/click/shared/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 type RedirectData = { count: number }
 
@@ -25,7 +25,7 @@ export class ClickService {
     private readonly responseHandlerFactory: ResponseHandlerFactory,
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   async handleClick(code: string) {

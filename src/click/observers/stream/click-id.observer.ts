@@ -6,7 +6,7 @@ import {
 } from '@/click/observers/id-generator'
 import { ClickObserver } from '@/click/observers/subject'
 import { Stream } from '@/campaign/entity/stream.entity'
-import { ClickContextService } from '@/click/shared/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 const SIZE = CLICK_ID_SIZE - VISITOR_ID_SIZE
 
@@ -14,7 +14,7 @@ const SIZE = CLICK_ID_SIZE - VISITOR_ID_SIZE
 export class ClickIdObserver implements ClickObserver<Stream> {
   constructor(
     private readonly generator: IdGenerator,
-    private readonly clickContext: ClickContextService,
+    private readonly clickContext: ClickContext,
   ) {}
 
   public async handle() {

@@ -1,7 +1,5 @@
 import type { HttpStatus } from '@nestjs/common'
 import type { Stream } from '@/campaign/entity/stream.entity'
-// import type { ClickData } from './click-data'
-// import { RequestAdapter, ResponseAdapter } from '@/utils/request-adapter'
 
 export type StreamResponse =
   | StreamContentResponse
@@ -21,14 +19,6 @@ export type StreamRedirectResponse = {
 export type ToCampaignResponse = {
   campaignCode: string
 }
-
-// export type ClickContext = {
-//   code: string
-//   request: RequestAdapter
-//   response: ResponseAdapter
-//   redirectCount: number
-//   clickData: ClickData
-// }
 
 export interface RedirectType {
   handle(url: string): Promise<StreamResponse>

@@ -9,8 +9,17 @@ interface ClickContextClsStore extends ClsStore {
   clickData?: ClickData
 }
 
+export interface IClickContext {
+  getRequestAdapter(): RequestAdapter
+  setRequestAdapter(adapter: RequestAdapter): void
+  createClickData(): void
+  getClickData(): ClickData
+  setResponseAdapter(adapter: ResponseAdapter): void
+  getResponseAdapter(): ResponseAdapter
+}
+
 @Injectable()
-export class ClickContextService {
+export class ClickContext implements IClickContext {
   constructor(private readonly cls: ClsService<ClickContextClsStore>) {}
 
   getRequestAdapter(): RequestAdapter {

@@ -21,7 +21,7 @@ import { RegisterClickService } from './register-click.service'
 import { ClickRepository } from './click.repository'
 import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
 import { ObserverModule } from '@/click/observers/observer.module'
-import { ClickSharedModule } from '@/click/shared/clickSharedModule'
+import { ClickSharedModule } from '@/click/shared/click-shared.module'
 
 @Module({
   controllers: [ClickController],
