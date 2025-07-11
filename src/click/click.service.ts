@@ -9,9 +9,12 @@ import { SelectStreamService } from './select-stream.service'
 import { Campaign } from '@/campaign/entity/campaign.entity'
 import { HandleStreamService } from './handle-stream.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
-import { ClickContext, StreamResponse } from './types'
+import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from '@/click/observers/setup-subject'
+import { ClickContext } from '@/click/shared/click-context.service'
+
+type RedirectData = { count: number }
 
 @Injectable()
 export class ClickService {
@@ -22,29 +25,30 @@ export class ClickService {
     private readonly responseHandlerFactory: ResponseHandlerFactory,
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
+    private readonly clickContext: ClickContext,
   ) {}
 
-  async handleClick(cContext: ClickContext) {
-    await this.setupSubject.setupRequestSubject(cContext)
-    const streamResponse = await this.getStreamResponse(cContext)
-    this.responseHandlerFactory.handle(cContext, streamResponse)
+  async handleClick(code: string) {
+    await this.setupSubject.setupRequestSubject()
+    const redirectData: RedirectData = { count: 0 }
+    const streamResponse = await this.getStreamResponse(code, redirectData)
+    this.responseHandlerFactory.handle(streamResponse)
   }
 
   public async getStreamResponse(
-    cContext: ClickContext,
+    code: string,
+    redirectData: RedirectData,
   ): Promise<StreamResponse> {
-    const { code, clickData } = cContext
-    this.checkIncrementRedirectCount(cContext)
+    const clickData = this.clickContext.getClickData()
+
+    this.checkIncrementRedirectCount(redirectData)
     const campaign = await this.getFullCampaignByCode(code)
     const stream = await this.selectStreamService.selectStream(campaign.streams)
     stream.campaign = campaign
 
-    await this.setupSubject.setupStreamSubject(clickData, stream)
+    await this.setupSubject.setupStreamSubject(stream)
 
-    const streamResponse = await this.handleStreamService.handleStream(
-      stream,
-      cContext,
-    )
+    const streamResponse = await this.handleStreamService.handleStream(stream)
 
     if ('url' in streamResponse) {
       clickData.destination = streamResponse.url
@@ -53,11 +57,8 @@ export class ClickService {
     await this.registerClickService.register(clickData)
 
     if ('campaignCode' in streamResponse) {
-      cContext.clickData.previousCampaignId = campaign.id
-      return this.getStreamResponse({
-        ...cContext,
-        code: streamResponse.campaignCode,
-      })
+      clickData.previousCampaignId = campaign.id
+      return this.getStreamResponse(streamResponse.campaignCode, redirectData)
     }
 
     return streamResponse
@@ -73,9 +74,9 @@ export class ClickService {
     return campaign
   }
 
-  private checkIncrementRedirectCount(cContext: ClickContext) {
-    cContext.redirectCount++
-    if (cContext.redirectCount > 5) {
+  private checkIncrementRedirectCount(redirectData: RedirectData) {
+    redirectData.count++
+    if (redirectData.count > 5) {
       throw new HttpException('To many redirects', HttpStatus.BAD_REQUEST)
     }
   }

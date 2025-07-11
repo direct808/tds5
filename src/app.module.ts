@@ -11,6 +11,7 @@ import { AffiliateNetworkModule } from './affiliate-network/affiliate-network.mo
 import { OfferModule } from './offer/offer.module'
 import { CampaignModule } from './campaign/campaign.module'
 import { ClickModule } from './click/click.module'
+import { ClsModule } from 'nestjs-cls'
 
 @Module({
   imports: [
@@ -23,6 +24,10 @@ import { ClickModule } from './click/click.module'
     OfferModule,
     CampaignModule,
     ClickModule,
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
   ],
   providers: [
     {
