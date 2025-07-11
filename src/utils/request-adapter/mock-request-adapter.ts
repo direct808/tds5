@@ -10,7 +10,8 @@ export type MockRequestAdapterData = {
 export class MockRequestAdapter implements RequestAdapter {
   public readonly ip = this.data.ip
 
-  static create(data: MockRequestAdapterData) {
+  static create(data?: MockRequestAdapterData) {
+    data = data || {}
     return new MockRequestAdapter(data)
   }
 
@@ -26,5 +27,11 @@ export class MockRequestAdapter implements RequestAdapter {
 
   public header(name: HeaderName): string | undefined {
     return this.data.headers?.[name]
+  }
+
+  public setHeader(name: HeaderName, value: string): this {
+    this.data.headers = this.data.headers || {}
+    this.data.headers[name] = value
+    return this
   }
 }
