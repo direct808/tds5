@@ -1,4 +1,4 @@
-import { ClickContext, ResponseHandler, StreamResponse } from '../types'
+import { ResponseHandler, StreamResponse } from '../types'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ClickData } from '../click-data'
 import { ResponseAdapter } from '@/utils/request-adapter'
