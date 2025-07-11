@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { UAParser } from 'ua-parser-js'
 import { ClickData } from '@/click/click-data'
-import { ClickObserver, RequestObserverData } from '@/click/observers/subject'
+import { ClickObserver } from '@/click/observers/subject'
+import { ClickContext } from '@/click/shared/click-context.service'
 
 @Injectable()
-export class UserAgentObserver implements ClickObserver<RequestObserverData> {
-  public async handle({ request, clickData }: RequestObserverData) {
+export class UserAgentObserver implements ClickObserver {
+  constructor(private readonly clickContext: ClickContext) {}
+
+  public async handle() {
+    const request = this.clickContext.getRequestAdapter()
+    const clickData = this.clickContext.getClickData()
+
     const userAgent = request.header('user-agent')
     if (!userAgent) {
       return
