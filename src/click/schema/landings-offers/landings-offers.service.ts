@@ -1,16 +1,16 @@
-import { StreamResponse } from '../../types'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { StreamResponse } from '../../types.js'
+import { Stream } from '@/campaign/entity/stream.entity.js'
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
-import { ClickData } from '../../click-data'
-import { Offer } from '@/offer/offer.entity'
-import { SelectOfferService } from './select-offer.service'
-import { OfferParamsService } from './offer-params.service'
-import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { Campaign } from '@/campaign/entity/campaign.entity'
+import { ClickData } from '../../click-data.js'
+import { Offer } from '@/offer/offer.entity.js'
+import { SelectOfferService } from './select-offer.service.js'
+import { OfferParamsService } from './offer-params.service.js'
+import { OfferParamDataMapper } from './offer-params-data-mapper.js'
+import { Campaign } from '@/campaign/entity/campaign.entity.js'
 import {
   ClickContext,
   IClickContext,
-} from '@/click/shared/click-context.service'
+} from '@/click/shared/click-context.service.js'
 
 @Injectable()
 export class LandingsOffersService {

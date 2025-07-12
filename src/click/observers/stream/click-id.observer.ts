@@ -3,10 +3,10 @@ import {
   CLICK_ID_SIZE,
   IdGenerator,
   VISITOR_ID_SIZE,
-} from '@/click/observers/id-generator'
-import { ClickObserver } from '@/click/observers/subject'
-import { Stream } from '@/campaign/entity/stream.entity'
-import { ClickContext } from '@/click/shared/click-context.service'
+} from '@/click/observers/id-generator.js'
+import { ClickObserver } from '@/click/observers/subject.js'
+import { Stream } from '@/campaign/entity/stream.entity.js'
+import { ClickContext } from '@/click/shared/click-context.service.js'
 
 const SIZE = CLICK_ID_SIZE - VISITOR_ID_SIZE
 

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { AffiliateNetworkService } from './affiliate-network.service'
-import { AffiliateNetworkRepository } from './affiliate-network.repository'
-import { AffiliateNetwork } from './affiliate-network.entity'
+import { AffiliateNetworkService } from './affiliate-network.service.js'
+import { AffiliateNetworkRepository } from './affiliate-network.repository.js'
+import { AffiliateNetwork } from './affiliate-network.entity.js'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
+} from '@/utils/repository-utils.js'
 
 jest.mock('@/utils/repository-utils')
 

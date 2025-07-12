@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { EntityManager, In } from 'typeorm'
-import { Stream } from '../entity/stream.entity'
+import { Stream } from '../entity/stream.entity.js'
 
 @Injectable()
 export class StreamRepository {

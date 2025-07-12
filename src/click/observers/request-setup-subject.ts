@@ -1,8 +1,8 @@
-import { ClickSubject } from '@/click/observers/subject'
-import { QueryStringObserver } from '@/click/observers/request/query-string.observer'
-import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
-import { VisitorIdObserver } from '@/click/observers/request/visitor-id.observer'
-import { UserAgentObserver } from '@/click/observers/request/user-agent.observer'
+import { ClickSubject } from '@/click/observers/subject.js'
+import { QueryStringObserver } from '@/click/observers/request/query-string.observer.js'
+import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer.js'
+import { VisitorIdObserver } from '@/click/observers/request/visitor-id.observer.js'
+import { UserAgentObserver } from '@/click/observers/request/user-agent.observer.js'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()

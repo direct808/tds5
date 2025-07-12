@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonStreamService } from './common-stream.service'
-import { CreateStreamService } from './create-stream.service'
-import { StreamRepository } from './stream.repository'
+import { CommonStreamService } from './common-stream.service.js'
+import { CreateStreamService } from './create-stream.service.js'
+import { StreamRepository } from './stream.repository.js'
 import { EntityManager } from 'typeorm'
-import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
-import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service.js'
+import { CreateStreamDto } from '../dto/create-stream.dto.js'
+import { CampaignStreamSchema } from '../entity/stream.entity.js'
 
 describe('CreateStreamService', () => {
   let service: CreateStreamService

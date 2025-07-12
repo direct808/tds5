@@ -1,8 +1,8 @@
-import { ResponseHandler, StreamResponse } from '../types'
+import { ResponseHandler, StreamResponse } from '../types.js'
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { ClickData } from '../click-data'
-import { ResponseAdapter } from '@/utils/request-adapter'
-import { ClickContext } from '@/click/shared/click-context.service'
+import { ClickData } from '../click-data.js'
+import { ResponseAdapter } from '@/utils/request-adapter/index.js'
+import { ClickContext } from '@/click/shared/click-context.service.js'
 
 const cookieAge = 30 * 24 * 60 * 60 * 1000 // 30 days
 

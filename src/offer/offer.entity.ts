@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
-import { User } from '@/user/user.entity'
+import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity.js'
+import { User } from '@/user/user.entity.js'
 
 @Entity()
 export class Offer {

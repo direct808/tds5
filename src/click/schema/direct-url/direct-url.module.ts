@@ -9,10 +9,10 @@ import {
   MetaRedirectType,
   RemoteRedirectType,
   WithoutRefererRedirectType,
-} from './type'
-import { RedirectTypeFactory } from './redirect-type-factory'
+} from './type/index.js'
+import { RedirectTypeFactory } from './redirect-type-factory.js'
 import { HttpModule } from '@nestjs/axios'
-import { DirectUrlService } from './direct-url.service'
+import { DirectUrlService } from './direct-url.service.js'
 
 @Module({
   imports: [HttpModule],

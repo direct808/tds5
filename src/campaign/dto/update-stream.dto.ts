@@ -1,6 +1,6 @@
 import { IsArray, IsOptional, IsUUID, ValidateNested } from 'class-validator'
-import { CreateStreamDto } from './create-stream.dto'
-import { UpdateStreamOfferDto } from './update-stream-offer.dto'
+import { CreateStreamDto } from './create-stream.dto.js'
+import { UpdateStreamOfferDto } from './update-stream-offer.dto.js'
 import { Type } from 'class-transformer'
 
 export class UpdateStreamDto extends CreateStreamDto {
@@ -12,5 +12,5 @@ export class UpdateStreamDto extends CreateStreamDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => UpdateStreamOfferDto)
-  offers?: UpdateStreamOfferDto[]
+  declare offers?: UpdateStreamOfferDto[]
 }

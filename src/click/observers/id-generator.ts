@@ -10,6 +10,8 @@ export class IdGenerator {
   public readonly generateId = customAlphabet(alphabet)
 
   public generate(size: number): Promise<string> {
+    // todo
+    // @ts-ignore
     return this.generateId(size)
   }
 }

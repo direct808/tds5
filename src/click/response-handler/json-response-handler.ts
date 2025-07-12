@@ -1,6 +1,6 @@
-import { ResponseHandler, StreamResponse } from '../types'
+import { ResponseHandler, StreamResponse } from '../types.js'
 import { Injectable } from '@nestjs/common'
-import { ClickContext } from '@/click/shared/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service.js'
 
 /**
  * Handler for debug, without real redirects

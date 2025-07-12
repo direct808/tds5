@@ -1,4 +1,4 @@
-import { HttpStatus } from '@nestjs/common/enums/http-status.enum'
+import { HttpStatus } from '@nestjs/common/enums/http-status.enum.js'
 
 export interface ResponseAdapter {
   status(name: HttpStatus): this

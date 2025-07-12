@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { ClickObserver } from '@/click/observers/subject'
-import { Stream } from '@/campaign/entity/stream.entity'
-import { ClickContext } from '@/click/shared/click-context.service'
+import { ClickObserver } from '@/click/observers/subject.js'
+import { Stream } from '@/campaign/entity/stream.entity.js'
+import { ClickContext } from '@/click/shared/click-context.service.js'
 
 @Injectable()
 export class StreamIdsObserver implements ClickObserver<Stream> {

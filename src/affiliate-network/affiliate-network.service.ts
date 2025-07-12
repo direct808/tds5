@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { AffiliateNetworkRepository } from './affiliate-network.repository'
-import { AffiliateNetwork } from './affiliate-network.entity'
+import { AffiliateNetworkRepository } from './affiliate-network.repository.js'
+import { AffiliateNetwork } from './affiliate-network.entity.js'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
+} from '@/utils/repository-utils.js'
 
 type CreateArgs = {
   name: string

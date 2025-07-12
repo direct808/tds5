@@ -1,5 +1,5 @@
 import { IsOptional, IsUUID } from 'class-validator'
-import { CreateStreamOfferDto } from './create-stream-offer.dto'
+import { CreateStreamOfferDto } from './create-stream-offer.dto.js'
 
 export class UpdateStreamOfferDto extends CreateStreamOfferDto {
   @IsUUID('4')

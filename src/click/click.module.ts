@@ -1,27 +1,27 @@
 import { Module } from '@nestjs/common'
-import { ClickController } from './click.controller'
-import { ClickService } from './click.service'
-import { CampaignModule } from '@/campaign/campaign.module'
-import { SelectStreamService } from './select-stream.service'
-import { HandleStreamService } from './handle-stream.service'
-import { DirectUrlModule } from './schema/direct-url/direct-url.module'
-import { JsonResponseHandler } from './response-handler/json-response-handler'
-import { HttpResponseHandler } from './response-handler/http-response-handler'
-import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
-import { ActionService } from './schema/action/action.service'
-import { ActionTypeFactory } from './schema/action/action-type-factory'
+import { ClickController } from './click.controller.js'
+import { ClickService } from './click.service.js'
+import { CampaignModule } from '@/campaign/campaign.module.js'
+import { SelectStreamService } from './select-stream.service.js'
+import { HandleStreamService } from './handle-stream.service.js'
+import { DirectUrlModule } from './schema/direct-url/direct-url.module.js'
+import { JsonResponseHandler } from './response-handler/json-response-handler.js'
+import { HttpResponseHandler } from './response-handler/http-response-handler.js'
+import { ResponseHandlerFactory } from './response-handler/response-handler-factory.js'
+import { ActionService } from './schema/action/action.service.js'
+import { ActionTypeFactory } from './schema/action/action-type-factory.js'
 import {
   NothingActionType,
   Show404ActionType,
   ShowHtmlActionType,
   ShowTextActionType,
   ToCampaignActionType,
-} from './schema/action/type'
-import { RegisterClickService } from './register-click.service'
-import { ClickRepository } from './click.repository'
-import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
-import { ObserverModule } from '@/click/observers/observer.module'
-import { ClickSharedModule } from '@/click/shared/click-shared.module'
+} from './schema/action/type/index.js'
+import { RegisterClickService } from './register-click.service.js'
+import { ClickRepository } from './click.repository.js'
+import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module.js'
+import { ObserverModule } from '@/click/observers/observer.module.js'
+import { ClickSharedModule } from '@/click/shared/click-shared.module.js'
 
 @Module({
   controllers: [ClickController],

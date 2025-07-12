@@ -1,10 +1,10 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
-import { AuthService } from './auth.service'
-import { LoginRequest, SkipAuth } from './types'
+import { AuthService } from './auth.service.js'
+import { LoginRequest, SkipAuth } from './types.js'
 import { ApiTags } from '@nestjs/swagger'
-import { LoginDto } from './dto/login.dto'
-import { LocalAuthGuard } from './guards/local-auth.guard'
-import { GLOBAL_PREFIX } from '@/utils/constants'
+import { LoginDto } from './dto/login.dto.js'
+import { LocalAuthGuard } from './guards/local-auth.guard.js'
+import { GLOBAL_PREFIX } from '@/utils/constants.js'
 
 @ApiTags('Аутентификация')
 @Controller(GLOBAL_PREFIX + 'auth')

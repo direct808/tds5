@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonStreamOfferService } from './common-stream-offer.service'
-import { CreateStreamOfferService } from './create-stream-offer.service'
-import { StreamOfferRepository } from './stream-offer.repository'
+import { CommonStreamOfferService } from './common-stream-offer.service.js'
+import { CreateStreamOfferService } from './create-stream-offer.service.js'
+import { StreamOfferRepository } from './stream-offer.repository.js'
 import { EntityManager } from 'typeorm'
 
 describe('CommonStreamService', () => {

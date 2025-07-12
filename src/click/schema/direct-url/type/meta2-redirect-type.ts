@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken'
 import { Injectable } from '@nestjs/common'
-import { RedirectType, StreamResponse } from '@/click/types'
-import { AppConfig } from '@/config/app-config.service'
+import { RedirectType, StreamResponse } from '@/click/types.js'
+import { AppConfig } from '@/config/app-config.service.js'
 
 @Injectable()
 export class Meta2RedirectType implements RedirectType {

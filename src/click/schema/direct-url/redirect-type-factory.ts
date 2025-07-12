@@ -10,12 +10,12 @@ import {
   MetaRedirectType,
   RemoteRedirectType,
   WithoutRefererRedirectType,
-} from './type'
-import { RedirectType, StreamResponse } from '../../types'
+} from './type/index.js'
+import { RedirectType, StreamResponse } from '../../types.js'
 import {
   StreamDirectUrl,
   StreamRedirectType,
-} from '@/campaign/entity/stream.entity'
+} from '@/campaign/entity/stream.entity.js'
 
 @Injectable()
 export class RedirectTypeFactory {

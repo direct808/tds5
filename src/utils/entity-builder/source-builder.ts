@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { Source } from '@/source/source.entity'
+import { Source } from '@/source/source.entity.js'
 
 export class SourceBuilder {
   private fields: Partial<Source> = {}

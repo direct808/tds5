@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { Campaign } from '@/campaign/entity/campaign.entity'
-import { OfferParams } from './offer-params.service'
-import { ClickData } from '../../click-data'
+import { Campaign } from '@/campaign/entity/campaign.entity.js'
+import { OfferParams } from './offer-params.service.js'
+import { ClickData } from '../../click-data.js'
 
 type ConvertArgs = {
   campaign: Campaign

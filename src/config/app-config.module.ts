@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { resolve } from 'node:path'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
-import { AppConfig } from './app-config.service'
+import { AppConfig } from './app-config.service.js'
 
 function validate(config: Record<string, unknown>) {
   const validatedConfig = plainToInstance(AppConfig, config, {

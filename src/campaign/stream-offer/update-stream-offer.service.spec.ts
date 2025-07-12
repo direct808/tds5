@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonStreamOfferService } from './common-stream-offer.service'
-import { StreamOfferRepository } from './stream-offer.repository'
+import { CommonStreamOfferService } from './common-stream-offer.service.js'
+import { StreamOfferRepository } from './stream-offer.repository.js'
 import { EntityManager } from 'typeorm'
-import { UpdateStreamOfferService } from './update-stream-offer.service'
-import { getIdsForDelete } from '@/utils/repository-utils'
+import { UpdateStreamOfferService } from './update-stream-offer.service.js'
+import { getIdsForDelete } from '@/utils/repository-utils.js'
 
-jest.mock('../../utils/repository-utils')
+jest.mock('../../utils/repository-utils.js')
 
 describe('CommonStreamService', () => {
   let service: UpdateStreamOfferService

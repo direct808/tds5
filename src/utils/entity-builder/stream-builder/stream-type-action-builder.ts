@@ -1,10 +1,10 @@
-import { StreamBuilder } from './stream-builder'
+import { StreamBuilder } from './stream-builder.js'
 import {
   CampaignStreamSchema,
   Stream,
   StreamActionType,
-} from '@/campaign/entity/stream.entity'
-import { CampaignBuilder } from '../campaign-builder'
+} from '@/campaign/entity/stream.entity.js'
+import { CampaignBuilder } from '../campaign-builder.js'
 import { DataSource } from 'typeorm'
 
 export class StreamTypeActionBuilder extends StreamBuilder {

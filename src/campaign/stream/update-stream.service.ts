@@ -1,13 +1,13 @@
 import { EntityManager } from 'typeorm'
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { CommonStreamService } from './common-stream.service'
-import { StreamRepository } from './stream.repository'
-import { CreateStreamService } from './create-stream.service'
-import { getIdsForDelete } from '@/utils/repository-utils'
-import { arrayUnique } from '@/utils/helpers'
-import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
-import { UpdateStreamDto } from '../dto/update-stream.dto'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CommonStreamService } from './common-stream.service.js'
+import { StreamRepository } from './stream.repository.js'
+import { CreateStreamService } from './create-stream.service.js'
+import { getIdsForDelete } from '@/utils/repository-utils.js'
+import { arrayUnique } from '@/utils/helpers.js'
+import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service.js'
+import { UpdateStreamDto } from '../dto/update-stream.dto.js'
+import { CampaignStreamSchema } from '../entity/stream.entity.js'
 
 @Injectable()
 export class UpdateStreamService {

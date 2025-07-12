@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonStreamService } from './common-stream.service'
-import { CreateStreamService } from './create-stream.service'
-import { StreamRepository } from './stream.repository'
+import { CommonStreamService } from './common-stream.service.js'
+import { CreateStreamService } from './create-stream.service.js'
+import { StreamRepository } from './stream.repository.js'
 import { EntityManager } from 'typeorm'
-import { UpdateStreamService } from './update-stream.service'
-import { getIdsForDelete } from '@/utils/repository-utils'
-import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
-import { CampaignStreamSchema } from '../entity/stream.entity'
-import { UpdateStreamDto } from '../dto/update-stream.dto'
+import { UpdateStreamService } from './update-stream.service.js'
+import { getIdsForDelete } from '@/utils/repository-utils.js'
+import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service.js'
+import { CampaignStreamSchema } from '../entity/stream.entity.js'
+import { UpdateStreamDto } from '../dto/update-stream.dto.js'
 
 jest.mock('../../utils/repository-utils')
 

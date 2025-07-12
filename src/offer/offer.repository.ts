@@ -1,19 +1,22 @@
-import { DataSource, In } from 'typeorm'
+import { DataSource, In, Repository } from 'typeorm'
 import { Injectable } from '@nestjs/common'
 import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils'
-import { Offer } from './offer.entity'
+} from '@/utils/repository-utils.js'
+import { Offer } from './offer.entity.js'
+import { User } from '@/user/user.entity.js'
 
 @Injectable()
 export class OfferRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(Offer)
+  private readonly repository: Repository<Offer>
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) {
+    this.repository = this.dataSource.getRepository(Offer)
+  }
 
   public async create(
     args: Pick<Offer, 'name' | 'userId' | 'url'>,

@@ -1,19 +1,21 @@
-import { DataSource } from 'typeorm'
-import { Source } from './source.entity'
+import { DataSource, Repository } from 'typeorm'
+import { Source } from './source.entity.js'
 import { Injectable } from '@nestjs/common'
 import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils'
+} from '@/utils/repository-utils.js'
 
 @Injectable()
 export class SourceRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(Source)
+  private readonly repository:Repository<Source>
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) {
+    this.repository = this.dataSource.getRepository(Source)
+  }
 
   public async create(args: Pick<Source, 'name' | 'userId'>): Promise<void> {
     const source = this.repository.create(args)

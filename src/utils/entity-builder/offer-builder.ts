@@ -1,7 +1,7 @@
-import { Offer } from '@/offer/offer.entity'
+import { Offer } from '@/offer/offer.entity.js'
 import { DataSource } from 'typeorm'
-import { AffiliateNetworkBuilder } from './affiliate-network-builder'
-import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
+import { AffiliateNetworkBuilder } from './affiliate-network-builder.js'
+import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity.js'
 
 export class OfferBuilder {
   private fields: Partial<Offer> = {}
