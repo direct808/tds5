@@ -6,7 +6,7 @@ import {
   getIdsForDelete,
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
-} from './repository-utils'
+} from './repository-utils.js'
 
 describe('repository-utils', () => {
   describe('checkUniqueNameForCreate', () => {

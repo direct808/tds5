@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity } from 'typeorm'
-import { CLICK_ID_SIZE, VISITOR_ID_SIZE } from '@/click/observers/id-generator'
-import { IClick } from './click'
-import { Nullable } from '@/utils/types'
+import { CLICK_ID_SIZE, VISITOR_ID_SIZE } from '@/click/observers/id-generator.js'
+import { IClick } from './click.js'
+import { Nullable } from '@/utils/types.js'
 
 const ColumnTextNullable = () => Column('text', { nullable: true })
 

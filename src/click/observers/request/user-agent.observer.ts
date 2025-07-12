@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { UAParser } from 'ua-parser-js'
-import { ClickData } from '@/click/click-data'
-import { ClickObserver } from '@/click/observers/subject'
-import { ClickContext } from '@/click/shared/click-context.service'
+import { ClickData } from '@/click/click-data.js'
+import { ClickObserver } from '@/click/observers/subject.js'
+import { ClickContext } from '@/click/shared/click-context.service.js'
 
 @Injectable()
 export class UserAgentObserver implements ClickObserver {

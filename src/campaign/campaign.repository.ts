@@ -3,18 +3,20 @@ import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils'
-import { DataSource, EntityManager } from 'typeorm'
-import { Campaign } from './entity/campaign.entity'
-import { Stream } from './entity/stream.entity'
+} from '@/utils/repository-utils.js'
+import { DataSource, EntityManager, Repository } from 'typeorm'
+import { Campaign } from './entity/campaign.entity.js'
+import { Stream } from './entity/stream.entity.js'
 
 @Injectable()
 export class CampaignRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(Campaign)
+  private readonly repository: Repository<Campaign>
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) {
+    this.repository = this.dataSource.getRepository(Campaign)
+  }
 
   public async getByNameAndUserId({
     name,

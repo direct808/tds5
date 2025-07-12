@@ -1,5 +1,5 @@
-import { ActionType, StreamResponse } from '@/click/types'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { ActionType, StreamResponse } from '@/click/types.js'
+import { Stream } from '@/campaign/entity/stream.entity.js'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()

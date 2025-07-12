@@ -1,13 +1,13 @@
-import { LandingsOffersService } from './landings-offers.service'
-import { SelectOfferService } from './select-offer.service'
-import { OfferParamsService } from './offer-params.service'
-import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { Stream } from '@/campaign/entity/stream.entity'
-import { Offer } from '@/offer/offer.entity'
+import { LandingsOffersService } from './landings-offers.service.js'
+import { SelectOfferService } from './select-offer.service.js'
+import { OfferParamsService } from './offer-params.service.js'
+import { OfferParamDataMapper } from './offer-params-data-mapper.js'
+import { Stream } from '@/campaign/entity/stream.entity.js'
+import { Offer } from '@/offer/offer.entity.js'
 import { HttpStatus } from '@nestjs/common'
-import { Campaign } from '@/campaign/entity/campaign.entity'
-import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import { MockClickContext } from '../../../../test/utils/mock-click-context.service'
+import { Campaign } from '@/campaign/entity/campaign.entity.js'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity.js'
+import { MockClickContext } from '../../../../test/utils/mock-click-context.service.js'
 
 describe('LandingsOffersService', () => {
   let service: LandingsOffersService

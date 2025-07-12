@@ -1,4 +1,4 @@
-import { Stream } from '@/campaign/entity/stream.entity'
+import { Stream } from '@/campaign/entity/stream.entity.js'
 import { DataSource } from 'typeorm'
 
 export abstract class StreamBuilder {

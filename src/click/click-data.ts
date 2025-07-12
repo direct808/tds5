@@ -1,4 +1,4 @@
-import { IClick } from './click'
+import { IClick } from './click.js'
 
 export class ClickData implements Partial<IClick> {
   id?: string

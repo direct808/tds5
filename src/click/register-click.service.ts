@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ClickRepository } from './click.repository'
-import { ClickData } from './click-data'
+import { ClickRepository } from './click.repository.js'
+import { ClickData } from './click-data.js'
 
 @Injectable()
 export class RegisterClickService {

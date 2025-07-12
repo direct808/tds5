@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ClickData } from '@/click/click-data'
-import { ClickObserver } from '@/click/observers/subject'
+import { ClickData } from '@/click/click-data.js'
+import { ClickObserver } from '@/click/observers/subject.js'
 import {
   ClickContext,
   IClickContext,
-} from '@/click/shared/click-context.service'
+} from '@/click/shared/click-context.service.js'
 
 @Injectable()
 export class QueryStringObserver implements ClickObserver {

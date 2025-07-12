@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { EntityManager } from 'typeorm'
-import { CommonStreamService } from './common-stream.service'
-import { StreamRepository } from './stream.repository'
-import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CommonStreamService } from './common-stream.service.js'
+import { StreamRepository } from './stream.repository.js'
+import { CreateStreamDto } from '../dto/create-stream.dto.js'
+import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service.js'
+import { CampaignStreamSchema } from '../entity/stream.entity.js'
 
 @Injectable()
 export class CreateStreamService {

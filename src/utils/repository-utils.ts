@@ -1,4 +1,4 @@
-import { ObjectLiteral } from 'typeorm/common/ObjectLiteral'
+import { ObjectLiteral } from 'typeorm/common/ObjectLiteral.js'
 import { ConflictException, NotFoundException } from '@nestjs/common'
 
 export type NameAndUserId = { name: string; userId: string }

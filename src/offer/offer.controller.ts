@@ -9,11 +9,11 @@ import {
   Post,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { UserId } from '@/auth/user-id.decorator'
-import { OfferService } from './offer.service'
-import { CreateOfferDto } from './dto/create-offer.dto'
-import { UpdateOfferDto } from './dto/update-offer.dto'
-import { GLOBAL_PREFIX } from '@/utils/constants'
+import { UserId } from '@/auth/user-id.decorator.js'
+import { OfferService } from './offer.service.js'
+import { CreateOfferDto } from './dto/create-offer.dto.js'
+import { UpdateOfferDto } from './dto/update-offer.dto.js'
+import { GLOBAL_PREFIX } from '@/utils/constants.js'
 
 @ApiTags('Оферы')
 @Controller(GLOBAL_PREFIX + 'offer')

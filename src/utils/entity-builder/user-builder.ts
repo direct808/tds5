@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { User } from '@/user/user.entity'
+import { User } from '@/user/user.entity.js'
 
 export class UserBuilder {
   private fields: Partial<User> = {}

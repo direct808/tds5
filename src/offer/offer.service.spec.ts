@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { OfferService } from './offer.service'
-import { OfferRepository } from './offer.repository'
-import { Offer } from './offer.entity'
+import { OfferService } from './offer.service.js'
+import { OfferRepository } from './offer.repository.js'
+import { Offer } from './offer.entity.js'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
-import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository'
+} from '@/utils/repository-utils.js'
+import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository.js'
 
 jest.mock('../utils/repository-utils')
 

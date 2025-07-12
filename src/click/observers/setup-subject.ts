@@ -1,7 +1,7 @@
-import { Stream } from '@/campaign/entity/stream.entity'
+import { Stream } from '@/campaign/entity/stream.entity.js'
 import { Injectable } from '@nestjs/common'
-import { StreamSetupSubject } from '@/click/observers/stream-setup-subject'
-import { RequestSetupSubject } from '@/click/observers/request-setup-subject'
+import { StreamSetupSubject } from '@/click/observers/stream-setup-subject.js'
+import { RequestSetupSubject } from '@/click/observers/request-setup-subject.js'
 
 @Injectable()
 export class SetupSubject {

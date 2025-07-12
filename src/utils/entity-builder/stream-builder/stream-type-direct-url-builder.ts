@@ -1,8 +1,8 @@
 import {
   CampaignStreamSchema,
   StreamRedirectType,
-} from '@/campaign/entity/stream.entity'
-import { StreamBuilder } from './stream-builder'
+} from '@/campaign/entity/stream.entity.js'
+import { StreamBuilder } from './stream-builder.js'
 
 export class StreamTypeDirectUrlBuilder extends StreamBuilder {
   constructor() {

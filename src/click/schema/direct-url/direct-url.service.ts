@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { RedirectTypeFactory } from './redirect-type-factory'
-import { StreamDirectUrl } from '@/campaign/entity/stream.entity'
+import { RedirectTypeFactory } from './redirect-type-factory.js'
+import { StreamDirectUrl } from '@/campaign/entity/stream.entity.js'
 
 @Injectable()
 export class DirectUrlService {

@@ -1,4 +1,4 @@
-import { HeaderName, RequestAdapter } from './request-adapter'
+import { HeaderName, RequestAdapter } from './request-adapter.js'
 
 export type MockRequestAdapterData = {
   ip?: string
@@ -8,14 +8,17 @@ export type MockRequestAdapterData = {
 }
 
 export class MockRequestAdapter implements RequestAdapter {
-  public readonly ip = this.data.ip
+  public readonly ip:string|undefined
 
   static create(data?: MockRequestAdapterData) {
     data = data || {}
     return new MockRequestAdapter(data)
   }
 
-  private constructor(private readonly data: MockRequestAdapterData) {}
+  private constructor(private readonly data: MockRequestAdapterData) {
+    this.ip = this.data.ip
+
+  }
 
   public query(name: string): string | undefined {
     return this.data.query?.[name]

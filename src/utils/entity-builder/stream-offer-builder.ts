@@ -1,5 +1,5 @@
-import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import { OfferBuilder } from './offer-builder'
+import { StreamOffer } from '@/campaign/entity/stream-offer.entity.js'
+import { OfferBuilder } from './offer-builder.js'
 import { DataSource } from 'typeorm'
 
 export class StreamOfferBuilder {

@@ -9,7 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
-import { CreateStreamDto } from './create-stream.dto'
+import { CreateStreamDto } from './create-stream.dto.js'
 
 export class CreateCampaignDto {
   @IsString()

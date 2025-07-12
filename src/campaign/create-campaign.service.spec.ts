@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CreateCampaignService } from './create-campaign.service'
-import { CampaignRepository } from './campaign.repository'
-import { CommonCampaignService } from './common-campaign.service'
+import { CreateCampaignService } from './create-campaign.service.js'
+import { CampaignRepository } from './campaign.repository.js'
+import { CommonCampaignService } from './common-campaign.service.js'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForCreate } from '@/utils/repository-utils'
-import { CreateStreamService } from './stream/create-stream.service'
+import { checkUniqueNameForCreate } from '@/utils/repository-utils.js'
+import { CreateStreamService } from './stream/create-stream.service.js'
 
 jest.mock('../utils/repository-utils')
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
-import { ResponseHandler, StreamResponse } from '../types'
-import { HttpResponseHandler } from './http-response-handler'
-import { JsonResponseHandler } from './json-response-handler'
-import { ClickContext } from '@/click/shared/click-context.service'
+import { ResponseHandler, StreamResponse } from '../types.js'
+import { HttpResponseHandler } from './http-response-handler.js'
+import { JsonResponseHandler } from './json-response-handler.js'
+import { ClickContext } from '@/click/shared/click-context.service.js'
 
 @Injectable()
 export class ResponseHandlerFactory {

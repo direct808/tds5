@@ -10,12 +10,12 @@ import {
   ValidateNested,
 } from 'class-validator'
 import { Type } from 'class-transformer'
-import { CreateStreamOfferDto } from './create-stream-offer.dto'
+import { CreateStreamOfferDto } from './create-stream-offer.dto.js'
 import {
   CampaignStreamSchema,
   StreamActionType,
   StreamRedirectType,
-} from '../entity/stream.entity'
+} from '../entity/stream.entity.js'
 
 export class CreateStreamDto {
   @IsString()

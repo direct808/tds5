@@ -1,6 +1,6 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
-import { Campaign } from './campaign.entity'
-import { StreamOffer } from './stream-offer.entity'
+import { Campaign } from './campaign.entity.js'
+import { StreamOffer } from './stream-offer.entity.js'
 
 export enum CampaignStreamSchema {
   ACTION = 'ACTION',

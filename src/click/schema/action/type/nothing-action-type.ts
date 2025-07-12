@@ -1,4 +1,4 @@
-import { ActionType, StreamResponse } from '@/click/types'
+import { ActionType, StreamResponse } from '@/click/types.js'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()

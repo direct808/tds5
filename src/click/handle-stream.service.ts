@@ -3,11 +3,11 @@ import {
   CampaignStreamSchema,
   Stream,
   StreamDirectUrl,
-} from '@/campaign/entity/stream.entity'
-import { StreamResponse } from './types'
-import { DirectUrlService } from './schema/direct-url/direct-url.service'
-import { ActionService } from './schema/action/action.service'
-import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
+} from '@/campaign/entity/stream.entity.js'
+import { StreamResponse } from './types.js'
+import { DirectUrlService } from './schema/direct-url/direct-url.service.js'
+import { ActionService } from './schema/action/action.service.js'
+import { LandingsOffersService } from './schema/landings-offers/landings-offers.service.js'
 
 @Injectable()
 export class HandleStreamService {

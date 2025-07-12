@@ -1,19 +1,21 @@
-import { DataSource } from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import { Injectable } from '@nestjs/common'
-import { AffiliateNetwork } from './affiliate-network.entity'
+import { AffiliateNetwork } from './affiliate-network.entity.js'
 import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils'
+} from '@/utils/repository-utils.js'
 
 @Injectable()
 export class AffiliateNetworkRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(AffiliateNetwork)
+  private readonly repository:Repository<AffiliateNetwork>
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) {
+    this.repository = this.dataSource.getRepository(AffiliateNetwork)
+  }
 
   public async create(
     args: Pick<AffiliateNetwork, 'name' | 'offerParams' | 'userId'>,

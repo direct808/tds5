@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { SourceService } from './source.service'
-import { SourceRepository } from './source.repository'
-import { Source } from './source.entity'
+import { SourceService } from './source.service.js'
+import { SourceRepository } from './source.repository.js'
+import { Source } from './source.entity.js'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
+} from '@/utils/repository-utils.js'
 
 jest.mock('../utils/repository-utils')
 

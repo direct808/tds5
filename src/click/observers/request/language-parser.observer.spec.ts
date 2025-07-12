@@ -1,6 +1,6 @@
-import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
-import { MockRequestAdapter } from '@/utils/request-adapter'
-import { MockClickContext } from '../../../../test/utils/mock-click-context.service'
+import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer.js'
+import { MockRequestAdapter } from '@/utils/request-adapter/index.js'
+import { MockClickContext } from '../../../../test/utils/mock-click-context.service.js'
 
 describe('LanguageParserObserver', () => {
   let parser: LanguageParserObserver

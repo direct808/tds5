@@ -1,7 +1,7 @@
-import { ClickSubject } from '@/click/observers/subject'
-import { StreamIdsObserver } from '@/click/observers/stream/stream-ids-observer'
-import { ClickIdObserver } from '@/click/observers/stream/click-id.observer'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { ClickSubject } from '@/click/observers/subject.js'
+import { StreamIdsObserver } from '@/click/observers/stream/stream-ids-observer.js'
+import { ClickIdObserver } from '@/click/observers/stream/click-id.observer.js'
+import { Stream } from '@/campaign/entity/stream.entity.js'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()

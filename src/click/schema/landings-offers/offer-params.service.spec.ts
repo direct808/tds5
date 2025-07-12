@@ -1,4 +1,4 @@
-import { OfferParamsService } from './offer-params.service'
+import { OfferParamsService } from './offer-params.service.js'
 
 describe('offer-params.service.ts', () => {
   it.each([
