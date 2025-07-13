@@ -1,8 +1,8 @@
-import { QueryStringObserver } from '@/click/observers/request/query-string.observer.js'
+import { QueryStringObserver } from './query-string.observer.js'
 import {
   MockRequestAdapter,
   MockRequestAdapterData,
-} from '@/utils/request-adapter/index.js'
+} from '../../../utils/request-adapter/index.js'
 import { MockClickContext } from '../../../../test/utils/mock-click-context.service.js'
 
 describe('QueryStringObserver', () => {

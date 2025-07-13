@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { RedirectType, StreamResponse } from '@/click/types.js'
+import { RedirectType, StreamResponse } from '../../../types.js'
 
 @Injectable()
 export class HttpRedirectType implements RedirectType {

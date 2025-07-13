@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { ClickObserver } from '@/click/observers/subject.js'
-import { IdGenerator, VISITOR_ID_SIZE } from '@/click/observers/id-generator.js'
-import { ClickContext } from '@/click/shared/click-context.service.js'
+import { ClickObserver } from '../subject.js'
+import { IdGenerator, VISITOR_ID_SIZE } from '../id-generator.js'
+import { ClickContext } from '../../shared/click-context.service.js'
 
 @Injectable()
 export class VisitorIdObserver implements ClickObserver {

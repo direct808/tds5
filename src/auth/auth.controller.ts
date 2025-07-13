@@ -4,7 +4,7 @@ import { LoginRequest, SkipAuth } from './types.js'
 import { ApiTags } from '@nestjs/swagger'
 import { LoginDto } from './dto/login.dto.js'
 import { LocalAuthGuard } from './guards/local-auth.guard.js'
-import { GLOBAL_PREFIX } from '@/utils/constants.js'
+import { GLOBAL_PREFIX } from '../utils/constants.js'
 
 @ApiTags('Аутентификация')
 @Controller(GLOBAL_PREFIX + 'auth')

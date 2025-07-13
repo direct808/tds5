@@ -5,7 +5,7 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils.js'
+} from '../utils/repository-utils.js'
 
 type CreateArgs = {
   name: string

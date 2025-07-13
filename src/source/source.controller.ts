@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { SourceService } from './source.service.js'
-import { UserId } from '@/auth/user-id.decorator.js'
+import { UserId } from '../auth/user-id.decorator.js'
 import { CreateSourceDto } from './dto/create-source.dto.js'
 import { UpdateSourceDto } from './dto/update-source.dto.js'
-import { GLOBAL_PREFIX } from '@/utils/constants.js'
+import { GLOBAL_PREFIX } from '../utils/constants.js'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')

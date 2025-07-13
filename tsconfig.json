@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "NodeNext",
     "moduleResolution": "nodenext",
     "declaration": true,
     "removeComments": true,
@@ -20,8 +20,5 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "lib": ["ES2021"],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
   }
 }

@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { RequestAdapter, ResponseAdapter } from '@/utils/request-adapter/index.js'
+import {
+  RequestAdapter,
+  ResponseAdapter,
+} from '../../utils/request-adapter/index.js'
 import { ClsService, ClsStore } from 'nestjs-cls'
-import { ClickData } from '@/click/click-data.js'
+import { ClickData } from '../click-data.js'
 
 interface ClickContextClsStore extends ClsStore {
   requestAdapter?: RequestAdapter

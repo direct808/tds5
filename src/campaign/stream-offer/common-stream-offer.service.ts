@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { CreateStreamOfferDto } from '../dto/create-stream-offer.dto.js'
-import { OfferRepository } from '@/offer/offer.repository.js'
-import { arrayUnique } from '@/utils/helpers.js'
+import { OfferRepository } from '../../offer/offer.repository.js'
+import { arrayUnique } from '../../utils/helpers.js'
 
 @Injectable()
 export class CommonStreamOfferService {

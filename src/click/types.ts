@@ -1,5 +1,5 @@
 import type { HttpStatus } from '@nestjs/common'
-import type { Stream } from '@/campaign/entity/stream.entity.js'
+import type { Stream } from '../campaign/entity/stream.entity.js'
 
 export type StreamResponse =
   | StreamContentResponse

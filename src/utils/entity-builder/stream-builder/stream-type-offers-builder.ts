@@ -1,8 +1,8 @@
-import { CampaignStreamSchema } from '@/campaign/entity/stream.entity.js'
+import { CampaignStreamSchema } from '../../../campaign/entity/stream.entity.js'
 import { StreamBuilder } from './stream-builder.js'
 import { StreamOfferBuilder } from '../stream-offer-builder.js'
 import { DataSource } from 'typeorm'
-import { StreamOffer } from '@/campaign/entity/stream-offer.entity.js'
+import { StreamOffer } from '../../../campaign/entity/stream-offer.entity.js'
 
 export class StreamTypeOffersBuilder extends StreamBuilder {
   private streamOffersBuilders: StreamOfferBuilder[] = []

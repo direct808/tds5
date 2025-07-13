@@ -3,7 +3,6 @@ import { Click } from './click.entity.js'
 import { DataSource, Repository } from 'typeorm'
 import { IClick } from './click.js'
 
-
 @Injectable()
 export class ClickRepository {
   private readonly repository: Repository<Click>

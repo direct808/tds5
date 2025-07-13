@@ -3,10 +3,10 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils.js'
+} from '../utils/repository-utils.js'
 import { OfferRepository } from './offer.repository.js'
 import { Offer } from './offer.entity.js'
-import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository.js'
+import { AffiliateNetworkRepository } from '../affiliate-network/affiliate-network.repository.js'
 
 type CreateArgs = {
   name: string

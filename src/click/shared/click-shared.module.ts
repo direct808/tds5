@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { ClickContext } from '@/click/shared/click-context.service.js'
+import { ClickContext } from './click-context.service.js'
 
 @Module({
   providers: [ClickContext],

@@ -1,16 +1,12 @@
-import type { Config } from 'jest'
-import defConf from './jest.config.unit'
+import defConf from './jest.config.unit.mjs'
 
-const config: Config = {
+const config = {
   ...defConf,
   rootDir: '.',
   testRegex: '.*spec\\.ts$',
   testTimeout: 30000,
   maxWorkers: 1,
   globalSetup: '<rootDir>/test/utils/jest.global-setup.ts',
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
 }
 
 export default config

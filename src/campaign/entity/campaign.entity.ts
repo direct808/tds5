@@ -9,8 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 import { Stream } from './stream.entity.js'
-import { Source } from '@/source/source.entity.js'
-import { User } from '@/user/user.entity.js'
+import { Source } from '../../source/source.entity.js'
+import { User } from '../../user/user.entity.js'
 
 @Entity()
 export class Campaign {

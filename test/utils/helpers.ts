@@ -1,22 +1,22 @@
 import { DataSource } from 'typeorm'
-import * as request from 'supertest'
+import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
-import { Source } from '@/source/source.entity'
-import { sourceFixtures } from '../fixtures/source.fixture'
-import { offerFixtures } from '../fixtures/offer.fixture'
-import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
-import { affiliateNetworkFixtures } from '../fixtures/affiliate-network.fixture'
-import { User } from '@/user/user.entity'
-import { Offer } from '@/offer/offer.entity'
-import { userFixtures } from '../fixtures/user.fixture'
-import { Campaign } from '@/campaign/entity/campaign.entity'
+import { Source } from '../../src/source/source.entity.js'
+import { sourceFixtures } from '../fixtures/source.fixture.js'
+import { Offer } from '../../src/offer/offer.entity.js'
+import { offerFixtures } from '../fixtures/offer.fixture.js'
+import { AffiliateNetwork } from '../../src/affiliate-network/affiliate-network.entity.js'
+import { affiliateNetworkFixtures } from '../fixtures/affiliate-network.fixture.js'
+import { User } from '../../src/user/user.entity.js'
+import { userFixtures } from '../fixtures/user.fixture.js'
+import { Campaign } from '../../src/campaign/entity/campaign.entity.js'
 import {
   campaignFixtures,
   streamFixtures,
   streamOfferFixtures,
-} from '../fixtures/campaign.fixture'
-import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import { Stream } from '@/campaign/entity/stream.entity'
+} from '../fixtures/campaign.fixture.js'
+import { StreamOffer } from '../../src/campaign/entity/stream-offer.entity.js'
+import { Stream } from '../../src/campaign/entity/stream.entity.js'
 
 export async function loadSourceFixtures(ds: DataSource) {
   const repo = ds.getRepository(Source)

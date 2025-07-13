@@ -1,9 +1,9 @@
 import { Controller, Get, Param, Req, Res } from '@nestjs/common'
 import { ClickService } from './click.service.js'
 import { Request, Response } from 'express'
-import { SkipAuth } from '@/auth/types.js'
-import { ExpressRequestAdapter } from '@/utils/request-adapter/index.js'
-import { ClickContext } from '@/click/shared/click-context.service.js'
+import { SkipAuth } from '../auth/types.js'
+import { ExpressRequestAdapter } from '../utils/request-adapter/index.js'
+import { ClickContext } from './shared/click-context.service.js'
 
 @Controller()
 export class ClickController {

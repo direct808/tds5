@@ -3,7 +3,7 @@ import { LandingsOffersService } from './landings-offers.service.js'
 import { OfferParamsService } from './offer-params.service.js'
 import { OfferParamDataMapper } from './offer-params-data-mapper.js'
 import { SelectOfferService } from './select-offer.service.js'
-import { ClickSharedModule } from '@/click/shared/click-shared.module.js'
+import { ClickSharedModule } from '../../shared/click-shared.module.js'
 
 @Module({
   exports: [LandingsOffersService],
