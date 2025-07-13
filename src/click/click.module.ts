@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ClickController } from './click.controller.js'
 import { ClickService } from './click.service.js'
-import { CampaignModule } from '@/campaign/campaign.module.js'
+import { CampaignModule } from '../campaign/campaign.module.js'
 import { SelectStreamService } from './select-stream.service.js'
 import { HandleStreamService } from './handle-stream.service.js'
 import { DirectUrlModule } from './schema/direct-url/direct-url.module.js'
@@ -20,8 +20,8 @@ import {
 import { RegisterClickService } from './register-click.service.js'
 import { ClickRepository } from './click.repository.js'
 import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module.js'
-import { ObserverModule } from '@/click/observers/observer.module.js'
-import { ClickSharedModule } from '@/click/shared/click-shared.module.js'
+import { ObserverModule } from './observers/observer.module.js'
+import { ClickSharedModule } from './shared/click-shared.module.js'
 
 @Module({
   controllers: [ClickController],

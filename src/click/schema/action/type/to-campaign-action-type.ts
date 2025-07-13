@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { ActionType, StreamResponse } from '@/click/types.js'
-import { Stream } from '@/campaign/entity/stream.entity.js'
-import { ClickContext } from '@/click/shared/click-context.service.js'
+import { ActionType, StreamResponse } from '../../../types.js'
+import { Stream } from '../../../../campaign/entity/stream.entity.js'
+import { ClickContext } from '../../../shared/click-context.service.js'
 
 @Injectable()
 export class ToCampaignActionType implements ActionType {

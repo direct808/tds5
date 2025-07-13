@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ClickObserver } from '@/click/observers/subject.js'
+import { ClickObserver } from '../subject.js'
 import {
   ClickContext,
   IClickContext,
-} from '@/click/shared/click-context.service.js'
+} from '../../shared/click-context.service.js'
 
 @Injectable()
 export class LanguageParserObserver implements ClickObserver {

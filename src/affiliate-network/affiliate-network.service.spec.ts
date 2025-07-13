@@ -6,9 +6,9 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils.js'
+} from '../utils/repository-utils.js'
 
-jest.mock('@/utils/repository-utils')
+jest.mock('../utils/repository-utils.js')
 
 describe('AffiliateNetworkService', () => {
   let service: AffiliateNetworkService

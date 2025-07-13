@@ -6,8 +6,8 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils.js'
-import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository.js'
+} from '../utils/repository-utils.js'
+import { AffiliateNetworkRepository } from '../affiliate-network/affiliate-network.repository.js'
 
 jest.mock('../utils/repository-utils')
 

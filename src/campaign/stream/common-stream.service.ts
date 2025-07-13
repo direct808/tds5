@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { CampaignRepository } from '../campaign.repository.js'
-import { ensureEntityExists } from '@/utils/repository-utils.js'
+import { ensureEntityExists } from '../../utils/repository-utils.js'
 import { CreateStreamDto } from '../dto/create-stream.dto.js'
 import { Stream } from '../entity/stream.entity.js'
 

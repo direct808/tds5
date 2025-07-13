@@ -9,11 +9,11 @@ import {
   Post,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { UserId } from '@/auth/user-id.decorator.js'
+import { UserId } from '../auth/user-id.decorator.js'
 import { AffiliateNetworkService } from './affiliate-network.service.js'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto.js'
 import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto.js'
-import { GLOBAL_PREFIX } from '@/utils/constants.js'
+import { GLOBAL_PREFIX } from '../utils/constants.js'
 import { AffiliateNetwork } from './affiliate-network.entity.js'
 
 @ApiTags('Партнерские сети')

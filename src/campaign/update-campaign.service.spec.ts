@@ -2,7 +2,7 @@ import { CampaignRepository } from './campaign.repository.js'
 import { DataSource, EntityManager } from 'typeorm'
 import { UpdateStreamService } from './stream/update-stream.service.js'
 import { Test, TestingModule } from '@nestjs/testing'
-import { checkUniqueNameForUpdate } from '@/utils/repository-utils.js'
+import { checkUniqueNameForUpdate } from '../utils/repository-utils.js'
 import { UpdateCampaignService } from './update-campaign.service.js'
 import { CommonCampaignService } from './common-campaign.service.js'
 

@@ -4,15 +4,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { CampaignRepository } from '@/campaign/campaign.repository.js'
+import { CampaignRepository } from '../campaign/campaign.repository.js'
 import { SelectStreamService } from './select-stream.service.js'
-import { Campaign } from '@/campaign/entity/campaign.entity.js'
+import { Campaign } from '../campaign/entity/campaign.entity.js'
 import { HandleStreamService } from './handle-stream.service.js'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory.js'
 import { StreamResponse } from './types.js'
 import { RegisterClickService } from './register-click.service.js'
-import { SetupSubject } from '@/click/observers/setup-subject.js'
-import { ClickContext } from '@/click/shared/click-context.service.js'
+import { SetupSubject } from './observers/setup-subject.js'
+import { ClickContext } from './shared/click-context.service.js'
 
 type RedirectData = { count: number }
 

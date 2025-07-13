@@ -2,7 +2,7 @@ import { URL } from 'url'
 import { Injectable } from '@nestjs/common'
 import { HttpService } from '@nestjs/axios'
 import { firstValueFrom } from 'rxjs'
-import { RedirectType, StreamResponse } from '@/click/types.js'
+import { RedirectType, StreamResponse } from '../../../types.js'
 
 @Injectable()
 export class CurlRedirectType implements RedirectType {

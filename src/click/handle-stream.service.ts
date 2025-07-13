@@ -3,7 +3,7 @@ import {
   CampaignStreamSchema,
   Stream,
   StreamDirectUrl,
-} from '@/campaign/entity/stream.entity.js'
+} from '../campaign/entity/stream.entity.js'
 import { StreamResponse } from './types.js'
 import { DirectUrlService } from './schema/direct-url/direct-url.service.js'
 import { ActionService } from './schema/action/action.service.js'

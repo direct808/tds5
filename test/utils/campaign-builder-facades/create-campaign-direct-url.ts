@@ -1,6 +1,6 @@
-import { StreamRedirectType } from '@/campaign/entity/stream.entity'
+import { StreamRedirectType } from '../../../src/campaign/entity/stream.entity.js'
 import { DataSource } from 'typeorm'
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { CampaignBuilder } from '../../../src/utils/entity-builder/campaign-builder.js'
 import { faker } from '@faker-js/faker'
 
 type CreateCampaignDirectUrlArgs = {

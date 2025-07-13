@@ -1,6 +1,9 @@
-import { IClickContext } from '@/click/shared/click-context.service'
-import { RequestAdapter, ResponseAdapter } from '@/utils/request-adapter'
-import { ClickData } from '@/click/click-data'
+import { IClickContext } from '../../src/click/shared/click-context.service.js'
+import {
+  RequestAdapter,
+  ResponseAdapter,
+} from '../../src/utils/request-adapter/index.js'
+import { ClickData } from '../../src/click/click-data.js'
 
 export class MockClickContext implements IClickContext {
   private requestAdapter?: RequestAdapter

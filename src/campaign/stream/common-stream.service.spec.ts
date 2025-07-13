@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamService } from './common-stream.service.js'
 import { CampaignRepository } from '../campaign.repository.js'
-import { ensureEntityExists } from '@/utils/repository-utils.js'
+import { ensureEntityExists } from '../../utils/repository-utils.js'
 import { CreateStreamDto } from '../dto/create-stream.dto.js'
 import {
   CampaignStreamSchema,
@@ -9,7 +9,7 @@ import {
   StreamRedirectType,
 } from '../entity/stream.entity.js'
 
-jest.mock('@/utils/repository-utils.js')
+jest.mock('../../utils/repository-utils.js')
 
 describe('CommonStreamService', () => {
   let service: CommonStreamService

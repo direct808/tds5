@@ -3,7 +3,7 @@ import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils.js'
+} from '../utils/repository-utils.js'
 import { DataSource, EntityManager, Repository } from 'typeorm'
 import { Campaign } from './entity/campaign.entity.js'
 import { Stream } from './entity/stream.entity.js'

@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { SetMetadata } from '@nestjs/common'
-import { User } from '@/user/user.entity.js'
+import { User } from '../user/user.entity.js'
 
 export type JwrPayload = {
   sub: string

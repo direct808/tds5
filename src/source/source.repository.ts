@@ -5,13 +5,13 @@ import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils.js'
+} from '../utils/repository-utils.js'
 
 @Injectable()
 export class SourceRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository:Repository<Source>
+  private readonly repository: Repository<Source>
 
   constructor(private readonly dataSource: DataSource) {
     this.repository = this.dataSource.getRepository(Source)

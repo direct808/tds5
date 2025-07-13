@@ -4,9 +4,8 @@ import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
-} from '@/utils/repository-utils.js'
+} from '../utils/repository-utils.js'
 import { Offer } from './offer.entity.js'
-import { User } from '@/user/user.entity.js'
 
 @Injectable()
 export class OfferRepository
