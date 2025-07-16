@@ -9,17 +9,21 @@ import {
   ClickLimitProvider,
 } from '@/stream-filter/filters/click-limit-filter'
 import { ClickDataTextFilter } from '@/stream-filter/filters/click-data-text-filter'
-import { ClickContextService } from '@/click/click-context.service'
+import { ClickContext } from '@/click/shared/click-context.service'
+
+export interface IStreamFilterFactory {
+  create(filterObj: FilterObject): StreamFilter
+}
 
 @Injectable()
-export class StreamFilterFactory {
+export class StreamFilterFactory implements IStreamFilterFactory {
   private clickLimitProvider: ClickLimitProvider = {
     getClickPerHour: (): Promise<number> => Promise.resolve(1),
     getClickPerDay: (): Promise<number> => Promise.resolve(1),
     getClickTotal: (): Promise<number> => Promise.resolve(1),
   }
 
-  constructor(private readonly clickContext: ClickContextService) {}
+  constructor(private readonly clickContext: ClickContext) {}
 
   // e slint-disable-next-line max-lines-per-function
   create(filterObj: FilterObject): StreamFilter {

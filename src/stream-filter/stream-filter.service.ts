@@ -1,10 +1,16 @@
 import { FilterLogic, FilterObject, Filters } from '@/stream-filter/types'
-import { Injectable } from '@nestjs/common'
-import { StreamFilterFactory } from '@/stream-filter/stream-filter-factory'
+import { Inject, Injectable } from '@nestjs/common'
+import {
+  IStreamFilterFactory,
+  StreamFilterFactory,
+} from '@/stream-filter/stream-filter-factory'
 
 @Injectable()
 export class StreamFilterService {
-  constructor(private readonly streamFilterFactory: StreamFilterFactory) {}
+  constructor(
+    @Inject(StreamFilterFactory)
+    private readonly streamFilterFactory: IStreamFilterFactory,
+  ) {}
 
   public async checkFilters(filters: Filters) {
     let resultValue = true

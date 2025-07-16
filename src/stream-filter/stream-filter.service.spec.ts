@@ -9,8 +9,8 @@ describe('StreamFilterService', () => {
   const mockStreamFilterFactory = {
     create: jest.fn(),
   }
-  const mockClickData = {} as ClickData
-  const mockRequest = new MockRequestAdapter()
+  // const mockClickData = {} as ClickData
+  // const mockRequest = MockRequestAdapter.create()
 
   beforeEach(async () => {
     service = new StreamFilterService(mockStreamFilterFactory)
@@ -38,8 +38,8 @@ describe('StreamFilterService', () => {
     let handle: jest.SpyInstance
     let processExclude: jest.SpyInstance
 
-    const clickData = {} as ClickData
-    const request = new MockRequestAdapter()
+    // const clickData = {} as ClickData
+    // const request = MockRequestAdapter.create()
 
     beforeEach(() => {
       handle = spyOn(service, 'handle')
@@ -55,9 +55,9 @@ describe('StreamFilterService', () => {
       handle.mockReturnValue(handleResult)
       processExclude.mockReturnValue(expectedResult)
 
-      const result = service['filter'](filter, clickData, request)
+      const result = service['filter'](filter)
 
-      expect(service['handle']).toHaveBeenCalledWith(filter, clickData, request)
+      expect(service['handle']).toHaveBeenCalledWith(filter)
       expect(service['processExclude']).toHaveBeenCalledWith(
         handleResult,
         filter.exclude,
@@ -68,7 +68,7 @@ describe('StreamFilterService', () => {
 
   describe('checkFilter', () => {
     let filter: jest.SpyInstance
-    const request = new MockRequestAdapter()
+    const request = MockRequestAdapter.create()
 
     beforeEach(() => {
       filter = spyOn(service, 'filter')
@@ -80,12 +80,7 @@ describe('StreamFilterService', () => {
 
       filter.mockReturnValue(true)
 
-      const result = service['checkFilter'](
-        filterObj,
-        clickData,
-        FilterLogic.Or,
-        request,
-      )
+      const result = service['checkFilter'](filterObj, FilterLogic.Or)
 
       expect(service['filter']).toHaveBeenCalledWith(filter, clickData, request)
       expect(result).toEqual({ value: true, break: true })
@@ -97,12 +92,7 @@ describe('StreamFilterService', () => {
 
       filter.mockReturnValue(false)
 
-      const result = service['checkFilter'](
-        filterObj,
-        clickData,
-        FilterLogic.And,
-        request,
-      )
+      const result = service['checkFilter'](filterObj, FilterLogic.And)
 
       expect(service['filter']).toHaveBeenCalledWith(filter, clickData, request)
       expect(result).toEqual({ value: false, break: true })
@@ -110,32 +100,20 @@ describe('StreamFilterService', () => {
 
     it('should return { value: true } if result is true and logic is AND', () => {
       const filterObj = {} as FilterObject
-      const clickData = {} as ClickData
 
       filter.mockReturnValue(true)
 
-      const result = service['checkFilter'](
-        filterObj,
-        clickData,
-        FilterLogic.And,
-        request,
-      )
+      const result = service['checkFilter'](filterObj, FilterLogic.And)
 
       expect(result).toEqual({ value: true })
     })
 
     it('should return { value: false } if result is false and logic is OR', () => {
       const filterObj = {} as FilterObject
-      const clickData = {} as ClickData
 
       filter.mockReturnValue(false)
 
-      const result = service['checkFilter'](
-        filterObj,
-        clickData,
-        FilterLogic.Or,
-        request,
-      )
+      const result = service['checkFilter'](filterObj, FilterLogic.Or)
 
       expect(result).toEqual({ value: false })
     })
