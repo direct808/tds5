@@ -49,6 +49,7 @@
     "weighted": "^1.0.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.28.0",
     "@faker-js/faker": "^9.8.0",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",

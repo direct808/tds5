@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import request from 'supertest'
+import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import { Source } from '@/source/source.entity'
 import { sourceFixtures } from '../fixtures/source.fixture'
