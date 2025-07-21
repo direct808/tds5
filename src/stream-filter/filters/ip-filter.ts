@@ -1,5 +1,4 @@
 import { BaseFilterObject, StreamFilter } from '@/stream-filter/types'
-import { inRange, isRange } from 'range_check'
 
 export interface IpFilterObject extends BaseFilterObject {
   type: 'ip'
@@ -17,16 +16,39 @@ export class IpFilter implements StreamFilter {
       return false
     }
 
-    const ranges = this.filterObj.values.filter(isRange)
-
     if (!this.ip) {
       return false
     }
 
-    return this.checkRange(ranges, this.ip)
+    for (const range of this.filterObj.values) {
+      const splitted = this.splitRange(range)
+
+      if (!splitted) {
+        continue
+      }
+
+      const from = this.ipToNumber(splitted[0])
+      const to = this.ipToNumber(splitted[1])
+
+      const ip = this.ipToNumber(this.ip)
+
+      if (ip >= from && ip <= to) {
+        return true
+      }
+    }
+
+    return false
   }
 
-  private checkRange(ranges: string[], ip: string) {
-    return ranges.every((range) => inRange(ip, range))
+  private ipToNumber(ip: string): number {
+    return ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet), 0)
+  }
+
+  private splitRange(range: string): [string, string] | false {
+    const res = range.split('-').map((item) => item.trim())
+    if (res.length === 2) {
+      return res as [string, string]
+    }
+    return false
   }
 }

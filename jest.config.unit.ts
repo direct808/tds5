@@ -10,7 +10,7 @@ const config: Config = {
   },
   transformIgnorePatterns: ['node_modules/(?!ip6)'],
   collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: '../coverage',
+  coverageDirectory: './coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
