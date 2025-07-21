@@ -3,6 +3,7 @@ import { DateIntervalFilterObject } from '@/stream-filter/filters/date-interval-
 import { ClickLimitFilterObj } from '@/stream-filter/filters/click-limit-filter'
 import { ClickDataTextFilterObject } from '@/stream-filter/filters/click-data-text-filter'
 import { IpFilterObject } from '@/stream-filter/filters/ip-filter'
+import { IpV6FilterObject } from '@/stream-filter/filters/ipv6-filter'
 
 // export type TextFilterTypes =
 //   | 'referer'
@@ -22,6 +23,7 @@ export type FilterObject =
   | ScheduleFilterObj
   | ClickLimitFilterObj
   | IpFilterObject
+  | IpV6FilterObject
 
 // export interface TextFilterObject extends BaseFilterObject {
 //   type: TextFilterTypes

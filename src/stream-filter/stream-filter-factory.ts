@@ -10,6 +10,7 @@ import {
 } from '@/stream-filter/filters/click-limit-filter'
 import { ClickDataTextFilter } from '@/stream-filter/filters/click-data-text-filter'
 import { ClickContext } from '@/click/shared/click-context.service'
+import { IpV6Filter } from '@/stream-filter/filters/ipv6-filter'
 
 export interface IStreamFilterFactory {
   create(filterObj: FilterObject): StreamFilter
@@ -50,8 +51,8 @@ export class StreamFilterFactory implements IStreamFilterFactory {
 
       case 'ip':
         return new IpFilter(filterObj, clickData.ip)
-      // case 'ipv6':
-      //   return new BoolFilter(filterObj, clickData, filterObj.type)
+      case 'ipv6':
+        return new IpV6Filter(clickData.ip)
       case 'query-param':
         return new QueryParamFilter(filterObj, requestAdapter)
       default:
