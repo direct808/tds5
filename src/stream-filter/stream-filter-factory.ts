@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { FilterObject, StreamFilter } from '@/stream-filter/types'
 import { DateIntervalFilter } from '@/stream-filter/filters/date-interval-filter'
 import { IpFilter } from '@/stream-filter/filters/ip-filter'
@@ -23,7 +23,7 @@ export class StreamFilterFactory implements IStreamFilterFactory {
     private readonly clickRepository: ClickRepository,
   ) {}
 
-  // e slint-disable-next-line max-lines-per-function
+  // eslint-disable-next-line max-lines-per-function
   create(filterObj: FilterObject): StreamFilter {
     const requestAdapter = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
@@ -40,14 +40,21 @@ export class StreamFilterFactory implements IStreamFilterFactory {
       case 'keyword':
       case 'adCampaignId':
       case 'creativeId':
-        // case 'city':
-        // case 'region':
-        // case 'searchEngine':
-        // case 'country':
+      case 'os':
+      case 'osVersion':
+      case 'browser':
+      case 'browserVersion':
+      case 'deviceType':
+      case 'deviceModel':
+      case 'userAgent':
+      case 'language':
+      case 'subId1':
+      case 'subId2':
+      case 'extraParam1':
+      case 'extraParam2':
         return new ClickDataTextFilter(filterObj, clickData, filterObj.type)
       case 'click-unique':
         return new ClickUniqueFilter(filterObj, this.clickRepository, clickData)
-
       case 'ip':
         return new IpFilter(filterObj, clickData.ip)
       case 'ipv6':

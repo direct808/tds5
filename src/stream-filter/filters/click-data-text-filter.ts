@@ -10,6 +10,18 @@ export type ClickDataTextKeys =
   | 'city'
   | 'region'
   | 'country'
+  | 'os'
+  | 'osVersion'
+  | 'browser'
+  | 'browserVersion'
+  | 'deviceType'
+  | 'deviceModel'
+  | 'userAgent'
+  | 'language'
+  | 'subId1'
+  | 'subId2'
+  | 'extraParam1'
+  | 'extraParam2'
 
 export interface ClickDataTextFilterObject extends BaseFilterObject {
   type: ClickDataTextKeys

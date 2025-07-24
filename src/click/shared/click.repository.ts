@@ -4,6 +4,9 @@ import { ClickUniqueProvider } from '@/stream-filter/filters/click-unique-filter
 import { ClickLimitProvider } from '@/stream-filter/filters/click-limit-filter'
 import { IClick } from '@/click/click'
 import { Click } from '@/click/click.entity'
+import { InjectKysely } from 'nestjs-kysely'
+import { Kysely, sql } from 'kysely'
+import { DB } from '@/@types/db'
 
 @Injectable()
 export class ClickRepository
@@ -11,7 +14,10 @@ export class ClickRepository
 {
   private readonly repository = this.dataSource.getRepository(Click)
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    @InjectKysely() private readonly db: Kysely<DB>,
+  ) {}
 
   public async add(data: Partial<IClick>): Promise<void> {
     await this.repository.insert(data)
@@ -21,33 +27,73 @@ export class ClickRepository
     return this.repository.findBy({ campaignId })
   }
 
-  getCountByVisitorId(visitorId: string): Promise<number> {
-    throw new Error('Method not implemented ' + visitorId)
+  public async getCountByVisitorId(visitorId: string): Promise<number> {
+    const { count } = await this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.count<number>('click.id').as('count')])
+      .where('visitorId', '=', visitorId)
+      .executeTakeFirstOrThrow()
+
+    return count
   }
 
-  getCountByVisitorIdCampaignId(
+  public async getCountByVisitorIdCampaignId(
     visitorId: string,
     campaignId: string,
   ): Promise<number> {
-    throw new Error('Method not implemented' + visitorId + campaignId)
+    const { count } = await this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.count<number>('click.id').as('count')])
+      .where('visitorId', '=', visitorId)
+      .where('campaignId', '=', campaignId)
+      .executeTakeFirstOrThrow()
+
+    return count
   }
 
-  getCountByVisitorIdStreamId(
+  public async getCountByVisitorIdStreamId(
     visitorId: string,
     streamId: string,
   ): Promise<number> {
-    throw new Error('Method not implemented' + visitorId + streamId)
+    const { count } = await this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .where('visitorId', '=', visitorId)
+      .where('streamId', '=', streamId)
+      .executeTakeFirstOrThrow()
+
+    return count
   }
 
-  getClickPerHour(campaignId: string): Promise<number> {
-    throw new Error('Method not implemented ' + campaignId)
+  public async getClickPerHour(campaignId: string): Promise<number> {
+    const { count } = await this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .where('createdAt', '>=', sql<Date>`NOW() - interval '1 hour'`)
+      .where('campaignId', '=', campaignId)
+      .executeTakeFirstOrThrow()
+
+    return count
   }
 
-  getClickPerDay(campaignId: string): Promise<number> {
-    throw new Error('Method not implemented ' + campaignId)
+  public async getClickPerDay(campaignId: string): Promise<number> {
+    const { count } = await this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .where('createdAt', '>=', sql<Date>`NOW() - interval '1 day'`)
+      .where('campaignId', '=', campaignId)
+      .executeTakeFirstOrThrow()
+
+    return count
   }
 
-  getClickTotal(campaignId: string): Promise<number> {
-    throw new Error('Method not implemented ' + campaignId)
+  public async getClickTotal(campaignId: string): Promise<number> {
+    const { count } = await this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .where('campaignId', '=', campaignId)
+      .executeTakeFirstOrThrow()
+
+    return count
   }
 }
