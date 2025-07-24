@@ -18,7 +18,6 @@ import {
   ToCampaignActionType,
 } from './schema/action/type'
 import { RegisterClickService } from './register-click.service'
-import { ClickRepository } from './click.repository'
 import { LandingsOfferModule } from './schema/landings-offers/landings-offer.module'
 import { ObserverModule } from '@/click/observers/observer.module'
 import { ClickSharedModule } from '@/click/shared/click-shared.module'
@@ -41,7 +40,6 @@ import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
     ShowTextActionType,
     ToCampaignActionType,
     RegisterClickService,
-    ClickRepository,
   ],
   imports: [
     CampaignModule,
