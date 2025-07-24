@@ -9,6 +9,9 @@ import { User } from '@/user/user.entity'
 import { Source } from '@/source/source.entity'
 import { Stream } from '@/campaign/entity/stream.entity'
 import { Click } from '@/click/click.entity'
+import { KyselyModule } from 'nestjs-kysely'
+import { PostgresDialect } from 'kysely'
+import { Pool } from 'pg'
 
 @Global()
 @Module({
@@ -37,6 +40,23 @@ import { Click } from '@/click/click.entity'
         }
       },
       inject: [AppConfig],
+    }),
+
+    KyselyModule.forRootAsync({
+      inject: [AppConfig],
+      useFactory(config: AppConfig) {
+        return {
+          dialect: new PostgresDialect({
+            pool: new Pool({
+              host: config.dbHost,
+              port: Number(config.dbPort),
+              database: config.dbName,
+              password: config.dbPass,
+              user: config.dbUser,
+            }),
+          }),
+        }
+      },
     }),
   ],
 })
