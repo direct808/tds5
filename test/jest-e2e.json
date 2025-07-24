@@ -4,8 +4,12 @@
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+    "^.+\\.ts$": "ts-jest",
+    "^.+\\.js$":["babel-jest", { "extends": "./test/babel.config.js" }]
   },
+  "transformIgnorePatterns": [
+    "node_modules/(?!ip6)"
+  ],
   "testTimeout": 30000,
   "globalSetup": "<rootDir>/utils/jest.global-setup.ts",
   "moduleNameMapper": {
