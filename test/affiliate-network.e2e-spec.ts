@@ -30,7 +30,7 @@ describe('AffiliateNetworkController (e2e)', () => {
     dataSource = app.get(DataSource)
     await loadUserFixtures(dataSource)
     affiliateNetworkRepository = dataSource.getRepository(AffiliateNetwork)
-    accessToken = await authUser(app)
+    accessToken = authUser(app)
   })
 
   it('Create affiliate network', async () => {
