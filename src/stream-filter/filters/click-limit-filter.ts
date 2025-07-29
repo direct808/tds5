@@ -5,7 +5,6 @@ export interface ClickLimitFilterObj extends BaseFilterObject {
   perHour?: number
   perDay?: number
   total?: number
-  campaignId: string
 }
 
 export interface ClickLimitProvider {
@@ -18,6 +17,7 @@ export class ClickLimitFilter implements StreamFilter {
   constructor(
     private readonly filterObj: ClickLimitFilterObj,
     private readonly provider: ClickLimitProvider,
+    private readonly campaignId: string,
   ) {}
 
   async handle(): Promise<boolean> {
@@ -38,7 +38,7 @@ export class ClickLimitFilter implements StreamFilter {
     if (!value) {
       return true
     }
-    const count = await this.provider[methodName](this.filterObj.campaignId)
-    return count <= value
+    const count = await this.provider[methodName](this.campaignId)
+    return count < value
   }
 }

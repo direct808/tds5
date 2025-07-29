@@ -4,6 +4,12 @@ import { Source } from '@/source/source.entity'
 export class SourceBuilder {
   private fields: Partial<Source> = {}
 
+  private constructor() {}
+
+  public static create() {
+    return new this()
+  }
+
   name(name: string) {
     this.fields.name = name
     return this

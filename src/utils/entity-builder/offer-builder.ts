@@ -7,6 +7,12 @@ export class OfferBuilder {
   private fields: Partial<Offer> = {}
   private affiliateNetworkBuilder: AffiliateNetworkBuilder | undefined
 
+  private constructor() {}
+
+  public static create() {
+    return new this()
+  }
+
   name(name: string) {
     this.fields.name = name
     return this
@@ -36,7 +42,7 @@ export class OfferBuilder {
   public createAffiliateNetwork(
     callback: (builder: AffiliateNetworkBuilder) => void,
   ) {
-    const builder = new AffiliateNetworkBuilder()
+    const builder = AffiliateNetworkBuilder.create()
     this.affiliateNetworkBuilder = builder
     callback(builder)
     return this

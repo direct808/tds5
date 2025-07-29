@@ -19,7 +19,6 @@ export interface IStreamFilterFactory {
 export class StreamFilterFactory implements IStreamFilterFactory {
   constructor(
     private readonly clickContext: ClickContext,
-
     private readonly clickRepository: ClickRepository,
   ) {}
 
@@ -28,13 +27,21 @@ export class StreamFilterFactory implements IStreamFilterFactory {
     const requestAdapter = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 
+    if (!clickData.campaignId) {
+      throw new Error('No campaignId')
+    }
+
     switch (filterObj.type) {
       case 'date':
         return new DateIntervalFilter(filterObj)
       case 'schedule':
         return new ScheduleFilter(filterObj)
       case 'click-limit':
-        return new ClickLimitFilter(filterObj, this.clickRepository)
+        return new ClickLimitFilter(
+          filterObj,
+          this.clickRepository,
+          clickData.campaignId,
+        )
       case 'referer':
       case 'source':
       case 'keyword':
