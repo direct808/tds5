@@ -17,6 +17,8 @@ import {
 } from '../fixtures/campaign.fixture'
 import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
 import { Stream } from '@/campaign/entity/stream.entity'
+import { AppConfig } from '@/config/app-config.service'
+import * as jwt from 'jsonwebtoken'
 
 export async function loadSourceFixtures(ds: DataSource) {
   const repo = ds.getRepository(Source)
@@ -55,12 +57,14 @@ async function loadStreamOfferFixtures(ds: DataSource) {
   await repo.save(repo.create(streamOfferFixtures))
 }
 
-export async function authUser(app: INestApplication) {
-  const { body } = await request(app.getHttpServer())
-    .post('/api/auth/login')
-    .send({ email: 'admin@gmail.com', password: '1234' })
+export function authUser(app: INestApplication) {
+  const payload = {
+    email: 'admin@gmail.com',
+    sub: '00000000-0000-4000-8000-000000000001',
+  }
 
-  return body.accessToken
+  const secret = app.get(AppConfig).secret
+  return jwt.sign(payload, secret, { expiresIn: '1h' })
 }
 
 export async function truncateTables(app: INestApplication) {

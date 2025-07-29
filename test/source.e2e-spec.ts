@@ -33,7 +33,7 @@ describe('SourceController (e2e)', () => {
     await loadUserFixtures(dataSource)
     await loadSourceFixtures(dataSource)
     sourceRepository = dataSource.getRepository(Source)
-    accessToken = await authUser(app)
+    accessToken = authUser(app)
   })
 
   it('Create source', () => {

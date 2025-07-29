@@ -52,7 +52,7 @@ describe('CampaignController (e2e)', () => {
     await loadSourceFixtures(dataSource)
     await loadCampaignFixtures(dataSource)
 
-    accessToken = await authUser(app)
+    accessToken = authUser(app)
   })
 
   describe('Create', () => {

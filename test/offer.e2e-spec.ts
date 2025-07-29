@@ -36,7 +36,7 @@ describe('OfferController (e2e)', () => {
     await loadAffiliateNetworkFixtures(dataSource)
     await loadOfferFixtures(dataSource)
     offerRepository = dataSource.getRepository(Offer)
-    accessToken = await authUser(app)
+    accessToken = authUser(app)
   })
 
   describe('Create', () => {
