@@ -7,6 +7,12 @@ export class OfferBuilder {
   private fields: Partial<Offer> = {}
   private affiliateNetworkBuilder: AffiliateNetworkBuilder | undefined
 
+  private constructor() {}
+
+  public static create() {
+    return new this()
+  }
+
   name(name: string) {
     this.fields.name = name
     return this

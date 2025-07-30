@@ -3,20 +3,18 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
-import {
-  authUser,
-  loadAffiliateNetworkFixtures,
-  loadOfferFixtures,
-  loadUserFixtures,
-  truncateTables,
-} from './utils/helpers'
+import { createAuthUser, truncateTables } from './utils/helpers'
 import { configureApp } from '@/utils/configure-app'
 import { Offer } from '@/offer/offer.entity'
+import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
+import { faker } from '@faker-js/faker/.'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let offerRepository: Repository<Offer>
+  let dataSource: DataSource
+  let userId: string
 
   afterEach(async () => {
     await truncateTables(app)
@@ -24,19 +22,17 @@ describe('OfferController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    // process.env.DB_NAME = await createTestDatabase()
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile()
     app = moduleFixture.createNestApplication()
     configureApp(app)
     await app.init()
-    const dataSource = app.get(DataSource)
-    await loadUserFixtures(dataSource)
-    await loadAffiliateNetworkFixtures(dataSource)
-    await loadOfferFixtures(dataSource)
+    dataSource = app.get(DataSource)
     offerRepository = dataSource.getRepository(Offer)
-    accessToken = await authUser(app)
+    const authData = await createAuthUser(app)
+    accessToken = authData.accessToken
+    userId = authData.user.id
   })
 
   describe('Create', () => {
@@ -56,18 +52,30 @@ describe('OfferController (e2e)', () => {
   })
 
   it('List offers', async () => {
+    await OfferBuilder.create()
+      .name('Offer 1')
+      .userId(userId)
+      .url(faker.internet.url())
+      .save(dataSource)
+
     const { body } = await request(app.getHttpServer())
       .get('/api/offer')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     expect(Array.isArray(body)).toBe(true)
-    expect(body.length).toBeGreaterThan(0)
+    expect(body.length).toBe(1)
   })
 
-  it('Обновление offer, при этом нельзя обновить id у source', async () => {
+  it('Обновление offer, при этом нельзя обновить id', async () => {
+    const offer = await OfferBuilder.create()
+      .name('Offer 1')
+      .userId(userId)
+      .url(faker.internet.url())
+      .save(dataSource)
+
     await request(app.getHttpServer())
-      .patch('/api/offer/00000000-0000-4000-8000-000000000001')
+      .patch('/api/offer/' + offer.id)
       .auth(accessToken, { type: 'bearer' })
       .send({
         name: 'updated name',
@@ -76,20 +84,26 @@ describe('OfferController (e2e)', () => {
       .expect(200)
 
     const source = await offerRepository.findOneOrFail({
-      where: { id: '00000000-0000-4000-8000-000000000001' },
+      where: { id: offer.id },
     })
 
     expect(source.name).toEqual('updated name')
   })
 
   it('Delete offer', async () => {
+    const offer = await OfferBuilder.create()
+      .name('Offer 1')
+      .userId(userId)
+      .url(faker.internet.url())
+      .save(dataSource)
+
     await request(app.getHttpServer())
-      .delete('/api/offer/00000000-0000-4000-8000-000000000001')
+      .delete('/api/offer/' + offer.id)
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     const source = await offerRepository.findOneBy({
-      id: '00000000-0000-4000-8000-000000000001',
+      id: offer.id,
     })
 
     expect(source).toBeNull()

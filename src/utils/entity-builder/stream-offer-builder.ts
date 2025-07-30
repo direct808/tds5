@@ -12,7 +12,7 @@ export class StreamOfferBuilder {
   }
 
   createOffer(callback: (builder: OfferBuilder) => void) {
-    const builder = new OfferBuilder()
+    const builder = OfferBuilder.create()
     this.builder = builder
     callback(builder)
     return this
