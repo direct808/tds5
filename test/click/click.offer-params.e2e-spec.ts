@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource } from 'typeorm'
 import { ClickRepository } from '@/click/click.repository'
-import { loadUserFixtures, truncateTables } from '../utils/helpers'
+import { createAuthUser, truncateTables } from '../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
@@ -12,7 +12,7 @@ describe('Offer params (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
   let clickRepo: ClickRepository
-  const userId = '00000000-0000-4000-8000-000000000001'
+  let userId: string
 
   afterEach(async () => {
     await truncateTables(app)
@@ -28,7 +28,8 @@ describe('Offer params (e2e)', () => {
     await app.init()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)
-    await loadUserFixtures(dataSource)
+    const authData = await createAuthUser(app)
+    userId = authData.user.id
   })
 
   it('Should be replace offer params', async () => {

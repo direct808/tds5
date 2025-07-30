@@ -4,7 +4,7 @@ import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserBuilder } from '@/utils/entity-builder/user-builder'
 
-export async function authUser(
+async function authUser(
   app: INestApplication,
   user: { email: string; password: string },
 ) {
