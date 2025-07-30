@@ -11,10 +11,11 @@ import {
   StreamActionType,
 } from '@/campaign/entity/stream.entity'
 import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import { createAuthUser, truncateTables } from './utils/helpers'
+import { createAuthUser } from './utils/helpers'
 import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { truncateTables } from './utils/truncate-tables'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -26,7 +27,7 @@ describe('CampaignController (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

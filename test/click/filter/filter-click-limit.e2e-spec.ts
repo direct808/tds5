@@ -1,16 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import { DataSource } from 'typeorm'
-import { createAuthUser, truncateTables } from '../utils/helpers'
+import { createAuthUser } from '../../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { FilterLogic } from '@/stream-filter/types'
-import { ClickActionBuilder } from '../utils/click-action-builder'
+import { ClickActionBuilder } from '../../utils/click-action-builder'
 import { DateTime } from 'luxon'
 import { ClickBuilder } from '@/utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
+import { truncateTables } from '../../utils/truncate-tables'
 
 async function clickAction(app: INestApplication, code: string) {
   const { text } = await ClickActionBuilder.create(app)
@@ -33,7 +34,7 @@ function createClick(
     .save(dataSource)
 }
 
-describe('Click-filter (e2e)', () => {
+describe('Filter click limit (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
   let userId: string
@@ -42,7 +43,7 @@ describe('Click-filter (e2e)', () => {
 
   afterEach(async () => {
     jest.useRealTimers()
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

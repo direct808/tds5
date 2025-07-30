@@ -3,10 +3,11 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource } from 'typeorm'
 import { ClickRepository } from '@/click/shared/click.repository'
-import { createAuthUser, truncateTables } from '../utils/helpers'
+import { createAuthUser } from '../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { truncateTables } from '../utils/truncate-tables'
 
 describe('Click-data (e2e)', () => {
   let app: INestApplication
@@ -19,7 +20,7 @@ describe('Click-data (e2e)', () => {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36'
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

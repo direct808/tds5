@@ -3,10 +3,11 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
-import { createAuthUser, truncateTables } from './utils/helpers'
+import { createAuthUser } from './utils/helpers'
 import { Source } from '@/source/source.entity'
 import { configureApp } from '@/utils/configure-app'
 import { SourceBuilder } from '@/utils/entity-builder/source-builder'
+import { truncateTables } from './utils/truncate-tables'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
@@ -16,7 +17,7 @@ describe('SourceController (e2e)', () => {
   let dataSource: DataSource
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 
