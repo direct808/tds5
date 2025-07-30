@@ -17,9 +17,9 @@ describe('ClickLimitFilter', () => {
       const filter = new ClickLimitFilter(
         {
           type: 'click-limit',
-          campaignId: '4',
         },
         provider,
+        '4',
       )
 
       const result = await filter.handle()
@@ -28,7 +28,7 @@ describe('ClickLimitFilter', () => {
     })
 
     it('Should called check 3 times', async () => {
-      const filter = new ClickLimitFilter({} as any, provider)
+      const filter = new ClickLimitFilter({} as any, provider, '4')
 
       const check = spyOn(filter, 'check').mockReturnValue(true)
 
@@ -44,7 +44,7 @@ describe('ClickLimitFilter', () => {
 
   describe('check', () => {
     it('should return true if value is not set', async () => {
-      const filter = new ClickLimitFilter({} as any, provider)
+      const filter = new ClickLimitFilter({} as any, provider, '4')
 
       const result = await filter['check']('getClickPerHour', 'perHour')
       expect(result).toBe(true)
@@ -54,10 +54,10 @@ describe('ClickLimitFilter', () => {
     it('should return true if count is less than to value', async () => {
       const filter = new ClickLimitFilter(
         {
-          campaignId: '123',
           perHour: 100,
         } as any,
         provider,
+        '123',
       )
 
       provider.getClickPerHour.mockResolvedValue(80)
@@ -67,29 +67,29 @@ describe('ClickLimitFilter', () => {
       expect(provider.getClickPerHour).toHaveBeenCalledWith('123')
     })
 
-    it('should return true if count is equal to value', async () => {
+    it('should return false if count is equal to value', async () => {
       const filter = new ClickLimitFilter(
         {
-          campaignId: '123',
           perHour: 100,
         } as any,
         provider,
+        '123',
       )
 
       provider.getClickPerHour.mockResolvedValue(100)
 
       const result = await filter['check']('getClickPerHour', 'perHour')
-      expect(result).toBe(true)
+      expect(result).toBe(false)
       expect(provider.getClickPerHour).toHaveBeenCalledWith('123')
     })
 
     it('should return false if count is more than value', async () => {
       const filter = new ClickLimitFilter(
         {
-          campaignId: '123',
           perHour: 100,
         } as any,
         provider,
+        '123',
       )
 
       provider.getClickPerHour.mockResolvedValue(120)
