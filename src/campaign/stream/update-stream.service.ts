@@ -1,5 +1,9 @@
 import { EntityManager } from 'typeorm'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { CommonStreamService } from './common-stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamService } from './create-stream.service'
@@ -130,7 +134,7 @@ export class UpdateStreamService {
     )
 
     if (offers.length !== offerIds.length) {
-      throw new BadRequestException('Some stream ids not found')
+      throw new NotFoundException('Some stream ids not found')
     }
   }
 

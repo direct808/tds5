@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForUpdate } from '@/utils/repository-utils'
+import {
+  checkUniqueNameForUpdate,
+  ensureEntityExists,
+} from '@/utils/repository-utils'
 import { CampaignRepository } from './campaign.repository'
 import { UpdateStreamService } from './stream/update-stream.service'
 import { CommonCampaignService } from './common-campaign.service'
@@ -25,6 +28,8 @@ export class UpdateCampaignService {
         return this.update(args, manage)
       })
     }
+
+    await this.ensureCampaignExists(args.userId, args.id)
 
     await this.commonCampaignService.ensureSourceExists(
       args.userId,
@@ -54,5 +59,19 @@ export class UpdateCampaignService {
       sourceId: args.sourceId,
       active: args.active,
     }
+  }
+
+  private async ensureCampaignExists(
+    userId: string,
+    campaignId: string,
+  ): Promise<void> {
+    await ensureEntityExists(
+      this.repository,
+      {
+        userId,
+        id: campaignId,
+      },
+      'Campaign not found',
+    )
   }
 }

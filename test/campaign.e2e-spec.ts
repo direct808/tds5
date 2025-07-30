@@ -11,15 +11,10 @@ import {
   StreamActionType,
 } from '@/campaign/entity/stream.entity'
 import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import {
-  authUser,
-  loadAffiliateNetworkFixtures,
-  loadCampaignFixtures,
-  loadOfferFixtures,
-  loadSourceFixtures,
-  loadUserFixtures,
-  truncateTables,
-} from './utils/helpers'
+import { createAuthUser, truncateTables } from './utils/helpers'
+import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
+import { faker } from '@faker-js/faker/.'
+import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -27,6 +22,8 @@ describe('CampaignController (e2e)', () => {
   let campaignRepository: Repository<Campaign>
   let streamRepository: Repository<Stream>
   let streamOfferRepository: Repository<StreamOffer>
+  let dataSource: DataSource
+  let userId: string
 
   afterEach(async () => {
     await truncateTables(app)
@@ -40,23 +37,30 @@ describe('CampaignController (e2e)', () => {
     app = moduleFixture.createNestApplication()
     configureApp(app)
     await app.init()
-    const dataSource = app.get(DataSource)
 
+    const authData = await createAuthUser(app)
+    dataSource = app.get(DataSource)
     campaignRepository = dataSource.getRepository(Campaign)
     streamRepository = dataSource.getRepository(Stream)
     streamOfferRepository = dataSource.getRepository(StreamOffer)
-
-    await loadUserFixtures(dataSource)
-    await loadAffiliateNetworkFixtures(dataSource)
-    await loadOfferFixtures(dataSource)
-    await loadSourceFixtures(dataSource)
-    await loadCampaignFixtures(dataSource)
-
-    accessToken = await authUser(app)
+    userId = authData.user.id
+    accessToken = authData.accessToken
   })
 
   describe('Create', () => {
     it('Should be create campaign and stream', async () => {
+      const offer1 = await OfferBuilder.create()
+        .name('Offer 1')
+        .userId(userId)
+        .url(faker.internet.url())
+        .save(dataSource)
+
+      const offer2 = await OfferBuilder.create()
+        .name('Offer 2')
+        .userId(userId)
+        .url(faker.internet.url())
+        .save(dataSource)
+
       await request(app.getHttpServer())
         .post('/api/campaign')
         .auth(accessToken, { type: 'bearer' })
@@ -69,12 +73,12 @@ describe('CampaignController (e2e)', () => {
               schema: 'LANDINGS_OFFERS',
               offers: [
                 {
-                  offerId: '00000000-0000-4000-8000-000000000001',
+                  offerId: offer1.id,
                   percent: 40,
                   active: true,
                 },
                 {
-                  offerId: '00000000-0000-4000-8000-000000000002',
+                  offerId: offer2.id,
                   percent: 60,
                   active: true,
                 },
@@ -113,6 +117,12 @@ describe('CampaignController (e2e)', () => {
     })
 
     it('Should not be created with an existing name', async () => {
+      await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('abcdif')
+        .userId(userId)
+        .save(dataSource)
+
       await request(app.getHttpServer())
         .post('/api/campaign')
         .auth(accessToken, { type: 'bearer' })
@@ -238,13 +248,26 @@ describe('CampaignController (e2e)', () => {
 
   describe('Update', () => {
     it('Must be an error with the existing name', async () => {
+      await CampaignBuilder.create()
+        .name('Campaign 2')
+        .code('abcdif')
+        .userId(userId)
+        .save(dataSource)
+
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('abcdi2')
+        .userId(userId)
+        .createSource((source) => source.name('Source 1').userId(userId))
+        .save(dataSource)
+
       await request(app.getHttpServer())
-        .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+        .put('/api/campaign/' + campaign.id)
         .auth(accessToken, { type: 'bearer' })
         .send({
           name: 'Campaign 2',
           active: true,
-          sourceId: '00000000-0000-4000-8000-000000000001',
+          sourceId: campaign.source!.id,
           streams: [
             {
               name: 'Test stream 1',
@@ -257,15 +280,24 @@ describe('CampaignController (e2e)', () => {
     })
 
     it('Should not be an error with existing streamIds', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 3')
+        .code('abcdif')
+        .userId(userId)
+        .addStreamTypeAction((stream) =>
+          stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
+        )
+        .save(dataSource)
+
       await request(app.getHttpServer())
-        .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+        .put('/api/campaign/' + campaign.id)
         .auth(accessToken, { type: 'bearer' })
         .send({
           name: 'Campaign 1',
           active: true,
           streams: [
             {
-              id: '00000000-0000-4000-8000-000000000001',
+              id: campaign.streams[0].id,
               name: 'Test stream 1',
               schema: 'ACTION',
               actionType: 'NOTHING',
@@ -276,8 +308,14 @@ describe('CampaignController (e2e)', () => {
     })
 
     it('Must be an error with non existing streamIds', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('abcdif')
+        .userId(userId)
+        .save(dataSource)
+
       await request(app.getHttpServer())
-        .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+        .put('/api/campaign/' + campaign.id)
         .auth(accessToken, { type: 'bearer' })
         .send({
           name: 'Campaign 1',
@@ -291,16 +329,27 @@ describe('CampaignController (e2e)', () => {
             },
           ],
         })
-        .expect(400)
+        .expect(404)
     })
 
     it('Check deleteOldStreams', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 3')
+        .code('abcdif')
+        .userId(userId)
+        .addStreamTypeAction((stream) =>
+          stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
+        )
+        .save(dataSource)
+
+      const streamId = campaign.streams[0].id
+
       const streamBeforeDelete = await streamRepository.findOneBy({
-        id: '00000000-0000-4000-8000-000000000001',
+        id: streamId,
       })
 
       await request(app.getHttpServer())
-        .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+        .put('/api/campaign/' + campaign.id)
         .auth(accessToken, { type: 'bearer' })
         .send({
           name: 'Campaign 1',
@@ -316,7 +365,7 @@ describe('CampaignController (e2e)', () => {
         .expect(200)
 
       const streamAfterDelete = await streamRepository.findOneBy({
-        id: '00000000-0000-4000-8000-000000000001',
+        id: streamId,
       })
 
       const newStream = await streamRepository.findOneBy({
@@ -328,21 +377,53 @@ describe('CampaignController (e2e)', () => {
       expect(newStream).toBeDefined()
     })
 
+    it('Should expect 404 if campaign not exists', async () => {
+      await request(app.getHttpServer())
+        .put('/api/campaign/' + faker.string.uuid())
+        .auth(accessToken, { type: 'bearer' })
+        .send({
+          name: 'Campaign 1',
+          active: true,
+          streams: [
+            {
+              name: 'Test stream 1',
+              schema: 'ACTION',
+              actionType: 'NOTHING',
+            },
+          ],
+        })
+        .expect(404)
+        .expect({
+          message: 'Campaign not found',
+          error: 'Not Found',
+          statusCode: 404,
+        })
+    })
+
     it('Check campaign self referencing', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 3')
+        .code('abcdif')
+        .userId(userId)
+        .addStreamTypeAction((stream) =>
+          stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
+        )
+        .save(dataSource)
+
       async function sendRequest(withId: boolean) {
         await request(app.getHttpServer())
-          .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+          .put('/api/campaign/' + campaign.id)
           .auth(accessToken, { type: 'bearer' })
           .send({
             name: 'Campaign 1',
             active: true,
             streams: [
               {
-                id: withId ? '00000000-0000-4000-8000-000000000001' : undefined,
+                id: withId ? campaign.streams[0].id : undefined,
                 name: 'Test stream 1',
                 schema: 'ACTION',
                 actionType: StreamActionType.TO_CAMPAIGN,
-                actionCampaignId: '00000000-0000-4000-8000-000000000001',
+                actionCampaignId: campaign.id,
               },
             ],
           })
@@ -355,24 +436,48 @@ describe('CampaignController (e2e)', () => {
     })
 
     it('Check deleteOldStreamOffers', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 3')
+        .code('abcdif')
+        .userId(userId)
+        .addStreamTypeOffers((stream) =>
+          stream
+            .name('Stream 1')
+            .addOffer((streamOffer) =>
+              streamOffer
+                .percent(100)
+                .createOffer((offer) =>
+                  offer
+                    .name('Offer 1')
+                    .url(faker.internet.url())
+                    .userId(userId),
+                ),
+            ),
+        )
+        .save(dataSource)
+
+      const streamId = campaign.streams[0].id
+      const streamOfferId = campaign.streams[0].streamOffers![0].id
+      const offerId = campaign.streams[0].streamOffers![0].offerId
+
       const streamOfferBeforeDelete = await streamOfferRepository.findOneBy({
-        id: '00000000-0000-4000-8000-000000000001',
+        id: streamOfferId,
       })
 
       await request(app.getHttpServer())
-        .put('/api/campaign/00000000-0000-4000-8000-000000000001')
+        .put('/api/campaign/' + campaign.id)
         .auth(accessToken, { type: 'bearer' })
         .send({
           name: 'Campaign 1',
           active: true,
           streams: [
             {
-              id: '00000000-0000-4000-8000-000000000001',
+              id: streamId,
               name: 'Test stream 1',
               schema: CampaignStreamSchema.LANDINGS_OFFERS,
               offers: [
                 {
-                  offerId: '00000000-0000-4000-8000-000000000001',
+                  offerId,
                   percent: 100,
                   active: true,
                 },
@@ -383,7 +488,7 @@ describe('CampaignController (e2e)', () => {
         .expect(200)
 
       const streamOfferAfterDelete = await streamOfferRepository.findOneBy({
-        id: '00000000-0000-4000-8000-000000000001',
+        id: streamOfferId,
       })
 
       expect(streamOfferBeforeDelete).not.toBeNull()

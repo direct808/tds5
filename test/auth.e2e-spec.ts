@@ -2,9 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '@/app.module'
-import { DataSource } from 'typeorm'
 import { configureApp } from '@/utils/configure-app'
-import { loadUserFixtures, truncateTables } from './utils/helpers'
+import { createAuthUser, truncateTables } from './utils/helpers'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
@@ -21,12 +20,11 @@ describe('AuthController (e2e)', () => {
     app = moduleFixture.createNestApplication()
     configureApp(app)
     await app.init()
-    const dataSource = app.get(DataSource)
-    await loadUserFixtures(dataSource)
   })
 
   describe('/auth/login (POST)', () => {
     it('should return access token for valid credentials', async () => {
+      await createAuthUser(app)
       const response = await request(app.getHttpServer())
         .post('/api/auth/login')
         .send({ email: 'admin@gmail.com', password: '1234' })
