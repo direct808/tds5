@@ -1,64 +1,17 @@
 import { DataSource } from 'typeorm'
 import * as request from 'supertest'
 import { INestApplication } from '@nestjs/common'
-import { Source } from '@/source/source.entity'
-import { sourceFixtures } from '../fixtures/source.fixture'
-import { offerFixtures } from '../fixtures/offer.fixture'
-import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
-import { affiliateNetworkFixtures } from '../fixtures/affiliate-network.fixture'
-import { User } from '@/user/user.entity'
-import { Offer } from '@/offer/offer.entity'
-import { userFixtures } from '../fixtures/user.fixture'
-import { Campaign } from '@/campaign/entity/campaign.entity'
-import {
-  campaignFixtures,
-  streamFixtures,
-  streamOfferFixtures,
-} from '../fixtures/campaign.fixture'
-import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import { Stream } from '@/campaign/entity/stream.entity'
+import * as bcrypt from 'bcrypt'
+import { UserBuilder } from '@/utils/entity-builder/user-builder'
 
-export async function loadSourceFixtures(ds: DataSource) {
-  const repo = ds.getRepository(Source)
-  await repo.save(repo.create(sourceFixtures))
-}
-
-export async function loadOfferFixtures(ds: DataSource) {
-  const repo = ds.getRepository(Offer)
-  await repo.save(repo.create(offerFixtures))
-}
-
-export async function loadAffiliateNetworkFixtures(ds: DataSource) {
-  const repo = ds.getRepository(AffiliateNetwork)
-  await repo.save(repo.create(affiliateNetworkFixtures))
-}
-
-export async function loadUserFixtures(ds: DataSource) {
-  const repo = ds.getRepository(User)
-  await repo.save(repo.create(userFixtures))
-}
-
-export async function loadCampaignFixtures(ds: DataSource) {
-  const repo = ds.getRepository(Campaign)
-  await repo.save(repo.create(campaignFixtures))
-  await loadStreamFixtures(ds)
-  await loadStreamOfferFixtures(ds)
-}
-
-async function loadStreamFixtures(ds: DataSource) {
-  const repo = ds.getRepository(Stream)
-  await repo.save(repo.create(streamFixtures))
-}
-
-async function loadStreamOfferFixtures(ds: DataSource) {
-  const repo = ds.getRepository(StreamOffer)
-  await repo.save(repo.create(streamOfferFixtures))
-}
-
-export async function authUser(app: INestApplication) {
+async function authUser(
+  app: INestApplication,
+  user: { email: string; password: string },
+) {
   const { body } = await request(app.getHttpServer())
     .post('/api/auth/login')
-    .send({ email: 'admin@gmail.com', password: '1234' })
+    .send({ email: user.email, password: user.password })
+    .expect(201)
 
   return body.accessToken
 }
@@ -71,6 +24,20 @@ export async function truncateTables(app: INestApplication) {
   const names = tables.map((row) => `"${row.tablename}"`).join(', ')
   const sql = `TRUNCATE TABLE ${names} CASCADE;`
   await ds.query(sql)
+}
+
+export async function createAuthUser(app: INestApplication) {
+  const email = 'admin@gmail.com'
+  const salt = await bcrypt.genSalt(10)
+  const pass = await bcrypt.hash('1234', salt)
+  const user = await UserBuilder.create()
+    .email(email)
+    .password(pass)
+    .save(app.get(DataSource))
+
+  const accessToken = await authUser(app, { email, password: '1234' })
+
+  return { user, accessToken }
 }
 
 export function spyOn<T extends object>(service: T, key: string) {

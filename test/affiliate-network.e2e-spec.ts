@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
-import { authUser, loadUserFixtures, truncateTables } from './utils/helpers'
+import { createAuthUser, truncateTables } from './utils/helpers'
 import { configureApp } from '@/utils/configure-app'
 import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 import { AffiliateNetworkBuilder } from '@/utils/entity-builder/affiliate-network-builder'
@@ -11,7 +11,7 @@ import { AffiliateNetworkBuilder } from '@/utils/entity-builder/affiliate-networ
 describe('AffiliateNetworkController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
-  const userId = '00000000-0000-4000-8000-000000000001'
+  let userId: string
   let affiliateNetworkRepository: Repository<AffiliateNetwork>
   let dataSource: DataSource
 
@@ -28,9 +28,11 @@ describe('AffiliateNetworkController (e2e)', () => {
     configureApp(app)
     await app.init()
     dataSource = app.get(DataSource)
-    await loadUserFixtures(dataSource)
+
+    const authData = await createAuthUser(app)
+    userId = authData.user.id
+    accessToken = authData.accessToken
     affiliateNetworkRepository = dataSource.getRepository(AffiliateNetwork)
-    accessToken = await authUser(app)
   })
 
   it('Create affiliate network', async () => {

@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource } from 'typeorm'
-import { ClickRepository } from '@/click/shared/click.repository'
-import { loadUserFixtures, truncateTables } from '../utils/helpers'
+import { ClickRepository } from '@/click/click.repository'
+import { createAuthUser, truncateTables } from '../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
 import { VISITOR_ID_SIZE } from '@/click/observers/id-generator'
@@ -13,7 +13,7 @@ describe('visitorId (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
   let clickRepo: ClickRepository
-  const userId = '00000000-0000-4000-8000-000000000001'
+  let userId: string
 
   afterEach(async () => {
     await truncateTables(app)
@@ -29,7 +29,8 @@ describe('visitorId (e2e)', () => {
     await app.init()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)
-    await loadUserFixtures(dataSource)
+    const authData = await createAuthUser(app)
+    userId = authData.user.id
   })
 
   it('Should be receive visitor id form cookie', async () => {
