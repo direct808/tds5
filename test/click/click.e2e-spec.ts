@@ -11,7 +11,7 @@ import {
 } from '@/campaign/entity/stream.entity'
 import * as express from 'express'
 import { ClickRepository } from '@/click/click.repository'
-import { loadUserFixtures, truncateTables } from '../utils/helpers'
+import { createAuthUser, truncateTables } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 
 describe('Click (e2e)', () => {
@@ -19,7 +19,7 @@ describe('Click (e2e)', () => {
   let dataSource: DataSource
   let clickRepo: ClickRepository
   const redirectUrl = 'https://example.com/'
-  const userId = '00000000-0000-4000-8000-000000000001'
+  let userId: string
 
   afterEach(async () => {
     await truncateTables(app)
@@ -35,7 +35,8 @@ describe('Click (e2e)', () => {
     await app.init()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)
-    await loadUserFixtures(dataSource)
+    const authData = await createAuthUser(app)
+    userId = authData.user.id
   })
 
   it('No campaign', async () => {
