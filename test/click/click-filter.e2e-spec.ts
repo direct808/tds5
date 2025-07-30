@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import { DataSource } from 'typeorm'
-import { loadUserFixtures, truncateTables } from '../utils/helpers'
+import { createAuthUser, truncateTables } from '../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
@@ -36,7 +36,7 @@ function createClick(
 describe('Click-filter (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
-  const userId = '00000000-0000-4000-8000-000000000001'
+  let userId: string
   const code1 = 'abcdif'
   const code2 = 'abcdi2'
 
@@ -58,7 +58,8 @@ describe('Click-filter (e2e)', () => {
     configureApp(app)
     await app.init()
     dataSource = app.get(DataSource)
-    await loadUserFixtures(dataSource)
+    const authData = await createAuthUser(app)
+    userId = authData.user.id
   })
 
   it('Checks click limit total', async () => {

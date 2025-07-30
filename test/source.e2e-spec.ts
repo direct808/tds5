@@ -50,7 +50,10 @@ describe('SourceController (e2e)', () => {
   })
 
   it('List source', async () => {
-    await new SourceBuilder().name('Source 1').userId(userId).save(dataSource)
+    await SourceBuilder.create()
+      .name('Source 1')
+      .userId(userId)
+      .save(dataSource)
 
     const { body } = await request(app.getHttpServer())
       .get('/api/source')
@@ -62,7 +65,7 @@ describe('SourceController (e2e)', () => {
   })
 
   it('Обновление source, при этом нельзя обновить id', async () => {
-    const source = await new SourceBuilder()
+    const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
       .save(dataSource)
@@ -84,7 +87,7 @@ describe('SourceController (e2e)', () => {
   })
 
   it('Delete source', async () => {
-    const source = await new SourceBuilder()
+    const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
       .save(dataSource)

@@ -10,7 +10,7 @@ import {
   StreamRedirectType,
 } from '@/campaign/entity/stream.entity'
 import * as express from 'express'
-import { ClickRepository } from '@/click/click.repository'
+import { ClickRepository } from '@/click/shared/click.repository'
 import { createAuthUser, truncateTables } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 
