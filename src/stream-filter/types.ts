@@ -1,10 +1,10 @@
-import { ScheduleFilterObj } from '@/stream-filter/filters/schedule-filter'
-import { DateIntervalFilterObject } from '@/stream-filter/filters/date-interval-filter'
-import { ClickLimitFilterObj } from '@/stream-filter/filters/click-limit-filter'
-import { ClickDataTextFilterObject } from '@/stream-filter/filters/click-data-text-filter'
-import { IpFilterObject } from '@/stream-filter/filters/ip-filter'
-import { IpV6FilterObject } from '@/stream-filter/filters/ipv6-filter'
-import { ClickUniqueFilterObj } from '@/stream-filter/filters/click-unique-filter'
+import { ClickDataTextFilterObject } from '@/stream-filter/filters/click-data-text/click-data-text-filter'
+import { DateIntervalFilterObject } from '@/stream-filter/filters/date-interval/date-interval-filter'
+import { ScheduleFilterObj } from '@/stream-filter/filters/schedule/schedule-filter'
+import { ClickLimitFilterObj } from './filters/click-limit/click-limit-filter'
+import { IpFilterObject } from '@/stream-filter/filters/ip/ip-filter'
+import { IpV6FilterObject } from '@/stream-filter/filters/ipv6/ipv6-filter'
+import { ClickUniqueFilterObj } from '@/stream-filter/filters/click-unique/click-unique-filter'
 
 // export type TextFilterTypes =
 //   | 'referer'

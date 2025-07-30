@@ -1,5 +1,5 @@
-import { ClickLimitFilter } from '@/stream-filter/filters/click-limit-filter'
-import { spyOn } from '../../../test/utils/helpers'
+import { ClickLimitFilter } from './click-limit-filter'
+import { spyOn } from '../../../../test/utils/helpers'
 
 describe('ClickLimitFilter', () => {
   const provider = {

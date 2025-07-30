@@ -1,7 +1,7 @@
 import {
   DateIntervalFilter,
   DateIntervalFilterObject,
-} from '@/stream-filter/filters/date-interval-filter'
+} from './date-interval-filter'
 import { DateTime } from 'luxon'
 
 describe('DateIntervalFilter', () => {

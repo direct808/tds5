@@ -1,4 +1,4 @@
-import { QueryParamFilterObject, StreamFilter } from '../types'
+import { QueryParamFilterObject, StreamFilter } from '../../types'
 import { RequestAdapter } from '@/utils/request-adapter'
 
 export class QueryParamFilter implements StreamFilter {

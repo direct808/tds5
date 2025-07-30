@@ -1,4 +1,4 @@
-import { IpFilter } from '@/stream-filter/filters/ip-filter'
+import { IpFilter } from './ip-filter'
 
 describe('IpFilter', () => {
   it.each([

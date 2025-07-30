@@ -1,4 +1,4 @@
-import { IpV6Filter } from '@/stream-filter/filters/ipv6-filter'
+import { IpV6Filter } from './ipv6-filter'
 
 describe('IpV6Filter', () => {
   it.each([

@@ -1,8 +1,5 @@
 import { DateTime } from 'luxon'
-import {
-  ScheduleFilter,
-  ScheduleFilterObj,
-} from '@/stream-filter/filters/schedule-filter'
+import { ScheduleFilter, ScheduleFilterObj } from './schedule-filter'
 
 describe('ScheduleFilter', () => {
   afterEach(() => {
