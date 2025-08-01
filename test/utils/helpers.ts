@@ -21,6 +21,9 @@ export async function truncateTables(app: INestApplication) {
   const tables: { tablename: string }[] = await ds.query(
     `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
   )
+  if (tables.length === 0) {
+    return
+  }
   const names = tables.map((row) => `"${row.tablename}"`).join(', ')
   const sql = `TRUNCATE TABLE ${names} CASCADE;`
   await ds.query(sql)
