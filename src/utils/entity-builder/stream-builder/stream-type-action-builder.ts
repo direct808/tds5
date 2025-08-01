@@ -26,7 +26,7 @@ export class StreamTypeActionBuilder extends StreamBuilder {
   }
 
   createActionCampaign(callback: (builder: CampaignBuilder) => void) {
-    const builder = new CampaignBuilder()
+    const builder = CampaignBuilder.create()
     this.actionCampaignBuilder = builder
     callback(builder)
   }

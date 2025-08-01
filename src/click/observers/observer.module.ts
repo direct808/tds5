@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { SetupSubject } from '@/click/observers/setup-subject'
 import { StreamSetupSubject } from '@/click/observers/stream-setup-subject'
 import { RequestSetupSubject } from '@/click/observers/request-setup-subject'
-import { StreamIdsObserver } from '@/click/observers/stream/stream-ids-observer'
 import { ClickIdObserver } from '@/click/observers/stream/click-id.observer'
 import { QueryStringObserver } from '@/click/observers/request/query-string.observer'
 import { LanguageParserObserver } from '@/click/observers/request/language-parser.observer'
@@ -17,7 +16,6 @@ import { ClickSharedModule } from '@/click/shared/click-shared.module'
     SetupSubject,
     StreamSetupSubject,
     RequestSetupSubject,
-    StreamIdsObserver,
     ClickIdObserver,
     QueryStringObserver,
     LanguageParserObserver,

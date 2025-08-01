@@ -3,13 +3,14 @@ import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
-import { createAuthUser, truncateTables } from './utils/helpers'
+import { createAuthUser } from './utils/helpers'
+import { truncateTables } from './utils/truncate-tables'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

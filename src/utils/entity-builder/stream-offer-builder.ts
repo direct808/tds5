@@ -6,6 +6,12 @@ export class StreamOfferBuilder {
   private fields: Partial<StreamOffer> = { active: true }
   private builder?: OfferBuilder
 
+  private constructor() {}
+
+  public static create() {
+    return new this()
+  }
+
   percent(value: number) {
     this.fields.percent = value
     return this

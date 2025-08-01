@@ -1,6 +1,7 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
 import { Campaign } from './campaign.entity'
 import { StreamOffer } from './stream-offer.entity'
+import { Filters } from '@/stream-filter/types'
 
 export enum CampaignStreamSchema {
   ACTION = 'ACTION',
@@ -76,4 +77,7 @@ export class Stream {
 
   @OneToMany(() => StreamOffer, (offer) => offer.stream)
   declare streamOffers: StreamOffer[] | null
+
+  @Column('jsonb', { nullable: true })
+  declare filters: Filters | null
 }

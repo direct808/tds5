@@ -20,6 +20,8 @@ export class CampaignBuilder {
   private sourceBuilder?: SourceBuilder
   private userBuilder?: UserBuilder
 
+  private constructor() {}
+
   static create() {
     return new this()
   }
@@ -97,14 +99,14 @@ export class CampaignBuilder {
   }
 
   createSource(callback: (builder: SourceBuilder) => void) {
-    const builder = new SourceBuilder()
+    const builder = SourceBuilder.create()
     this.sourceBuilder = builder
     callback(builder)
     return this
   }
 
   createUser(callback: (builder: UserBuilder) => void) {
-    const builder = new UserBuilder()
+    const builder = UserBuilder.create()
     this.userBuilder = builder
     callback(builder)
     return this
