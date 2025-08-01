@@ -8,9 +8,9 @@ export interface ClickLimitFilterObj extends BaseFilterObject {
 }
 
 export interface ClickLimitProvider {
-  getClickPerHour(campaignId: string): Promise<number>
-  getClickPerDay(campaignId: string): Promise<number>
-  getClickTotal(campaignId: string): Promise<number>
+  getCountPerHour(campaignId: string): Promise<number>
+  getCountPerDay(campaignId: string): Promise<number>
+  getCountTotal(campaignId: string): Promise<number>
 }
 
 export class ClickLimitFilter implements StreamFilter {
@@ -22,9 +22,9 @@ export class ClickLimitFilter implements StreamFilter {
 
   async handle(): Promise<boolean> {
     const [checkPerHour, checkPerDay, checkTotal] = await Promise.all([
-      this.check('getClickPerHour', 'perHour'),
-      this.check('getClickPerDay', 'perDay'),
-      this.check('getClickTotal', 'total'),
+      this.check('getCountPerHour', 'perHour'),
+      this.check('getCountPerDay', 'perDay'),
+      this.check('getCountTotal', 'total'),
     ])
 
     return checkPerHour && checkPerDay && checkTotal

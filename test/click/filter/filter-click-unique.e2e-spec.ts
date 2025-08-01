@@ -8,38 +8,32 @@ import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { FilterLogic } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
-import { DateTime } from 'luxon'
-import { ClickBuilder } from '@/utils/entity-builder/click-builder'
-import { faker } from '@faker-js/faker'
 import { truncateTables } from '../../utils/truncate-tables'
+import { ClickUniqueFor } from '@/stream-filter/filters/click-unique/click-unique-filter'
 
-async function clickAction(app: INestApplication, code: string) {
-  const { text } = await ClickActionBuilder.create(app)
-    .setCode(code)
-    .request()
-    .expect(200)
+async function clickAction(
+  app: INestApplication,
+  code: string,
+  visitorId?: string,
+) {
+  const builder = ClickActionBuilder.create(app).setCode(code)
+
+  if (visitorId) {
+    builder.setVisitorId(visitorId)
+  }
+
+  const { text } = await builder.request().expect(200)
+
   return text
 }
 
-function createClick(
-  campaignId: string,
-  createdAt: DateTime,
-  dataSource: DataSource,
-) {
-  return ClickBuilder.create()
-    .id(faker.string.alpha(12))
-    .campaignId(campaignId)
-    .visitorId(faker.string.alpha(6))
-    .createdAt(createdAt.toJSDate())
-    .save(dataSource)
-}
-
-describe('Filter click limit (e2e)', () => {
+describe('Filter click unique (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
   let userId: string
   const code1 = 'abcdif'
   const code2 = 'abcdi2'
+  const visitorId = '5ilzrg'
 
   afterEach(async () => {
     await truncateTables()
@@ -58,7 +52,7 @@ describe('Filter click limit (e2e)', () => {
     userId = authData.user.id
   })
 
-  it('Checks click limit total', async () => {
+  it('Checks click unique for allCampaigns', async () => {
     // 1. Arrange
     await CampaignBuilder.create()
       .name('Other campaign')
@@ -83,7 +77,7 @@ describe('Filter click limit (e2e)', () => {
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
-            items: [{ type: 'click-limit', total: 2 }],
+            items: [{ type: 'click-unique', for: ClickUniqueFor.allCampaigns }],
           }),
       )
       .addStreamTypeAction((stream) =>
@@ -97,19 +91,19 @@ describe('Filter click limit (e2e)', () => {
     // 2. Act
     const content1 = await clickAction(app, code1)
     const content2 = await clickAction(app, code2)
-    const content3 = await clickAction(app, code2)
-    const content4 = await clickAction(app, code2)
+    const content3 = await clickAction(app, code1, visitorId)
+    const content4 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
     expect(content1).toBe('Custom')
     expect(content2).toBe('First stream')
-    expect(content3).toBe('First stream')
+    expect(content3).toBe('Custom')
     expect(content4).toBe('Last stream')
   })
 
-  it('Checks click limit perHour', async () => {
+  it('Checks click unique for campaign', async () => {
     // 1. Arrange
-    const firstCampaign = await CampaignBuilder.create()
+    await CampaignBuilder.create()
       .name('Other campaign')
       .code(code1)
       .userId(userId)
@@ -121,7 +115,7 @@ describe('Filter click limit (e2e)', () => {
       )
       .save(dataSource)
 
-    const lastCampaign = await CampaignBuilder.create()
+    await CampaignBuilder.create()
       .name('Test campaign 1')
       .code(code2)
       .userId(userId)
@@ -132,7 +126,7 @@ describe('Filter click limit (e2e)', () => {
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
-            items: [{ type: 'click-limit', perHour: 2 }],
+            items: [{ type: 'click-unique', for: ClickUniqueFor.campaign }],
           }),
       )
       .addStreamTypeAction((stream) =>
@@ -143,25 +137,20 @@ describe('Filter click limit (e2e)', () => {
       )
       .save(dataSource)
 
-    const dateTime = DateTime.now().minus({ hour: 4 })
-
     // 2. Act
-    await createClick(firstCampaign.id, dateTime, dataSource)
-    await createClick(lastCampaign.id, dateTime, dataSource)
-
-    const content1 = await clickAction(app, code2)
-    const content2 = await clickAction(app, code2)
-    const content3 = await clickAction(app, code2)
+    const content1 = await clickAction(app, code1, visitorId)
+    const content2 = await clickAction(app, code2, visitorId)
+    const content3 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
-    expect(content1).toBe('First stream')
+    expect(content1).toBe('Custom')
     expect(content2).toBe('First stream')
     expect(content3).toBe('Last stream')
   })
 
-  it('Checks click limit perDay', async () => {
+  it('Checks click unique for stream', async () => {
     // 1. Arrange
-    const firstCampaign = await CampaignBuilder.create()
+    await CampaignBuilder.create()
       .name('Other campaign')
       .code(code1)
       .userId(userId)
@@ -173,7 +162,7 @@ describe('Filter click limit (e2e)', () => {
       )
       .save(dataSource)
 
-    const lastCampaign = await CampaignBuilder.create()
+    await CampaignBuilder.create()
       .name('Test campaign 1')
       .code(code2)
       .userId(userId)
@@ -184,7 +173,17 @@ describe('Filter click limit (e2e)', () => {
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
-            items: [{ type: 'click-limit', perDay: 2 }],
+            items: [{ type: 'click-unique', for: ClickUniqueFor.stream }],
+          }),
+      )
+      .addStreamTypeAction((stream) =>
+        stream
+          .name('Second stream')
+          .type(StreamActionType.SHOW_TEXT)
+          .content('Second stream')
+          .filters({
+            logic: FilterLogic.And,
+            items: [{ type: 'click-unique', for: ClickUniqueFor.stream }],
           }),
       )
       .addStreamTypeAction((stream) =>
@@ -195,19 +194,16 @@ describe('Filter click limit (e2e)', () => {
       )
       .save(dataSource)
 
-    const dateTime = DateTime.now().minus({ day: 4 })
-
     // 2. Act
-    await createClick(firstCampaign.id, dateTime, dataSource)
-    await createClick(lastCampaign.id, dateTime, dataSource)
-
-    const content1 = await clickAction(app, code2)
-    const content2 = await clickAction(app, code2)
-    const content3 = await clickAction(app, code2)
+    const content1 = await clickAction(app, code1, visitorId)
+    const content2 = await clickAction(app, code2, visitorId)
+    const content3 = await clickAction(app, code2, visitorId)
+    const content4 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
-    expect(content1).toBe('First stream')
+    expect(content1).toBe('Custom')
     expect(content2).toBe('First stream')
-    expect(content3).toBe('Last stream')
+    expect(content3).toBe('Second stream')
+    expect(content4).toBe('Last stream')
   })
 })

@@ -1,5 +1,5 @@
 import { StreamFilterService } from '@/stream-filter/stream-filter.service'
-import { FilterLogic, FilterObject } from '@/stream-filter/types'
+import { FilterLogic, FilterObjectExtended } from '@/stream-filter/types'
 import { spyOn } from '../../test/utils/helpers'
 
 describe('StreamFilterService', () => {
@@ -33,7 +33,9 @@ describe('StreamFilterService', () => {
   describe('filter', () => {
     it('should call handle and processExclude with correct arguments', async () => {
       // Arrange
-      const filter = { exclude: true } as FilterObject
+      const filter = {
+        exclude: true,
+      } as FilterObjectExtended
 
       const handleResult = false
       const expectedResult = true
@@ -62,7 +64,7 @@ describe('StreamFilterService', () => {
     })
 
     it('should return { value: true, break: true } if result is true and logic is OR', async () => {
-      const filterObj = {} as FilterObject
+      const filterObj = {} as FilterObjectExtended
 
       filter.mockReturnValue(true)
 
@@ -75,7 +77,7 @@ describe('StreamFilterService', () => {
     })
 
     it('should return { value: false, break: true } if result is false and logic is AND', async () => {
-      const filterObj = {} as FilterObject
+      const filterObj = {} as FilterObjectExtended
 
       filter.mockReturnValue(false)
 
@@ -86,7 +88,7 @@ describe('StreamFilterService', () => {
     })
 
     it('should return { value: true } if result is true and logic is AND', async () => {
-      const filterObj = {} as FilterObject
+      const filterObj = {} as FilterObjectExtended
 
       filter.mockReturnValue(true)
 
@@ -96,7 +98,7 @@ describe('StreamFilterService', () => {
     })
 
     it('should return { value: false } if result is false and logic is OR', async () => {
-      const filterObj = {} as FilterObject
+      const filterObj = {} as FilterObjectExtended
 
       filter.mockReturnValue(false)
 

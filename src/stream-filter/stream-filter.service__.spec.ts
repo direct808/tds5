@@ -20,8 +20,7 @@ describe.skip('StreamFilterService', () => {
         logic: FilterLogic.And,
         items: [],
       },
-      // {},
-      // MockRequestAdapter.create(),
+      'stream-id',
     )
 
     expect(result).toBeTruthy()
@@ -33,8 +32,7 @@ describe.skip('StreamFilterService', () => {
         logic: FilterLogic.And,
         items: [{ type: 'query-param', name: 'param', values: ['param'] }],
       },
-      // {},
-      // new MockRequestAdapter({ query: { param: 'param' } }),
+      'stream-id',
     )
 
     expect(result).toBeTruthy()
@@ -90,8 +88,7 @@ describe.skip('StreamFilterService', () => {
     (expected, logic, value, items) => {
       const result = service.checkFilters(
         { logic, items: items as FilterObject[] },
-        // { referer: value },
-        // new MockRequestAdapter(),
+        'stream-id',
       )
 
       expect(result).toEqual(expected)

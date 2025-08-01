@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { FilterObject, StreamFilter } from '@/stream-filter/types'
+import {
+  FilterObject,
+  FilterObjectExtended,
+  StreamFilter,
+} from '@/stream-filter/types'
 import { DateIntervalFilter } from '@/stream-filter/filters/date-interval/date-interval-filter'
 import { IpFilter } from '@/stream-filter/filters/ip/ip-filter'
 import { QueryParamFilter } from '@/stream-filter/filters/query-param/query-param-filter'
@@ -12,7 +16,7 @@ import { ClickUniqueFilter } from '@/stream-filter/filters/click-unique/click-un
 import { ClickRepository } from '@/click/shared/click.repository'
 
 export interface IStreamFilterFactory {
-  create(filterObj: FilterObject): StreamFilter
+  create(filterObj: FilterObjectExtended): StreamFilter
 }
 
 @Injectable()
@@ -23,7 +27,7 @@ export class StreamFilterFactory implements IStreamFilterFactory {
   ) {}
 
   // eslint-disable-next-line max-lines-per-function
-  create(filterObj: FilterObject): StreamFilter {
+  create(filterObj: FilterObjectExtended): StreamFilter {
     const requestAdapter = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 

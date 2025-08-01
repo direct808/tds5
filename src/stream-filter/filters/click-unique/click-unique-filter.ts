@@ -1,7 +1,7 @@
 import { BaseFilterObject, StreamFilter } from '@/stream-filter/types'
 import { ClickData } from '@/click/click-data'
 
-enum ClickUniqueFor {
+export enum ClickUniqueFor {
   allCampaigns = 'allCampaigns',
   campaign = 'campaign',
   stream = 'stream',
@@ -12,10 +12,7 @@ export interface ClickUniqueFilterObj extends BaseFilterObject {
   for: ClickUniqueFor
 }
 
-type ClickDataUniqueFilter = Pick<
-  ClickData,
-  'visitorId' | 'campaignId' | 'streamId'
->
+type ClickDataUniqueFilter = Pick<ClickData, 'visitorId' | 'campaignId'>
 
 export interface ClickUniqueProvider {
   getCountByVisitorId(visitorId: string): Promise<number>
@@ -33,13 +30,13 @@ export interface ClickUniqueProvider {
 
 export class ClickUniqueFilter implements StreamFilter {
   constructor(
-    private readonly filterObj: ClickUniqueFilterObj,
+    private readonly filterObj: ClickUniqueFilterObj & { streamId: string },
     private readonly provider: ClickUniqueProvider,
     private readonly clickData: ClickDataUniqueFilter,
   ) {}
 
   async handle(): Promise<boolean> {
-    const { visitorId, campaignId, streamId } = this.clickData
+    const { visitorId, campaignId } = this.clickData
 
     if (!visitorId) {
       throw new Error('No visitorId')
@@ -49,17 +46,15 @@ export class ClickUniqueFilter implements StreamFilter {
       throw new Error('No campaignId')
     }
 
-    if (!streamId) {
-      throw new Error('No streamId')
-    }
-    const count = await this.getCount({ visitorId, campaignId, streamId })
+    const count = await this.getCount({ visitorId, campaignId })
+
     return count === 0
   }
 
   private getCount(
     clickData: Required<ClickDataUniqueFilter>,
   ): Promise<number> {
-    const { visitorId, campaignId, streamId } = clickData
+    const { visitorId, campaignId } = clickData
     switch (this.filterObj.for) {
       case ClickUniqueFor.allCampaigns:
         return this.provider.getCountByVisitorId(visitorId)
@@ -71,7 +66,10 @@ export class ClickUniqueFilter implements StreamFilter {
         )
 
       case ClickUniqueFor.stream:
-        return this.provider.getCountByVisitorIdStreamId(visitorId, streamId)
+        return this.provider.getCountByVisitorIdStreamId(
+          visitorId,
+          this.filterObj.streamId,
+        )
 
       default:
         const foR: never = this.filterObj.for

@@ -1,4 +1,8 @@
-import { FilterLogic, FilterObject, Filters } from '@/stream-filter/types'
+import {
+  FilterLogic,
+  FilterObjectExtended,
+  Filters,
+} from '@/stream-filter/types'
 import { Inject, Injectable } from '@nestjs/common'
 import {
   IStreamFilterFactory,
@@ -12,11 +16,17 @@ export class StreamFilterService {
     private readonly streamFilterFactory: IStreamFilterFactory,
   ) {}
 
-  public async checkFilters(filters: Filters) {
+  public async checkFilters(
+    filters: Filters,
+    streamId: string,
+  ): Promise<boolean> {
     let resultValue = true
 
     for (const filter of filters.items) {
-      const result = await this.checkFilter(filter, filters.logic)
+      const result = await this.checkFilter(
+        { ...filter, streamId },
+        filters.logic,
+      )
 
       if (result.break) {
         return result.value
@@ -29,7 +39,7 @@ export class StreamFilterService {
   }
 
   private async checkFilter(
-    filter: FilterObject,
+    filter: FilterObjectExtended,
     logic: FilterLogic,
   ): Promise<{ value: boolean; break?: true }> {
     const result = await this.filter(filter)
@@ -45,7 +55,7 @@ export class StreamFilterService {
     return { value: result }
   }
 
-  private async filter(filter: FilterObject): Promise<boolean> {
+  private async filter(filter: FilterObjectExtended): Promise<boolean> {
     const result = await this.handle(filter)
     return this.processExclude(result, filter.exclude)
   }
@@ -54,7 +64,7 @@ export class StreamFilterService {
     return exclude ? !result : result
   }
 
-  private handle(filter: FilterObject) {
+  private handle(filter: FilterObjectExtended) {
     return this.streamFilterFactory.create(filter).handle()
   }
 }

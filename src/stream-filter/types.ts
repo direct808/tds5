@@ -5,17 +5,7 @@ import { ClickLimitFilterObj } from './filters/click-limit/click-limit-filter'
 import { IpFilterObject } from '@/stream-filter/filters/ip/ip-filter'
 import { IpV6FilterObject } from '@/stream-filter/filters/ipv6/ipv6-filter'
 import { ClickUniqueFilterObj } from '@/stream-filter/filters/click-unique/click-unique-filter'
-
-// export type TextFilterTypes =
-//   | 'referer'
-//   | 'source'
-//   | 'keyword'
-//   | 'searchEngine'
-//   | 'adCampaignId'
-//   | 'creativeId'
-//   | 'city'
-//   | 'region'
-//   | 'country'
+import { QueryParamFilterObject } from '@/stream-filter/filters/query-param/query-param-filter'
 
 export type FilterObject =
   | ClickDataTextFilterObject
@@ -27,20 +17,7 @@ export type FilterObject =
   | IpV6FilterObject
   | ClickUniqueFilterObj
 
-// export interface TextFilterObject extends BaseFilterObject {
-//   type: TextFilterTypes
-//   values: string[]
-// }
-
-export interface QueryParamFilterObject extends BaseFilterObject {
-  type: 'query-param'
-  name: string
-  values: string[]
-}
-
-export interface BoolFilterObject extends BaseFilterObject {
-  type: 'ipv6'
-}
+export type FilterObjectExtended = FilterObject & { streamId: string }
 
 export interface BaseFilterObject {
   exclude?: boolean

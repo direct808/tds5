@@ -30,11 +30,11 @@ export class ClickRepository
   public async getCountByVisitorId(visitorId: string): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')
-      .select(({ fn }) => [fn.count<number>('click.id').as('count')])
+      .select(({ fn }) => [fn.count('click.id').as('count')])
       .where('visitorId', '=', visitorId)
       .executeTakeFirstOrThrow()
 
-    return count
+    return Number(count)
   }
 
   public async getCountByVisitorIdCampaignId(
@@ -43,12 +43,12 @@ export class ClickRepository
   ): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')
-      .select(({ fn }) => [fn.count<number>('click.id').as('count')])
+      .select(({ fn }) => [fn.count('click.id').as('count')])
       .where('visitorId', '=', visitorId)
       .where('campaignId', '=', campaignId)
       .executeTakeFirstOrThrow()
 
-    return count
+    return Number(count)
   }
 
   public async getCountByVisitorIdStreamId(
@@ -57,43 +57,43 @@ export class ClickRepository
   ): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')
-      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .select(({ fn }) => [fn.countAll().as('count')])
       .where('visitorId', '=', visitorId)
       .where('streamId', '=', streamId)
       .executeTakeFirstOrThrow()
 
-    return count
+    return Number(count)
   }
 
-  public async getClickPerHour(campaignId: string): Promise<number> {
+  public async getCountPerHour(campaignId: string): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')
-      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .select(({ fn }) => [fn.countAll().as('count')])
       .where('createdAt', '>=', sql<Date>`NOW() - interval '1 hour'`)
       .where('campaignId', '=', campaignId)
       .executeTakeFirstOrThrow()
 
-    return count
+    return Number(count)
   }
 
-  public async getClickPerDay(campaignId: string): Promise<number> {
+  public async getCountPerDay(campaignId: string): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')
-      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .select(({ fn }) => [fn.countAll().as('count')])
       .where('createdAt', '>=', sql<Date>`NOW() - interval '1 day'`)
       .where('campaignId', '=', campaignId)
       .executeTakeFirstOrThrow()
 
-    return count
+    return Number(count)
   }
 
-  public async getClickTotal(campaignId: string): Promise<number> {
+  public async getCountTotal(campaignId: string): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')
-      .select(({ fn }) => [fn.countAll<number>().as('count')])
+      .select(({ fn }) => [fn.countAll().as('count')])
       .where('campaignId', '=', campaignId)
       .executeTakeFirstOrThrow()
 
-    return count
+    return Number(count)
   }
 }

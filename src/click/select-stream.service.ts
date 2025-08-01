@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { Filters } from '@/stream-filter/types'
 import { StreamFilterService } from '@/stream-filter/stream-filter.service'
 
-interface StreamWithFilters {
+interface StreamSimple {
+  id: string
   filters: Filters | null
 }
 
@@ -10,9 +11,7 @@ interface StreamWithFilters {
 export class SelectStreamService {
   constructor(private readonly streamFilterService: StreamFilterService) {}
 
-  public async selectStream<T extends StreamWithFilters>(
-    streams: T[],
-  ): Promise<T> {
+  public async selectStream<T extends StreamSimple>(streams: T[]): Promise<T> {
     if (streams.length === 0) {
       throw new Error('No streams')
     }
@@ -26,14 +25,12 @@ export class SelectStreamService {
     throw new Error(`Can't select stream`)
   }
 
-  private async checkStreamFilters(
-    stream: StreamWithFilters,
-  ): Promise<boolean> {
+  private async checkStreamFilters(stream: StreamSimple): Promise<boolean> {
     const filters = stream.filters
     if (!filters || filters.items.length === 0) {
       return true
     }
 
-    return this.streamFilterService.checkFilters(filters)
+    return this.streamFilterService.checkFilters(filters, stream.id)
   }
 }

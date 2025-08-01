@@ -3,9 +3,9 @@ import { spyOn } from '../../../../test/utils/helpers'
 
 describe('ClickLimitFilter', () => {
   const provider = {
-    getClickPerHour: jest.fn(),
-    getClickPerDay: jest.fn(),
-    getClickTotal: jest.fn(),
+    getCountPerHour: jest.fn(),
+    getCountPerDay: jest.fn(),
+    getCountTotal: jest.fn(),
   }
 
   beforeEach(() => {
@@ -35,9 +35,9 @@ describe('ClickLimitFilter', () => {
       const result = await filter.handle()
 
       expect(result).toBe(true)
-      expect(check).toHaveBeenCalledWith('getClickPerHour', 'perHour')
-      expect(check).toHaveBeenCalledWith('getClickPerDay', 'perDay')
-      expect(check).toHaveBeenCalledWith('getClickTotal', 'total')
+      expect(check).toHaveBeenCalledWith('getCountPerHour', 'perHour')
+      expect(check).toHaveBeenCalledWith('getCountPerDay', 'perDay')
+      expect(check).toHaveBeenCalledWith('getCountTotal', 'total')
       expect(check).toHaveBeenCalledTimes(3)
     })
   })
@@ -46,9 +46,9 @@ describe('ClickLimitFilter', () => {
     it('should return true if value is not set', async () => {
       const filter = new ClickLimitFilter({} as any, provider, '4')
 
-      const result = await filter['check']('getClickPerHour', 'perHour')
+      const result = await filter['check']('getCountPerHour', 'perHour')
       expect(result).toBe(true)
-      expect(provider.getClickPerHour).not.toHaveBeenCalled()
+      expect(provider.getCountPerHour).not.toHaveBeenCalled()
     })
 
     it('should return true if count is less than to value', async () => {
@@ -60,11 +60,11 @@ describe('ClickLimitFilter', () => {
         '123',
       )
 
-      provider.getClickPerHour.mockResolvedValue(80)
+      provider.getCountPerHour.mockResolvedValue(80)
 
-      const result = await filter['check']('getClickPerHour', 'perHour')
+      const result = await filter['check']('getCountPerHour', 'perHour')
       expect(result).toBe(true)
-      expect(provider.getClickPerHour).toHaveBeenCalledWith('123')
+      expect(provider.getCountPerHour).toHaveBeenCalledWith('123')
     })
 
     it('should return false if count is equal to value', async () => {
@@ -76,11 +76,11 @@ describe('ClickLimitFilter', () => {
         '123',
       )
 
-      provider.getClickPerHour.mockResolvedValue(100)
+      provider.getCountPerHour.mockResolvedValue(100)
 
-      const result = await filter['check']('getClickPerHour', 'perHour')
+      const result = await filter['check']('getCountPerHour', 'perHour')
       expect(result).toBe(false)
-      expect(provider.getClickPerHour).toHaveBeenCalledWith('123')
+      expect(provider.getCountPerHour).toHaveBeenCalledWith('123')
     })
 
     it('should return false if count is more than value', async () => {
@@ -92,11 +92,11 @@ describe('ClickLimitFilter', () => {
         '123',
       )
 
-      provider.getClickPerHour.mockResolvedValue(120)
+      provider.getCountPerHour.mockResolvedValue(120)
 
-      const result = await filter['check']('getClickPerHour', 'perHour')
+      const result = await filter['check']('getCountPerHour', 'perHour')
       expect(result).toBe(false)
-      expect(provider.getClickPerHour).toHaveBeenCalledWith('123')
+      expect(provider.getCountPerHour).toHaveBeenCalledWith('123')
     })
   })
 })
