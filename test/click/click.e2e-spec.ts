@@ -1,9 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
 import { DataSource } from 'typeorm'
-import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import {
   StreamActionType,
@@ -13,6 +10,7 @@ import * as express from 'express'
 import { ClickRepository } from '@/click/click.repository'
 import { createAuthUser, truncateTables } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
+import { createApp } from '../utils/create-app'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
@@ -27,12 +25,7 @@ describe('Click (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)
     const authData = await createAuthUser(app)
