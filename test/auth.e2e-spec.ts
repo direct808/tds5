@@ -1,9 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
-import { configureApp } from '@/utils/configure-app'
 import { createAuthUser, truncateTables } from './utils/helpers'
+import { createApp } from './utils/create-app'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication
@@ -14,12 +12,7 @@ describe('AuthController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
   })
 
   describe('/auth/login (POST)', () => {

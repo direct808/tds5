@@ -1,12 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
 import { createAuthUser, truncateTables } from './utils/helpers'
-import { configureApp } from '@/utils/configure-app'
 import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 import { AffiliateNetworkBuilder } from '@/utils/entity-builder/affiliate-network-builder'
+import { createApp } from './utils/create-app'
 
 describe('AffiliateNetworkController (e2e)', () => {
   let app: INestApplication
@@ -21,12 +19,7 @@ describe('AffiliateNetworkController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
 
     const authData = await createAuthUser(app)

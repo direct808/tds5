@@ -1,13 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
 import { createAuthUser, truncateTables } from './utils/helpers'
-import { configureApp } from '@/utils/configure-app'
 import { Offer } from '@/offer/offer.entity'
 import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
+import { createApp } from './utils/create-app'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
@@ -22,12 +20,7 @@ describe('OfferController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
     offerRepository = dataSource.getRepository(Offer)
     const authData = await createAuthUser(app)
