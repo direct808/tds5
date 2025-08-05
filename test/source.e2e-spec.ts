@@ -1,13 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
 import { Source } from '@/source/source.entity'
-import { configureApp } from '@/utils/configure-app'
 import { SourceBuilder } from '@/utils/entity-builder/source-builder'
 import { truncateTables } from './utils/truncate-tables'
+import { createApp } from './utils/create-app'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
@@ -22,14 +20,8 @@ describe('SourceController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
-
     sourceRepository = dataSource.getRepository(Source)
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken

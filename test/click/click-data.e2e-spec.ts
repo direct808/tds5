@@ -1,13 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource } from 'typeorm'
-import { ClickRepository } from '@/click/shared/click.repository'
-import { createAuthUser } from '../utils/helpers'
+import { ClickRepository } from '@/click/click.repository'
+import { createAuthUser, truncateTables } from '../utils/helpers'
 import { AppModule } from '@/app.module'
 import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
-import { truncateTables } from '../utils/truncate-tables'
 
 describe('Click-data (e2e)', () => {
   let app: INestApplication
@@ -25,12 +23,7 @@ describe('Click-data (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)
     const authData = await createAuthUser(app)

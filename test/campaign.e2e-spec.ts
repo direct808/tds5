@@ -1,9 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
 import { DataSource, Repository } from 'typeorm'
-import { configureApp } from '@/utils/configure-app'
 import { Campaign } from '@/campaign/entity/campaign.entity'
 import {
   CampaignStreamSchema,
@@ -16,6 +13,7 @@ import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import { truncateTables } from './utils/truncate-tables'
+import { createApp } from './utils/create-app'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -32,12 +30,7 @@ describe('CampaignController (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
 
     const authData = await createAuthUser(app)
     dataSource = app.get(DataSource)
