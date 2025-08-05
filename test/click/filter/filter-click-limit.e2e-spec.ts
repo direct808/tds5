@@ -12,6 +12,7 @@ import { DateTime } from 'luxon'
 import { ClickBuilder } from '@/utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
 import { truncateTables } from '../../utils/truncate-tables'
+import { createApp } from '../../utils/create-app'
 
 async function clickAction(app: INestApplication, code: string) {
   const { text } = await ClickActionBuilder.create(app)
@@ -47,12 +48,7 @@ describe('Filter click limit (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
     const authData = await createAuthUser(app)
     userId = authData.user.id

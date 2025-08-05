@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
-import { AppModule } from '@/app.module'
-import { configureApp } from '@/utils/configure-app'
-import { createAuthUser, truncateTables } from './utils/helpers'
+import { truncateTables } from './utils/truncate-tables'
+import { createApp } from './utils/create-app'
+import { createAuthUser } from './utils/helpers'
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication

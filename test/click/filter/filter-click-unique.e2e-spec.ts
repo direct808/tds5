@@ -10,6 +10,7 @@ import { FilterLogic } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
 import { truncateTables } from '../../utils/truncate-tables'
 import { ClickUniqueFor } from '@/stream-filter/filters/click-unique/click-unique-filter'
+import { createApp } from '../../utils/create-app'
 
 async function clickAction(
   app: INestApplication,
@@ -41,12 +42,7 @@ describe('Filter click unique (e2e)', () => {
   })
 
   beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     dataSource = app.get(DataSource)
     const authData = await createAuthUser(app)
     userId = authData.user.id

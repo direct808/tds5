@@ -1,10 +1,11 @@
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
-import { createAuthUser, truncateTables } from './utils/helpers'
-import { configureApp } from '@/utils/configure-app'
+import { createAuthUser } from './utils/helpers'
 import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 import { AffiliateNetworkBuilder } from '@/utils/entity-builder/affiliate-network-builder'
+import { truncateTables } from './utils/truncate-tables'
+import { createApp } from './utils/create-app'
 
 describe('AffiliateNetworkController (e2e)', () => {
   let app: INestApplication

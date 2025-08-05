@@ -9,6 +9,7 @@ import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { FilterLogic, FilterObject } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
 import { truncateTables } from '../../utils/truncate-tables'
+import { createApp } from '../../utils/create-app'
 
 function addStream(
   campaign: CampaignBuilder,
@@ -39,12 +40,7 @@ describe('Filter all (e2e)', () => {
   })
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-    app = moduleFixture.createNestApplication()
-    configureApp(app)
-    await app.init()
+    app = await createApp()
     const authData = await createAuthUser(app)
     dataSource = app.get(DataSource)
     userId = authData.user.id

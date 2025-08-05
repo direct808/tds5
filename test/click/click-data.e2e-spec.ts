@@ -1,11 +1,11 @@
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { DataSource } from 'typeorm'
-import { ClickRepository } from '@/click/click.repository'
-import { createAuthUser, truncateTables } from '../utils/helpers'
-import { AppModule } from '@/app.module'
-import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { truncateTables } from '../utils/truncate-tables'
+import { ClickRepository } from '@/click/shared/click.repository'
+import { createApp } from '../utils/create-app'
+import { createAuthUser } from '../utils/helpers'
 
 describe('Click-data (e2e)', () => {
   let app: INestApplication
