@@ -18,7 +18,7 @@ async function authUser(
 
 export async function createAuthUser(app: INestApplication) {
   const email = 'admin@gmail.com'
-  const salt = await bcrypt.genSalt(10)
+  const salt = await bcrypt.genSalt(1)
   const pass = await bcrypt.hash('1234', salt)
   const user = await UserBuilder.create()
     .email(email)
