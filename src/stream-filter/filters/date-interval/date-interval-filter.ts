@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseFilterObject, StreamFilter } from '@/stream-filter/types'
 
 export interface DateIntervalFilterObject extends BaseFilterObject {
-  type: 'date'
+  type: 'date-interval'
   from: string
   to: string
   timezone: string

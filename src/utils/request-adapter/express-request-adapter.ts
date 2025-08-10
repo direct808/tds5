@@ -2,9 +2,9 @@ import { Request } from 'express'
 import { HeaderName, RequestAdapter } from './request-adapter'
 
 export class ExpressRequestAdapter implements RequestAdapter {
-  public readonly ip = this.req.ip
+  protected _ip = this.req.ip
 
-  constructor(private readonly req: Request) {}
+  constructor(protected readonly req: Request) {}
 
   public query(name: string): string | undefined {
     const result = this.req.query[name]
@@ -19,5 +19,9 @@ export class ExpressRequestAdapter implements RequestAdapter {
 
   public header(name: HeaderName): string | undefined {
     return this.req.header(name)
+  }
+
+  get ip(): string | undefined {
+    return this._ip
   }
 }

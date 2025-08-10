@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { createAuthUser } from './utils/helpers'

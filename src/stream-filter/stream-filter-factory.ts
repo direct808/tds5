@@ -36,7 +36,7 @@ export class StreamFilterFactory implements IStreamFilterFactory {
     }
 
     switch (filterObj.type) {
-      case 'date':
+      case 'date-interval':
         return new DateIntervalFilter(filterObj)
       case 'schedule':
         return new ScheduleFilter(filterObj)

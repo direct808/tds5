@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
 import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'

@@ -22,6 +22,7 @@ import { LandingsOfferModule } from './schema/landings-offers/landings-offer.mod
 import { ObserverModule } from '@/click/observers/observer.module'
 import { ClickSharedModule } from '@/click/shared/click-shared.module'
 import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
+import { RequestAdapterModule } from '@/utils/request-adapter/request-adapter.module'
 
 @Module({
   controllers: [ClickController],
@@ -48,6 +49,7 @@ import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
     ObserverModule,
     ClickSharedModule,
     StreamFilterModule,
+    RequestAdapterModule,
   ],
 })
 export class ClickModule {}

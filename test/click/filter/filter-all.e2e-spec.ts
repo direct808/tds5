@@ -1,21 +1,28 @@
-import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import { DataSource } from 'typeorm'
 import { createAuthUser } from '../../utils/helpers'
-import { AppModule } from '@/app.module'
-import { configureApp } from '@/utils/configure-app'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { FilterLogic, FilterObject } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
 import { truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
+import { ClickDataTextKeys } from '@/stream-filter/filters/click-data-text/click-data-text-filter'
+import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
+import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
+import { DateTime } from 'luxon'
 
-function addStream(
-  campaign: CampaignBuilder,
+async function addStream(
+  dataSource: DataSource,
   content: string,
+  userId: string,
   filter?: FilterObject,
 ) {
+  const campaign = CampaignBuilder.create()
+    .name('Test campaign')
+    .code('abcdif')
+    .userId(userId)
+
   campaign.addStreamTypeAction((stream) => {
     stream.name(content).type(StreamActionType.SHOW_TEXT).content(content)
 
@@ -26,6 +33,8 @@ function addStream(
       })
     }
   })
+
+  await campaign.save(dataSource)
 }
 
 describe('Filter all (e2e)', () => {
@@ -34,110 +43,65 @@ describe('Filter all (e2e)', () => {
   let userId: string
   const code1 = 'abcdif'
 
-  afterAll(async () => {
+  afterEach(async () => {
     await truncateTables()
     await app.close()
+    jest.useRealTimers()
   })
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     app = await createApp()
     const authData = await createAuthUser(app)
     dataSource = app.get(DataSource)
     userId = authData.user.id
+    jest.useFakeTimers({ doNotFake: ['nextTick'] })
+  })
 
-    console.time()
-    const builder = CampaignBuilder.create()
-      .name('Test campaign')
-      .code(code1)
-      .userId(userId)
-
-    addStream(builder, 'referer', {
-      type: 'referer',
-      values: ['Value referer'],
+  it.each([
+    ['source', 'source'],
+    ['keyword', 'keyword'],
+    ['adCampaignId', 'ad_campaign_id'],
+    ['creativeId', 'creative_id'],
+    ['subId1', 'sub_id_1'],
+    ['subId2', 'sub_id_2'],
+    ['extraParam1', 'extra_param_1'],
+    ['extraParam2', 'extra_param_2'],
+  ])('Click data %s', async (type, snake) => {
+    const value = 'Value ' + type
+    await addStream(dataSource, type, userId, {
+      type: type as ClickDataTextKeys,
+      values: [value],
     })
 
-    addStream(builder, 'source', {
-      type: 'source',
-      values: ['Value source'],
+    const { text } = await ClickActionBuilder.create(app)
+      .setCode(code1)
+      .addQueryParam(snake, value)
+      .request()
+
+    expect(text).toBe(type)
+  })
+
+  it('Raw query param', async () => {
+    await addStream(dataSource, 'raw_query_content', userId, {
+      type: 'query-param',
+      name: 'raw_query',
+      values: ['raw_query_value'],
     })
 
-    addStream(builder, 'keyword', {
-      type: 'keyword',
-      values: ['Value keyword'],
-    })
+    const { text } = await ClickActionBuilder.create(app)
+      .setCode(code1)
+      .addQueryParam('raw_query', 'raw_query_value')
+      .request()
 
-    addStream(builder, 'adCampaignId', {
-      type: 'adCampaignId',
-      values: ['Value adCampaignId'],
-    })
+    expect(text).toBe('raw_query_content')
+  })
 
-    addStream(builder, 'creativeId', {
-      type: 'creativeId',
-      values: ['Value creativeId'],
-    })
-
-    addStream(builder, 'os', {
+  it('os', async () => {
+    await addStream(dataSource, 'os', userId, {
       type: 'os',
       values: ['Windows'],
     })
 
-    addStream(builder, 'osVersion', {
-      type: 'osVersion',
-      values: ['13.2.3'],
-    })
-
-    addStream(builder, 'Last stream')
-
-    await builder.save(dataSource)
-    console.timeEnd()
-  })
-
-  it('referer', async () => {
-    const { text } = await ClickActionBuilder.create(app)
-      .setCode(code1)
-      .addHeader('Referer', 'Value referer')
-      .request()
-
-    expect(text).toBe('referer')
-  })
-
-  it('source', async () => {
-    const { text } = await ClickActionBuilder.create(app)
-      .setCode(code1)
-      .addQueryParam('source', 'Value source')
-      .request()
-
-    expect(text).toBe('source')
-  })
-
-  it('keyword', async () => {
-    const { text } = await ClickActionBuilder.create(app)
-      .setCode(code1)
-      .addQueryParam('keyword', 'Value keyword')
-      .request()
-
-    expect(text).toBe('keyword')
-  })
-
-  it('adCampaignId', async () => {
-    const { text } = await ClickActionBuilder.create(app)
-      .setCode(code1)
-      .addQueryParam('ad_campaign_id', 'Value adCampaignId')
-      .request()
-
-    expect(text).toBe('adCampaignId')
-  })
-
-  it('creativeId', async () => {
-    const { text } = await ClickActionBuilder.create(app)
-      .setCode(code1)
-      .addQueryParam('creative_id', 'Value creativeId')
-      .request()
-
-    expect(text).toBe('creativeId')
-  })
-
-  it('os', async () => {
     const { text } = await ClickActionBuilder.create(app)
       .setCode(code1)
       .addHeader(
@@ -150,14 +114,92 @@ describe('Filter all (e2e)', () => {
   })
 
   it('osVersion', async () => {
+    await addStream(dataSource, 'osVersion', userId, {
+      type: 'osVersion',
+      values: ['10'],
+    })
+
     const { text } = await ClickActionBuilder.create(app)
       .setCode(code1)
       .addHeader(
         'user-agent',
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       )
       .request()
 
     expect(text).toBe('osVersion')
+  })
+
+  it('ip', async () => {
+    const factory = app.get(RequestAdapterFactory)
+
+    jest
+      .spyOn(factory, 'create')
+      .mockImplementation(
+        (req) => new FakeIpExpressRequestAdapter(req, '192.168.10.20'),
+      )
+
+    await addStream(dataSource, 'ip', userId, {
+      type: 'ip',
+      values: ['192.168.10.20'],
+    })
+
+    const { text } = await ClickActionBuilder.create(app)
+      .setCode(code1)
+      .request()
+
+    expect(text).toBe('ip')
+  })
+
+  it('ipv6', async () => {
+    const factory = app.get(RequestAdapterFactory)
+
+    jest
+      .spyOn(factory, 'create')
+      .mockImplementation(
+        (req) => new FakeIpExpressRequestAdapter(req, '::7711'),
+      )
+
+    await addStream(dataSource, 'ipv6', userId, {
+      type: 'ipv6',
+    })
+
+    const { text } = await ClickActionBuilder.create(app)
+      .setCode(code1)
+      .request()
+
+    expect(text).toBe('ipv6')
+  })
+
+  it('schedule', async () => {
+    jest.setSystemTime(DateTime.fromISO('2025-08-05T10:33').toJSDate())
+    await addStream(dataSource, 'schedule', userId, {
+      type: 'schedule',
+      timezone: 'Europe/Moscow',
+      items: [{ fromDay: 2, formTime: '10:30', toDay: 2, toTime: '11:30' }],
+    })
+
+    const { text } = await ClickActionBuilder.create(app)
+      .setCode(code1)
+      .request()
+
+    expect(text).toBe('schedule')
+  })
+
+  it('date-interval', async () => {
+    jest.setSystemTime(DateTime.fromISO('2025-08-05T10:33').toJSDate())
+
+    await addStream(dataSource, 'date-interval', userId, {
+      type: 'date-interval',
+      from: '2025-08-05',
+      to: '2025-08-06',
+      timezone: 'Europe/Moscow',
+    })
+
+    const { text } = await ClickActionBuilder.create(app)
+      .setCode(code1)
+      .request()
+
+    expect(text).toBe('date-interval')
   })
 })

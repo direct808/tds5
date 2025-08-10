@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
 import { Offer } from '@/offer/offer.entity'
 import { OfferBuilder } from '@/utils/entity-builder/offer-builder'

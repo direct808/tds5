@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
 import { Source } from '@/source/source.entity'

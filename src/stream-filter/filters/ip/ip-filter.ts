@@ -1,4 +1,5 @@
 import { BaseFilterObject, StreamFilter } from '@/stream-filter/types'
+import { isIP } from 'class-validator'
 
 export interface IpFilterObject extends BaseFilterObject {
   type: 'ip'
@@ -21,6 +22,10 @@ export class IpFilter implements StreamFilter {
     }
 
     for (const range of this.filterObj.values) {
+      if (isIP(range)) {
+        return range === this.ip
+      }
+
       const splitted = this.splitRange(range)
 
       if (!splitted) {

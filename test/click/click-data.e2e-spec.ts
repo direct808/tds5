@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
 import { truncateTables } from '../utils/truncate-tables'

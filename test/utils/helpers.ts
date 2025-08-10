@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import * as request from 'supertest'
+import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserBuilder } from '@/utils/entity-builder/user-builder'
