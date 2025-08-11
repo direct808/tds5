@@ -1,110 +1,74 @@
 import { StreamFilterService } from '@/stream-filter/stream-filter.service'
-import { FilterLogic, FilterObjectExtended } from '@/stream-filter/types'
-import { spyOn } from '../../test/utils/helpers'
+import { Test } from '@nestjs/testing'
+import { StreamFilterFactory } from '@/stream-filter/stream-filter-factory'
+import { FilterLogic, FilterObject } from '@/stream-filter/types'
 
-describe('StreamFilterService', () => {
+function filterObject(exclude = false): FilterObject {
+  return { type: 'keyword', values: ['Value'], exclude }
+}
+
+describe('stream-filter.service.ts', () => {
   let service: StreamFilterService
-  const mockStreamFilterFactory = {
-    create: jest.fn(),
-  }
+  const handle = jest.fn()
 
   beforeEach(async () => {
-    service = new StreamFilterService(mockStreamFilterFactory)
-    jest.clearAllMocks()
+    jest.resetAllMocks()
+    const module = await Test.createTestingModule({
+      providers: [
+        StreamFilterService,
+        {
+          provide: StreamFilterFactory,
+          useValue: {
+            create: () => ({ handle }),
+          },
+        },
+      ],
+    }).compile()
+
+    service = module.get(StreamFilterService)
   })
 
-  describe('processExclude', () => {
-    it('should return result if exclude is false', () => {
-      expect(service['processExclude'](true, false)).toBe(true)
-      expect(service['processExclude'](false, false)).toBe(false)
-    })
+  it.each([
+    [true, [true, true], FilterLogic.And],
+    [false, [true, false], FilterLogic.And],
+    [false, [false, false], FilterLogic.And],
 
-    it('should return !result if exclude is true', () => {
-      expect(service['processExclude'](true, true)).toBe(false)
-      expect(service['processExclude'](false, true)).toBe(true)
-    })
+    [true, [true, true], FilterLogic.Or],
+    [true, [true, false], FilterLogic.Or],
+    [false, [false, false], FilterLogic.Or],
+  ])('exclude=false', async (expected, values, logic) => {
+    values.forEach((value) => handle.mockReturnValueOnce(value))
 
-    it('should return result if exclude is undefined', () => {
-      expect(service['processExclude'](true)).toBe(true)
-      expect(service['processExclude'](false)).toBe(false)
-    })
+    const result = await service.checkFilters(
+      {
+        logic,
+        items: values.map(() => filterObject()),
+      },
+      'stream-id',
+    )
+
+    expect(result).toEqual(expected)
   })
 
-  describe('filter', () => {
-    it('should call handle and processExclude with correct arguments', async () => {
-      // Arrange
-      const filter = {
-        exclude: true,
-      } as FilterObjectExtended
+  it.each([
+    [false, [true, true], FilterLogic.And],
+    [false, [true, false], FilterLogic.And],
+    [true, [false, false], FilterLogic.And],
 
-      const handleResult = false
-      const expectedResult = true
+    [false, [true, true], FilterLogic.Or],
+    [true, [true, false], FilterLogic.Or],
+    [true, [false, false], FilterLogic.Or],
+  ])('exclude=true', async (expected, values, logic) => {
+    values.forEach((value) => handle.mockReturnValueOnce(value))
 
-      const handle = spyOn(service, 'handle')
-      const processExclude = spyOn(service, 'processExclude')
+    const result = await service.checkFilters(
+      {
+        logic,
+        items: values.map(() => filterObject(true)),
+      },
+      'stream-id',
+    )
 
-      handle.mockReturnValue(handleResult)
-      processExclude.mockReturnValue(expectedResult)
-
-      // Act
-      const result = await service['filter'](filter)
-
-      // Assertion
-      expect(handle).toHaveBeenCalledWith(filter)
-      expect(processExclude).toHaveBeenCalledWith(handleResult, filter.exclude)
-      expect(result).toBe(expectedResult)
-    })
-  })
-
-  describe('checkFilter', () => {
-    let filter: jest.SpyInstance
-
-    beforeEach(() => {
-      filter = spyOn(service, 'filter')
-    })
-
-    it('should return { value: true, break: true } if result is true and logic is OR', async () => {
-      const filterObj = {} as FilterObjectExtended
-
-      filter.mockReturnValue(true)
-
-      // Act
-      const result = await service['checkFilter'](filterObj, FilterLogic.Or)
-
-      // Assert
-      expect(service['filter']).toHaveBeenCalledWith(filterObj)
-      expect(result).toEqual({ value: true, break: true })
-    })
-
-    it('should return { value: false, break: true } if result is false and logic is AND', async () => {
-      const filterObj = {} as FilterObjectExtended
-
-      filter.mockReturnValue(false)
-
-      const result = await service['checkFilter'](filterObj, FilterLogic.And)
-
-      expect(service['filter']).toHaveBeenCalledWith(filterObj)
-      expect(result).toEqual({ value: false, break: true })
-    })
-
-    it('should return { value: true } if result is true and logic is AND', async () => {
-      const filterObj = {} as FilterObjectExtended
-
-      filter.mockReturnValue(true)
-
-      const result = await service['checkFilter'](filterObj, FilterLogic.And)
-
-      expect(result).toEqual({ value: true })
-    })
-
-    it('should return { value: false } if result is false and logic is OR', async () => {
-      const filterObj = {} as FilterObjectExtended
-
-      filter.mockReturnValue(false)
-
-      const result = await service['checkFilter'](filterObj, FilterLogic.Or)
-
-      expect(result).toEqual({ value: false })
-    })
+    expect(result).toEqual(expected)
   })
 })

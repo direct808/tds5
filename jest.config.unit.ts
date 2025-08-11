@@ -30,6 +30,7 @@ const config: Config = {
     '\\.module\\.ts',
     'index.ts',
     '/main.ts',
+    'test/',
   ],
 }
 

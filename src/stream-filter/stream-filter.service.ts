@@ -64,7 +64,7 @@ export class StreamFilterService {
     return exclude ? !result : result
   }
 
-  private handle(filter: FilterObjectExtended) {
+  private handle(filter: FilterObjectExtended): Promise<boolean> | boolean {
     return this.streamFilterFactory.create(filter).handle()
   }
 }
