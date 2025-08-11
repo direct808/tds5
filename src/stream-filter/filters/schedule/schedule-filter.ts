@@ -18,15 +18,11 @@ export class ScheduleFilter implements StreamFilter {
   constructor(private filterObj: ScheduleFilterObj) {}
 
   public handle(): boolean {
-    return this.checkSchedule(this.filterObj)
-  }
-
-  private checkSchedule(filterObj: ScheduleFilterObj): boolean {
-    const now = DateTime.now().setZone(filterObj.timezone)
+    const now = DateTime.now().setZone(this.filterObj.timezone)
     const currentWeekDay = now.weekday // 1 (Monday) - 7 (Sunday)
     const currentTimeMinutes = now.hour * 60 + now.minute
 
-    for (const item of filterObj.items) {
+    for (const item of this.filterObj.items) {
       if (this.checkScheduleItem(item, currentWeekDay, currentTimeMinutes)) {
         return true
       }

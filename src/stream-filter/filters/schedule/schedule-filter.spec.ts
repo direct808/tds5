@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { ScheduleFilter, ScheduleFilterObj } from './schedule-filter'
 
-describe('ScheduleFilter', () => {
+describe('schedule-filter.ts', () => {
   afterEach(() => {
     jest.useRealTimers()
   })
@@ -32,15 +32,15 @@ describe('ScheduleFilter', () => {
 
         jest.useFakeTimers().setSystemTime(mockNow)
 
-        const filter = new ScheduleFilter({} as ScheduleFilterObj)
-
         const obj = {
           type: 'schedule',
           timezone,
           items: [{ fromDay, formTime, toDay, toTime }],
         } as ScheduleFilterObj
 
-        const result = filter['checkSchedule'](obj)
+        const filter = new ScheduleFilter(obj)
+
+        const result = filter.handle()
 
         expect(result).toEqual(expected)
       },
