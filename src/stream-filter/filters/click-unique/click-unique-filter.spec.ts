@@ -176,4 +176,22 @@ describe('click-unique-filter.ts', () => {
     // 3. Assert
     expect(result).toEqual(true)
   })
+
+  it('Should expect reject is bad for value', async () => {
+    // 1. Arrange
+    getCountByVisitorIdStreamId.mockReturnValue(0)
+
+    const filter = new ClickUniqueFilter(
+      {
+        type: 'click-unique',
+        for: 'bad value' as any,
+        streamId: 'stream-id',
+      },
+      provider,
+      { visitorId: 'visitor-id', campaignId: 'campaign-id' },
+    )
+
+    // Act, Assert
+    expect(() => filter.handle()).rejects.toThrow('Unknown filterObj.for')
+  })
 })
