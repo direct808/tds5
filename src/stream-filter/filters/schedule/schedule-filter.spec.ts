@@ -22,6 +22,8 @@ describe('schedule-filter.ts', () => {
 
       ['2024-07-03T11:00:00', 3, '10:00', 1, '13:00', true],
       ['2024-07-03T09:00:00', 3, '10:00', 1, '13:00', false],
+
+      ['2024-07-02T09:00:00', 3, '10:00', 1, '13:00', false],
     ])(
       'checkSchedule %s %s %s %s %s %s',
       (now, fromDay, formTime, toDay, toTime, expected) => {
