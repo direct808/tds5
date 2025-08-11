@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource } from 'typeorm'
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import {
   StreamActionType,
   StreamRedirectType,

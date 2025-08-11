@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm'
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
-import { UserBuilder } from '@/utils/entity-builder/user-builder'
+import { UserBuilder } from './entity-builder/user-builder'
 
 async function authUser(
   app: INestApplication,

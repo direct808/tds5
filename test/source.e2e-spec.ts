@@ -3,7 +3,7 @@ import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
 import { Source } from '@/source/source.entity'
-import { SourceBuilder } from '@/utils/entity-builder/source-builder'
+import { SourceBuilder } from './utils/entity-builder/source-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 

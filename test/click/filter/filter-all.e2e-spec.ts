@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import { DataSource } from 'typeorm'
 import { createAuthUser } from '../../utils/helpers'
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { FilterLogic, FilterObject } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
