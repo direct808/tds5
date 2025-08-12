@@ -1,5 +1,5 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
 import { Campaign } from '@/campaign/entity/campaign.entity'
 import {
@@ -8,10 +8,11 @@ import {
   StreamActionType,
 } from '@/campaign/entity/stream.entity'
 import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
-import { createAuthUser, truncateTables } from './utils/helpers'
-import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
+import { createAuthUser } from './utils/helpers'
+import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
+import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 
 describe('CampaignController (e2e)', () => {
@@ -24,7 +25,7 @@ describe('CampaignController (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

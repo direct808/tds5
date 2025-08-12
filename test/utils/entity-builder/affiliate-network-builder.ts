@@ -4,6 +4,8 @@ import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 export class AffiliateNetworkBuilder {
   private fields: Partial<AffiliateNetwork> = {}
 
+  private constructor() {}
+
   public static create() {
     return new this()
   }

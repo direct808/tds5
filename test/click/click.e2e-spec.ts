@@ -1,16 +1,17 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource } from 'typeorm'
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import {
   StreamActionType,
   StreamRedirectType,
 } from '@/campaign/entity/stream.entity'
-import * as express from 'express'
-import { ClickRepository } from '@/click/click.repository'
-import { createAuthUser, truncateTables } from '../utils/helpers'
+import express from 'express'
+import { ClickRepository } from '@/click/shared/click.repository'
+import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 import { createApp } from '../utils/create-app'
+import { truncateTables } from '../utils/truncate-tables'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
@@ -20,7 +21,7 @@ describe('Click (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

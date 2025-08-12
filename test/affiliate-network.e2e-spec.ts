@@ -1,9 +1,10 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
-import { createAuthUser, truncateTables } from './utils/helpers'
+import { createAuthUser } from './utils/helpers'
 import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
-import { AffiliateNetworkBuilder } from '@/utils/entity-builder/affiliate-network-builder'
+import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-network-builder'
+import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 
 describe('AffiliateNetworkController (e2e)', () => {
@@ -14,7 +15,7 @@ describe('AffiliateNetworkController (e2e)', () => {
   let dataSource: DataSource
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

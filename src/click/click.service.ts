@@ -43,7 +43,12 @@ export class ClickService {
 
     this.checkIncrementRedirectCount(redirectData)
     const campaign = await this.getFullCampaignByCode(code)
+
+    clickData.campaignId = campaign.id
+    clickData.trafficSourceId = campaign.sourceId
+
     const stream = await this.selectStreamService.selectStream(campaign.streams)
+    clickData.streamId = stream.id
     stream.campaign = campaign
 
     await this.setupSubject.setupStreamSubject(stream)
