@@ -37,5 +37,15 @@ module.exports = {
       }
     ],
     "no-unused-private-class-members": "error",
+    'max-lines-per-function': ['error', { max: 40 }],
   },
+  overrides: [
+    {
+      files: ['**/*spec.ts'],
+      rules: {
+        'max-lines-per-function': 'off',
+        'max-params': 'off',
+      },
+    },
+  ],
 };

@@ -1,9 +1,10 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource } from 'typeorm'
-import { ClickRepository } from '@/click/click.repository'
-import { createAuthUser, truncateTables } from '../utils/helpers'
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { createAuthUser } from '../utils/helpers'
+import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
+import { ClickRepository } from '@/click/shared/click.repository'
+import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 
 describe('Offer params (e2e)', () => {
@@ -13,7 +14,7 @@ describe('Offer params (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

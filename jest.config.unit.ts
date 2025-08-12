@@ -2,16 +2,18 @@ import type { Config } from 'jest'
 
 const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: 'src',
+  rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
   transform: {
-    '^.+\\.(t|j)s$': 'ts-jest',
+    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.js$': ['babel-jest', { extends: './test/babel.config.js' }],
   },
+  transformIgnorePatterns: ['node_modules/(?!ip6)'],
   collectCoverageFrom: ['**/*.(t|j)s'],
-  coverageDirectory: '../coverage',
+  coverageDirectory: './coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   coverageThreshold: {
     global: {
@@ -28,6 +30,7 @@ const config: Config = {
     '\\.module\\.ts',
     'index.ts',
     '/main.ts',
+    'test/',
   ],
 }
 

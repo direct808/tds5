@@ -13,7 +13,7 @@ export class StreamTypeOffersBuilder extends StreamBuilder {
   }
 
   addOffer(callback: (builder: StreamOfferBuilder) => void) {
-    const builder = new StreamOfferBuilder()
+    const builder = StreamOfferBuilder.create()
     this.streamOffersBuilders.push(builder)
     callback(builder)
     return this

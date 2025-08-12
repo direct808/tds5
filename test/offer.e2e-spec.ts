@@ -1,11 +1,12 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
-import { createAuthUser, truncateTables } from './utils/helpers'
 import { Offer } from '@/offer/offer.entity'
-import { OfferBuilder } from '@/utils/entity-builder/offer-builder'
+import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
+import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
+import { createAuthUser } from './utils/helpers'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
@@ -15,7 +16,7 @@ describe('OfferController (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 

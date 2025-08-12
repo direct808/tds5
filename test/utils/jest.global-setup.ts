@@ -1,5 +1,6 @@
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql/build/postgresql-container'
+import { truncateTables } from './truncate-tables'
 
 export default async function () {
   await globalSetup()
@@ -12,6 +13,8 @@ async function globalSetup() {
     const data = await createTestContainer()
     setEnv(data)
   }
+
+  await truncateTables()
 }
 
 async function createTestContainer() {

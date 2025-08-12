@@ -1,4 +1,4 @@
-import { CampaignBuilder } from '@/utils/entity-builder/campaign-builder'
+import { CampaignBuilder } from '../entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/entity/stream.entity'
 import { DataSource } from 'typeorm'
 import { faker } from '@faker-js/faker'

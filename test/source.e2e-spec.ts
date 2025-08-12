@@ -1,9 +1,10 @@
 import { INestApplication } from '@nestjs/common'
-import * as request from 'supertest'
+import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
-import { createAuthUser, truncateTables } from './utils/helpers'
+import { createAuthUser } from './utils/helpers'
 import { Source } from '@/source/source.entity'
-import { SourceBuilder } from '@/utils/entity-builder/source-builder'
+import { SourceBuilder } from './utils/entity-builder/source-builder'
+import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 
 describe('SourceController (e2e)', () => {
@@ -14,7 +15,7 @@ describe('SourceController (e2e)', () => {
   let dataSource: DataSource
 
   afterEach(async () => {
-    await truncateTables(app)
+    await truncateTables()
     await app.close()
   })
 
@@ -42,7 +43,10 @@ describe('SourceController (e2e)', () => {
   })
 
   it('List source', async () => {
-    await new SourceBuilder().name('Source 1').userId(userId).save(dataSource)
+    await SourceBuilder.create()
+      .name('Source 1')
+      .userId(userId)
+      .save(dataSource)
 
     const { body } = await request(app.getHttpServer())
       .get('/api/source')
@@ -54,7 +58,7 @@ describe('SourceController (e2e)', () => {
   })
 
   it('Обновление source, при этом нельзя обновить id', async () => {
-    const source = await new SourceBuilder()
+    const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
       .save(dataSource)
@@ -76,7 +80,7 @@ describe('SourceController (e2e)', () => {
   })
 
   it('Delete source', async () => {
-    const source = await new SourceBuilder()
+    const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
       .save(dataSource)
