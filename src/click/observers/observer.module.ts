@@ -9,6 +9,8 @@ import { VisitorIdObserver } from '@/click/observers/request/visitor-id.observer
 import { UserAgentObserver } from '@/click/observers/request/user-agent.observer'
 import { IdGenerator } from '@/click/observers/id-generator'
 import { ClickSharedModule } from '@/click/shared/click-shared.module'
+import { GeoIpModule } from '@/geo-ip/geo-ip.module'
+import { GeoIpObserver } from '@/click/observers/request/geo-ip.observer'
 
 @Module({
   exports: [SetupSubject],
@@ -22,7 +24,8 @@ import { ClickSharedModule } from '@/click/shared/click-shared.module'
     VisitorIdObserver,
     UserAgentObserver,
     IdGenerator,
+    GeoIpObserver,
   ],
-  imports: [ClickSharedModule],
+  imports: [ClickSharedModule, GeoIpModule],
 })
 export class ObserverModule {}
