@@ -12,6 +12,7 @@ import { OfferModule } from './offer/offer.module'
 import { CampaignModule } from './campaign/campaign.module'
 import { ClickModule } from './click/click.module'
 import { ClsModule } from 'nestjs-cls'
+import { GeoIpModule } from '@/geo-ip/geo-ip.module'
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ClsModule } from 'nestjs-cls'
     OfferModule,
     CampaignModule,
     ClickModule,
+    GeoIpModule,
     ClsModule.forRoot({
       global: true,
       middleware: { mount: true },

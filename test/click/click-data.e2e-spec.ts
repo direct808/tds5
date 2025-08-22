@@ -6,6 +6,10 @@ import { truncateTables } from '../utils/truncate-tables'
 import { ClickRepository } from '@/click/shared/click.repository'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
+import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
+import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
+import { GEO_IP_PROVIDER } from '@/geo-ip/types'
+import { FakeGeoIpService } from '../utils/fake-geo-Ip-service'
 
 describe('Click-data (e2e)', () => {
   let app: INestApplication
@@ -32,6 +36,16 @@ describe('Click-data (e2e)', () => {
 
   it('Checks full click data values', async () => {
     const existsVisitorId = 'abc123'
+    const ip = '170.106.15.3'
+
+    const geoIpService = app.get<FakeGeoIpService>(GEO_IP_PROVIDER)
+    geoIpService.set({ country: 'US', region: 'Virginia', city: 'Ashburn' })
+
+    const factory = app.get(RequestAdapterFactory)
+    jest
+      .spyOn(factory, 'create')
+      .mockImplementation((req) => new FakeIpExpressRequestAdapter(req, ip))
+
     const res = await CampaignBuilder.create()
       .name('Test campaign 1')
       .code(code)
@@ -40,9 +54,9 @@ describe('Click-data (e2e)', () => {
         source.name('Source 1').userId(userId)
       })
       .addStreamTypeOffers((stream) => {
-        stream.name('Stream 1').addOffer((of) => {
-          of.percent(100).createOffer((off) => {
-            off
+        stream.name('Stream 1').addOffer((offer) => {
+          offer.percent(100).createOffer((offer) => {
+            offer
               .name('Offer 1')
               .url(redirectUrl)
               .userId(userId)
@@ -91,9 +105,9 @@ describe('Click-data (e2e)', () => {
       browser: 'Chrome',
       browserVersion: '137.0.0.0',
       campaignId: res.id,
-      country: null,
-      city: null,
-      region: null,
+      country: 'US',
+      region: 'Virginia',
+      city: 'Ashburn',
       cost: '5.35',
       createdAt: clicks[0].createdAt,
       creativeId: 'creative Id',
@@ -103,7 +117,7 @@ describe('Click-data (e2e)', () => {
       externalId: 'external_id',
       extraParam1: 'extraParam1',
       extraParam2: 'extraParam2',
-      ip: clicks[0].ip,
+      ip: ip,
       isBot: null,
       isProxy: null,
       isUniqueCampaign: null,

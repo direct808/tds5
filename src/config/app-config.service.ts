@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer'
-import { IsPort, IsString } from 'class-validator'
+import { IsOptional, IsPort, IsString } from 'class-validator'
 
 export class AppConfig {
   @IsPort()
@@ -33,4 +33,9 @@ export class AppConfig {
   @IsString()
   @Expose({ name: 'DB_NAME' })
   declare dbName: string
+
+  @IsString()
+  @IsOptional()
+  @Expose({ name: 'IP2LOCATION_TOKEN' })
+  declare ip2LocationToken?: string
 }

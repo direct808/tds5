@@ -4,6 +4,7 @@ import { LanguageParserObserver } from '@/click/observers/request/language-parse
 import { VisitorIdObserver } from '@/click/observers/request/visitor-id.observer'
 import { UserAgentObserver } from '@/click/observers/request/user-agent.observer'
 import { Injectable } from '@nestjs/common'
+import { GeoIpObserver } from '@/click/observers/request/geo-ip.observer'
 
 @Injectable()
 export class RequestSetupSubject {
@@ -12,6 +13,7 @@ export class RequestSetupSubject {
     private readonly languageParserObserver: LanguageParserObserver,
     private readonly visitorIdObserver: VisitorIdObserver,
     private readonly userAgentObserver: UserAgentObserver,
+    private readonly geoIpObserver: GeoIpObserver,
   ) {}
 
   public async setup() {
@@ -21,6 +23,7 @@ export class RequestSetupSubject {
     requestSubject.attach(this.languageParserObserver)
     requestSubject.attach(this.visitorIdObserver)
     requestSubject.attach(this.userAgentObserver)
+    requestSubject.attach(this.geoIpObserver)
 
     await requestSubject.notify()
   }
