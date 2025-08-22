@@ -4,6 +4,10 @@ import { CommandModule } from '@/commands/command.module'
 
 async function bootstrap() {
   await CommandFactory.run(CommandModule, {
+    serviceErrorHandler: (error: Error | any) => {
+      console.error(error)
+      process.exit(1)
+    },
     logger: ['error', 'warn'],
   })
 }

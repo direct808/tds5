@@ -7,7 +7,7 @@ import { IP2LOCATION_URL } from '@/commands/download-ip2-location-database/token
     DownloadIp2LocationDatabaseCommand,
     {
       provide: IP2LOCATION_URL,
-      useValue: 'https://www.ip2location.com',
+      useValue: 'https://www.ip2location.com/download/',
     },
   ],
 })

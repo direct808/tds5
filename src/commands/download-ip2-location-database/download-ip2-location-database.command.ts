@@ -31,12 +31,12 @@ export class DownloadIp2LocationDatabaseCommand extends CommandRunner {
       throw new Error('No ip2LocationToken')
     }
 
-    const url = this.url + `/download/?token=${token}&file=DB9LITEMMDB`
+    const url = this.url + `?token=${token}&file=DB9LITEMMDB`
 
     const res = await fetch(url)
 
     if (!res.ok) {
-      throw new Error(`Ошибка загрузки: ${res.statusText}`)
+      throw new Error(`Download error: ${res.statusText}`)
     }
 
     return res.arrayBuffer()

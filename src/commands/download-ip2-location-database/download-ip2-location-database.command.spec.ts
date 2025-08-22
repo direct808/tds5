@@ -4,15 +4,20 @@ import { spyOn } from '../../../test/utils/helpers'
 import express from 'express'
 import archiver from 'archiver'
 import stream from 'stream'
+import { setTimeout } from 'timers/promises'
 
 describe('download-ip2-location-database.command.spec.ts', () => {
-  it('asd', async () => {
-    const stream = await createFakeMmdbZipStream()
-    createFileServer(1233, stream)
+  it('Should be correct download', async () => {
+    const stream = await createFakeMmdbZipStream([
+      { content: 'File content', name: 'IP2LOCATION-LITE-DB9.MMDB' },
+      { content: 'Other file content', name: 'README_LITE.TXT' },
+    ])
+
+    const server = createFileServer(1233, stream)
 
     const command = new DownloadIp2LocationDatabaseCommand(
       { ip2LocationToken: 'token' } as AppConfig,
-      'http://localhost:1233',
+      'http://localhost:1233/',
     )
 
     let result = ''
@@ -23,32 +28,86 @@ describe('download-ip2-location-database.command.spec.ts', () => {
     })
 
     await command.run()
+    server.close()
+    await setTimeout(10)
 
     expect(result).toBe('File content')
+  })
+
+  it('Should be throw error if token not provided download', () => {
+    const command = new DownloadIp2LocationDatabaseCommand(
+      {} as AppConfig,
+      'http://localhost:1233/',
+    )
+
+    return expect(() => command.run()).rejects.toThrow('No ip2LocationToken')
+  })
+
+  it('Should be throw error if bad path', async () => {
+    const stream = await createFakeMmdbZipStream([])
+    const server = createFileServer(1233, stream)
+    const command = new DownloadIp2LocationDatabaseCommand(
+      { ip2LocationToken: 'token' } as AppConfig,
+      'http://localhost:1233/asd',
+    )
+
+    await expect(() => command.run()).rejects.toThrow(
+      'Download error: Not Found',
+    )
+
+    server.close()
+    await setTimeout(10)
+  })
+
+  it('Should be error if no file in zip', async () => {
+    const stream = await createFakeMmdbZipStream([
+      { content: 'Other file content', name: 'README_LITE.TXT' },
+    ])
+
+    const server = createFileServer(1233, stream)
+
+    const command = new DownloadIp2LocationDatabaseCommand(
+      { ip2LocationToken: 'token' } as AppConfig,
+      'http://localhost:1233/',
+    )
+
+    await expect(() => command.run()).rejects.toThrow(
+      'File not found in archive',
+    )
+
+    server.close()
+    await setTimeout(10)
   })
 })
 
 function createFileServer(port = 3000, stream: stream.Readable) {
   const app = express()
 
-  app.get('/download', (req, res) => {
+  app.get('/', (req, res) => {
     const fileName = 'IP2LOCATION-LITE-DB9.zip'
     res.setHeader('Content-Type', 'application/zip')
     res.setHeader('Content-Disposition', 'attachment; filename=' + fileName)
     stream.pipe(res)
   })
 
-  app.listen(port).unref()
+  return app.listen(port).unref()
 }
 
-async function createFakeMmdbZipStream() {
+async function createFakeMmdbZipStream(files: File[]) {
   const archive = archiver('zip', {
     zlib: { level: 9 },
   })
 
-  archive.append('File content', { name: 'IP2LOCATION-LITE-DB9.MMDB' })
-  archive.append('Other file content', { name: 'README_LITE.TXT' })
+  files.forEach((file) => {
+    archive.append(file.content, { name: file.name })
+  })
+
   await archive.finalize()
 
   return archive
+}
+
+type File = {
+  name: string
+  content: string
 }
