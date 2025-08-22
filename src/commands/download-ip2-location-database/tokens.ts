@@ -1,0 +1,1 @@
+export const IP2LOCATION_URL = 'IP2LOCATION_URL'

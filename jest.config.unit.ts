@@ -29,6 +29,7 @@ const config: Config = {
     '\\.dto\\.ts',
     '\\.module\\.ts',
     'index.ts',
+    'dist',
     '/main.ts',
     'test/',
   ],
