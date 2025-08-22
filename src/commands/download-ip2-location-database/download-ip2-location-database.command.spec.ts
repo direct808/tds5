@@ -8,6 +8,7 @@ import { setTimeout } from 'timers/promises'
 
 describe('download-ip2-location-database.command.spec.ts', () => {
   it('Should be correct download', async () => {
+    // Arrange
     const stream = await createFakeMmdbZipStream([
       { content: 'File content', name: 'IP2LOCATION-LITE-DB9.MMDB' },
       { content: 'Other file content', name: 'README_LITE.TXT' },
@@ -27,23 +28,28 @@ describe('download-ip2-location-database.command.spec.ts', () => {
       result = buf.toString()
     })
 
+    // Act
     await command.run()
     server.close()
     await setTimeout(10)
 
+    // Asser
     expect(result).toBe('File content')
   })
 
   it('Should be throw error if token not provided download', () => {
+    // Arrange
     const command = new DownloadIp2LocationDatabaseCommand(
       {} as AppConfig,
       'http://localhost:1233/',
     )
 
+    // Act Assert
     return expect(() => command.run()).rejects.toThrow('No ip2LocationToken')
   })
 
   it('Should be throw error if bad path', async () => {
+    // Arrange
     const stream = await createFakeMmdbZipStream([])
     const server = createFileServer(1233, stream)
     const command = new DownloadIp2LocationDatabaseCommand(
@@ -51,6 +57,7 @@ describe('download-ip2-location-database.command.spec.ts', () => {
       'http://localhost:1233/asd',
     )
 
+    // Act Assert
     await expect(() => command.run()).rejects.toThrow(
       'Download error: Not Found',
     )
@@ -60,6 +67,7 @@ describe('download-ip2-location-database.command.spec.ts', () => {
   })
 
   it('Should be error if no file in zip', async () => {
+    // Arrange
     const stream = await createFakeMmdbZipStream([
       { content: 'Other file content', name: 'README_LITE.TXT' },
     ])
@@ -71,6 +79,7 @@ describe('download-ip2-location-database.command.spec.ts', () => {
       'http://localhost:1233/',
     )
 
+    // Act Assert
     await expect(() => command.run()).rejects.toThrow(
       'File not found in archive',
     )
