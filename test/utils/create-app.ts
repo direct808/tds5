@@ -16,5 +16,6 @@ export async function createApp(): Promise<INestApplication> {
   const app = moduleFixture.createNestApplication()
   configureApp(app)
   await app.init()
+
   return app
 }

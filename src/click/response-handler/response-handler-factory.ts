@@ -21,6 +21,7 @@ export class ResponseHandlerFactory {
     if (request.query('json_response')) {
       return this.moduleRef.get(JsonResponseHandler)
     }
+
     return this.moduleRef.get(HttpResponseHandler)
   }
 }

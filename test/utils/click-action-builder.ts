@@ -15,21 +15,25 @@ export class ClickActionBuilder {
 
   public setCode(code: string) {
     this.code = code
+
     return this
   }
 
   public setVisitorId(visitorId: string) {
     this.visitorId = visitorId
+
     return this
   }
 
   public addQueryParam(name: string, value: string) {
     this.q.append(name, value)
+
     return this
   }
 
   public addHeader(name: string, value: string) {
     this.headers[name] = value
+
     return this
   }
 

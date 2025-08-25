@@ -27,6 +27,7 @@ export class ClickContext implements IClickContext {
     if (!adapter) {
       throw new Error('No requestAdapter')
     }
+
     return adapter
   }
 
@@ -43,6 +44,7 @@ export class ClickContext implements IClickContext {
     if (!clickData) {
       throw new Error('No clickData')
     }
+
     return clickData
   }
 
@@ -55,6 +57,7 @@ export class ClickContext implements IClickContext {
     if (!responseAdapter) {
       throw new Error('No responseAdapter')
     }
+
     return responseAdapter
   }
 }

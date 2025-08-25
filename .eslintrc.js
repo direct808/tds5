@@ -25,9 +25,10 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     "padding-line-between-statements": [
       "error",
-      { "blankLine": "always", "prev": "function", "next": "*" },
+      { blankLine: "always", prev: "function", next: "*" },
       { blankLine: 'always', prev: 'import', next: '*' },
       { blankLine: 'never', prev: 'import', next: 'import' },
+      { blankLine: "always", prev: "*", next: "return" },
     ],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     "@typescript-eslint/no-unused-vars": [

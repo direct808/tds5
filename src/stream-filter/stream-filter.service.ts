@@ -57,6 +57,7 @@ export class StreamFilterService {
 
   private async filter(filter: FilterObjectExtended): Promise<boolean> {
     const result = await this.handle(filter)
+
     return this.processExclude(result, filter.exclude)
   }
 

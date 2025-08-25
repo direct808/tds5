@@ -27,6 +27,7 @@ export class ScheduleFilter implements StreamFilter {
         return true
       }
     }
+
     return false
   }
 

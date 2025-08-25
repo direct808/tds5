@@ -68,6 +68,7 @@ export class ClickService {
 
     if ('campaignCode' in streamResponse) {
       clickData.previousCampaignId = campaign.id
+
       return this.getStreamResponse(streamResponse.campaignCode, redirectData)
     }
 

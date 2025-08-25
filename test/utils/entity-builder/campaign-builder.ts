@@ -58,16 +58,19 @@ export class CampaignBuilder {
 
   name(value: string) {
     this.fields.name = value
+
     return this
   }
 
   code(value: string) {
     this.fields.code = value
+
     return this
   }
 
   userId(value: string) {
     this.fields.userId = value
+
     return this
   }
 
@@ -77,6 +80,7 @@ export class CampaignBuilder {
     const builder = new StreamTypeDirectUrlBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
+
     return this
   }
 
@@ -86,6 +90,7 @@ export class CampaignBuilder {
     const builder = new StreamTypeActionBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
+
     return this
   }
 
@@ -95,6 +100,7 @@ export class CampaignBuilder {
     const builder = new StreamTypeOffersBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
+
     return this
   }
 
@@ -102,6 +108,7 @@ export class CampaignBuilder {
     const builder = SourceBuilder.create()
     this.sourceBuilder = builder
     callback(builder)
+
     return this
   }
 
@@ -109,6 +116,7 @@ export class CampaignBuilder {
     const builder = UserBuilder.create()
     this.userBuilder = builder
     callback(builder)
+
     return this
   }
 }
