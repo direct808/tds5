@@ -1,4 +1,4 @@
-import { CampaignStreamSchema } from '@/campaign/entity/stream.entity'
+import { CampaignStreamSchema } from '@/campaign/types'
 import { StreamBuilder } from './stream-builder'
 import { StreamOfferBuilder } from '../stream-offer-builder'
 import { DataSource } from 'typeorm'

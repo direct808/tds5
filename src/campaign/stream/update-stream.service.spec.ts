@@ -6,7 +6,7 @@ import { EntityManager } from 'typeorm'
 import { UpdateStreamService } from './update-stream.service'
 import { getIdsForDelete } from '@/utils/repository-utils'
 import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CampaignStreamSchema } from '@/campaign/types'
 import { UpdateStreamDto } from '../dto/update-stream.dto'
 
 jest.mock('../../utils/repository-utils')

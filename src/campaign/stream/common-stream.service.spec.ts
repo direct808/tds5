@@ -7,7 +7,7 @@ import {
   CampaignStreamSchema,
   StreamActionType,
   StreamRedirectType,
-} from '../entity/stream.entity'
+} from '@/campaign/types'
 
 jest.mock('@/utils/repository-utils')
 

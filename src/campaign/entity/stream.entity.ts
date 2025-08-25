@@ -2,37 +2,11 @@ import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
 import { Campaign } from './campaign.entity'
 import { StreamOffer } from './stream-offer.entity'
 import { Filters } from '@/stream-filter/types'
-
-export enum CampaignStreamSchema {
-  ACTION = 'ACTION',
-  DIRECT_URL = 'DIRECT_URL',
-  LANDINGS_OFFERS = 'LANDINGS_OFFERS',
-}
-
-export enum StreamRedirectType {
-  CURL = 'CURL',
-  FORM_SUBMIT = 'FORM_SUBMIT',
-  HTTP = 'HTTP',
-  IFRAME = 'IFRAME',
-  JS = 'JS',
-  META = 'META',
-  META2 = 'META2',
-  REMOTE = 'REMOTE',
-  WITHOUT_REFERER = 'WITHOUT_REFERER',
-}
-
-export enum StreamActionType {
-  NOTHING = 'NOTHING',
-  SHOW404 = 'SHOW404',
-  SHOW_HTML = 'SHOW_HTML',
-  SHOW_TEXT = 'SHOW_TEXT',
-  TO_CAMPAIGN = 'TO_CAMPAIGN',
-}
-
-export interface StreamDirectUrl extends Stream {
-  redirectType: StreamRedirectType
-  redirectUrl: string
-}
+import {
+  CampaignStreamSchema,
+  StreamActionType,
+  StreamRedirectType,
+} from '@/campaign/types'
 
 @Entity()
 export class Stream {
@@ -46,7 +20,7 @@ export class Stream {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  declare campaign: Campaign
+  declare campaign?: Campaign
 
   @Column()
   @Index()
