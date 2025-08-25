@@ -1,0 +1,16 @@
+config:
+  target: "http://localhost:3300"
+  phases:
+    - duration: 10000
+#      arrivalCount: 10000
+      arrivalRate: 100
+#      rampTo: 10
+#  processor: "./processor.ts"
+
+
+
+scenarios:
+  - name: Click
+    flow:
+      - get:
+          url: /r4ndWY

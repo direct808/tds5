@@ -1,0 +1,29 @@
+config:
+  target: "http://localhost:3300"
+  phases:
+    - duration: 10
+      arrivalCount: 100
+#      arrivalRate: 200
+#      rampTo: 10
+  processor: "./campaign-processor.ts"
+
+before:
+  flow:
+    - log: 'Get auth token'
+    - post:
+        url: '/api/auth/login'
+        json:
+          email: 'admin@tds5.com'
+          password: '1234'
+        capture:
+          - json: $.accessToken
+            as: token
+
+scenarios:
+  - name: Create campaign
+    flow:
+      - post:
+          url: /api/campaign
+          beforeRequest: 'createCampaign'
+          headers:
+            authorization: 'Bearer {{ token }}'
