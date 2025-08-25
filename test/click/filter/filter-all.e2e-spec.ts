@@ -172,7 +172,7 @@ describe('Filter all (e2e)', () => {
   })
 
   it('schedule', async () => {
-    jest.setSystemTime(DateTime.fromISO('2025-08-05T10:33').toJSDate())
+    jest.setSystemTime(DateTime.fromISO('2025-08-05T10:33+03:00').toJSDate())
     await addStream(dataSource, 'schedule', userId, {
       type: 'schedule',
       timezone: 'Europe/Moscow',
