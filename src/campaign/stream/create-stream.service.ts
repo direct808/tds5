@@ -4,7 +4,7 @@ import { CommonStreamService } from './common-stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamDto } from '../dto/create-stream.dto'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CampaignStreamSchema } from '@/campaign/types'
 
 @Injectable()
 export class CreateStreamService {

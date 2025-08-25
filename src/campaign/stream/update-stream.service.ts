@@ -11,7 +11,7 @@ import { getIdsForDelete } from '@/utils/repository-utils'
 import { arrayUnique } from '@/utils/helpers'
 import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
 import { UpdateStreamDto } from '../dto/update-stream.dto'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CampaignStreamSchema } from '@/campaign/types'
 
 @Injectable()
 export class UpdateStreamService {

@@ -2,7 +2,7 @@ import { LandingsOffersService } from './landings-offers.service'
 import { SelectOfferService } from './select-offer.service'
 import { OfferParamsService } from './offer-params.service'
 import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { StreamWithCampaign } from '@/campaign/types'
 import { Offer } from '@/offer/offer.entity'
 import { HttpStatus } from '@nestjs/common'
 import { Campaign } from '@/campaign/entity/campaign.entity'
@@ -41,13 +41,17 @@ describe('LandingsOffersService', () => {
 
   describe('handle', () => {
     it('should throw error if streamOffers is empty', async () => {
-      const stream: Stream = { streamOffers: [] as StreamOffer[] } as Stream
+      const stream: StreamWithCampaign = {
+        streamOffers: [] as StreamOffer[],
+      } as StreamWithCampaign
 
       await expect(service.handle(stream)).rejects.toThrow('No streamOffers')
     })
 
     it('should throw error if streamOffers is null', async () => {
-      const stream: Stream = { streamOffers: null } as Stream
+      const stream: StreamWithCampaign = {
+        streamOffers: null,
+      } as StreamWithCampaign
 
       await expect(service.handle(stream)).rejects.toThrow('No streamOffers')
     })
@@ -67,10 +71,10 @@ describe('LandingsOffersService', () => {
         } as any,
       } as Offer
 
-      const stream: Stream = {
+      const stream: StreamWithCampaign = {
         streamOffers: [{} as any],
         campaign,
-      } as Stream
+      } as StreamWithCampaign
 
       const clickData = clickContext.getClickData()
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ActionType, StreamResponse } from '../../types'
-import { Stream, StreamActionType } from '@/campaign/entity/stream.entity'
+import { Stream } from '@/campaign/entity/stream.entity'
+import { StreamActionType } from '@/campaign/types'
 import { ModuleRef } from '@nestjs/core'
 import {
   NothingActionType,

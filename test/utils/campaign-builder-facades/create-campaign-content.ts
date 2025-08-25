@@ -1,5 +1,5 @@
 import { CampaignBuilder } from '../entity-builder/campaign-builder'
-import { StreamActionType } from '@/campaign/entity/stream.entity'
+import { StreamActionType } from '@/campaign/types'
 import { DataSource } from 'typeorm'
 import { faker } from '@faker-js/faker'
 import { Campaign } from '@/campaign/entity/campaign.entity'

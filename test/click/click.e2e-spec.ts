@@ -2,10 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import {
-  StreamActionType,
-  StreamRedirectType,
-} from '@/campaign/entity/stream.entity'
+import { StreamActionType, StreamRedirectType } from '@/campaign/types'
 import express from 'express'
 import { ClickRepository } from '@/click/shared/click.repository'
 import { createAuthUser } from '../utils/helpers'

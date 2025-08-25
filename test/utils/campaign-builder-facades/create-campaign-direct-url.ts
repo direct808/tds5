@@ -1,4 +1,4 @@
-import { StreamRedirectType } from '@/campaign/entity/stream.entity'
+import { StreamRedirectType } from '@/campaign/types'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../entity-builder/campaign-builder'
 import { faker } from '@faker-js/faker'
