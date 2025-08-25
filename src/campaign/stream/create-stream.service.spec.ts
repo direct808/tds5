@@ -5,7 +5,7 @@ import { StreamRepository } from './stream.repository'
 import { EntityManager } from 'typeorm'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
 import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CampaignStreamSchema } from '../entity/stream.entity'
+import { CampaignStreamSchema } from '@/campaign/types'
 
 describe('CreateStreamService', () => {
   let service: CreateStreamService

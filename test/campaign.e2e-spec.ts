@@ -2,11 +2,8 @@ import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
 import { Campaign } from '@/campaign/entity/campaign.entity'
-import {
-  CampaignStreamSchema,
-  Stream,
-  StreamActionType,
-} from '@/campaign/entity/stream.entity'
+import { Stream } from '@/campaign/entity/stream.entity'
+import { CampaignStreamSchema, StreamActionType } from '@/campaign/types'
 import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
 import { createAuthUser } from './utils/helpers'
 import { OfferBuilder } from './utils/entity-builder/offer-builder'

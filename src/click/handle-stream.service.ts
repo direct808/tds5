@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import {
   CampaignStreamSchema,
-  Stream,
   StreamDirectUrl,
-} from '@/campaign/entity/stream.entity'
+  StreamWithCampaign,
+} from '@/campaign/types'
 import { StreamResponse } from './types'
 import { DirectUrlService } from './schema/direct-url/direct-url.service'
 import { ActionService } from './schema/action/action.service'
@@ -17,7 +17,9 @@ export class HandleStreamService {
     private readonly landingsOffersService: LandingsOffersService,
   ) {}
 
-  public async handleStream(stream: Stream): Promise<StreamResponse> {
+  public async handleStream(
+    stream: StreamWithCampaign,
+  ): Promise<StreamResponse> {
     switch (stream.schema) {
       case CampaignStreamSchema.ACTION:
         return this.actionService.handle(stream)

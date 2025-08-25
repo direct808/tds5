@@ -13,6 +13,8 @@ import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from '@/click/observers/setup-subject'
 import { ClickContext } from '@/click/shared/click-context.service'
+import { StreamWithCampaign } from '@/campaign/types'
+import { Stream } from '@/campaign/entity/stream.entity'
 
 type RedirectData = { count: number }
 
@@ -53,7 +55,10 @@ export class ClickService {
 
     await this.setupSubject.setupStreamSubject(stream)
 
-    const streamResponse = await this.handleStreamService.handleStream(stream)
+    const streamWithCampaign = this.makeStreamWithCampaign(stream, campaign)
+
+    const streamResponse =
+      await this.handleStreamService.handleStream(streamWithCampaign)
 
     if ('url' in streamResponse) {
       clickData.destination = streamResponse.url
@@ -67,6 +72,16 @@ export class ClickService {
     }
 
     return streamResponse
+  }
+
+  private makeStreamWithCampaign(
+    stream: Stream,
+    campaign: Campaign,
+  ): StreamWithCampaign {
+    return {
+      ...stream,
+      campaign,
+    }
   }
 
   private async getFullCampaignByCode(code: string): Promise<Campaign> {

@@ -15,7 +15,7 @@ import {
   CampaignStreamSchema,
   StreamActionType,
   StreamRedirectType,
-} from '../entity/stream.entity'
+} from '@/campaign/types'
 
 export class CreateStreamDto {
   @IsString()

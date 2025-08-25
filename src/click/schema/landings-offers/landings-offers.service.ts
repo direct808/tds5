@@ -1,5 +1,5 @@
 import { StreamResponse } from '../../types'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { StreamWithCampaign } from '@/campaign/types'
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { ClickData } from '../../click-data'
 import { Offer } from '@/offer/offer.entity'
@@ -21,7 +21,7 @@ export class LandingsOffersService {
     @Inject(ClickContext) private readonly clickContext: IClickContext,
   ) {}
 
-  public async handle(stream: Stream): Promise<StreamResponse> {
+  public async handle(stream: StreamWithCampaign): Promise<StreamResponse> {
     const clickData = this.clickContext.getClickData()
 
     if (!stream.streamOffers || !stream.streamOffers.length) {
