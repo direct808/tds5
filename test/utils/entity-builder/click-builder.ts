@@ -14,21 +14,25 @@ export class ClickBuilder {
 
   id(id: string) {
     this.fields.id = id
+
     return this
   }
 
   campaignId(campaignId: string) {
     this.fields.campaignId = campaignId
+
     return this
   }
 
   visitorId(visitorId: string) {
     this.fields.visitorId = visitorId
+
     return this
   }
 
   createdAt(createdAt: Date) {
     this.fields.createdAt = createdAt
+
     return this
   }
 

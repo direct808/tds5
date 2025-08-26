@@ -83,6 +83,7 @@ function getVisitorId(cookies: string[]): string | undefined {
     if (coo.substring(0, 9) != 'visitorId') {
       continue
     }
+
     return coo.split('; ')[0].split('=')[1]
   }
 }

@@ -7,11 +7,13 @@ export abstract class StreamBuilder {
 
   name(name: string) {
     this.fields.name = name
+
     return this
   }
 
   filters(filters: Filters) {
     this.fields.filters = filters
+
     return this
   }
 

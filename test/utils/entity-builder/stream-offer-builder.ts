@@ -14,6 +14,7 @@ export class StreamOfferBuilder {
 
   percent(value: number) {
     this.fields.percent = value
+
     return this
   }
 
@@ -21,6 +22,7 @@ export class StreamOfferBuilder {
     const builder = OfferBuilder.create()
     this.builder = builder
     callback(builder)
+
     return this
   }
 

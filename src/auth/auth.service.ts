@@ -21,6 +21,7 @@ export class AuthService {
       return null
     }
     const { password, ...result } = user
+
     return result
   }
 
@@ -30,6 +31,7 @@ export class AuthService {
 
   sign(user: LoginUser) {
     const payload = { email: user.email, sub: user.id }
+
     return {
       accessToken: this.jwtService.sign(payload),
     }

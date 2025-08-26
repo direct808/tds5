@@ -15,16 +15,19 @@ export class MockClickContext implements IClickContext {
     if (!this.requestAdapter) {
       throw new Error('No requestAdapter')
     }
+
     return this.requestAdapter
   }
 
   setRequestAdapter(adapter: RequestAdapter) {
     this.requestAdapter = adapter
+
     return this
   }
 
   createClickData(): this {
     this.clickData = {}
+
     return this
   }
 
@@ -32,6 +35,7 @@ export class MockClickContext implements IClickContext {
     if (!this.clickData) {
       throw new Error('No clickData')
     }
+
     return this.clickData
   }
 
@@ -43,6 +47,7 @@ export class MockClickContext implements IClickContext {
     if (!this.responseAdapter) {
       throw new Error('No responseAdapter')
     }
+
     return this.responseAdapter
   }
 }

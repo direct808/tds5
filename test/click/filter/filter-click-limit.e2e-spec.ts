@@ -16,6 +16,7 @@ async function clickAction(app: INestApplication, code: string) {
     .setCode(code)
     .request()
     .expect(200)
+
   return text
 }
 

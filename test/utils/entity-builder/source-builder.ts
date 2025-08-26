@@ -12,11 +12,13 @@ export class SourceBuilder {
 
   name(name: string) {
     this.fields.name = name
+
     return this
   }
 
   userId(userId: string) {
     this.fields.userId = userId
+
     return this
   }
 

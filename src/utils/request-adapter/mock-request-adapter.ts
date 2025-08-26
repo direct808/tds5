@@ -12,6 +12,7 @@ export class MockRequestAdapter implements RequestAdapter {
 
   static create(data?: MockRequestAdapterData) {
     data = data || {}
+
     return new MockRequestAdapter(data)
   }
 
@@ -32,6 +33,7 @@ export class MockRequestAdapter implements RequestAdapter {
   public setHeader(name: HeaderName, value: string): this {
     this.data.headers = this.data.headers || {}
     this.data.headers[name] = value
+
     return this
   }
 }
