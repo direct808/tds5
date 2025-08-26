@@ -122,7 +122,7 @@ describe('repository-utils', () => {
   })
 
   describe('getIdsForDelete', () => {
-    it('check getIdsForDelete', async () => {
+    it('check getIdsForDelete', () => {
       const exists = [{ id: '1' }, { id: '2' }, { id: '3' }]
       const input = [{}, { id: '2' }, { id: '3' }, { id: '4' }]
 

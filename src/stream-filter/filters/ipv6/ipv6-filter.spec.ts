@@ -6,7 +6,7 @@ describe('IpV6Filter', () => {
     ['22.33.43.2', false],
     ['2001:db8::1', true],
     ['bad ip value', false],
-  ])('Should pass all tests', async (ip, expected) => {
+  ])('Should pass all tests', (ip, expected) => {
     const filter = new IpV6Filter(ip)
 
     const result = filter.handle()

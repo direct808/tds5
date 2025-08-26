@@ -32,7 +32,7 @@ describe('click-unique-filter.ts', () => {
     )
 
     // 2, 3. Act, Assert
-    expect(() => filter.handle()).rejects.toThrow('No visitorId')
+    return expect(() => filter.handle()).rejects.toThrow('No visitorId')
   })
 
   it('Should throw error if no campaignId', () => {
@@ -48,7 +48,7 @@ describe('click-unique-filter.ts', () => {
     )
 
     // 2, 3. Act, Assert
-    expect(() => filter.handle()).rejects.toThrow('No campaignId')
+    return expect(() => filter.handle()).rejects.toThrow('No campaignId')
   })
 
   it('Should return false if getCountByVisitorId not zero', async () => {
@@ -192,6 +192,8 @@ describe('click-unique-filter.ts', () => {
     )
 
     // Act, Assert
-    expect(() => filter.handle()).rejects.toThrow('Unknown filterObj.for')
+    return expect(() => filter.handle()).rejects.toThrow(
+      'Unknown filterObj.for',
+    )
   })
 })

@@ -1,5 +1,6 @@
 import type { HttpStatus } from '@nestjs/common'
 import type { Stream } from '@/campaign/entity/stream.entity'
+import { MaybePromise } from '@/utils/types'
 
 export type StreamResponse =
   | StreamContentResponse
@@ -21,11 +22,11 @@ export type ToCampaignResponse = {
 }
 
 export interface RedirectType {
-  handle(url: string): Promise<StreamResponse>
+  handle(url: string): MaybePromise<StreamResponse>
 }
 
 export interface ActionType {
-  handle(stream: Stream): Promise<StreamResponse>
+  handle(stream: Stream): MaybePromise<StreamResponse>
 }
 
 export interface ResponseHandler {

@@ -3,7 +3,7 @@ import { RedirectType, StreamResponse } from '@/click/types'
 
 @Injectable()
 export class MetaRedirectType implements RedirectType {
-  async handle(url: string): Promise<StreamResponse> {
+  handle(url: string): StreamResponse {
     return {
       content: `<html>
 <head>

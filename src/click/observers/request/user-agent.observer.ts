@@ -8,7 +8,7 @@ import { ClickContext } from '@/click/shared/click-context.service'
 export class UserAgentObserver implements ClickObserver {
   constructor(private readonly clickContext: ClickContext) {}
 
-  public async handle() {
+  public handle() {
     const request = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 

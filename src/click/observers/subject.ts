@@ -1,5 +1,7 @@
+import { MaybePromise } from '@/utils/types'
+
 export interface ClickObserver<T = void> {
-  handle(data: T): Promise<void>
+  handle(data: T): MaybePromise<void>
 }
 
 export class ClickSubject<T = void> {

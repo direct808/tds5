@@ -3,7 +3,7 @@ import { RedirectType, StreamResponse } from '@/click/types'
 
 @Injectable()
 export class HttpRedirectType implements RedirectType {
-  async handle(url: string): Promise<StreamResponse> {
+  handle(url: string): StreamResponse {
     return {
       status: HttpStatus.MOVED_PERMANENTLY,
       url,

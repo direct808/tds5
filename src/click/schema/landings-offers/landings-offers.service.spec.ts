@@ -40,23 +40,23 @@ describe('LandingsOffersService', () => {
   })
 
   describe('handle', () => {
-    it('should throw error if streamOffers is empty', async () => {
+    it('should throw error if streamOffers is empty', () => {
       const stream: StreamWithCampaign = {
         streamOffers: [] as StreamOffer[],
       } as StreamWithCampaign
 
-      await expect(service.handle(stream)).rejects.toThrow('No streamOffers')
+      expect(() => service.handle(stream)).toThrow('No streamOffers')
     })
 
-    it('should throw error if streamOffers is null', async () => {
+    it('should throw error if streamOffers is null', () => {
       const stream: StreamWithCampaign = {
         streamOffers: null,
       } as StreamWithCampaign
 
-      await expect(service.handle(stream)).rejects.toThrow('No streamOffers')
+      expect(() => service.handle(stream)).toThrow('No streamOffers')
     })
 
-    it('should select offer and build redirect url', async () => {
+    it('should select offer and build redirect url', () => {
       const offerParams = 'subid={subid}&campaign={campaign_name}'
       const campaign = { name: 'TestCampaign' } as Campaign
       const offerUrl = 'https://example.com'
@@ -85,7 +85,7 @@ describe('LandingsOffersService', () => {
         .mockReturnValue(resultUrl)
       const setClickData = jest.spyOn(service as any, 'setClickData')
 
-      const result = await service.handle(stream)
+      const result = service.handle(stream)
 
       expect(selectOfferService.select).toHaveBeenCalledWith(
         stream.streamOffers,
@@ -107,7 +107,7 @@ describe('LandingsOffersService', () => {
   })
 
   describe('buildOfferUrl', () => {
-    it('should return offerUrl if offerParams is empty', async () => {
+    it('should return offerUrl if offerParams is empty', () => {
       const res = service['buildOfferUrl'](
         undefined,
         {} as Campaign,
@@ -118,7 +118,7 @@ describe('LandingsOffersService', () => {
       expect(res).toBe('offerUrl')
     })
 
-    it('should return value', async () => {
+    it('should return value', () => {
       const campaign = {} as Campaign
       const clickData = {}
       const paramData = 'convertResult'

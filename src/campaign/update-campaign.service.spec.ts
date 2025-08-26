@@ -113,7 +113,7 @@ describe('UpdateCampaignService', () => {
     )
   })
 
-  it('should call buildUpdateData witch correct result', async () => {
+  it('should call buildUpdateData witch correct result', () => {
     const data = service['buildUpdateData'](args)
     expect(data).toEqual({
       name: args.name,

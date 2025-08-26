@@ -12,7 +12,7 @@ describe('IpFilter', () => {
     [['non ip-string'], '22.33.46.2', false],
     [['non ip string'], '22.33.46.2', false],
     [[], '22.33.46.2', false],
-  ])('Should pass all tests', async (values, ip, expected) => {
+  ])('Should pass all tests', (values, ip, expected) => {
     const filter = new IpFilter({ type: 'ip', values }, ip)
 
     const result = filter.handle()
