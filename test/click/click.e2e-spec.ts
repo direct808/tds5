@@ -4,16 +4,16 @@ import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { StreamActionType, StreamRedirectType } from '@/campaign/types'
 import express from 'express'
-import { ClickRepository } from '@/click/shared/click.repository'
 import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 import { createApp } from '../utils/create-app'
 import { truncateTables } from '../utils/truncate-tables'
+import { RegisterClickService } from '@/click/register-click.service'
+import type { ClickData } from '@/click/click-data'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
-  let clickRepo: ClickRepository
   const redirectUrl = 'https://example.com/'
   let userId: string
 
@@ -25,7 +25,6 @@ describe('Click (e2e)', () => {
   beforeEach(async () => {
     app = await createApp()
     dataSource = app.get(DataSource)
-    clickRepo = app.get(ClickRepository)
     const authData = await createAuthUser(app)
     userId = authData.user.id
   })
@@ -186,25 +185,31 @@ describe('Click (e2e)', () => {
         .save(dataSource)
 
       const lastCampaign = res.streams[0].actionCampaign!
+      const clickData: ClickData[] = []
+
+      const registerClickService = jest
+        .spyOn(app.get(RegisterClickService), 'register')
+        .mockImplementation((cd: ClickData) => clickData.push(cd))
 
       // Act
       const response = await request(app.getHttpServer())
         .get('/abcdif')
         .expect(302)
-      const firstClicks = await clickRepo.getByCampaignId(res.id)
-      const lastClicks = await clickRepo.getByCampaignId(lastCampaign.id)
+
+      const firstClick = clickData[0]
+      const lastClick = clickData[1]
 
       // Assert
       expect(response.headers.location).toBe(redirectUrl)
 
-      expect(firstClicks.length).toBe(1)
-      expect(lastClicks.length).toBe(1)
+      expect(registerClickService).toHaveBeenCalledTimes(2)
+      expect(clickData).toHaveLength(2)
 
-      expect(firstClicks[0].previousCampaignId).toBeNull()
-      expect(lastClicks[0].previousCampaignId).toBe(res.id)
+      expect(firstClick.previousCampaignId).toBeFalsy()
+      expect(lastClick.previousCampaignId).toBe(res.id)
 
-      expect(firstClicks[0].destination).toBe(lastCampaign.name)
-      expect(lastClicks[0].destination).toBe(redirectUrl)
+      expect(firstClick.destination).toBe(lastCampaign.name)
+      expect(lastClick.destination).toBe(redirectUrl)
     })
   })
 
