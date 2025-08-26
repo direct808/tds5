@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common'
 export class ActionService {
   constructor(private actionTypeFactory: ActionTypeFactory) {}
 
-  public handle(stream: Stream): Promise<StreamResponse> {
+  public handle(stream: Stream): Promise<StreamResponse> | StreamResponse {
     return this.actionTypeFactory.handle(stream)
   }
 }

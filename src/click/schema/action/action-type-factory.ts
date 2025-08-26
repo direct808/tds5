@@ -15,7 +15,7 @@ import {
 export class ActionTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  handle(stream: Stream): Promise<StreamResponse> {
+  handle(stream: Stream): Promise<StreamResponse> | StreamResponse {
     if (!stream.actionType) {
       throw new Error('No actionType')
     }

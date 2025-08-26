@@ -18,7 +18,9 @@ import { StreamDirectUrl, StreamRedirectType } from '@/campaign/types'
 export class RedirectTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  public handle(stream: StreamDirectUrl): Promise<StreamResponse> {
+  public handle(
+    stream: StreamDirectUrl,
+  ): Promise<StreamResponse> | StreamResponse {
     return this.create(stream.redirectType).handle(stream.redirectUrl)
   }
 

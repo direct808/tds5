@@ -31,7 +31,13 @@ const config: Config = {
     'index.ts',
     'dist',
     '/main.ts',
+    '/cli.ts',
     'test/',
+    'coverage',
+    '/.eslintrc.js',
+    '/jest.config.ts',
+    '/jest.config.unit.ts',
+    '/src/@types',
   ],
 }
 
