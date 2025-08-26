@@ -54,6 +54,7 @@ export class IpFilter implements StreamFilter {
     if (res.length === 2) {
       return res as [string, string]
     }
+
     return false
   }
 }

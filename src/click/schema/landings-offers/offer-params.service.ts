@@ -81,6 +81,7 @@ export class OfferParamsService {
     if (url.includes('?')) {
       return url + '&' + params
     }
+
     return url + '?' + params
   }
 }

@@ -19,6 +19,7 @@ export class ActionTypeFactory {
     if (!stream.actionType) {
       throw new Error('No actionType')
     }
+
     return this.create(stream.actionType).handle(stream)
   }
 

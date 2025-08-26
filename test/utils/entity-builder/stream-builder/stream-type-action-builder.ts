@@ -14,11 +14,13 @@ export class StreamTypeActionBuilder extends StreamBuilder {
 
   type(type: StreamActionType) {
     this.fields.actionType = type
+
     return this
   }
 
   content(actionContent: string) {
     this.fields.actionContent = actionContent
+
     return this
   }
 

@@ -26,6 +26,7 @@ export class SelectOfferService {
     if (!streamOffers.offer) {
       throw new Error('No offer in streamOffers')
     }
+
     return streamOffers.offer
   }
 }

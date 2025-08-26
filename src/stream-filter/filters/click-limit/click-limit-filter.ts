@@ -39,6 +39,7 @@ export class ClickLimitFilter implements StreamFilter {
       return true
     }
     const count = await this.provider[methodName](this.campaignId)
+
     return count < value
   }
 }

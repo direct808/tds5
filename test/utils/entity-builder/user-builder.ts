@@ -12,11 +12,13 @@ export class UserBuilder {
 
   email(email: string) {
     this.fields.email = email
+
     return this
   }
 
   password(password: string) {
     this.fields.password = password
+
     return this
   }
 

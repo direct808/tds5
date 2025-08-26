@@ -18,6 +18,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (skipAuth) {
       return true
     }
+
     return super.canActivate(context)
   }
 }

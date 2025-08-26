@@ -43,6 +43,7 @@ export class QueryStringObserver implements ClickObserver {
     let costStr = val
     costStr = costStr ? costStr.replace(',', '.') : costStr
     const costRaw = costStr ? parseFloat(costStr) : undefined
+
     return Number.isNaN(costRaw) ? undefined : costRaw
   }
 }

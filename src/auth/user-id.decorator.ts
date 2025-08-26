@@ -14,6 +14,7 @@ export const UserId = createParamDecorator(
     if (!request.user.sub) {
       throw new UnauthorizedException('Не найдено поле sub в объекте user')
     }
+
     return request.user.sub
   },
 )

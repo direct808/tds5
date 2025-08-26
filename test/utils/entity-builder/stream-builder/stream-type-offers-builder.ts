@@ -16,6 +16,7 @@ export class StreamTypeOffersBuilder extends StreamBuilder {
     const builder = StreamOfferBuilder.create()
     this.streamOffersBuilders.push(builder)
     callback(builder)
+
     return this
   }
 

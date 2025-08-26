@@ -15,16 +15,19 @@ export class OfferBuilder {
 
   name(name: string) {
     this.fields.name = name
+
     return this
   }
 
   url(name: string) {
     this.fields.url = name
+
     return this
   }
 
   userId(userId: string) {
     this.fields.userId = userId
+
     return this
   }
 
@@ -36,6 +39,7 @@ export class OfferBuilder {
     }
     const offer = await ds.getRepository(Offer).save(this.fields)
     offer.affiliateNetwork = affiliateNetwork
+
     return offer
   }
 
@@ -45,6 +49,7 @@ export class OfferBuilder {
     const builder = AffiliateNetworkBuilder.create()
     this.affiliateNetworkBuilder = builder
     callback(builder)
+
     return this
   }
 }

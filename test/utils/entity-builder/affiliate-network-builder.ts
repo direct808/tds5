@@ -12,16 +12,19 @@ export class AffiliateNetworkBuilder {
 
   name(name: string) {
     this.fields.name = name
+
     return this
   }
 
   userId(userId: string) {
     this.fields.userId = userId
+
     return this
   }
 
   offerParams(offerParams: string) {
     this.fields.offerParams = offerParams
+
     return this
   }
 

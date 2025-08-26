@@ -21,6 +21,7 @@ export class AffiliateNetworkRepository
     const source = this.repository.create(args)
 
     const res = await this.repository.insert(source)
+
     return res.identifiers[0].id
   }
 

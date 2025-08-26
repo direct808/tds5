@@ -9,11 +9,13 @@ export class StreamTypeDirectUrlBuilder extends StreamBuilder {
 
   redirectType(type: StreamRedirectType) {
     this.fields.redirectType = type
+
     return this
   }
 
   url(url: string) {
     this.fields.redirectUrl = url
+
     return this
   }
 }

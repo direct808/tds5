@@ -31,6 +31,7 @@ export class LanguageParserObserver implements ClickObserver {
     if (acceptLanguage.length < 2) {
       return false
     }
+
     return true
   }
 
