@@ -96,7 +96,7 @@ describe('CommonStreamService', () => {
     )
   })
 
-  it('check buildSaveData', async () => {
+  it('check buildSaveData', () => {
     const buildUpdateData = jest
       .spyOn(service as any, 'buildUpdateData')
       .mockReturnValue(['buildUpdateData'])
@@ -151,7 +151,7 @@ describe('CommonStreamService', () => {
     })
   })
 
-  it('check buildUpdateData', async () => {
+  it('check buildUpdateData', () => {
     const result = service['buildUpdateData']('stream-id', [
       { percent: 50, active: true, offerId: 'offer-id', id: 'id' },
     ])

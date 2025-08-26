@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class ShowHtmlActionType implements ActionType {
-  async handle(stream: Stream): Promise<StreamResponse> {
+  handle(stream: Stream): StreamResponse {
     return {
       content: stream.actionContent ?? '',
     }

@@ -105,7 +105,7 @@ describe('UpdateStreamService', () => {
     let checkCampaignSelfReferencing: jest.SpyInstance
     let updateStream: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       checkCampaignSelfReferencing = jest
         .spyOn(service as any, 'checkCampaignSelfReferencing')
         .mockReturnValue({})
@@ -204,13 +204,13 @@ describe('UpdateStreamService', () => {
   })
 
   describe('checkCampaignSelfReferencing', () => {
-    it('should be throw error', async () => {
+    it('should be throw error', () => {
       expect(() =>
         service['checkCampaignSelfReferencing']('id-1', 'id-1'),
       ).toThrow('Company should not refer to itself')
     })
 
-    it('should not be throw error', async () => {
+    it('should not be throw error', () => {
       expect(() =>
         service['checkCampaignSelfReferencing']('id-1', 'id-2'),
       ).not.toThrow()

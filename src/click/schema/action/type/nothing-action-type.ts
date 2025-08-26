@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class NothingActionType implements ActionType {
-  async handle(): Promise<StreamResponse> {
+  handle(): StreamResponse {
     return { content: '' }
   }
 }

@@ -3,7 +3,7 @@ import { HttpStatus, Injectable } from '@nestjs/common'
 
 @Injectable()
 export class Show404ActionType implements ActionType {
-  async handle(): Promise<StreamResponse> {
+  handle(): StreamResponse {
     return { status: HttpStatus.NOT_FOUND, content: '' }
   }
 }

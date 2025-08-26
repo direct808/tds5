@@ -21,7 +21,7 @@ export class LandingsOffersService {
     @Inject(ClickContext) private readonly clickContext: IClickContext,
   ) {}
 
-  public async handle(stream: StreamWithCampaign): Promise<StreamResponse> {
+  public handle(stream: StreamWithCampaign): StreamResponse {
     const clickData = this.clickContext.getClickData()
 
     if (!stream.streamOffers || !stream.streamOffers.length) {

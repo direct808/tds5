@@ -7,7 +7,7 @@ import { AppConfig } from '@/config/app-config.service'
 export class Meta2RedirectType implements RedirectType {
   constructor(private readonly configService: AppConfig) {}
 
-  async handle(url: string): Promise<StreamResponse> {
+  handle(url: string): StreamResponse {
     const token = sign({ url }, this.configService.secret, {
       noTimestamp: true,
     })

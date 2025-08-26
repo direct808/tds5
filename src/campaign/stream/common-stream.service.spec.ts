@@ -52,7 +52,7 @@ describe('CommonStreamService', () => {
     )
   })
 
-  it('should be called buildData with correct result', async () => {
+  it('should be called buildData with correct result', () => {
     const input: CreateStreamDto = {
       name: 'name',
       schema: CampaignStreamSchema.ACTION,

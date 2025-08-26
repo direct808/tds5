@@ -144,7 +144,8 @@ describe('CommonStreamService', () => {
   describe('ensureOffersExists', () => {
     it('should be an error if offers not exists', () => {
       offerRepository.getByIdsAndUserId.mockReturnValue([])
-      expect(() =>
+
+      return expect(() =>
         service.ensureOffersExists([{ offerId: 'offer-1' }], 'user-id'),
       ).rejects.toThrow('Some offers not found')
     })
@@ -153,7 +154,8 @@ describe('CommonStreamService', () => {
       offerRepository.getByIdsAndUserId.mockReturnValue([
         { offerId: 'offer-1' },
       ])
-      expect(
+
+      return expect(
         service.ensureOffersExists([{ offerId: 'offer-1' }], 'user-id'),
       ).resolves.not.toThrow()
     })

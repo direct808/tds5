@@ -12,7 +12,7 @@ export class GeoIpObserver implements ClickObserver {
     private readonly clickContext: ClickContext,
   ) {}
 
-  public async handle() {
+  public handle() {
     const clickData = this.clickContext.getClickData()
     const request = this.clickContext.getRequestAdapter()
 
