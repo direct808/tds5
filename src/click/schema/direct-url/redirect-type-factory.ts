@@ -13,14 +13,13 @@ import {
 } from './type'
 import { RedirectType, StreamResponse } from '../../types'
 import { StreamDirectUrl, StreamRedirectType } from '@/campaign/types'
+import { MaybePromise } from '@/utils/types'
 
 @Injectable()
 export class RedirectTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  public handle(
-    stream: StreamDirectUrl,
-  ): Promise<StreamResponse> | StreamResponse {
+  public handle(stream: StreamDirectUrl): MaybePromise<StreamResponse> {
     return this.create(stream.redirectType).handle(stream.redirectUrl)
   }
 

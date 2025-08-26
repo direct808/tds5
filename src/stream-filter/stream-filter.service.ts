@@ -8,6 +8,7 @@ import {
   IStreamFilterFactory,
   StreamFilterFactory,
 } from '@/stream-filter/stream-filter-factory'
+import { MaybePromise } from '@/utils/types'
 
 @Injectable()
 export class StreamFilterService {
@@ -65,7 +66,7 @@ export class StreamFilterService {
     return exclude ? !result : result
   }
 
-  private handle(filter: FilterObjectExtended): Promise<boolean> | boolean {
+  private handle(filter: FilterObjectExtended): MaybePromise<boolean> {
     return this.streamFilterFactory.create(filter).handle()
   }
 }

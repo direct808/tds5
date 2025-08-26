@@ -10,12 +10,13 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './type'
+import { MaybePromise } from '@/utils/types'
 
 @Injectable()
 export class ActionTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  handle(stream: Stream): Promise<StreamResponse> | StreamResponse {
+  handle(stream: Stream): MaybePromise<StreamResponse> {
     if (!stream.actionType) {
       throw new Error('No actionType')
     }
