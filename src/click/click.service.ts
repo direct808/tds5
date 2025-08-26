@@ -64,7 +64,7 @@ export class ClickService {
       clickData.destination = streamResponse.url
     }
 
-    await this.registerClickService.register(clickData)
+    this.registerClickService.register(structuredClone(clickData))
 
     if ('campaignCode' in streamResponse) {
       clickData.previousCampaignId = campaign.id
