@@ -206,6 +206,7 @@ describe('Click (e2e)', () => {
       expect(response.headers.location).toBe(redirectUrl)
 
       expect(registerClickService).toHaveBeenCalledTimes(2)
+      expect(clickData).toHaveLength(2)
 
       expect(firstClick.previousCampaignId).toBeFalsy()
       expect(lastClick.previousCampaignId).toBe(res.id)
