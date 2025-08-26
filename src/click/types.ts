@@ -21,11 +21,11 @@ export type ToCampaignResponse = {
 }
 
 export interface RedirectType {
-  handle(url: string): Promise<StreamResponse>
+  handle(url: string): Promise<StreamResponse> | StreamResponse
 }
 
 export interface ActionType {
-  handle(stream: Stream): Promise<StreamResponse>
+  handle(stream: Stream): Promise<StreamResponse> | StreamResponse
 }
 
 export interface ResponseHandler {

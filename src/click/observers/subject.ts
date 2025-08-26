@@ -1,5 +1,5 @@
 export interface ClickObserver<T = void> {
-  handle(data: T): Promise<void>
+  handle(data: T): Promise<void> | void
 }
 
 export class ClickSubject<T = void> {

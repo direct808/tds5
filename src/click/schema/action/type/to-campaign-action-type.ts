@@ -7,7 +7,7 @@ import { ClickContext } from '@/click/shared/click-context.service'
 export class ToCampaignActionType implements ActionType {
   constructor(private readonly clickContext: ClickContext) {}
 
-  async handle({ actionCampaign }: Stream): Promise<StreamResponse> {
+  handle({ actionCampaign }: Stream): StreamResponse {
     if (!actionCampaign) {
       throw new Error('No actionCampaign')
     }

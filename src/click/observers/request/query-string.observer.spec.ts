@@ -12,7 +12,7 @@ describe('QueryStringObserver', () => {
     observer = new QueryStringObserver({} as any)
   })
 
-  it('should correctly map request query parameters into ClickData', async () => {
+  it('should correctly map request query parameters into ClickData', () => {
     const mockRequestData: MockRequestAdapterData = {
       headers: {
         referer: 'http://example.com',
@@ -39,7 +39,7 @@ describe('QueryStringObserver', () => {
 
     const observer = new QueryStringObserver(clickContext)
 
-    await observer.handle()
+    observer.handle()
 
     expect(clickContext.getClickData()).toEqual({
       ip: '127.0.0.1',

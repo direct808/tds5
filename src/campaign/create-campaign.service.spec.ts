@@ -106,7 +106,7 @@ describe('CreateCampaignService', () => {
     )
   })
 
-  it('should call buildCreateData witch correct result', async () => {
+  it('should call buildCreateData witch correct result', () => {
     jest.spyOn(service as any, 'makeCode').mockReturnValue('code')
     const data = service['buildCreateData'](args)
     expect(data).toEqual({

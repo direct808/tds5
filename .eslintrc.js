@@ -39,6 +39,9 @@ module.exports = {
     ],
     "no-unused-private-class-members": "error",
     'max-lines-per-function': ['error', { max: 40 }],
+    "@typescript-eslint/no-floating-promises": "error",
+    "@typescript-eslint/await-thenable": "error",
+    "@typescript-eslint/require-await": "error"
   },
   overrides: [
     {
