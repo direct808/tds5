@@ -4,7 +4,6 @@ import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { StreamActionType, StreamRedirectType } from '@/campaign/types'
 import express from 'express'
-import { ClickRepository } from '@/click/shared/click.repository'
 import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 import { createApp } from '../utils/create-app'
@@ -15,7 +14,6 @@ import type { ClickData } from '@/click/click-data'
 describe('Click (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
-  let clickRepo: ClickRepository
   const redirectUrl = 'https://example.com/'
   let userId: string
 
@@ -27,7 +25,6 @@ describe('Click (e2e)', () => {
   beforeEach(async () => {
     app = await createApp()
     dataSource = app.get(DataSource)
-    clickRepo = app.get(ClickRepository)
     const authData = await createAuthUser(app)
     userId = authData.user.id
   })
