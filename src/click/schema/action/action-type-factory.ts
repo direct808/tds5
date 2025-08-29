@@ -11,7 +11,6 @@ import {
   ToCampaignActionType,
 } from './type'
 import { MaybePromise } from '@/utils/types'
-import { StreamActionType } from '@/campaign/types'
 
 @Injectable()
 export class ActionTypeFactory {

@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import {
-  CampaignStreamSchema,
-  Stream,
-  StreamDirectUrl,
-} from '@/campaign/entity/stream.entity'
 import { StreamResponse } from './types'
 import { DirectUrlService } from './schema/direct-url/direct-url.service'
 import { ActionService } from './schema/action/action.service'
 import { LandingsOffersService } from './schema/landings-offers/landings-offers.service'
-import { CampaignStreamSchema, StreamDirectUrl } from '@/campaign/types'
+import {
+  CampaignStreamSchema,
+  StreamDirectUrl,
+  StreamWithCampaign,
+} from '@/campaign/types'
 
 @Injectable()
 export class HandleStreamService {
