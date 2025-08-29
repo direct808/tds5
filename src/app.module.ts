@@ -14,11 +14,14 @@ import { ClickModule } from './click/click.module'
 import { ClsModule } from 'nestjs-cls'
 import { GeoIpModule } from '@/geo-ip/geo-ip.module'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
+import { AppRedisModule } from '@/config/app-redis.module'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 
 @Module({
   imports: [
     AppConfigModule,
     AppDbModule,
+    AppRedisModule,
     SourceModule,
     UserModule,
     AuthModule,
@@ -27,6 +30,7 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus'
     CampaignModule,
     ClickModule,
     GeoIpModule,
+    EventEmitterModule.forRoot(),
     ClsModule.forRoot({
       global: true,
       middleware: { mount: true },
