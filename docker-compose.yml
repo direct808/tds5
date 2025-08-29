@@ -4,7 +4,13 @@ services:
     environment:
       - POSTGRES_PASSWORD=1234
     ports:
-      - 8432:5432
+      - ${DB_PORT}:5432
+
+  redis:
+    image: redis:8
+    command: [ "redis-server", "--maxmemory", "${REDIS_MAXMEMORY}", "--maxmemory-policy", "allkeys-lfu" ]
+    ports:
+      - 6389:6379
 
   app:
     image: tds5
