@@ -1,5 +1,5 @@
-import { Stream } from '@/campaign/entity/stream.entity'
-import { Campaign } from '@/campaign/entity/campaign.entity'
+import type { Stream } from '@/campaign/entity/stream.entity'
+import type { Campaign } from '@/campaign/entity/campaign.entity'
 
 export type StreamWithCampaign = Stream & { campaign: Campaign }
 
@@ -33,3 +33,5 @@ export interface StreamDirectUrl extends Stream {
   redirectType: StreamRedirectType
   redirectUrl: string
 }
+
+export type FullCampaign = Campaign & { streams: Stream[] }

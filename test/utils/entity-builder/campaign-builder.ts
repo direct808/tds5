@@ -112,6 +112,12 @@ export class CampaignBuilder {
     return this
   }
 
+  sourceId(value: string) {
+    this.fields.sourceId = value
+
+    return this
+  }
+
   createUser(callback: (builder: UserBuilder) => void) {
     const builder = UserBuilder.create()
     this.userBuilder = builder

@@ -15,6 +15,7 @@ import { SetupSubject } from '@/click/observers/setup-subject'
 import { ClickContext } from '@/click/shared/click-context.service'
 import { StreamWithCampaign } from '@/campaign/types'
 import { Stream } from '@/campaign/entity/stream.entity'
+import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.provider'
 
 type RedirectData = { count: number }
 
@@ -28,6 +29,7 @@ export class ClickService {
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
     private readonly clickContext: ClickContext,
+    private readonly campaignProvider: CacheCampaignProvider,
   ) {}
 
   async handleClick(code: string) {
@@ -44,7 +46,7 @@ export class ClickService {
     const clickData = this.clickContext.getClickData()
 
     this.checkIncrementRedirectCount(redirectData)
-    const campaign = await this.getFullCampaignByCode(code)
+    const campaign = await this.campaignProvider.getFullByCode(code)
 
     clickData.campaignId = campaign.id
     clickData.trafficSourceId = campaign.sourceId
@@ -83,16 +85,6 @@ export class ClickService {
       ...stream,
       campaign,
     }
-  }
-
-  private async getFullCampaignByCode(code: string): Promise<Campaign> {
-    const campaign = await this.campaignRepository.getFullByCode(code)
-
-    if (!campaign) {
-      throw new NotFoundException('No campaign')
-    }
-
-    return campaign
   }
 
   private checkIncrementRedirectCount(redirectData: RedirectData) {

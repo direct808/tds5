@@ -6,6 +6,11 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/utils/repository-utils'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  SourceUpdatedEvent,
+  sourceUpdateEventName,
+} from '@/source/events/source-updated.event'
 
 type CreateArgs = {
   name: string
@@ -25,7 +30,10 @@ type DeleteArgs = {
 
 @Injectable()
 export class SourceService {
-  constructor(private readonly repository: SourceRepository) {}
+  constructor(
+    private readonly repository: SourceRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   public async create(args: CreateArgs): Promise<void> {
     await checkUniqueNameForCreate(this.repository, args)
@@ -44,6 +52,11 @@ export class SourceService {
     }
 
     await this.repository.update(args.id, args)
+
+    this.eventEmitter.emit(
+      sourceUpdateEventName,
+      new SourceUpdatedEvent(args.id),
+    )
   }
 
   public async getList(userId: string): Promise<Source[]> {
