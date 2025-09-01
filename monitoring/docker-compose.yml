@@ -1,0 +1,47 @@
+name: tds5
+services:
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    environment:
+      DATA_SOURCE_URI: db:5432/postgres?sslmode=disable
+      DATA_SOURCE_USER: postgres
+      DATA_SOURCE_PASS: 1234
+    ports:
+      - "9187:9187"
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    depends_on:
+      - postgres-exporter
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3010:3000"
+    depends_on:
+      - prometheus
+
+  redis_exporter:
+    image: oliver006/redis_exporter
+    command:
+      - '--redis.addr=redis://redis:6379'
+    ports:
+      - "9121:9121"
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    command:
+      - '--path.rootfs=/host'
+#    network_mode: host
+#    pid: host
+    ports:
+      - "9100:9100"
+#    restart: unless-stopped
+#    volumes:
+#      - '/:/host:ro,rslave'

@@ -13,6 +13,7 @@ import { CampaignModule } from './campaign/campaign.module'
 import { ClickModule } from './click/click.module'
 import { ClsModule } from 'nestjs-cls'
 import { GeoIpModule } from '@/geo-ip/geo-ip.module'
+import { PrometheusModule } from '@willsoto/nestjs-prometheus'
 
 @Module({
   imports: [
@@ -29,6 +30,9 @@ import { GeoIpModule } from '@/geo-ip/geo-ip.module'
     ClsModule.forRoot({
       global: true,
       middleware: { mount: true },
+    }),
+    PrometheusModule.register({
+      path: '/metrics',
     }),
   ],
   providers: [

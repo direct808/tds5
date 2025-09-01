@@ -1,0 +1,29 @@
+config:
+  target: "http://localhost:3300"
+  phases:
+    - duration: 10000
+#      arrivalCount: 10000
+      arrivalRate: 200
+#      rampTo: 10
+  processor: "./source-processor.ts"
+
+before:
+  flow:
+    - log: 'Get auth token'
+    - post:
+        url: '/api/auth/login'
+        json:
+          email: 'admin@tds5.com'
+          password: '1234'
+        capture:
+          - json: $.accessToken
+            as: token
+
+scenarios:
+  - name: Create source
+    flow:
+      - post:
+          url: /api/source
+          beforeRequest: 'createSource'
+          headers:
+            authorization: 'Bearer {{ token }}'
