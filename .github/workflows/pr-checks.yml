@@ -57,6 +57,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Install yarn
+        run: npm install -g yarn
+
       - name: Install dependencies
         run: yarn install
 
