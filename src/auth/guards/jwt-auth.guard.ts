@@ -19,6 +19,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true
     }
 
+    const request = context.switchToHttp().getRequest()
+
+    if (request.path === '/metrics') {
+      return true
+    }
+
     return super.canActivate(context)
   }
 }
