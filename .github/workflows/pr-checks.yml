@@ -45,8 +45,8 @@ jobs:
 
   e2e-tests:
     name: E2E tests
-#    runs-on: ubuntu-latest
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+#    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -63,7 +63,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Создать .env файл из секрета
+      - name: Create .env
         run: echo "${{ secrets.ENV_FILE_E2E }}" > test/.env.e2e
 
       - name: Run tests
