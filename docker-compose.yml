@@ -1,13 +1,21 @@
 services:
   db:
-    image: postgres:17.4-alpine
+    image: postgres:17.4
     environment:
       - POSTGRES_PASSWORD=1234
     ports:
       - 8432:5432
+    volumes:
+      - ./infra/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+#      - ./my-postgres.conf:/etc/postgresql/postgresql.conf:ro
+      - pg_logs:/var/lib/postgresql/data/log
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+    networks:
+      - tds5
 
-  app:
+  tds5:
     image: tds5
+    container_name: tds5
     env_file:
       - .env
     environment:
@@ -15,3 +23,13 @@ services:
       - DB_PORT=5432
     ports:
       - ${PORT}:${PORT}
+    networks:
+      - tds5
+
+networks:
+  tds5:
+    name: tds5
+
+volumes:
+  pg_logs:
+    name: tds5-postgres-logs

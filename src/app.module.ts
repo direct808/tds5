@@ -14,6 +14,23 @@ import { ClickModule } from './click/click.module'
 import { ClsModule } from 'nestjs-cls'
 import { GeoIpModule } from '@/geo-ip/geo-ip.module'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
+import { LoggerModule } from 'nestjs-pino'
+import pino from 'pino'
+import { LokiOptions } from 'pino-loki'
+
+const transport = pino.transport<LokiOptions>({
+  target: 'pino-loki',
+  options: {
+    batching: true,
+    interval: 5,
+
+    host: 'http://localhost:3100',
+    // basicAuth: {
+    //   username: 'username',
+    //   password: 'password',
+    // },
+  },
+})
 
 @Module({
   imports: [
@@ -34,12 +51,22 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus'
     PrometheusModule.register({
       path: '/metrics',
     }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        // transport: {
+        //   target: 'pino-pretty',
+        //   options: {
+        //     colorize: true,
+        //   },
+        // },
+      },
+    }),
   ],
   providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: StartRequestInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: StartRequestInterceptor,
+    // },
     {
       provide: APP_FILTER,
       useClass: AppExceptionFilter,

@@ -1,5 +1,19 @@
-name: tds5
+name: tds5-monitoring
 services:
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    ports:
+      - 12345:12345
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./alloy/config.river:/etc/alloy/config.river
+      - pg_logs:/var/lib/postgresql/data/log
+    command: [ "run", "--server.http.listen-addr=0.0.0.0:12345", "--stability.level", "experimental", "/etc/alloy/config.river" ]
+    networks:
+      - tds5
+
+
   postgres-exporter:
     image: quay.io/prometheuscommunity/postgres-exporter
     environment:
@@ -8,6 +22,8 @@ services:
       DATA_SOURCE_PASS: 1234
     ports:
       - "9187:9187"
+    networks:
+      - tds5
 
   prometheus:
     image: prom/prometheus:latest
@@ -19,6 +35,8 @@ services:
       - "9090:9090"
     depends_on:
       - postgres-exporter
+    networks:
+      - tds5
 
   grafana:
     image: grafana/grafana:latest
@@ -26,6 +44,8 @@ services:
       - "3010:3000"
     depends_on:
       - prometheus
+    networks:
+      - tds5
 
   redis_exporter:
     image: oliver006/redis_exporter
@@ -33,6 +53,19 @@ services:
       - '--redis.addr=redis://redis:6379'
     ports:
       - "9121:9121"
+    networks:
+      - tds5
+
+  loki:
+    image: grafana/loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yml
+    volumes:
+      - ./loki-config.yml:/etc/loki/local-config.yml:ro
+      - ./loki-data:/var/loki
+    networks:
+      - tds5
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
@@ -45,3 +78,14 @@ services:
 #    restart: unless-stopped
 #    volumes:
 #      - '/:/host:ro,rslave'
+    networks:
+      - tds5
+
+networks:
+  tds5:
+    name: tds5
+
+volumes:
+  pg_logs:
+    name: tds5-postgres-logs
+    external: true

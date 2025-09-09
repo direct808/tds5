@@ -3,7 +3,7 @@ config:
   phases:
     - duration: 10000
 #      arrivalCount: 10000
-      arrivalRate: 100
+      arrivalRate: 10
 #      rampTo: 10
 #  processor: "./processor.ts"
 
@@ -13,4 +13,4 @@ scenarios:
   - name: Click
     flow:
       - get:
-          url: /GNCg3X
+          url: /MdZAWk
