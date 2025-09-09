@@ -1,0 +1,56 @@
+local.file_match "pg_logs" {
+  path_targets = [
+    {__path__ = "/var/lib/postgresql/data/log/*.json"},
+  ]
+}
+
+loki.source.file "pg_logs" {
+  targets    = local.file_match.pg_logs.targets
+  forward_to = [loki.process.pg_labels.receiver]
+}
+
+loki.process "pg_labels" {
+  forward_to = [loki.write.local.receiver]
+
+
+
+// stage.json {
+//      expressions = {
+//           error_severity   = "level",
+//     }
+//
+// }
+      stage.static_labels {
+        values = {
+          app    = "postgres",
+        }
+      }
+    }
+
+
+
+discovery.docker "linux" {
+  host = "unix:///var/run/docker.sock"
+}
+
+loki.source.docker "default" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.linux.targets
+  forward_to = [loki.write.local.receiver]
+  refresh_interval = "10s"
+}
+
+
+// database_observability.postgres "tds5" {
+//   data_source_name = "postgres://postgres:1234@db:5432/postgres?sslmode=disable"
+//   forward_to = [loki.echo.log.receiver]
+// }
+
+
+loki.echo "log" {}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
