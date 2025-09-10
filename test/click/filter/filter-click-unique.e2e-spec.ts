@@ -5,9 +5,10 @@ import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/types'
 import { FilterLogic } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
-import { truncateTables } from '../../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { ClickUniqueFor } from '@/stream-filter/filters/click-unique/click-unique-filter'
 import { createApp } from '../../utils/create-app'
+import { setTimeout } from 'timers/promises'
 
 async function clickAction(
   app: INestApplication,
@@ -34,11 +35,11 @@ describe('Filter click unique (e2e)', () => {
   const visitorId = '5ilzrg'
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     dataSource = app.get(DataSource)
     const authData = await createAuthUser(app)
@@ -83,8 +84,11 @@ describe('Filter click unique (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1)
+    await setTimeout(10)
     const content2 = await clickAction(app, code2)
+    await setTimeout(10)
     const content3 = await clickAction(app, code1, visitorId)
+    await setTimeout(10)
     const content4 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
@@ -132,7 +136,9 @@ describe('Filter click unique (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1, visitorId)
+    await setTimeout(10)
     const content2 = await clickAction(app, code2, visitorId)
+    await setTimeout(10)
     const content3 = await clickAction(app, code2, visitorId)
 
     // 3. Assert

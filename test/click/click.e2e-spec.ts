@@ -7,7 +7,7 @@ import express from 'express'
 import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 import { createApp } from '../utils/create-app'
-import { truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { RegisterClickService } from '@/click/register-click.service'
 import type { ClickData } from '@/click/click-data'
 
@@ -18,11 +18,12 @@ describe('Click (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
+
     app = await createApp()
     dataSource = app.get(DataSource)
     const authData = await createAuthUser(app)

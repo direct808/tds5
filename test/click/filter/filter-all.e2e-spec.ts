@@ -5,7 +5,7 @@ import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/types'
 import { FilterLogic, FilterObject } from '@/stream-filter/types'
 import { ClickActionBuilder } from '../../utils/click-action-builder'
-import { truncateTables } from '../../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '@/stream-filter/filters/click-data-text/click-data-text-filter'
 import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
@@ -44,12 +44,12 @@ describe('Filter all (e2e)', () => {
   const code1 = 'abcdif'
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
     jest.useRealTimers()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     const authData = await createAuthUser(app)
     dataSource = app.get(DataSource)

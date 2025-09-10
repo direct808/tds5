@@ -6,17 +6,16 @@ import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { StreamActionType } from '@/campaign/types'
 import { ClickActionBuilder } from '../utils/click-action-builder'
-import { DBCampaignProvider } from '@/click/campaign-provider/db-campaign.provider'
-import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import request from 'supertest'
-import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.provider'
+import { RedisFullCampaignProvider } from '@/campaign/full-campaign-provider/redis-full-campaign-provider'
+import { spyOn } from '../utils/helpers'
 
 describe('Click-cache (e2e)', () => {
   let app: INestApplication
   let dataSource: DataSource
   let userId: string
-  let dbCampaignProvider: DBCampaignProvider
+  let campaignProvider: RedisFullCampaignProvider
   const code = 'abcdif'
   let accessToken: string
 
@@ -31,7 +30,7 @@ describe('Click-cache (e2e)', () => {
   beforeEach(async () => {
     app = await createApp()
     dataSource = app.get(DataSource)
-    dbCampaignProvider = app.get(DBCampaignProvider)
+    campaignProvider = app.get(RedisFullCampaignProvider)
     const authData = await createAuthUser(app)
     userId = authData.user.id
     accessToken = authData.accessToken
@@ -50,7 +49,7 @@ describe('Click-cache (e2e)', () => {
       })
       .save(dataSource)
 
-    const getFullByCode = jest.spyOn(dbCampaignProvider, 'getFullByCode')
+    const getCampaignFromDb = spyOn(campaignProvider, 'getCampaignFromDb')
 
     // Act
     const { text: content1 } = await ClickActionBuilder.create(app)
@@ -64,7 +63,7 @@ describe('Click-cache (e2e)', () => {
     // Assert
     expect(content1).toBe('Campaign content')
     expect(content2).toBe('Campaign content')
-    expect(getFullByCode).toBeCalledTimes(1)
+    expect(getCampaignFromDb).toBeCalledTimes(1)
   })
 
   it('Checks full click data 12312231', async () => {
@@ -86,7 +85,7 @@ describe('Click-cache (e2e)', () => {
       })
       .save(dataSource)
 
-    const getFullByCode = jest.spyOn(dbCampaignProvider, 'getFullByCode')
+    const getCampaignFromDb = spyOn(campaignProvider, 'getCampaignFromDb')
 
     // Act
     const { text: content1 } = await ClickActionBuilder.create(app)
@@ -110,6 +109,6 @@ describe('Click-cache (e2e)', () => {
     // Assert
     expect(content1).toBe('Campaign content')
     expect(content2).toBe('Campaign content')
-    expect(getFullByCode).toBeCalledTimes(2)
+    expect(getCampaignFromDb).toBeCalledTimes(2)
   })
 })

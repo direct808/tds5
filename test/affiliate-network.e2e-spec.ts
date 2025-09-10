@@ -15,11 +15,11 @@ describe('AffiliateNetworkController (e2e)', () => {
   let dataSource: DataSource
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await truncateTables()
     app = await createApp()
     dataSource = app.get(DataSource)
 

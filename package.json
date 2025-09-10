@@ -24,9 +24,7 @@
     "download-ip2-location-database": "nest start --entryFile cli.js -- download-ip2-location-database"
   },
   "dependencies": {
-    "@keyv/redis": "^5.1.1",
     "@nestjs/axios": "^4.0.0",
-    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^10.0.0",
@@ -41,7 +39,6 @@
     "archiver": "^7.0.1",
     "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
-    "cache-manager": "^7.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",

@@ -1,11 +1,5 @@
 import { Expose } from 'class-transformer'
-import { IsEnum, IsOptional, IsPort, IsString } from 'class-validator'
-
-export enum CampaignCacheType {
-  NONE = 'NONE',
-  REDIS = 'REDIS',
-  IN_MEMORY = 'IN_MEMORY',
-}
+import { IsOptional, IsPort, IsString } from 'class-validator'
 
 export class AppConfig {
   @IsPort()
@@ -44,8 +38,4 @@ export class AppConfig {
   @IsOptional()
   @Expose({ name: 'IP2LOCATION_TOKEN' })
   declare ip2LocationToken?: string
-
-  @IsEnum(CampaignCacheType)
-  @Expose({ name: 'CAMPAIGN_CACHE_TYPE' })
-  declare campaignCacheType: CampaignCacheType
 }

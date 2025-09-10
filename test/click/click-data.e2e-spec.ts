@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import { truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { ClickRepository } from '@/click/shared/click.repository'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
@@ -22,11 +22,11 @@ describe('Click-data (e2e)', () => {
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36'
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)

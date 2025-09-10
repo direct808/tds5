@@ -23,7 +23,6 @@ import { ObserverModule } from '@/click/observers/observer.module'
 import { ClickSharedModule } from '@/click/shared/click-shared.module'
 import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
 import { RequestAdapterModule } from '@/utils/request-adapter/request-adapter.module'
-import { FullCampaignProviderModule } from '@/campaign/full-campaign-provider/full-campaign-provider.module'
 
 @Module({
   controllers: [ClickController],
@@ -51,7 +50,6 @@ import { FullCampaignProviderModule } from '@/campaign/full-campaign-provider/fu
     ClickSharedModule,
     StreamFilterModule,
     RequestAdapterModule,
-    FullCampaignProviderModule,
   ],
 })
 export class ClickModule {}

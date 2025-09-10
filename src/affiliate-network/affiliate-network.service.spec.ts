@@ -7,6 +7,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/utils/repository-utils'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 jest.mock('@/utils/repository-utils')
 
@@ -18,6 +19,7 @@ describe('AffiliateNetworkService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AffiliateNetworkService,
+        EventEmitter2,
         {
           provide: AffiliateNetworkRepository,
           useValue: {
