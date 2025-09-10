@@ -23,8 +23,7 @@ import { ObserverModule } from '@/click/observers/observer.module'
 import { ClickSharedModule } from '@/click/shared/click-shared.module'
 import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
 import { RequestAdapterModule } from '@/utils/request-adapter/request-adapter.module'
-import { DBCampaignProvider } from '@/click/campaign-provider/db-campaign.provider'
-import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.provider'
+import { FullCampaignProviderModule } from '@/campaign/full-campaign-provider/full-campaign-provider.module'
 
 @Module({
   controllers: [ClickController],
@@ -43,8 +42,6 @@ import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.
     ShowTextActionType,
     ToCampaignActionType,
     RegisterClickService,
-    CacheCampaignProvider,
-    DBCampaignProvider,
   ],
   imports: [
     CampaignModule,
@@ -54,6 +51,7 @@ import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.
     ClickSharedModule,
     StreamFilterModule,
     RequestAdapterModule,
+    FullCampaignProviderModule,
   ],
 })
 export class ClickModule {}

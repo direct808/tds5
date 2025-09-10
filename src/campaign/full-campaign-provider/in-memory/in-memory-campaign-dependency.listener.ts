@@ -4,11 +4,13 @@ import {
   SourceUpdatedEvent,
   sourceUpdateEventName,
 } from '@/source/events/source-updated.event'
-import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.provider'
+import { RedisFullCampaignProvider } from '@/campaign/full-campaign-provider/redis/redis-full-campaign-provider'
 
 @Injectable()
-export class CampaignDependencyListener {
-  constructor(private readonly cacheCampaignProvider: CacheCampaignProvider) {}
+export class InMemoryCampaignDependencyListener {
+  constructor(
+    private readonly cacheCampaignProvider: RedisFullCampaignProvider,
+  ) {}
 
   @OnEvent(sourceUpdateEventName)
   handleSourceUpdatedEvent({ sourceId }: SourceUpdatedEvent) {
