@@ -14,10 +14,11 @@ import { UpdateStreamOfferService } from './stream-offer/update-stream-offer.ser
 import { StreamOfferRepository } from './stream-offer/stream-offer.repository'
 import { CommonStreamOfferService } from './stream-offer/common-stream-offer.service'
 import { OfferRepository } from '@/offer/offer.repository'
+import { FullCampaignProviderModule } from '@/campaign/full-campaign-provider/full-campaign-provider.module'
 
 @Module({
   controllers: [CampaignController],
-  imports: [SourceModule],
+  imports: [SourceModule, FullCampaignProviderModule],
   providers: [
     CommonCampaignService,
     CampaignRepository,

@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { CampaignRepository } from '@/campaign/campaign.repository'
 import { SelectStreamService } from './select-stream.service'
 import { Campaign } from '@/campaign/entity/campaign.entity'
@@ -15,7 +10,10 @@ import { SetupSubject } from '@/click/observers/setup-subject'
 import { ClickContext } from '@/click/shared/click-context.service'
 import { StreamWithCampaign } from '@/campaign/types'
 import { Stream } from '@/campaign/entity/stream.entity'
-import { CacheCampaignProvider } from '@/click/campaign-provider/cache-campaign.provider'
+import {
+  FULL_CAMPAIGN_PROVIDER,
+  FullCampaignProvider,
+} from '@/campaign/full-campaign-provider/types'
 
 type RedirectData = { count: number }
 
@@ -29,7 +27,8 @@ export class ClickService {
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
     private readonly clickContext: ClickContext,
-    private readonly campaignProvider: CacheCampaignProvider,
+    @Inject(FULL_CAMPAIGN_PROVIDER)
+    private readonly fullCampaignProvider: FullCampaignProvider,
   ) {}
 
   async handleClick(code: string) {
@@ -46,7 +45,7 @@ export class ClickService {
     const clickData = this.clickContext.getClickData()
 
     this.checkIncrementRedirectCount(redirectData)
-    const campaign = await this.campaignProvider.getFullByCode(code)
+    const campaign = await this.fullCampaignProvider.getFullByCode(code)
 
     clickData.campaignId = campaign.id
     clickData.trafficSourceId = campaign.sourceId

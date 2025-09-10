@@ -1,13 +1,14 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
-import { CampaignProvider } from '@/click/campaign-provider/campaign.provider'
-import { DBCampaignProvider } from '@/click/campaign-provider/db-campaign.provider'
 import { Campaign } from '@/campaign/entity/campaign.entity'
 import Redis from 'ioredis'
 import { REDIS_CLIENT } from '@/config/app-redis.module'
+import { FullCampaignProvider } from '@/campaign/full-campaign-provider/types'
+import { DbFullCampaignProvider } from '@/campaign/full-campaign-provider/db/db-full-campaign.provider'
+import { getCampaignAdditionalIds } from '@/campaign/full-campaign-provider/helpers'
 
 @Injectable()
-export class CacheCampaignProvider implements CampaignProvider {
-  private readonly logger = new Logger(CacheCampaignProvider.name)
+export class RedisFullCampaignProvider implements FullCampaignProvider {
+  private readonly logger = new Logger(RedisFullCampaignProvider.name)
 
   private affiliateNetworkCacheKey = (id: string) =>
     `affiliateNetwork:${id}:campaignCodes`
@@ -17,7 +18,7 @@ export class CacheCampaignProvider implements CampaignProvider {
   private fullCampaignCacheKey = (code: string) => `fullCampaign:${code}`
 
   constructor(
-    private readonly dbCampaignProvider: DBCampaignProvider,
+    private readonly dbCampaignProvider: DbFullCampaignProvider,
     @Inject(REDIS_CLIENT) private readonly redis: Redis,
   ) {}
 
@@ -49,7 +50,7 @@ export class CacheCampaignProvider implements CampaignProvider {
 
   private async setAdditionalCache(campaign: Campaign) {
     const { sourceId, offerIds, affiliateNetworkIdIds } =
-      this.getCampaignAdditionalIds(campaign)
+      getCampaignAdditionalIds(campaign)
 
     const promises: Promise<number>[] = []
 
@@ -76,29 +77,6 @@ export class CacheCampaignProvider implements CampaignProvider {
     }
 
     await Promise.all(promises)
-  }
-
-  private getCampaignAdditionalIds(campaign: Campaign) {
-    const sourceId = campaign.sourceId
-    const offerIds: string[] = []
-    const affiliateNetworkIdIds: string[] = []
-
-    for (const stream of campaign.streams) {
-      if (stream.streamOffers) {
-        for (const streamOffer of stream.streamOffers) {
-          if (!streamOffer.offer) {
-            throw new Error('Offer not included')
-          }
-          offerIds.push(streamOffer.offer.id)
-
-          if (streamOffer.offer.affiliateNetworkId) {
-            affiliateNetworkIdIds.push(streamOffer.offer.affiliateNetworkId)
-          }
-        }
-      }
-    }
-
-    return { sourceId, offerIds, affiliateNetworkIdIds }
   }
 
   private addArrayList(

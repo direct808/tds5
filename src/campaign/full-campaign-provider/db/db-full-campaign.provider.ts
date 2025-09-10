@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { CampaignRepository } from '@/campaign/campaign.repository'
-import { CampaignProvider } from '@/click/campaign-provider/campaign.provider'
 import { Campaign } from '@/campaign/entity/campaign.entity'
+import { FullCampaignProvider } from '@/campaign/full-campaign-provider/types'
 
 @Injectable()
-export class DBCampaignProvider implements CampaignProvider {
+export class DbFullCampaignProvider implements FullCampaignProvider {
   constructor(private readonly campaignRepository: CampaignRepository) {}
 
   public async getFullByCode(code: string): Promise<Campaign> {
