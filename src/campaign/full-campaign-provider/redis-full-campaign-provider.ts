@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { Campaign } from '@/campaign/entity/campaign.entity'
-import Redis, { ChainableCommander } from 'ioredis'
+import Redis from 'ioredis'
 import { REDIS_CLIENT } from '@/config/app-redis.module'
 import { CampaignRepository } from '@/campaign/campaign.repository'
 import {
