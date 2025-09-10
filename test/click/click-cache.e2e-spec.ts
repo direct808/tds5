@@ -109,6 +109,7 @@ describe('Click-cache (e2e)', () => {
     // Assert
     expect(content1).toBe('Campaign content')
     expect(content2).toBe('Campaign content')
+    expect(content3).toBe('Campaign content')
     expect(getCampaignFromDb).toBeCalledTimes(2)
   })
 })
