@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 
-export class ClickActionBuilder {
+export class ClickRequestBuilder {
   private code: string | undefined
   private visitorId: string | undefined
   private readonly q = new URLSearchParams()
@@ -10,7 +10,7 @@ export class ClickActionBuilder {
   private constructor(private readonly app: INestApplication) {}
 
   public static create(app: INestApplication) {
-    return new ClickActionBuilder(app)
+    return new ClickRequestBuilder(app)
   }
 
   public setCode(code: string) {

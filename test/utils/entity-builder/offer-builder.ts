@@ -52,4 +52,10 @@ export class OfferBuilder {
 
     return this
   }
+
+  public affiliateNetworkId(affiliateNetworkId: string) {
+    this.fields.affiliateNetworkId = affiliateNetworkId
+
+    return this
+  }
 }

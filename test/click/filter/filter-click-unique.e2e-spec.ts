@@ -4,7 +4,7 @@ import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/types'
 import { FilterLogic } from '@/stream-filter/types'
-import { ClickActionBuilder } from '../../utils/click-action-builder'
+import { ClickRequestBuilder } from '../../utils/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { ClickUniqueFor } from '@/stream-filter/filters/click-unique/click-unique-filter'
 import { createApp } from '../../utils/create-app'
@@ -15,7 +15,7 @@ async function clickAction(
   code: string,
   visitorId?: string,
 ) {
-  const builder = ClickActionBuilder.create(app).setCode(code)
+  const builder = ClickRequestBuilder.create(app).setCode(code)
 
   if (visitorId) {
     builder.setVisitorId(visitorId)

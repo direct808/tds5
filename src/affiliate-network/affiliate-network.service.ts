@@ -6,11 +6,11 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/utils/repository-utils'
-import {
-  OfferUpdatedEvent,
-  offerUpdateEventName,
-} from '@/offer/events/offer-updated.event'
 import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  affiliateNetworkEventName,
+  AffiliateNetworkUpdatedEvent,
+} from '@/affiliate-network/events/affiliate-network-updated.event'
 
 type CreateArgs = {
   name: string
@@ -57,7 +57,10 @@ export class AffiliateNetworkService {
 
     await this.repository.update(args.id, args)
 
-    this.eventEmitter.emit(offerUpdateEventName, new OfferUpdatedEvent(args.id))
+    this.eventEmitter.emit(
+      affiliateNetworkEventName,
+      new AffiliateNetworkUpdatedEvent(args.id),
+    )
   }
 
   public async getList(userId: string): Promise<AffiliateNetwork[]> {

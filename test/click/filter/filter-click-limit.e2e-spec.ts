@@ -4,7 +4,7 @@ import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/types'
 import { FilterLogic } from '@/stream-filter/types'
-import { ClickActionBuilder } from '../../utils/click-action-builder'
+import { ClickRequestBuilder } from '../../utils/click-request-builder'
 import { DateTime } from 'luxon'
 import { ClickBuilder } from '../../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
@@ -13,7 +13,7 @@ import { createApp } from '../../utils/create-app'
 import { setTimeout } from 'timers/promises'
 
 async function clickAction(app: INestApplication, code: string) {
-  const { text } = await ClickActionBuilder.create(app)
+  const { text } = await ClickRequestBuilder.create(app)
     .setCode(code)
     .request()
     .expect(200)
