@@ -17,6 +17,10 @@ import {
   affiliateNetworkEventName,
   AffiliateNetworkUpdatedEvent,
 } from '@/affiliate-network/events/affiliate-network-updated.event'
+import {
+  CampaignCreatedEvent,
+  campaignCreatedEventName,
+} from '@/campaign/events/campaign-created.event'
 
 @Injectable()
 export class ClearFullCampaignCacheListener {
@@ -24,6 +28,13 @@ export class ClearFullCampaignCacheListener {
   constructor(
     private readonly clearCacheService: ClearFullCampaignCacheService,
   ) {}
+
+  @OnEvent(campaignCreatedEventName)
+  handleCampaignCreatedEvent({ campaignCode }: CampaignCreatedEvent) {
+    this.logger.debug('CampaignCreatedEvent: ' + campaignCode)
+
+    return this.clearCacheService.clearCacheByCampaignCode(campaignCode)
+  }
 
   @OnEvent(campaignUpdateEventName)
   handleCampaignUpdatedEvent({ campaignCode }: CampaignUpdatedEvent) {

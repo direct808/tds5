@@ -5,7 +5,7 @@ config:
 #      arrivalCount: 10000
       arrivalRate: 100
 #      rampTo: 10
-#  processor: "./processor.ts"
+  processor: "./click-processor.ts"
 
 
 
@@ -13,4 +13,5 @@ scenarios:
   - name: Click
     flow:
       - get:
-          url: /GNCg3X
+          beforeRequest: 'randomCode'
+          url: /{{ randomCode }}

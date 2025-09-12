@@ -10,6 +10,8 @@ import {
   sourceCacheKey,
 } from '@/campaign/full-campaign-provider/helpers'
 
+const NOT_FOUND = 'N'
+
 @Injectable()
 export class RedisFullCampaignProvider {
   private readonly logger = new Logger(RedisFullCampaignProvider.name)
@@ -28,7 +30,7 @@ export class RedisFullCampaignProvider {
     const campaign = await this.campaignRepository.getFullByCode(code)
 
     if (!campaign) {
-      throw new NotFoundException('No campaign')
+      this.throwNotFound()
     }
     await this.setAdditionalCache(campaign)
 
@@ -63,14 +65,25 @@ export class RedisFullCampaignProvider {
     if (cached) {
       this.logger.debug(`Get campaign from cache`)
 
+      if (cached === NOT_FOUND) {
+        this.throwNotFound()
+      }
+
       return JSON.parse(cached)
     }
 
-    const result = await fn()
-    await redis.set(key, JSON.stringify(result))
-    this.logger.debug(`Get campaign from db`)
+    try {
+      const result = await fn()
+      await redis.set(key, JSON.stringify(result))
+      this.logger.debug(`Get campaign from db`)
 
-    return result
+      return result
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        await redis.set(key, NOT_FOUND)
+      }
+      throw e
+    }
   }
 
   private getCampaignAdditionalIds(campaign: Campaign) {
@@ -94,5 +107,9 @@ export class RedisFullCampaignProvider {
     }
 
     return { sourceId, offerIds, affiliateNetworkIdIds }
+  }
+
+  private throwNotFound(): never {
+    throw new NotFoundException('No campaign')
   }
 }

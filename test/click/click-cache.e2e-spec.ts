@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
-import { createAuthUser } from '../utils/helpers'
+import { createAuthUser, spyOn } from '../utils/helpers'
 import { StreamActionType } from '@/campaign/types'
 import { ClickRequestBuilder } from '../utils/click-request-builder'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'
@@ -12,6 +12,7 @@ import { CampaignRepository } from '@/campaign/campaign.repository'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { faker } from '@faker-js/faker/.'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
+import { CreateCampaignService } from '@/campaign/create-campaign.service'
 
 describe('Click-cache (e2e)', () => {
   let app: INestApplication
@@ -24,6 +25,7 @@ describe('Click-cache (e2e)', () => {
 
   beforeEach(async () => {
     await Promise.all([truncateTables(), flushRedisDb()])
+    jest.clearAllMocks()
   })
 
   afterEach(async () => {
@@ -212,5 +214,35 @@ describe('Click-cache (e2e)', () => {
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(1)
+  })
+
+  it('Checks cache for not exists campaign then after create', async () => {
+    // Act
+    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
+    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
+
+    spyOn(app.get(CreateCampaignService), 'makeCode').mockReturnValue(code)
+
+    await request(app.getHttpServer())
+      .post('/api/campaign')
+      .auth(accessToken, { type: 'bearer' })
+      .send({
+        name: 'Campaign 1',
+        active: true,
+        streams: [
+          {
+            name: 'Stream 1',
+            schema: 'ACTION',
+            actionType: 'SHOW_TEXT',
+            actionContent: 'CONTENT',
+          },
+        ],
+      })
+      .expect(201)
+
+    await ClickRequestBuilder.create(app).setCode(code).request().expect(200)
+
+    // Assert
+    expect(getFullByCode).toBeCalledTimes(2)
   })
 })
