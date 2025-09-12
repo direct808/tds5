@@ -8,7 +8,15 @@ services:
 
   redis:
     image: redis:8
-    command: [ "redis-server", "--maxmemory", "${REDIS_MAXMEMORY}", "--maxmemory-policy", "allkeys-lfu" ]
+    command:
+      - redis-server
+      - --maxmemory
+      - ${REDIS_MAXMEMORY}
+      - --maxmemory-policy
+      - allkeys-lfu
+      - --requirepass
+      - ${REDIS_PASSWORD}
+
     ports:
       - 6389:6379
 

@@ -1,5 +1,6 @@
 import { Global, Inject, Module, OnApplicationShutdown } from '@nestjs/common'
 import Redis from 'ioredis'
+import { AppConfig } from '@/config/app-config.service'
 
 export const REDIS_CLIENT = 'REDIS_CLIENT'
 
@@ -8,13 +9,13 @@ export const REDIS_CLIENT = 'REDIS_CLIENT'
   providers: [
     {
       provide: REDIS_CLIENT,
-      inject: [],
-      useFactory: () => {
+      inject: [AppConfig],
+      useFactory: (config: AppConfig) => {
         return new Redis({
-          host: 'localhost',
-          port: 6389,
-          db: +process.env.REDIS_DB!,
-          // password: configService.get<string>('REDIS_PASSWORD'),
+          host: config.redisHost,
+          port: +config.redisPort,
+          db: +config.redisDb,
+          password: config.redisPassword,
         })
       },
     },

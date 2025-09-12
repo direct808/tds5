@@ -50,7 +50,7 @@ export class CampaignRepository
 
   public async getFullByCode(code: string): Promise<FullCampaign | null> {
     return this.repository.findOne({
-      where: { code },
+      where: { code, active: true },
       relations: [
         'streams',
         'streams.streamOffers',

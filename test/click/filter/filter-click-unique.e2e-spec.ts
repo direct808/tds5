@@ -195,8 +195,11 @@ describe('Filter click unique (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1, visitorId)
+    await setTimeout(10)
     const content2 = await clickAction(app, code2, visitorId)
+    await setTimeout(10)
     const content3 = await clickAction(app, code2, visitorId)
+    await setTimeout(10)
     const content4 = await clickAction(app, code2, visitorId)
 
     // 3. Assert

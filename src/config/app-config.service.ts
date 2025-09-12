@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer'
-import { IsOptional, IsPort, IsString } from 'class-validator'
+import { IsInt, IsNumber, IsOptional, IsPort, IsString } from 'class-validator'
 
 export class AppConfig {
   @IsPort()
@@ -38,4 +38,20 @@ export class AppConfig {
   @IsOptional()
   @Expose({ name: 'IP2LOCATION_TOKEN' })
   declare ip2LocationToken?: string
+
+  @IsString()
+  @Expose({ name: 'REDIS_HOST' })
+  declare redisHost: string
+
+  @IsPort()
+  @Expose({ name: 'REDIS_PORT' })
+  declare redisPort: string
+
+  @IsString()
+  @Expose({ name: 'REDIS_PASSWORD' })
+  declare redisPassword: string
+
+  @IsInt()
+  @Expose({ name: 'REDIS_DB' })
+  declare redisDb: number
 }

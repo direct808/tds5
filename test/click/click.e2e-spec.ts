@@ -57,6 +57,20 @@ describe('Click (e2e)', () => {
     return request(app.getHttpServer()).get('/abcdif').expect(500)
   })
 
+  it('Should return 404 if campaign active = false', async () => {
+    await CampaignBuilder.create()
+      .name('Test campaign 1')
+      .active(false)
+      .code('abcdif')
+      .userId(userId)
+      .addStreamTypeAction((stream) => {
+        stream.name('Name').type(StreamActionType.SHOW_TEXT).content('content')
+      })
+      .save(dataSource)
+
+    return request(app.getHttpServer()).get('/abcdif').expect(404)
+  })
+
   describe('Schema type direct url', () => {
     it('type HTTP', async () => {
       const campaign = await createCampaignDirectUrl({

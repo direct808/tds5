@@ -28,7 +28,7 @@ export async function truncateTables() {
 }
 
 export async function flushRedisDb() {
-  const { REDIS_HOST, REDIS_PORT, REDIS_DB } = process.env
+  const { REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD } = process.env
 
   if (!REDIS_HOST) {
     throw new Error('REDIS_HOST is required')
@@ -42,10 +42,15 @@ export async function flushRedisDb() {
     throw new Error('REDIS_DB is required')
   }
 
+  if (!REDIS_PASSWORD) {
+    throw new Error('REDIS_PASSWORD is required')
+  }
+
   const redis = new Redis({
     host: REDIS_HOST,
     port: +REDIS_PORT,
     db: +REDIS_DB,
+    password: REDIS_PASSWORD,
   })
 
   await redis.flushdb()

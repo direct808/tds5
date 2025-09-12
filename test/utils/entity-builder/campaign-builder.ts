@@ -68,6 +68,12 @@ export class CampaignBuilder {
     return this
   }
 
+  active(active: boolean) {
+    this.fields.active = active
+
+    return this
+  }
+
   userId(value: string) {
     this.fields.userId = value
 

@@ -204,4 +204,13 @@ describe('Click-cache (e2e)', () => {
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
   })
+
+  it('Checks cache for not exists campaign', async () => {
+    // Act
+    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
+    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
+
+    // Assert
+    expect(getFullByCode).toBeCalledTimes(1)
+  })
 })
