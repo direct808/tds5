@@ -62,28 +62,27 @@ export class RedisFullCampaignProvider {
     fn: () => Promise<T>,
   ): Promise<T> {
     const cached = await redis.get(key)
+
+    if (cached === NOT_FOUND) {
+      this.throwNotFound()
+    }
+
     if (cached) {
       this.logger.debug(`Get campaign from cache`)
-
-      if (cached === NOT_FOUND) {
-        this.throwNotFound()
-      }
 
       return JSON.parse(cached)
     }
 
-    try {
-      const result = await fn()
-      await redis.set(key, JSON.stringify(result))
-      this.logger.debug(`Get campaign from db`)
-
-      return result
-    } catch (e) {
+    const result = await fn().catch(async (e) => {
       if (e instanceof NotFoundException) {
         await redis.set(key, NOT_FOUND)
       }
       throw e
-    }
+    })
+    await redis.set(key, JSON.stringify(result))
+    this.logger.debug(`Get campaign from db`)
+
+    return result
   }
 
   private getCampaignAdditionalIds(campaign: Campaign) {
