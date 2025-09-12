@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer'
-import { IsInt, IsNumber, IsOptional, IsPort, IsString } from 'class-validator'
+import { IsInt, IsOptional, IsPort, IsString } from 'class-validator'
 
 export class AppConfig {
   @IsPort()
