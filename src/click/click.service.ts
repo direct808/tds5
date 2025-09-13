@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { CampaignRepository } from '@/campaign/campaign.repository'
 import { SelectStreamService } from './select-stream.service'
 import { Campaign } from '@/campaign/entity/campaign.entity'
 import { HandleStreamService } from './handle-stream.service'
@@ -10,21 +9,20 @@ import { SetupSubject } from '@/click/observers/setup-subject'
 import { ClickContext } from '@/click/shared/click-context.service'
 import { StreamWithCampaign } from '@/campaign/types'
 import { Stream } from '@/campaign/entity/stream.entity'
-import { RedisFullCampaignProvider } from '@/campaign/full-campaign-provider/redis-full-campaign-provider'
+import { CampaignCacheService } from '@/campaign-cache/campaign-cache.service'
 
 type RedirectData = { count: number }
 
 @Injectable()
 export class ClickService {
   constructor(
-    private readonly campaignRepository: CampaignRepository,
     private readonly selectStreamService: SelectStreamService,
     private readonly handleStreamService: HandleStreamService,
     private readonly responseHandlerFactory: ResponseHandlerFactory,
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
     private readonly clickContext: ClickContext,
-    private readonly fullCampaignProvider: RedisFullCampaignProvider,
+    private readonly campaignCacheService: CampaignCacheService,
   ) {}
 
   async handleClick(code: string) {
@@ -41,7 +39,7 @@ export class ClickService {
     const clickData = this.clickContext.getClickData()
 
     this.checkIncrementRedirectCount(redirectData)
-    const campaign = await this.fullCampaignProvider.getFullByCode(code)
+    const campaign = await this.campaignCacheService.getFullByCode(code)
 
     clickData.campaignId = campaign.id
     clickData.trafficSourceId = campaign.sourceId

@@ -4,7 +4,7 @@ import {
   SourceUpdatedEvent,
   sourceUpdateEventName,
 } from '@/source/events/source-updated.event'
-import { ClearFullCampaignCacheService } from '@/campaign/full-campaign-provider/clear-full-campaign-cache.service'
+import { CampaignCacheClearService } from '../campaign-cache-clear.service'
 import {
   OfferUpdatedEvent,
   offerUpdateEventName,
@@ -23,11 +23,9 @@ import {
 } from '@/campaign/events/campaign-created.event'
 
 @Injectable()
-export class ClearFullCampaignCacheListener {
-  private readonly logger = new Logger(ClearFullCampaignCacheListener.name)
-  constructor(
-    private readonly clearCacheService: ClearFullCampaignCacheService,
-  ) {}
+export class CampaignCacheListener {
+  private readonly logger = new Logger(CampaignCacheListener.name)
+  constructor(private readonly clearCacheService: CampaignCacheClearService) {}
 
   @OnEvent(campaignCreatedEventName)
   handleCampaignCreatedEvent({ campaignCode }: CampaignCreatedEvent) {

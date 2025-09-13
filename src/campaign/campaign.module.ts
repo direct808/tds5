@@ -14,9 +14,6 @@ import { UpdateStreamOfferService } from './stream-offer/update-stream-offer.ser
 import { StreamOfferRepository } from './stream-offer/stream-offer.repository'
 import { CommonStreamOfferService } from './stream-offer/common-stream-offer.service'
 import { OfferRepository } from '@/offer/offer.repository'
-import { RedisFullCampaignProvider } from '@/campaign/full-campaign-provider/redis-full-campaign-provider'
-import { ClearFullCampaignCacheListener } from '@/campaign/listeners/clear-full-campaign-cache.listener'
-import { ClearFullCampaignCacheService } from '@/campaign/full-campaign-provider/clear-full-campaign-cache.service'
 
 @Module({
   controllers: [CampaignController],
@@ -35,10 +32,7 @@ import { ClearFullCampaignCacheService } from '@/campaign/full-campaign-provider
     StreamOfferRepository,
     CommonStreamOfferService,
     OfferRepository,
-    RedisFullCampaignProvider,
-    ClearFullCampaignCacheListener,
-    ClearFullCampaignCacheService,
   ],
-  exports: [CampaignRepository, RedisFullCampaignProvider],
+  exports: [CampaignRepository],
 })
 export class CampaignModule {}

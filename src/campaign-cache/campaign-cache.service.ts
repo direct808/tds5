@@ -8,13 +8,13 @@ import {
   fullCampaignCacheKey,
   offerCacheKey,
   sourceCacheKey,
-} from '@/campaign/full-campaign-provider/helpers'
+} from './helpers'
 
 const NOT_FOUND = 'N'
 
 @Injectable()
-export class RedisFullCampaignProvider {
-  private readonly logger = new Logger(RedisFullCampaignProvider.name)
+export class CampaignCacheService {
+  private readonly logger = new Logger(CampaignCacheService.name)
   constructor(
     @Inject(REDIS_CLIENT) private readonly redis: Redis,
     private readonly campaignRepository: CampaignRepository,
