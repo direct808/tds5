@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamOfferService } from './common-stream-offer.service'
-import { StreamOfferRepository } from './stream-offer.repository'
+import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferService } from './update-stream-offer.service'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
