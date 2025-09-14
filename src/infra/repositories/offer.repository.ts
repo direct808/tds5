@@ -5,7 +5,7 @@ import {
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
-import { Offer } from '@/offer/offer.entity'
+import { Offer } from '@/domain/offer/offer.entity'
 
 @Injectable()
 export class OfferRepository

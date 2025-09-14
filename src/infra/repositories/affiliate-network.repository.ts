@@ -5,7 +5,7 @@ import {
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
-import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
+import { AffiliateNetwork } from '@/domain/affiliate-network/affiliate-network.entity'
 
 @Injectable()
 export class AffiliateNetworkRepository

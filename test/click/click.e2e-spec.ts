@@ -2,14 +2,14 @@ import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import { StreamActionType, StreamRedirectType } from '@/campaign/types'
+import { StreamActionType, StreamRedirectType } from '@/domain/campaign/types'
 import express from 'express'
 import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 import { createApp } from '../utils/create-app'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
-import { RegisterClickService } from '@/click/register-click.service'
-import type { ClickData } from '@/click/click-data'
+import { RegisterClickService } from '@/domain/click/register-click.service'
+import type { ClickData } from '@/domain/click/click-data'
 
 describe('Click (e2e)', () => {
   let app: INestApplication

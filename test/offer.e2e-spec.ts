@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource, Repository } from 'typeorm'
-import { Offer } from '@/offer/offer.entity'
+import { Offer } from '@/domain/offer/offer.entity'
 import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
 import { truncateTables } from './utils/truncate-tables'

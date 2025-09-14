@@ -5,8 +5,8 @@ import {
   NameAndUserId,
 } from './utils/repository-utils'
 import { DataSource, EntityManager } from 'typeorm'
-import { FullCampaign } from '@/campaign/types'
-import { Campaign } from '@/campaign/entity/campaign.entity'
+import { FullCampaign } from '@/domain/campaign/types'
+import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 
 @Injectable()
 export class CampaignRepository

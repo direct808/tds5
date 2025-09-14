@@ -1,14 +1,14 @@
-import { Campaign } from '@/campaign/entity/campaign.entity'
+import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 import { DataSource } from 'typeorm'
 import { StreamBuilder } from './stream-builder/stream-builder'
 import { StreamTypeDirectUrlBuilder } from './stream-builder/stream-type-direct-url-builder'
 import { StreamTypeActionBuilder } from './stream-builder/stream-type-action-builder'
 import { StreamTypeOffersBuilder } from './stream-builder/stream-type-offers-builder'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { SourceBuilder } from './source-builder'
-import { Source } from '@/source/source.entity'
+import { Source } from '@/domain/source/source.entity'
 import { UserBuilder } from './user-builder'
-import { User } from '@/user/user.entity'
+import { User } from '@/domain/user/user.entity'
 
 type CampaignFields = Partial<
   Pick<Campaign, 'name' | 'code' | 'userId' | 'active' | 'sourceId'>

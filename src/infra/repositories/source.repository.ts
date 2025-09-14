@@ -5,7 +5,7 @@ import {
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
-import { Source } from '@/source/source.entity'
+import { Source } from '@/domain/source/source.entity'
 
 @Injectable()
 export class SourceRepository

@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { DataSource } from 'typeorm'
-import { VISITOR_ID_SIZE } from '@/click/observers/id-generator'
+import { VISITOR_ID_SIZE } from '@/domain/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'

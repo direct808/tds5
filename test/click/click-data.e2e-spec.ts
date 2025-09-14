@@ -7,7 +7,7 @@ import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
 import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
-import { GEO_IP_PROVIDER } from '@/geo-ip/types'
+import { GEO_IP_PROVIDER } from '@/domain/geo-ip/types'
 import { FakeGeoIpService } from '../utils/fake-geo-Ip-service'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 
