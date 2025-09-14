@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
+import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 
 @Module({
   providers: [RequestAdapterFactory],

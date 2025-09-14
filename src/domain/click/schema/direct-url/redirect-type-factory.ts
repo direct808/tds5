@@ -12,7 +12,7 @@ import {
   WithoutRefererRedirectType,
 } from './type'
 import { RedirectType, StreamResponse } from '../../types'
-import { MaybePromise } from '@/utils/types'
+import { MaybePromise } from '@/shared/types'
 import { StreamDirectUrl, StreamRedirectType } from '@/domain/campaign/types'
 
 @Injectable()

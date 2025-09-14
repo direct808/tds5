@@ -1,4 +1,4 @@
-import { MaybePromise } from '@/utils/types'
+import { MaybePromise } from '@/shared/types'
 
 export interface ClickObserver<T = void> {
   handle(data: T): MaybePromise<void>

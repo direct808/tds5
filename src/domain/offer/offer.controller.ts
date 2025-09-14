@@ -13,7 +13,7 @@ import { UserId } from '@/domain/auth/user-id.decorator'
 import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UpdateOfferDto } from './dto/update-offer.dto'
-import { GLOBAL_PREFIX } from '@/utils/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 
 @ApiTags('Оферы')
 @Controller(GLOBAL_PREFIX + 'offer')

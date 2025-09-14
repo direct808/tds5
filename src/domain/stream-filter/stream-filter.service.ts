@@ -8,7 +8,7 @@ import {
   IStreamFilterFactory,
   StreamFilterFactory,
 } from '@/domain/stream-filter/stream-filter-factory'
-import { MaybePromise } from '@/utils/types'
+import { MaybePromise } from '@/shared/types'
 
 @Injectable()
 export class StreamFilterService {

@@ -13,7 +13,7 @@ import { UserId } from '@/domain/auth/user-id.decorator'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
 import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
-import { GLOBAL_PREFIX } from '@/utils/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 import { AffiliateNetwork } from './affiliate-network.entity'
 
 @ApiTags('Партнерские сети')

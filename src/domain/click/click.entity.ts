@@ -4,7 +4,7 @@ import {
   VISITOR_ID_SIZE,
 } from '@/domain/click/observers/id-generator'
 import { IClick } from './click'
-import { Nullable } from '@/utils/types'
+import { Nullable } from '@/shared/types'
 
 const ColumnTextNullable = () => Column('text', { nullable: true })
 

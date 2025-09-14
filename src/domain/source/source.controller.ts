@@ -13,7 +13,7 @@ import { SourceService } from './source.service'
 import { UserId } from '@/domain/auth/user-id.decorator'
 import { CreateSourceDto } from './dto/create-source.dto'
 import { UpdateSourceDto } from './dto/update-source.dto'
-import { GLOBAL_PREFIX } from '@/utils/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')

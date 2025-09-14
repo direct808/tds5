@@ -8,8 +8,8 @@ import { ClickRequestBuilder } from '../../utils/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '@/domain/stream-filter/filters/click-data-text/click-data-text-filter'
-import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
-import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
+import { FakeIpExpressRequestAdapter } from '@/shared/request-adapter/fake-ip-express-request-adapter'
+import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
 
 async function addStream(

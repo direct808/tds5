@@ -1,4 +1,4 @@
-import { configureApp } from '@/utils/configure-app'
+import { configureApp } from '@/shared/configure-app'
 import { AppModule } from '@/app.module'
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'

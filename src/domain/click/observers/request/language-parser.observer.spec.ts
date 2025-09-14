@@ -1,5 +1,5 @@
 import { LanguageParserObserver } from '@/domain/click/observers/request/language-parser.observer'
-import { MockRequestAdapter } from '@/utils/request-adapter'
+import { MockRequestAdapter } from 'src/shared/request-adapter'
 import { MockClickContext } from '../../../../../test/utils/mock-click-context.service'
 
 describe('LanguageParserObserver', () => {

@@ -3,7 +3,7 @@ import { ClickService } from './click.service'
 import { Request, Response } from 'express'
 import { SkipAuth } from '@/domain/auth/types'
 import { ClickContext } from '@/domain/click/shared/click-context.service'
-import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
+import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 
 @Controller()
 export class ClickController {

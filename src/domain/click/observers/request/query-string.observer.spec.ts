@@ -2,7 +2,7 @@ import { QueryStringObserver } from '@/domain/click/observers/request/query-stri
 import {
   MockRequestAdapter,
   MockRequestAdapterData,
-} from '@/utils/request-adapter'
+} from 'src/shared/request-adapter'
 import { MockClickContext } from '../../../../../test/utils/mock-click-context.service'
 
 describe('QueryStringObserver', () => {

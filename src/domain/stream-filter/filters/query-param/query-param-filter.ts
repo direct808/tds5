@@ -1,5 +1,5 @@
 import { BaseFilterObject, StreamFilter } from '../../types'
-import { RequestAdapter } from '@/utils/request-adapter'
+import { RequestAdapter } from 'src/shared/request-adapter'
 
 export interface QueryParamFilterObject extends BaseFilterObject {
   type: 'query-param'

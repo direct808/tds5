@@ -22,7 +22,7 @@ import { LandingsOfferModule } from './schema/landings-offers/landings-offer.mod
 import { ObserverModule } from '@/domain/click/observers/observer.module'
 import { ClickSharedModule } from '@/domain/click/shared/click-shared.module'
 import { StreamFilterModule } from '@/domain/stream-filter/stream-filter.module'
-import { RequestAdapterModule } from '@/utils/request-adapter/request-adapter.module'
+import { RequestAdapterModule } from '@/shared/request-adapter/request-adapter.module'
 import { CampaignCacheModule } from '@/domain/campaign-cache/campaign-cache.module'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
 

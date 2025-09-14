@@ -6,7 +6,7 @@ import { IClick } from '@/domain/click/click'
 import { Click } from '@/domain/click/click.entity'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely, sql } from 'kysely'
-import { DB } from '@/@types/db'
+import { DB } from '@/shared/db'
 
 @Injectable()
 export class ClickRepository

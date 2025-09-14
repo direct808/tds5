@@ -1,4 +1,4 @@
-import { ExpressRequestAdapter } from '@/utils/request-adapter/express-request-adapter'
+import { ExpressRequestAdapter } from '@/shared/request-adapter/express-request-adapter'
 import { Request } from 'express'
 
 export class FakeIpExpressRequestAdapter extends ExpressRequestAdapter {

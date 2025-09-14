@@ -10,7 +10,7 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './type'
-import { MaybePromise } from '@/utils/types'
+import { MaybePromise } from '@/shared/types'
 
 @Injectable()
 export class ActionTypeFactory {
