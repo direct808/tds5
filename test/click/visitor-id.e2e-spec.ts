@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm'
 import { VISITOR_ID_SIZE } from '@/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
 import { ClickRepository } from '@/click/shared/click.repository'
-import { truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 
@@ -15,11 +15,11 @@ describe('visitorId (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)

@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { DataSource, EntityManager } from 'typeorm'
-import {
-  checkUniqueNameForUpdate,
-  ensureEntityExists,
-} from '@/utils/repository-utils'
+import { checkUniqueNameForUpdate } from '@/utils/repository-utils'
 import { CampaignRepository } from './campaign.repository'
 import { UpdateStreamService } from './stream/update-stream.service'
 import { CommonCampaignService } from './common-campaign.service'
 import { UpdateCampaignDto } from './dto/update-campaign.dto'
 import { Campaign } from './entity/campaign.entity'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  CampaignUpdatedEvent,
+  campaignUpdateEventName,
+} from '@/campaign/events/campaign-updated.event'
 
 @Injectable()
 export class UpdateCampaignService {
@@ -17,6 +19,7 @@ export class UpdateCampaignService {
     private readonly repository: CampaignRepository,
     private readonly updateStreamService: UpdateStreamService,
     private readonly commonCampaignService: CommonCampaignService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async update(
@@ -29,7 +32,7 @@ export class UpdateCampaignService {
       })
     }
 
-    await this.ensureCampaignExists(args.userId, args.id)
+    const campaign = await this.getCampaign(args.id, args.userId)
 
     await this.commonCampaignService.ensureSourceExists(
       args.userId,
@@ -51,6 +54,11 @@ export class UpdateCampaignService {
       args.userId,
       args.streams,
     )
+
+    this.eventEmitter.emit(
+      campaignUpdateEventName,
+      new CampaignUpdatedEvent(campaign.code),
+    )
   }
 
   private buildUpdateData(args: UpdateCampaignDto): Partial<Campaign> {
@@ -61,17 +69,16 @@ export class UpdateCampaignService {
     }
   }
 
-  private async ensureCampaignExists(
-    userId: string,
-    campaignId: string,
-  ): Promise<void> {
-    await ensureEntityExists(
-      this.repository,
-      {
-        userId,
-        id: campaignId,
-      },
-      'Campaign not found',
-    )
+  private async getCampaign(id: string, userId: string): Promise<Campaign> {
+    const campaign = await this.repository.getByIdAndUserId({
+      id,
+      userId,
+    })
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign not found')
+    }
+
+    return campaign
   }
 }

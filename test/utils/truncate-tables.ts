@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm'
+import { Redis } from 'ioredis'
 
 export async function truncateTables() {
   const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME } = process.env
@@ -24,4 +25,34 @@ export async function truncateTables() {
   const sql = `TRUNCATE TABLE ${names} CASCADE;`
   await dataSource.query(sql)
   await dataSource.destroy()
+}
+
+export async function flushRedisDb() {
+  const { REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD } = process.env
+
+  if (!REDIS_HOST) {
+    throw new Error('REDIS_HOST is required')
+  }
+
+  if (!REDIS_PORT) {
+    throw new Error('REDIS_PORT is required')
+  }
+
+  if (!REDIS_DB) {
+    throw new Error('REDIS_DB is required')
+  }
+
+  if (!REDIS_PASSWORD) {
+    throw new Error('REDIS_PASSWORD is required')
+  }
+
+  const redis = new Redis({
+    host: REDIS_HOST,
+    port: +REDIS_PORT,
+    db: +REDIS_DB,
+    password: REDIS_PASSWORD,
+  })
+
+  await redis.flushdb()
+  await redis.quit()
 }

@@ -8,11 +8,11 @@ describe('AuthController (e2e)', () => {
   let app: INestApplication
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await truncateTables()
     app = await createApp()
   })
 

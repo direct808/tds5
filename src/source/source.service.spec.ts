@@ -7,6 +7,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/utils/repository-utils'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 jest.mock('../utils/repository-utils')
 
@@ -18,6 +19,7 @@ describe('SourceService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SourceService,
+        EventEmitter2,
         {
           provide: SourceRepository,
           useValue: {

@@ -16,11 +16,11 @@ describe('OfferController (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await truncateTables()
     app = await createApp()
     dataSource = app.get(DataSource)
     offerRepository = dataSource.getRepository(Offer)

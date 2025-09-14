@@ -68,6 +68,12 @@ export class CampaignBuilder {
     return this
   }
 
+  active(active: boolean) {
+    this.fields.active = active
+
+    return this
+  }
+
   userId(value: string) {
     this.fields.userId = value
 
@@ -108,6 +114,12 @@ export class CampaignBuilder {
     const builder = SourceBuilder.create()
     this.sourceBuilder = builder
     callback(builder)
+
+    return this
+  }
+
+  sourceId(value: string) {
+    this.fields.sourceId = value
 
     return this
   }

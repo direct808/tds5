@@ -6,7 +6,7 @@ import {
 } from '@/utils/repository-utils'
 import { DataSource, EntityManager } from 'typeorm'
 import { Campaign } from './entity/campaign.entity'
-import { Stream } from './entity/stream.entity'
+import { FullCampaign } from '@/campaign/types'
 
 @Injectable()
 export class CampaignRepository
@@ -48,11 +48,9 @@ export class CampaignRepository
     })
   }
 
-  public async getFullByCode(
-    code: string,
-  ): Promise<(Campaign & { streams: Stream[] }) | null> {
+  public async getFullByCode(code: string): Promise<FullCampaign | null> {
     return this.repository.findOne({
-      where: { code },
+      where: { code, active: true },
       relations: [
         'streams',
         'streams.streamOffers',
