@@ -1,5 +1,5 @@
 import { QueryParamFilter } from '@/domain/stream-filter/filters/query-param/query-param-filter'
-import { MockRequestAdapter } from 'src/shared/request-adapter'
+import { MockRequestAdapter } from '@/shared/request-adapter'
 
 describe('query-param-filter.ts', () => {
   beforeEach(() => {

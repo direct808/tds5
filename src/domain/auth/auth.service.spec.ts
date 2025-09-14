@@ -2,14 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { AuthService } from './auth.service'
 import { JwtService } from '@nestjs/jwt'
 import { LoginUser } from './types'
-import { UserService } from '@/domain/user/user.service'
+import { UserRepository } from '@/infra/repositories/user.repository'
 
 const PASSWORD_1234 =
   '$2b$10$Z0EGauNanl2jiCUBwcRhGuC6/QBC1Sl1.nqFINRn1Q.nDvuuZZF0K'
 
 describe('AuthService', () => {
   let authService: AuthService
-  const userService = {
+  const userRepository = {
     getByEmail: jest.fn(),
   }
   const jwtService = {
@@ -22,7 +22,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
-        { provide: UserService, useValue: userService },
+        { provide: UserRepository, useValue: userRepository },
         { provide: JwtService, useValue: jwtService },
       ],
     }).compile()
@@ -39,7 +39,7 @@ describe('AuthService', () => {
         name: 'Test User',
       }
 
-      userService.getByEmail.mockResolvedValue(user)
+      userRepository.getByEmail.mockResolvedValue(user)
 
       const result = await authService.validateUser('test@example.com', '1234')
       expect(result).toEqual({
@@ -50,7 +50,7 @@ describe('AuthService', () => {
     })
 
     it('should return null if user not found', async () => {
-      userService.getByEmail.mockResolvedValue(null)
+      userRepository.getByEmail.mockResolvedValue(null)
 
       const result = await authService.validateUser(
         'notfound@example.com',
@@ -67,7 +67,7 @@ describe('AuthService', () => {
         password: 'wrong',
       }
 
-      userService.getByEmail.mockResolvedValue(user)
+      userRepository.getByEmail.mockResolvedValue(user)
 
       const result = await authService.validateUser('test@example.com', '1234')
       expect(result).toBeNull()
