@@ -3,12 +3,13 @@ import { Campaign } from '@/campaign/entity/campaign.entity'
 import Redis from 'ioredis'
 import { REDIS_CLIENT } from '@/config/app-redis.module'
 import { CampaignRepository } from '@/campaign/campaign.repository'
+import { getCampaignAdditionalIds } from '@/campaign-cache/helpers/get-campaign-additional-ids'
 import {
   affiliateNetworkCacheKey,
   fullCampaignCacheKey,
   offerCacheKey,
   sourceCacheKey,
-} from './helpers'
+} from './helpers/campaign-cache-keys'
 
 const NOT_FOUND = 'N'
 
@@ -39,7 +40,7 @@ export class CampaignCacheService {
 
   private async setAdditionalCache(campaign: Campaign) {
     const { sourceId, offerIds, affiliateNetworkIdIds } =
-      this.getCampaignAdditionalIds(campaign)
+      getCampaignAdditionalIds(campaign)
 
     const pipeline = this.redis.pipeline()
 
@@ -83,29 +84,6 @@ export class CampaignCacheService {
     this.logger.debug(`Get campaign from db`)
 
     return result
-  }
-
-  private getCampaignAdditionalIds(campaign: Campaign) {
-    const sourceId = campaign.sourceId
-    const offerIds: string[] = []
-    const affiliateNetworkIdIds: string[] = []
-
-    for (const stream of campaign.streams) {
-      if (stream.streamOffers) {
-        for (const streamOffer of stream.streamOffers) {
-          if (!streamOffer.offer) {
-            throw new Error('Offer not included')
-          }
-          offerIds.push(streamOffer.offer.id)
-
-          if (streamOffer.offer.affiliateNetworkId) {
-            affiliateNetworkIdIds.push(streamOffer.offer.affiliateNetworkId)
-          }
-        }
-      }
-    }
-
-    return { sourceId, offerIds, affiliateNetworkIdIds }
   }
 
   private throwNotFound(): never {

@@ -5,6 +5,7 @@ import { CommonCampaignService } from './common-campaign.service'
 import { DataSource, EntityManager } from 'typeorm'
 import { checkUniqueNameForCreate } from '@/utils/repository-utils'
 import { CreateStreamService } from './stream/create-stream.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 jest.mock('../utils/repository-utils')
 
@@ -36,6 +37,7 @@ describe('CreateCampaignService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CreateCampaignService,
+        EventEmitter2,
         {
           provide: DataSource,
           useValue: dataSource,

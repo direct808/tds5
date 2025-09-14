@@ -6,7 +6,7 @@ import {
   fullCampaignCacheKey,
   offerCacheKey,
   sourceCacheKey,
-} from './helpers'
+} from './helpers/campaign-cache-keys'
 
 export class CampaignCacheClearService {
   constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
