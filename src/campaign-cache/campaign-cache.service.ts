@@ -1,7 +1,5 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
+import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { Campaign } from '@/campaign/entity/campaign.entity'
-import Redis from 'ioredis'
-import { REDIS_CLIENT } from '@/config/app-redis.module'
 import { CampaignRepository } from '@/campaign/campaign.repository'
 import { getCampaignAdditionalIds } from '@/campaign-cache/helpers/get-campaign-additional-ids'
 import {
@@ -10,6 +8,7 @@ import {
   offerCacheKey,
   sourceCacheKey,
 } from './helpers/campaign-cache-keys'
+import { RedisProvider } from '@/infra/redis/redis.provider'
 
 const NOT_FOUND = 'N'
 
@@ -17,12 +16,12 @@ const NOT_FOUND = 'N'
 export class CampaignCacheService {
   private readonly logger = new Logger(CampaignCacheService.name)
   constructor(
-    @Inject(REDIS_CLIENT) private readonly redis: Redis,
+    private readonly redis: RedisProvider,
     private readonly campaignRepository: CampaignRepository,
   ) {}
 
   public async getFullByCode(code: string) {
-    return this.redisWrap(this.redis, fullCampaignCacheKey(code), () =>
+    return this.redisWrap(fullCampaignCacheKey(code), () =>
       this.getCampaignFromDb(code),
     )
   }
@@ -42,27 +41,25 @@ export class CampaignCacheService {
     const { sourceId, offerIds, affiliateNetworkIdIds } =
       getCampaignAdditionalIds(campaign)
 
-    const pipeline = this.redis.pipeline()
+    const items: { key: string; value: string }[] = []
 
-    offerIds.map((id) => pipeline.sadd(offerCacheKey(id), campaign.code))
+    offerIds.map((id) =>
+      items.push({ key: offerCacheKey(id), value: campaign.code }),
+    )
 
     affiliateNetworkIdIds.map((id) =>
-      pipeline.sadd(affiliateNetworkCacheKey(id), campaign.code),
+      items.push({ key: affiliateNetworkCacheKey(id), value: campaign.code }),
     )
 
     if (sourceId) {
-      pipeline.sadd(sourceCacheKey(sourceId), campaign.code)
+      items.push({ key: sourceCacheKey(sourceId), value: campaign.code })
     }
 
-    await pipeline.exec()
+    await this.redis.sAdd(items)
   }
 
-  private async redisWrap<T>(
-    redis: Redis,
-    key: string,
-    fn: () => Promise<T>,
-  ): Promise<T> {
-    const cached = await redis.get(key)
+  private async redisWrap<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    const cached = await this.redis.get(key)
 
     if (cached === NOT_FOUND) {
       this.throwNotFound()
@@ -76,11 +73,11 @@ export class CampaignCacheService {
 
     const result = await fn().catch(async (e) => {
       if (e instanceof NotFoundException) {
-        await redis.set(key, NOT_FOUND)
+        await this.redis.set(key, NOT_FOUND)
       }
       throw e
     })
-    await redis.set(key, JSON.stringify(result))
+    await this.redis.set(key, JSON.stringify(result))
     this.logger.debug(`Get campaign from db`)
 
     return result

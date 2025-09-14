@@ -1,14 +1,13 @@
-import { Global, Inject, Module, OnApplicationShutdown } from '@nestjs/common'
+import { Module, OnApplicationShutdown } from '@nestjs/common'
 import Redis from 'ioredis'
 import { AppConfig } from '@/config/app-config.service'
+import { RedisProvider } from './redis.provider'
 
-export const REDIS_CLIENT = 'REDIS_CLIENT'
-
-@Global()
 @Module({
   providers: [
+    RedisProvider,
     {
-      provide: REDIS_CLIENT,
+      provide: Redis,
       inject: [AppConfig],
       useFactory: (config: AppConfig) => {
         return new Redis({
@@ -20,10 +19,10 @@ export const REDIS_CLIENT = 'REDIS_CLIENT'
       },
     },
   ],
-  exports: [REDIS_CLIENT],
+  exports: [RedisProvider],
 })
-export class AppRedisModule implements OnApplicationShutdown {
-  constructor(@Inject(REDIS_CLIENT) private readonly redis: Redis) {}
+export class RedisModule implements OnApplicationShutdown {
+  constructor(private readonly redis: Redis) {}
 
   async onApplicationShutdown() {
     await this.redis.quit()
