@@ -2,9 +2,9 @@ import { Command, CommandRunner } from 'nest-commander'
 import { pipeline } from 'stream/promises'
 import unzipper, { File } from 'unzipper'
 import * as fs from 'node:fs'
-import { AppConfig } from '@/config/app-config.service'
 import { Inject } from '@nestjs/common'
 import { IP2LOCATION_URL } from '@/commands/download-ip2-location-database/tokens'
+import { AppConfig } from '@/infra/config/app-config.service'
 
 @Command({
   name: 'download-ip2-location-database',

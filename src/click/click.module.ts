@@ -24,6 +24,7 @@ import { ClickSharedModule } from '@/click/shared/click-shared.module'
 import { StreamFilterModule } from '@/stream-filter/stream-filter.module'
 import { RequestAdapterModule } from '@/utils/request-adapter/request-adapter.module'
 import { CampaignCacheModule } from '@/campaign-cache/campaign-cache.module'
+import { RepositoryModule } from '@/infra/repositories/repository.module'
 
 @Module({
   controllers: [ClickController],
@@ -52,6 +53,7 @@ import { CampaignCacheModule } from '@/campaign-cache/campaign-cache.module'
     StreamFilterModule,
     RequestAdapterModule,
     CampaignCacheModule,
+    RepositoryModule,
   ],
 })
 export class ClickModule {}

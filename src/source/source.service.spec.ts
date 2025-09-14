@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { SourceService } from './source.service'
-import { SourceRepository } from './source.repository'
 import { Source } from './source.entity'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { SourceRepository } from '@/infra/repositories/source.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+} from '@/infra/repositories/utils/repository-utils'
 
-jest.mock('../utils/repository-utils')
+jest.mock('@/infra/repositories/utils/repository-utils')
 
 describe('SourceService', () => {
   let service: SourceService

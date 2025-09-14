@@ -1,6 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { Campaign } from '@/campaign/entity/campaign.entity'
-import { CampaignRepository } from '@/campaign/campaign.repository'
 import { getCampaignAdditionalIds } from '@/campaign-cache/helpers/get-campaign-additional-ids'
 import {
   affiliateNetworkCacheKey,
@@ -9,6 +8,7 @@ import {
   sourceCacheKey,
 } from './helpers/campaign-cache-keys'
 import { RedisProvider } from '@/infra/redis/redis.provider'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 
 const NOT_FOUND = 'N'
 

@@ -3,13 +3,13 @@ import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
-import { ClickRepository } from '@/click/shared/click.repository'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
 import { RequestAdapterFactory } from '@/utils/request-adapter/request-adapter-factory'
 import { GEO_IP_PROVIDER } from '@/geo-ip/types'
 import { FakeGeoIpService } from '../utils/fake-geo-Ip-service'
+import { ClickRepository } from '@/infra/repositories/click.repository'
 
 describe('Click-data (e2e)', () => {
   let app: INestApplication

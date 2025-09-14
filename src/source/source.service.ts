@@ -1,16 +1,16 @@
-import { SourceRepository } from './source.repository'
 import { Injectable } from '@nestjs/common'
 import { Source } from './source.entity'
-import {
-  checkUniqueNameForCreate,
-  checkUniqueNameForUpdate,
-  ensureEntityExists,
-} from '@/utils/repository-utils'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   SourceUpdatedEvent,
   sourceUpdateEventName,
 } from '@/source/events/source-updated.event'
+import {
+  checkUniqueNameForCreate,
+  checkUniqueNameForUpdate,
+  ensureEntityExists,
+} from '@/infra/repositories/utils/repository-utils'
+import { SourceRepository } from '@/infra/repositories/source.repository'
 
 type CreateArgs = {
   name: string
@@ -59,7 +59,7 @@ export class SourceService {
     )
   }
 
-  public async getList(userId: string): Promise<Source[]> {
+  public getList(userId: string): Promise<Source[]> {
     return this.repository.getListByUserId(userId)
   }
 

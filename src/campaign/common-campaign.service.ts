@@ -1,6 +1,6 @@
-import { ensureEntityExists } from '@/utils/repository-utils'
 import { Injectable } from '@nestjs/common'
-import { SourceRepository } from '@/source/source.repository'
+import { SourceRepository } from '@/infra/repositories/source.repository'
+import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 
 @Injectable()
 export class CommonCampaignService {

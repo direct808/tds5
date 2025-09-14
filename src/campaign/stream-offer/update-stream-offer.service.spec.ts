@@ -3,9 +3,9 @@ import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from './stream-offer.repository'
 import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferService } from './update-stream-offer.service'
-import { getIdsForDelete } from '@/utils/repository-utils'
+import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
 
-jest.mock('../../utils/repository-utils')
+jest.mock('@/infra/repositories/utils/repository-utils')
 
 describe('CommonStreamService', () => {
   let service: UpdateStreamOfferService

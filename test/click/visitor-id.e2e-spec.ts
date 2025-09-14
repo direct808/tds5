@@ -3,10 +3,10 @@ import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { VISITOR_ID_SIZE } from '@/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
-import { ClickRepository } from '@/click/shared/click.repository'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
+import { ClickRepository } from '@/infra/repositories/click.repository'
 
 describe('visitorId (e2e)', () => {
   let app: INestApplication

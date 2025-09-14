@@ -4,12 +4,12 @@ import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
 import { EntityManager } from 'typeorm'
 import { UpdateStreamService } from './update-stream.service'
-import { getIdsForDelete } from '@/utils/repository-utils'
+import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
 import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
 import { CampaignStreamSchema } from '@/campaign/types'
 import { UpdateStreamDto } from '../dto/update-stream.dto'
 
-jest.mock('../../utils/repository-utils')
+jest.mock('@/infra/repositories/utils/repository-utils')
 
 describe('UpdateStreamService', () => {
   let service: UpdateStreamService

@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForCreate } from '@/utils/repository-utils'
-import { CampaignRepository } from './campaign.repository'
 import { CommonCampaignService } from './common-campaign.service'
 import { nanoid } from 'nanoid'
 import { CreateStreamService } from './stream/create-stream.service'
@@ -12,6 +10,8 @@ import {
   CampaignCreatedEvent,
   campaignCreatedEventName,
 } from './events/campaign-created.event'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 
 @Injectable()
 export class CreateCampaignService {

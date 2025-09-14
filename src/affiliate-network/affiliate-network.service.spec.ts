@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AffiliateNetworkService } from './affiliate-network.service'
-import { AffiliateNetworkRepository } from './affiliate-network.repository'
 import { AffiliateNetwork } from './affiliate-network.entity'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+} from '@/infra/repositories/utils/repository-utils'
 
-jest.mock('@/utils/repository-utils')
+jest.mock('@/infra/repositories/utils/repository-utils')
 
 describe('AffiliateNetworkService', () => {
   let service: AffiliateNetworkService

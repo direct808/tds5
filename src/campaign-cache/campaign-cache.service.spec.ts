@@ -1,8 +1,8 @@
 import { CampaignCacheService } from '@/campaign-cache/campaign-cache.service'
 import { RedisProvider } from '@/infra/redis/redis.provider'
-import { CampaignRepository } from '@/campaign/campaign.repository'
 import { fullCampaignCacheKey } from '@/campaign-cache/helpers/campaign-cache-keys'
 import { FullCampaign } from '@/campaign/types'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 
 describe('campaign-cache.service.ts', () => {
   const code = 'code'

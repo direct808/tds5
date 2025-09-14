@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { SourceController } from './source.controller'
-import { SourceRepository } from './source.repository'
 import { SourceService } from './source.service'
+import { RepositoryModule } from '@/infra/repositories/repository.module'
 
 @Module({
+  imports: [RepositoryModule],
   controllers: [SourceController],
-  providers: [SourceRepository, SourceService],
-  exports: [SourceRepository],
+  providers: [SourceService],
 })
 export class SourceModule {}

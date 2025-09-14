@@ -1,6 +1,5 @@
 import { Global, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { AppConfig } from './app-config.service'
 import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
 import { Offer } from '@/offer/offer.entity'
 import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
@@ -12,6 +11,7 @@ import { Click } from '@/click/click.entity'
 import { KyselyModule } from 'nestjs-kysely'
 import { PostgresDialect } from 'kysely'
 import { Pool } from 'pg'
+import { AppConfig } from '@/infra/config/app-config.service'
 
 @Global()
 @Module({
@@ -60,4 +60,4 @@ import { Pool } from 'pg'
     }),
   ],
 })
-export class AppDbModule {}
+export class DatabaseModule {}

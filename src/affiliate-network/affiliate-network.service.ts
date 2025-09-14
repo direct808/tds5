@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { AffiliateNetworkRepository } from './affiliate-network.repository'
 import { AffiliateNetwork } from './affiliate-network.entity'
-import {
-  checkUniqueNameForCreate,
-  checkUniqueNameForUpdate,
-  ensureEntityExists,
-} from '@/utils/repository-utils'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   affiliateNetworkEventName,
   AffiliateNetworkUpdatedEvent,
 } from '@/affiliate-network/events/affiliate-network-updated.event'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
+import {
+  checkUniqueNameForCreate,
+  checkUniqueNameForUpdate,
+  ensureEntityExists,
+} from '@/infra/repositories/utils/repository-utils'
 
 type CreateArgs = {
   name: string

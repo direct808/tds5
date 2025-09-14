@@ -1,7 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { DataSource, EntityManager } from 'typeorm'
-import { checkUniqueNameForUpdate } from '@/utils/repository-utils'
-import { CampaignRepository } from './campaign.repository'
 import { UpdateStreamService } from './stream/update-stream.service'
 import { CommonCampaignService } from './common-campaign.service'
 import { UpdateCampaignDto } from './dto/update-campaign.dto'
@@ -11,6 +9,8 @@ import {
   CampaignUpdatedEvent,
   campaignUpdateEventName,
 } from '@/campaign/events/campaign-updated.event'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
 
 @Injectable()
 export class UpdateCampaignService {

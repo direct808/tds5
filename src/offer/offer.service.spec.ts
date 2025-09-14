@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { OfferService } from './offer.service'
-import { OfferRepository } from './offer.repository'
 import { Offer } from './offer.entity'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
+import { OfferRepository } from '@/infra/repositories/offer.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '@/utils/repository-utils'
-import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+} from '@/infra/repositories/utils/repository-utils'
 
-jest.mock('../utils/repository-utils')
+jest.mock('@/infra/repositories/utils/repository-utils')
 
 describe('OfferService', () => {
   let service: OfferService

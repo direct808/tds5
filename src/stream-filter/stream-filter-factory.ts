@@ -13,7 +13,7 @@ import { ClickDataTextFilter } from '@/stream-filter/filters/click-data-text/cli
 import { ClickContext } from '@/click/shared/click-context.service'
 import { IpV6Filter } from '@/stream-filter/filters/ipv6/ipv6-filter'
 import { ClickUniqueFilter } from '@/stream-filter/filters/click-unique/click-unique-filter'
-import { ClickRepository } from '@/click/shared/click.repository'
+import { ClickRepository } from '@/infra/repositories/click.repository'
 
 export interface IStreamFilterFactory {
   create(filterObj: FilterObjectExtended): StreamFilter

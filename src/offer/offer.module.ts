@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common'
 import { OfferController } from './offer.controller'
 import { OfferService } from './offer.service'
-import { OfferRepository } from './offer.repository'
-import { AffiliateNetworkModule } from '@/affiliate-network/affiliate-network.module'
+import { RepositoryModule } from '@/infra/repositories/repository.module'
 
 @Module({
-  imports: [AffiliateNetworkModule],
+  imports: [RepositoryModule],
   controllers: [OfferController],
-  providers: [OfferService, OfferRepository],
-  exports: [OfferRepository],
+  providers: [OfferService],
 })
 export class OfferModule {}
