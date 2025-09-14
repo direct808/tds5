@@ -3,15 +3,15 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtModule } from '@nestjs/jwt'
 import { APP_GUARD } from '@nestjs/core'
-import { UserModule } from '@/domain/user/user.module'
 import { LocalStrategy } from './strategies/local.strategy'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AppConfig } from '@/infra/config/app-config.service'
+import { RepositoryModule } from '@/infra/repositories/repository.module'
 
 @Module({
   imports: [
-    UserModule,
+    RepositoryModule,
     JwtModule.registerAsync({
       useFactory(config: AppConfig) {
         return {

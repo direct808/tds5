@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { SourceModule } from '@/domain/source/source.module'
-import { UserModule } from '@/domain/user/user.module'
 import { AuthModule } from '@/domain/auth/auth.module'
 import { AffiliateNetworkModule } from '@/domain/affiliate-network/affiliate-network.module'
 import { OfferModule } from '@/domain/offer/offer.module'
@@ -21,7 +20,6 @@ import { AppExceptionFilter } from '@/shared/app-exception.filter'
     AppConfigModule,
     DatabaseModule,
     SourceModule,
-    UserModule,
     AuthModule,
     AffiliateNetworkModule,
     OfferModule,
