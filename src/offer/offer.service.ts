@@ -7,6 +7,11 @@ import {
 import { OfferRepository } from './offer.repository'
 import { Offer } from './offer.entity'
 import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  OfferUpdatedEvent,
+  offerUpdateEventName,
+} from '@/offer/events/offer-updated.event'
 
 type CreateArgs = {
   name: string
@@ -37,6 +42,7 @@ export class OfferService {
   constructor(
     private readonly repository: OfferRepository,
     private readonly networkRepository: AffiliateNetworkRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -68,6 +74,8 @@ export class OfferService {
     await this.ensureNetworkExists(args)
 
     await this.repository.update(args.id, args)
+
+    this.eventEmitter.emit(offerUpdateEventName, new OfferUpdatedEvent(args.id))
   }
 
   /**

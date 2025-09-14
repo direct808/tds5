@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm'
 import { createAuthUser } from '../utils/helpers'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { ClickRepository } from '@/click/shared/click.repository'
-import { truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 
 describe('Offer params (e2e)', () => {
@@ -14,11 +14,11 @@ describe('Offer params (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     dataSource = app.get(DataSource)
     clickRepo = app.get(ClickRepository)

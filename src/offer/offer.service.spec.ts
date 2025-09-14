@@ -8,6 +8,7 @@ import {
   ensureEntityExists,
 } from '@/utils/repository-utils'
 import { AffiliateNetworkRepository } from '@/affiliate-network/affiliate-network.repository'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 jest.mock('../utils/repository-utils')
 
@@ -19,6 +20,7 @@ describe('OfferService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        EventEmitter2,
         OfferService,
         {
           provide: OfferRepository,

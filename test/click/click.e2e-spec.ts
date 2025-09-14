@@ -7,7 +7,7 @@ import express from 'express'
 import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
 import { createApp } from '../utils/create-app'
-import { truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { RegisterClickService } from '@/click/register-click.service'
 import type { ClickData } from '@/click/click-data'
 
@@ -18,11 +18,12 @@ describe('Click (e2e)', () => {
   let userId: string
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
+
     app = await createApp()
     dataSource = app.get(DataSource)
     const authData = await createAuthUser(app)
@@ -54,6 +55,20 @@ describe('Click (e2e)', () => {
       .save(dataSource)
 
     return request(app.getHttpServer()).get('/abcdif').expect(500)
+  })
+
+  it('Should return 404 if campaign active = false', async () => {
+    await CampaignBuilder.create()
+      .name('Test campaign 1')
+      .active(false)
+      .code('abcdif')
+      .userId(userId)
+      .addStreamTypeAction((stream) => {
+        stream.name('Name').type(StreamActionType.SHOW_TEXT).content('content')
+      })
+      .save(dataSource)
+
+    return request(app.getHttpServer()).get('/abcdif').expect(404)
   })
 
   describe('Schema type direct url', () => {

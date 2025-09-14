@@ -7,6 +7,11 @@ import { nanoid } from 'nanoid'
 import { CreateStreamService } from './stream/create-stream.service'
 import { CreateCampaignDto } from './dto/create-campaign.dto'
 import { Campaign } from './entity/campaign.entity'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  CampaignCreatedEvent,
+  campaignCreatedEventName,
+} from './events/campaign-created.event'
 
 @Injectable()
 export class CreateCampaignService {
@@ -15,6 +20,7 @@ export class CreateCampaignService {
     private readonly repository: CampaignRepository,
     private readonly createStreamService: CreateStreamService,
     private readonly commonCampaignService: CommonCampaignService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async create(
@@ -43,6 +49,11 @@ export class CreateCampaignService {
       campaign.id,
       args.userId,
       args.streams,
+    )
+
+    this.eventEmitter.emit(
+      campaignCreatedEventName,
+      new CampaignCreatedEvent(campaign.code),
     )
   }
 

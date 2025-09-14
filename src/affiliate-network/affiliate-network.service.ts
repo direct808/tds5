@@ -6,6 +6,11 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/utils/repository-utils'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  affiliateNetworkEventName,
+  AffiliateNetworkUpdatedEvent,
+} from '@/affiliate-network/events/affiliate-network-updated.event'
 
 type CreateArgs = {
   name: string
@@ -27,7 +32,10 @@ type DeleteArgs = {
 
 @Injectable()
 export class AffiliateNetworkService {
-  constructor(private readonly repository: AffiliateNetworkRepository) {}
+  constructor(
+    private readonly repository: AffiliateNetworkRepository,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   public async create(args: CreateArgs): Promise<AffiliateNetwork> {
     await checkUniqueNameForCreate(this.repository, args)
@@ -48,6 +56,11 @@ export class AffiliateNetworkService {
     }
 
     await this.repository.update(args.id, args)
+
+    this.eventEmitter.emit(
+      affiliateNetworkEventName,
+      new AffiliateNetworkUpdatedEvent(args.id),
+    )
   }
 
   public async getList(userId: string): Promise<AffiliateNetwork[]> {

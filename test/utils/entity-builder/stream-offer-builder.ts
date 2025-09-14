@@ -26,6 +26,12 @@ export class StreamOfferBuilder {
     return this
   }
 
+  offerId(offerId: string) {
+    this.fields.offerId = offerId
+
+    return this
+  }
+
   async save(ds: DataSource, streamId: string) {
     this.fields.streamId = streamId
     if (this.builder) {

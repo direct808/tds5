@@ -4,8 +4,8 @@ import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/campaign/types'
 import { FilterLogic, FilterObject } from '@/stream-filter/types'
-import { ClickActionBuilder } from '../../utils/click-action-builder'
-import { truncateTables } from '../../utils/truncate-tables'
+import { ClickRequestBuilder } from '../../utils/click-request-builder'
+import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '@/stream-filter/filters/click-data-text/click-data-text-filter'
 import { FakeIpExpressRequestAdapter } from '@/utils/request-adapter/fake-ip-express-request-adapter'
@@ -44,12 +44,12 @@ describe('Filter all (e2e)', () => {
   const code1 = 'abcdif'
 
   afterEach(async () => {
-    await truncateTables()
     await app.close()
     jest.useRealTimers()
   })
 
   beforeEach(async () => {
+    await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     const authData = await createAuthUser(app)
     dataSource = app.get(DataSource)
@@ -73,7 +73,7 @@ describe('Filter all (e2e)', () => {
       values: [value],
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .addQueryParam(snake, value)
       .request()
@@ -88,7 +88,7 @@ describe('Filter all (e2e)', () => {
       values: ['raw_query_value'],
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .addQueryParam('raw_query', 'raw_query_value')
       .request()
@@ -102,7 +102,7 @@ describe('Filter all (e2e)', () => {
       values: ['Windows'],
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .addHeader(
         'user-agent',
@@ -119,7 +119,7 @@ describe('Filter all (e2e)', () => {
       values: ['10'],
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .addHeader(
         'user-agent',
@@ -144,7 +144,7 @@ describe('Filter all (e2e)', () => {
       values: ['192.168.10.20'],
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .request()
 
@@ -164,7 +164,7 @@ describe('Filter all (e2e)', () => {
       type: 'ipv6',
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .request()
 
@@ -179,7 +179,7 @@ describe('Filter all (e2e)', () => {
       items: [{ fromDay: 2, formTime: '10:30', toDay: 2, toTime: '11:30' }],
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .request()
 
@@ -196,7 +196,7 @@ describe('Filter all (e2e)', () => {
       timezone: 'Europe/Moscow',
     })
 
-    const { text } = await ClickActionBuilder.create(app)
+    const { text } = await ClickRequestBuilder.create(app)
       .setCode(code1)
       .request()
 

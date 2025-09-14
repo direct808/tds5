@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { checkUniqueNameForUpdate } from '@/utils/repository-utils'
 import { UpdateCampaignService } from './update-campaign.service'
 import { CommonCampaignService } from './common-campaign.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 jest.mock('../utils/repository-utils')
 
@@ -24,6 +25,7 @@ describe('UpdateCampaignService', () => {
   }
   const repository = {
     update: jest.fn(),
+    getByIdAndUserId: jest.fn().mockReturnValue(Promise.resolve({})),
   }
   const updateStreamService = {
     updateStreams: jest.fn(),
@@ -37,6 +39,7 @@ describe('UpdateCampaignService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UpdateCampaignService,
+        EventEmitter2,
         {
           provide: DataSource,
           useValue: dataSource,
