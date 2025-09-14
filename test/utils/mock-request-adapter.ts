@@ -1,4 +1,7 @@
-import { HeaderName, RequestAdapter } from './request-adapter'
+import {
+  HeaderName,
+  RequestAdapter,
+} from '@/shared/request-adapter/request-adapter'
 
 export type MockRequestAdapterData = {
   ip?: string
