@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { SelectStreamService } from './select-stream.service'
 import { Campaign } from '@/domain/campaign/entity/campaign.entity'
-import { HandleStreamService } from './handle-stream.service'
+import { SchemaService } from './schema/schema.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
 import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
-import { SetupSubject } from '@/domain/click/observers/setup-subject'
-import { ClickContext } from '@/domain/click/shared/click-context.service'
+import { SetupSubject } from './observers/setup-subject'
+import { ClickContext } from './shared/click-context.service'
 import { StreamWithCampaign } from '@/domain/campaign/types'
 import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { CampaignCacheService } from '@/domain/campaign-cache/campaign-cache.service'
@@ -17,7 +17,7 @@ type RedirectData = { count: number }
 export class ClickService {
   constructor(
     private readonly selectStreamService: SelectStreamService,
-    private readonly handleStreamService: HandleStreamService,
+    private readonly schemaService: SchemaService,
     private readonly responseHandlerFactory: ResponseHandlerFactory,
     private readonly registerClickService: RegisterClickService,
     private readonly setupSubject: SetupSubject,
@@ -52,8 +52,7 @@ export class ClickService {
 
     const streamWithCampaign = this.makeStreamWithCampaign(stream, campaign)
 
-    const streamResponse =
-      await this.handleStreamService.handleStream(streamWithCampaign)
+    const streamResponse = await this.schemaService.handle(streamWithCampaign)
 
     if ('url' in streamResponse) {
       clickData.destination = streamResponse.url

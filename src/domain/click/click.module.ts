@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ClickController } from './click.controller'
 import { ClickService } from './click.service'
-import { CampaignModule } from '@/domain/campaign/campaign.module'
 import { SelectStreamService } from './select-stream.service'
-import { HandleStreamService } from './handle-stream.service'
 import { JsonResponseHandler } from './response-handler/json-response-handler'
 import { HttpResponseHandler } from './response-handler/http-response-handler'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
@@ -21,15 +19,12 @@ import { SchemaModule } from '@/domain/click/schema/schema.module'
   providers: [
     ClickService,
     SelectStreamService,
-    HandleStreamService,
     JsonResponseHandler,
     HttpResponseHandler,
     ResponseHandlerFactory,
-
     RegisterClickService,
   ],
   imports: [
-    CampaignModule,
     SchemaModule,
     ObserverModule,
     ClickSharedModule,
