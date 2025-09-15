@@ -17,7 +17,7 @@ export class ClickIdObserver implements ClickObserver<Stream> {
     private readonly clickContext: ClickContext,
   ) {}
 
-  public async handle() {
+  public async handle(): Promise<void> {
     const clickData = this.clickContext.getClickData()
 
     if (!clickData.visitorId) {

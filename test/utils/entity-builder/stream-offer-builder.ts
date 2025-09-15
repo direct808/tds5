@@ -8,17 +8,17 @@ export class StreamOfferBuilder {
 
   private constructor() {}
 
-  public static create() {
+  public static create(): StreamOfferBuilder {
     return new this()
   }
 
-  percent(value: number) {
+  percent(value: number): StreamOfferBuilder {
     this.fields.percent = value
 
     return this
   }
 
-  createOffer(callback: (builder: OfferBuilder) => void) {
+  createOffer(callback: (builder: OfferBuilder) => void): StreamOfferBuilder {
     const builder = OfferBuilder.create()
     this.builder = builder
     callback(builder)
@@ -26,13 +26,13 @@ export class StreamOfferBuilder {
     return this
   }
 
-  offerId(offerId: string) {
+  offerId(offerId: string): StreamOfferBuilder {
     this.fields.offerId = offerId
 
     return this
   }
 
-  async save(ds: DataSource, streamId: string) {
+  async save(ds: DataSource, streamId: string): Promise<StreamOffer> {
     this.fields.streamId = streamId
     if (this.builder) {
       const offer = await this.builder.save(ds)

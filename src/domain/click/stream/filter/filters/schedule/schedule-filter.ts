@@ -17,6 +17,8 @@ export interface ScheduleFilterObj extends BaseFilterObject {
   items: Item[]
 }
 
+type GetTimeResult = { fromTimeMinutes: number; toTimeMinutes: number }
+
 export class ScheduleFilter implements StreamFilter {
   constructor(private filterObj: ScheduleFilterObj) {}
 
@@ -58,7 +60,7 @@ export class ScheduleFilter implements StreamFilter {
     return true
   }
 
-  private getTime(formTime: string, toTime: string) {
+  private getTime(formTime: string, toTime: string): GetTimeResult {
     const [fromHour, fromMinute] = formTime.split(':').map(Number)
     const [toHour, toMinute] = toTime.split(':').map(Number)
     const fromTimeMinutes = fromHour * 60 + fromMinute
@@ -67,7 +69,11 @@ export class ScheduleFilter implements StreamFilter {
     return { fromTimeMinutes, toTimeMinutes }
   }
 
-  private checkDayRange(fromDay: number, toDay: number, current: number) {
+  private checkDayRange(
+    fromDay: number,
+    toDay: number,
+    current: number,
+  ): boolean {
     if (fromDay <= toDay) {
       if (current >= fromDay && current <= toDay) {
         return true

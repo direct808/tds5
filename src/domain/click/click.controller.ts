@@ -19,7 +19,7 @@ export class ClickController {
     @Param('code') code: string,
     @Req() request: Request,
     @Res() response: Response,
-  ) {
+  ): Promise<void> {
     const adapter = this.requestAdapterFactory.create(request)
     this.clickContext.setRequestAdapter(adapter)
     this.clickContext.setResponseAdapter(response)

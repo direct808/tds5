@@ -103,7 +103,9 @@ export class OfferService {
    *
    * @param args Данные для проверки сети.
    */
-  private async ensureNetworkExists(args: EnsureNetworkExistsArgs) {
+  private async ensureNetworkExists(
+    args: EnsureNetworkExistsArgs,
+  ): Promise<void> {
     if (!args.affiliateNetworkId) {
       return
     }

@@ -4,7 +4,7 @@ import { ArgumentsHost, HttpException, Logger } from '@nestjs/common'
 export class AppExceptionFilter extends BaseExceptionFilter {
   private readonly logger = new Logger(AppExceptionFilter.name)
 
-  catch(exception: Error, host: ArgumentsHost) {
+  catch(exception: Error, host: ArgumentsHost): void {
     let message = exception.message
 
     if (exception instanceof HttpException) {

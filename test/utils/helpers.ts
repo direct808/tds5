@@ -3,11 +3,12 @@ import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserBuilder } from './entity-builder/user-builder'
+import { User } from '@/domain/user/user.entity'
 
 async function authUser(
   app: INestApplication,
   user: { email: string; password: string },
-) {
+): Promise<string> {
   const { body } = await request(app.getHttpServer())
     .post('/api/auth/login')
     .send({ email: user.email, password: user.password })
@@ -16,7 +17,10 @@ async function authUser(
   return body.accessToken
 }
 
-export async function createAuthUser(app: INestApplication) {
+export async function createAuthUser(app: INestApplication): Promise<{
+  user: User
+  accessToken: string
+}> {
   const email = 'admin@gmail.com'
   const salt = await bcrypt.genSalt(1)
   const pass = await bcrypt.hash('1234', salt)
@@ -30,7 +34,10 @@ export async function createAuthUser(app: INestApplication) {
   return { user, accessToken }
 }
 
-export function spyOn<T extends object>(service: T, key: string) {
+export function spyOn<T extends object>(
+  service: T,
+  key: string,
+): jest.SpyInstance {
   return jest.spyOn(service, key as any)
 }
 

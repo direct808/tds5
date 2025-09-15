@@ -6,7 +6,8 @@ import {
 import { IClick } from './click'
 import { Nullable } from '@/shared/types'
 
-const ColumnTextNullable = () => Column('text', { nullable: true })
+const ColumnTextNullable = (): PropertyDecorator =>
+  Column('text', { nullable: true })
 
 @Entity()
 export class Click implements Nullable<IClick> {

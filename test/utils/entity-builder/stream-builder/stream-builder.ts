@@ -5,13 +5,15 @@ import { Filters } from '@/domain/click/stream/filter/types'
 export abstract class StreamBuilder {
   protected readonly fields: Partial<Stream> = {}
 
-  name(name: string) {
+  protected constructor() {}
+
+  name(name: string): this {
     this.fields.name = name
 
     return this
   }
 
-  filters(filters: Filters) {
+  filters(filters: Filters): this {
     this.fields.filters = filters
 
     return this

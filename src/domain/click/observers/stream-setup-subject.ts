@@ -8,7 +8,7 @@ import { Injectable } from '@nestjs/common'
 export class StreamSetupSubject {
   constructor(private readonly clickIdObserver: ClickIdObserver) {}
 
-  public async setup(stream: Stream) {
+  public async setup(stream: Stream): Promise<void> {
     const streamSubject = new ClickSubject<Stream>()
 
     streamSubject.attach(this.clickIdObserver)

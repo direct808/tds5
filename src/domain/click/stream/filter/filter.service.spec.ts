@@ -19,7 +19,7 @@ describe('stream-filter.service.ts', () => {
         {
           provide: FilterFactory,
           useValue: {
-            create: () => ({ handle }),
+            create: (): { handle: jest.Mock } => ({ handle }),
           },
         },
       ],

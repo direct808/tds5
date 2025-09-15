@@ -7,6 +7,13 @@ import { CreateStreamOfferDto } from '../dto/create-stream-offer.dto'
 import { arrayUnique } from '@/shared/helpers'
 import { OfferRepository } from '@/infra/repositories/offer.repository'
 
+type BuldCreateDataResult = {
+  streamId: string
+  offerId: string
+  active: boolean
+  percent: number
+}
+
 @Injectable()
 export class CommonStreamOfferService {
   constructor(private readonly offerRepository: OfferRepository) {}
@@ -37,7 +44,10 @@ export class CommonStreamOfferService {
    * @param input
    * @private
    */
-  public buildCreateData(streamId: string, input: CreateStreamOfferDto[]) {
+  public buildCreateData(
+    streamId: string,
+    input: CreateStreamOfferDto[],
+  ): BuldCreateDataResult[] {
     return input.map((d) => ({
       streamId,
       offerId: d.offerId,
@@ -51,7 +61,7 @@ export class CommonStreamOfferService {
    * @param input
    * @private
    */
-  public checkForRepeatOffers(input: { offerId: string }[]) {
+  public checkForRepeatOffers(input: { offerId: string }[]): void {
     const offerIds = arrayUnique(input.map((item) => item.offerId))
     if (offerIds.length !== input.length) {
       throw new BadRequestException('Offers should not be repeated')
@@ -67,7 +77,7 @@ export class CommonStreamOfferService {
   public async ensureOffersExists(
     input: { offerId: string }[],
     userId: string,
-  ) {
+  ): Promise<void> {
     const offerIds = arrayUnique(input.map((item) => item.offerId))
     const offers = await this.offerRepository.getByIdsAndUserId(
       offerIds,

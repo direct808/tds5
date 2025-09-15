@@ -5,13 +5,13 @@ import {
   Logger,
   NestInterceptor,
 } from '@nestjs/common'
-import { finalize } from 'rxjs'
+import { finalize, Observable } from 'rxjs'
 
 @Injectable()
 export class StartRequestInterceptor implements NestInterceptor {
   private readonly logger = new Logger('StartRequestInterceptor')
 
-  intercept(context: ExecutionContext, next: CallHandler) {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const now = Date.now()
     const name = context.getHandler().name
     this.logger.log(`Start request ${name}`)

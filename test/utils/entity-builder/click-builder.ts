@@ -8,29 +8,29 @@ export class ClickBuilder {
     this.fields = fields
   }
 
-  static create(fields: Partial<Click> = {}) {
+  static create(fields: Partial<Click> = {}): ClickBuilder {
     return new this(fields)
   }
 
-  id(id: string) {
+  id(id: string): this {
     this.fields.id = id
 
     return this
   }
 
-  campaignId(campaignId: string) {
+  campaignId(campaignId: string): this {
     this.fields.campaignId = campaignId
 
     return this
   }
 
-  visitorId(visitorId: string) {
+  visitorId(visitorId: string): this {
     this.fields.visitorId = visitorId
 
     return this
   }
 
-  createdAt(createdAt: Date) {
+  createdAt(createdAt: Date): this {
     this.fields.createdAt = createdAt
 
     return this

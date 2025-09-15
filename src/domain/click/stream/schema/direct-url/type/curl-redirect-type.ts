@@ -14,11 +14,11 @@ export class CurlRedirectType implements RedirectType {
     }
   }
 
-  private setBase(content: string, url: string) {
+  private setBase(content: string, url: string): string {
     return content.replace('<head>', `<head><base href="${url}">`)
   }
 
-  private prepareUrl(url: string) {
+  private prepareUrl(url: string): string {
     const parsed = new URL(url)
 
     return `//${parsed.host}/`

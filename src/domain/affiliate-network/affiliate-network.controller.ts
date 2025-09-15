@@ -24,7 +24,7 @@ export class AffiliateNetworkController {
   ) {}
 
   @Get()
-  getAffiliateNetworks(@UserId() userId: string) {
+  getAffiliateNetworks(@UserId() userId: string): Promise<AffiliateNetwork[]> {
     return this.affiliateNetworkService.getList(userId)
   }
 
@@ -41,7 +41,7 @@ export class AffiliateNetworkController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
     @Body() dto: UpdateAffiliateNetworkDto,
-  ) {
+  ): Promise<void> {
     await this.affiliateNetworkService.update({ ...dto, id, userId })
   }
 
@@ -49,7 +49,7 @@ export class AffiliateNetworkController {
   async deleteAffiliateNetwork(
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
-  ) {
+  ): Promise<void> {
     await this.affiliateNetworkService.delete({ id, userId })
   }
 }
