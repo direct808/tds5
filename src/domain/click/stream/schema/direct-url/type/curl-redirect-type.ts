@@ -1,17 +1,11 @@
 import { URL } from 'url'
 import { Injectable } from '@nestjs/common'
-import { HttpService } from '@nestjs/axios'
-import { firstValueFrom } from 'rxjs'
 import { RedirectType, StreamResponse } from '@/domain/click/types'
 
 @Injectable()
 export class CurlRedirectType implements RedirectType {
-  constructor(private readonly httpService: HttpService) {}
-
   async handle(url: string): Promise<StreamResponse> {
-    let { data: content } = await firstValueFrom(
-      this.httpService.get<string>(url),
-    )
+    let content = await fetch(url).then((res) => res.text())
 
     content = this.setBase(content, this.prepareUrl(url))
 
