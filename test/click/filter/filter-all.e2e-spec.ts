@@ -17,7 +17,7 @@ async function addStream(
   content: string,
   userId: string,
   filter?: FilterObject,
-) {
+): Promise<void> {
   const campaign = CampaignBuilder.create()
     .name('Test campaign')
     .code('abcdif')

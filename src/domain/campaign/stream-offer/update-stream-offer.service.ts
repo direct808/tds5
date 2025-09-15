@@ -6,6 +6,14 @@ import { StreamOfferRepository } from '@/infra/repositories/stream-offer.reposit
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
 import { StreamOffer } from '../entity/stream-offer.entity'
 
+type BuildUpdateDataResult = {
+  id: string | undefined
+  streamId: string
+  offerId: string
+  active: boolean
+  percent: number
+}
+
 @Injectable()
 export class UpdateStreamOfferService {
   constructor(
@@ -63,7 +71,7 @@ export class UpdateStreamOfferService {
   private async saveStreamOffers(
     manager: EntityManager,
     dataForSave: Partial<StreamOffer>[],
-  ) {
+  ): Promise<void> {
     if (dataForSave.length > 0) {
       await this.streamOfferRepository.saveMany(manager, dataForSave)
     }
@@ -96,7 +104,10 @@ export class UpdateStreamOfferService {
    * @param input
    * @private
    */
-  private buildUpdateData(streamId: string, input: UpdateStreamOfferDto[]) {
+  private buildUpdateData(
+    streamId: string,
+    input: UpdateStreamOfferDto[],
+  ): BuildUpdateDataResult[] {
     return input.map((d) => ({
       id: d.id,
       streamId,

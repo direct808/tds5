@@ -13,7 +13,7 @@ export type MockRequestAdapterData = {
 export class MockRequestAdapter implements RequestAdapter {
   public readonly ip = this.data.ip
 
-  static create(data?: MockRequestAdapterData) {
+  static create(data?: MockRequestAdapterData): MockRequestAdapter {
     data = data || {}
 
     return new MockRequestAdapter(data)

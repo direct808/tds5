@@ -27,7 +27,7 @@ export class UpdateStreamService {
     campaignId: string,
     userId: string,
     streams: UpdateStreamDto[],
-  ) {
+  ): Promise<void> {
     await this.ensureStreamExists(manager, streams, campaignId)
     await this.deleteOldStreams(manager, streams, campaignId)
 
@@ -41,7 +41,7 @@ export class UpdateStreamService {
     campaignId: string,
     userId: string,
     stream: UpdateStreamDto,
-  ) {
+  ): Promise<void> {
     this.checkCampaignSelfReferencing(campaignId, stream.actionCampaignId)
 
     if (stream.id) {
@@ -62,7 +62,7 @@ export class UpdateStreamService {
     userId: string,
     input: UpdateStreamDto,
     streamId: string,
-  ) {
+  ): Promise<void> {
     await this.commonService.ensureCampaignExists(
       userId,
       input.actionCampaignId,
@@ -76,7 +76,7 @@ export class UpdateStreamService {
   private checkCampaignSelfReferencing(
     campaignId: string,
     actionCampaignId?: string,
-  ) {
+  ): void {
     if (campaignId === actionCampaignId) {
       throw new BadRequestException('Company should not refer to itself')
     }
@@ -87,7 +87,7 @@ export class UpdateStreamService {
     input: UpdateStreamDto,
     streamId: string,
     userId: string,
-  ) {
+  ): Promise<void> {
     if (
       !input.offers ||
       input.schema !== CampaignStreamSchema.LANDINGS_OFFERS ||
@@ -122,7 +122,7 @@ export class UpdateStreamService {
     manager: EntityManager,
     input: { id?: string }[],
     campaignId: string,
-  ) {
+  ): Promise<void> {
     const offerIds = arrayUnique(
       input.filter((item) => Boolean(item.id)).map((item) => item.id),
     ) as string[]

@@ -8,7 +8,10 @@ import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 export class CommonStreamService {
   constructor(private readonly campaignRepository: CampaignRepository) {}
 
-  public async ensureCampaignExists(userId: string, campaignId?: string) {
+  public async ensureCampaignExists(
+    userId: string,
+    campaignId?: string,
+  ): Promise<void> {
     if (!campaignId) {
       return
     }

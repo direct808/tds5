@@ -28,28 +28,32 @@ export class CampaignCacheListener {
   constructor(private readonly clearCacheService: CampaignCacheClearService) {}
 
   @OnEvent(campaignCreatedEventName)
-  handleCampaignCreatedEvent({ campaignCode }: CampaignCreatedEvent) {
+  handleCampaignCreatedEvent({
+    campaignCode,
+  }: CampaignCreatedEvent): Promise<void> {
     this.logger.debug('CampaignCreatedEvent: ' + campaignCode)
 
     return this.clearCacheService.clearCacheByCampaignCode(campaignCode)
   }
 
   @OnEvent(campaignUpdateEventName)
-  handleCampaignUpdatedEvent({ campaignCode }: CampaignUpdatedEvent) {
+  handleCampaignUpdatedEvent({
+    campaignCode,
+  }: CampaignUpdatedEvent): Promise<void> {
     this.logger.debug('CampaignUpdatedEvent: ' + campaignCode)
 
     return this.clearCacheService.clearCacheByCampaignCode(campaignCode)
   }
 
   @OnEvent(sourceUpdateEventName)
-  handleSourceUpdatedEvent({ sourceId }: SourceUpdatedEvent) {
+  handleSourceUpdatedEvent({ sourceId }: SourceUpdatedEvent): Promise<void> {
     this.logger.debug('SourceUpdatedEvent: ' + sourceId)
 
     return this.clearCacheService.clearCacheBySourceId(sourceId)
   }
 
   @OnEvent(offerUpdateEventName)
-  handleOfferUpdatedEvent({ offerId }: OfferUpdatedEvent) {
+  handleOfferUpdatedEvent({ offerId }: OfferUpdatedEvent): Promise<void> {
     this.logger.debug('OfferUpdatedEvent: ' + offerId)
 
     return this.clearCacheService.clearCacheByOfferId(offerId)
@@ -58,7 +62,7 @@ export class CampaignCacheListener {
   @OnEvent(affiliateNetworkEventName)
   handleAffiliateNetworkUpdatedEvent({
     affiliateNetworkId,
-  }: AffiliateNetworkUpdatedEvent) {
+  }: AffiliateNetworkUpdatedEvent): Promise<void> {
     this.logger.debug('AffiliateNetworkUpdatedEvent: ' + affiliateNetworkId)
 
     return this.clearCacheService.clearCacheByAffiliateNetworkId(

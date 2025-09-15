@@ -6,23 +6,23 @@ export class AffiliateNetworkBuilder {
 
   private constructor() {}
 
-  public static create() {
+  public static create(): AffiliateNetworkBuilder {
     return new this()
   }
 
-  name(name: string) {
+  name(name: string): this {
     this.fields.name = name
 
     return this
   }
 
-  userId(userId: string) {
+  userId(userId: string): this {
     this.fields.userId = userId
 
     return this
   }
 
-  offerParams(offerParams: string) {
+  offerParams(offerParams: string): this {
     this.fields.offerParams = offerParams
 
     return this

@@ -12,19 +12,19 @@ export class StreamTypeActionBuilder extends StreamBuilder {
     this.fields.schema = CampaignStreamSchema.ACTION
   }
 
-  type(type: StreamActionType) {
+  type(type: StreamActionType): this {
     this.fields.actionType = type
 
     return this
   }
 
-  content(actionContent: string) {
+  content(actionContent: string): this {
     this.fields.actionContent = actionContent
 
     return this
   }
 
-  createActionCampaign(callback: (builder: CampaignBuilder) => void) {
+  createActionCampaign(callback: (builder: CampaignBuilder) => void): void {
     const builder = CampaignBuilder.create()
     this.actionCampaignBuilder = builder
     callback(builder)

@@ -12,7 +12,7 @@ export class QueryStringObserver implements ClickObserver {
     @Inject(ClickContext) private readonly clickContext: IClickContext,
   ) {}
 
-  public handle() {
+  public handle(): void {
     const request = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 
@@ -39,7 +39,7 @@ export class QueryStringObserver implements ClickObserver {
     Object.assign(clickData, data)
   }
 
-  private getCost(val: string | undefined) {
+  private getCost(val: string | undefined): number | undefined {
     let costStr = val
     costStr = costStr ? costStr.replace(',', '.') : costStr
     const costRaw = costStr ? parseFloat(costStr) : undefined

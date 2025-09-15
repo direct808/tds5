@@ -22,7 +22,7 @@ export class CampaignBuilder {
 
   private constructor() {}
 
-  static create() {
+  static create(): CampaignBuilder {
     return new this()
   }
 
@@ -56,25 +56,25 @@ export class CampaignBuilder {
     return campaign
   }
 
-  name(value: string) {
+  name(value: string): CampaignBuilder {
     this.fields.name = value
 
     return this
   }
 
-  code(value: string) {
+  code(value: string): CampaignBuilder {
     this.fields.code = value
 
     return this
   }
 
-  active(active: boolean) {
+  active(active: boolean): CampaignBuilder {
     this.fields.active = active
 
     return this
   }
 
-  userId(value: string) {
+  userId(value: string): CampaignBuilder {
     this.fields.userId = value
 
     return this
@@ -82,7 +82,7 @@ export class CampaignBuilder {
 
   public addStreamTypeDirectUrl(
     callback: (builder: StreamTypeDirectUrlBuilder) => void,
-  ) {
+  ): CampaignBuilder {
     const builder = new StreamTypeDirectUrlBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -92,7 +92,7 @@ export class CampaignBuilder {
 
   public addStreamTypeAction(
     callback: (builder: StreamTypeActionBuilder) => void,
-  ) {
+  ): CampaignBuilder {
     const builder = new StreamTypeActionBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -102,7 +102,7 @@ export class CampaignBuilder {
 
   public addStreamTypeOffers(
     callback: (builder: StreamTypeOffersBuilder) => void,
-  ) {
+  ): CampaignBuilder {
     const builder = new StreamTypeOffersBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -110,7 +110,7 @@ export class CampaignBuilder {
     return this
   }
 
-  createSource(callback: (builder: SourceBuilder) => void) {
+  createSource(callback: (builder: SourceBuilder) => void): CampaignBuilder {
     const builder = SourceBuilder.create()
     this.sourceBuilder = builder
     callback(builder)
@@ -118,13 +118,13 @@ export class CampaignBuilder {
     return this
   }
 
-  sourceId(value: string) {
+  sourceId(value: string): CampaignBuilder {
     this.fields.sourceId = value
 
     return this
   }
 
-  createUser(callback: (builder: UserBuilder) => void) {
+  createUser(callback: (builder: UserBuilder) => void): CampaignBuilder {
     const builder = UserBuilder.create()
     this.userBuilder = builder
     callback(builder)

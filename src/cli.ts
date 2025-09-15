@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { CommandFactory } from 'nest-commander'
 import { CommandModule } from '@/commands/command.module'
 
-async function bootstrap() {
+async function bootstrap(): Promise<void> {
   await CommandFactory.run(CommandModule, {
     serviceErrorHandler: (error: Error | any) => {
       // eslint-disable-next-line no-console

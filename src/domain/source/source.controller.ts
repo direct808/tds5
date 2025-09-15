@@ -14,6 +14,7 @@ import { UserId } from '@/domain/auth/user-id.decorator'
 import { CreateSourceDto } from './dto/create-source.dto'
 import { UpdateSourceDto } from './dto/update-source.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
+import { Source } from '@/domain/source/source.entity'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')
@@ -21,7 +22,7 @@ export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
   @Get()
-  getSources(@UserId() userId: string) {
+  getSources(@UserId() userId: string): Promise<Source[]> {
     return this.sourceService.getList(userId)
   }
 
@@ -29,7 +30,7 @@ export class SourceController {
   async createSource(
     @Body() { name }: CreateSourceDto,
     @UserId() userId: string,
-  ) {
+  ): Promise<void> {
     await this.sourceService.create({ name, userId })
   }
 
@@ -38,7 +39,7 @@ export class SourceController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
     @Body() dto: UpdateSourceDto,
-  ) {
+  ): Promise<void> {
     await this.sourceService.update({ ...dto, id, userId })
   }
 
@@ -46,7 +47,7 @@ export class SourceController {
   async deleteSource(
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
-  ) {
+  ): Promise<void> {
     await this.sourceService.delete({ id, userId })
   }
 }

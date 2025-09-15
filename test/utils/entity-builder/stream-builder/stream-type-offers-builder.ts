@@ -3,6 +3,7 @@ import { StreamBuilder } from './stream-builder'
 import { StreamOfferBuilder } from '../stream-offer-builder'
 import { DataSource } from 'typeorm'
 import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
+import { Stream } from '@/domain/campaign/entity/stream.entity'
 
 export class StreamTypeOffersBuilder extends StreamBuilder {
   private streamOffersBuilders: StreamOfferBuilder[] = []
@@ -12,7 +13,7 @@ export class StreamTypeOffersBuilder extends StreamBuilder {
     this.fields.schema = CampaignStreamSchema.LANDINGS_OFFERS
   }
 
-  addOffer(callback: (builder: StreamOfferBuilder) => void) {
+  addOffer(callback: (builder: StreamOfferBuilder) => void): this {
     const builder = StreamOfferBuilder.create()
     this.streamOffersBuilders.push(builder)
     callback(builder)
@@ -20,7 +21,7 @@ export class StreamTypeOffersBuilder extends StreamBuilder {
     return this
   }
 
-  async save(ds: DataSource, campaignId: string) {
+  async save(ds: DataSource, campaignId: string): Promise<Stream> {
     const streamOffers: StreamOffer[] = []
     const result = await super.save(ds, campaignId)
 

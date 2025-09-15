@@ -1,5 +1,6 @@
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
+import TestAgent from 'supertest/lib/agent'
 
 export class ClickRequestBuilder {
   private code: string | undefined
@@ -9,35 +10,35 @@ export class ClickRequestBuilder {
 
   private constructor(private readonly app: INestApplication) {}
 
-  public static create(app: INestApplication) {
-    return new ClickRequestBuilder(app)
+  public static create(app: INestApplication): ClickRequestBuilder {
+    return new this(app)
   }
 
-  public setCode(code: string) {
+  public setCode(code: string): this {
     this.code = code
 
     return this
   }
 
-  public setVisitorId(visitorId: string) {
+  public setVisitorId(visitorId: string): this {
     this.visitorId = visitorId
 
     return this
   }
 
-  public addQueryParam(name: string, value: string) {
+  public addQueryParam(name: string, value: string): this {
     this.q.append(name, value)
 
     return this
   }
 
-  public addHeader(name: string, value: string) {
+  public addHeader(name: string, value: string): this {
     this.headers[name] = value
 
     return this
   }
 
-  public request() {
+  public request(): ReturnType<TestAgent['get']> {
     const req = request(this.app.getHttpServer())
     if (!this.code) {
       throw new Error('Code not set')

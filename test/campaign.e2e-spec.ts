@@ -401,7 +401,7 @@ describe('CampaignController (e2e)', () => {
         )
         .save(dataSource)
 
-      async function sendRequest(withId: boolean) {
+      async function sendRequest(withId: boolean): Promise<void> {
         await request(app.getHttpServer())
           .put('/api/campaign/' + campaign.id)
           .auth(accessToken, { type: 'bearer' })

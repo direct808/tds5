@@ -21,7 +21,10 @@ export class CampaignController {
   ) {}
 
   @Post()
-  createCampaign(@Body() args: CreateCampaignDto, @UserId() userId: string) {
+  createCampaign(
+    @Body() args: CreateCampaignDto,
+    @UserId() userId: string,
+  ): Promise<void> {
     return this.createCampaignService.create({ ...args, userId }, null)
   }
 
@@ -30,7 +33,7 @@ export class CampaignController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
     @Body() dto: UpdateCampaignDto,
-  ) {
+  ): Promise<void> {
     await this.updateCampaignService.update({ ...dto, id, userId }, null)
   }
 }

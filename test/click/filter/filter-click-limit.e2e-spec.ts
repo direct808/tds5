@@ -11,8 +11,12 @@ import { faker } from '@faker-js/faker'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { setTimeout } from 'timers/promises'
+import { Click } from '@/domain/click/click.entity'
 
-async function clickAction(app: INestApplication, code: string) {
+async function clickAction(
+  app: INestApplication,
+  code: string,
+): Promise<string> {
   const { text } = await ClickRequestBuilder.create(app)
     .setCode(code)
     .request()
@@ -25,7 +29,7 @@ function createClick(
   campaignId: string,
   createdAt: DateTime,
   dataSource: DataSource,
-) {
+): Promise<Click> {
   return ClickBuilder.create()
     .id(faker.string.alpha(12))
     .campaignId(campaignId)

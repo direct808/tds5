@@ -11,7 +11,7 @@ export class LanguageParserObserver implements ClickObserver {
     @Inject(ClickContext) private readonly clickContext: IClickContext,
   ) {}
 
-  public handle() {
+  public handle(): void {
     const request = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 

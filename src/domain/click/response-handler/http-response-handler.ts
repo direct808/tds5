@@ -28,7 +28,7 @@ export class HttpResponseHandler implements ResponseHandler {
     }
   }
 
-  private setCookies(response: ResponseAdapter, clickData: ClickData) {
+  private setCookies(response: ResponseAdapter, clickData: ClickData): void {
     if (typeof clickData.visitorId === 'undefined') {
       throw new Error('clickData.visitorId undefined')
     }

@@ -10,7 +10,7 @@ export class ShowTextActionType implements ActionType {
     }
   }
 
-  #escape(unsafe: string) {
+  #escape(unsafe: string): string {
     return unsafe
       .replaceAll('&', '&amp;')
       .replaceAll('<', '&lt;')

@@ -12,7 +12,7 @@ export class ResponseHandlerFactory {
     private readonly clickContext: ClickContext,
   ) {}
 
-  public handle(clickResponse: StreamResponse) {
+  public handle(clickResponse: StreamResponse): void {
     return this.create().handle(clickResponse)
   }
 

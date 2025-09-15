@@ -56,7 +56,7 @@ export class DownloadIp2LocationDatabaseCommand extends CommandRunner {
     return file
   }
 
-  private async saveFile(file: File) {
+  private async saveFile(file: File): Promise<void> {
     await pipeline(file.stream(), fs.createWriteStream('./geo-ip.mmdb'))
   }
 }

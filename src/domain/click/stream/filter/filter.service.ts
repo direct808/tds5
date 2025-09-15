@@ -62,7 +62,7 @@ export class FilterService {
     return this.processExclude(result, filter.exclude)
   }
 
-  private processExclude(result: boolean, exclude?: boolean) {
+  private processExclude(result: boolean, exclude?: boolean): boolean {
     return exclude ? !result : result
   }
 

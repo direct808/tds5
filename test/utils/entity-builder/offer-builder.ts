@@ -9,23 +9,23 @@ export class OfferBuilder {
 
   private constructor() {}
 
-  public static create() {
+  public static create(): OfferBuilder {
     return new this()
   }
 
-  name(name: string) {
+  name(name: string): this {
     this.fields.name = name
 
     return this
   }
 
-  url(name: string) {
+  url(name: string): this {
     this.fields.url = name
 
     return this
   }
 
-  userId(userId: string) {
+  userId(userId: string): this {
     this.fields.userId = userId
 
     return this
@@ -45,7 +45,7 @@ export class OfferBuilder {
 
   public createAffiliateNetwork(
     callback: (builder: AffiliateNetworkBuilder) => void,
-  ) {
+  ): this {
     const builder = AffiliateNetworkBuilder.create()
     this.affiliateNetworkBuilder = builder
     callback(builder)
@@ -53,7 +53,7 @@ export class OfferBuilder {
     return this
   }
 
-  public affiliateNetworkId(affiliateNetworkId: string) {
+  public affiliateNetworkId(affiliateNetworkId: string): this {
     this.fields.affiliateNetworkId = affiliateNetworkId
 
     return this

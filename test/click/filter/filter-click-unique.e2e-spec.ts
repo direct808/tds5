@@ -14,7 +14,7 @@ async function clickAction(
   app: INestApplication,
   code: string,
   visitorId?: string,
-) {
+): Promise<string> {
   const builder = ClickRequestBuilder.create(app).setCode(code)
 
   if (visitorId) {
