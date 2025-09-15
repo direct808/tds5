@@ -25,7 +25,7 @@ export class ClickService {
     private readonly campaignCacheService: CampaignCacheService,
   ) {}
 
-  async handleClick(code: string) {
+  async handleClick(code: string): Promise<void> {
     await this.setupSubject.setupRequestSubject()
     const redirectData: RedirectData = { count: 0 }
     const streamResponse = await this.getStreamResponse(code, redirectData)
@@ -79,7 +79,7 @@ export class ClickService {
     }
   }
 
-  private checkIncrementRedirectCount(redirectData: RedirectData) {
+  private checkIncrementRedirectCount(redirectData: RedirectData): void {
     redirectData.count++
     if (redirectData.count > 5) {
       throw new HttpException('To many redirects', HttpStatus.BAD_REQUEST)

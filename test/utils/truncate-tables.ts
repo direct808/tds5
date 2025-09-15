@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import { Redis } from 'ioredis'
 
-export async function truncateTables() {
+export async function truncateTables(): Promise<void> {
   const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME } = process.env
 
   const dataSource = new DataSource({
@@ -27,7 +27,7 @@ export async function truncateTables() {
   await dataSource.destroy()
 }
 
-export async function flushRedisDb() {
+export async function flushRedisDb(): Promise<void> {
   const { REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_PASSWORD } = process.env
 
   if (!REDIS_HOST) {

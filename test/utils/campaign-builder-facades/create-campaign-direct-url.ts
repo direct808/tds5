@@ -2,6 +2,7 @@ import { StreamRedirectType } from '@/domain/campaign/types'
 import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../entity-builder/campaign-builder'
 import { faker } from '@faker-js/faker'
+import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 
 type CreateCampaignDirectUrlArgs = {
   dataSource: DataSource
@@ -15,7 +16,7 @@ export function createCampaignDirectUrl({
   url = faker.internet.url(),
   userId,
   dataSource,
-}: CreateCampaignDirectUrlArgs) {
+}: CreateCampaignDirectUrlArgs): Promise<Campaign> {
   return CampaignBuilder.create()
     .name(faker.company.name())
     .code(faker.string.alphanumeric({ length: 6 }))

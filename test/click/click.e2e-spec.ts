@@ -252,7 +252,7 @@ describe('Click (e2e)', () => {
   })
 })
 
-function createServer(port: number, content: string) {
+function createServer(port: number, content: string): void {
   const expressApp = express()
   expressApp.get('/', (req, res) => {
     res.send(content)

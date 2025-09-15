@@ -10,13 +10,13 @@ export class StreamTypeDirectUrlBuilder extends StreamBuilder {
     this.fields.schema = CampaignStreamSchema.DIRECT_URL
   }
 
-  redirectType(type: StreamRedirectType) {
+  redirectType(type: StreamRedirectType): this {
     this.fields.redirectType = type
 
     return this
   }
 
-  url(url: string) {
+  url(url: string): this {
     this.fields.redirectUrl = url
 
     return this

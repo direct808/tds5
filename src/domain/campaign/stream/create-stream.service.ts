@@ -19,7 +19,7 @@ export class CreateStreamService {
     campaignId: string,
     userId: string,
     streams: CreateStreamDto[],
-  ) {
+  ): Promise<void> {
     for (const stream of streams) {
       await this.createStream(manager, campaignId, userId, stream)
     }
@@ -30,7 +30,7 @@ export class CreateStreamService {
     campaignId: string,
     userId: string,
     input: CreateStreamDto,
-  ) {
+  ): Promise<void> {
     await this.commonService.ensureCampaignExists(
       userId,
       input.actionCampaignId,
@@ -46,7 +46,7 @@ export class CreateStreamService {
     input: CreateStreamDto,
     streamId: string,
     userId: string,
-  ) {
+  ): Promise<void> {
     if (
       !input.offers ||
       input.offers.length === 0 ||

@@ -1,7 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common'
 import cookieParser from 'cookie-parser'
 
-export function configureApp(app: INestApplication) {
+export function configureApp(app: INestApplication): void {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
   app.use(cookieParser())
 }

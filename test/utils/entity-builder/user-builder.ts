@@ -6,17 +6,17 @@ export class UserBuilder {
 
   private constructor() {}
 
-  static create() {
+  static create(): UserBuilder {
     return new this()
   }
 
-  email(email: string) {
+  email(email: string): UserBuilder {
     this.fields.email = email
 
     return this
   }
 
-  password(password: string) {
+  password(password: string): UserBuilder {
     this.fields.password = password
 
     return this

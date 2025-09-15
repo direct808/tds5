@@ -23,7 +23,7 @@ type SplitItem = {
 
 @Injectable()
 export class OfferParamsService {
-  public buildOfferUrl(args: BuildOfferUrlArgs) {
+  public buildOfferUrl(args: BuildOfferUrlArgs): string {
     const strArr: string[] = []
     for (const { key, type } of this.split(args.offerParams)) {
       if (type === ValueType.string) {
@@ -77,7 +77,7 @@ export class OfferParamsService {
     return encodeURIComponent(paramData[key])
   }
 
-  private joinUrlAndParams(url: string, params: string) {
+  private joinUrlAndParams(url: string, params: string): string {
     if (url.includes('?')) {
       return url + '&' + params
     }

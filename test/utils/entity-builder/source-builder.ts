@@ -6,17 +6,17 @@ export class SourceBuilder {
 
   private constructor() {}
 
-  public static create() {
+  public static create(): SourceBuilder {
     return new this()
   }
 
-  name(name: string) {
+  name(name: string): this {
     this.fields.name = name
 
     return this
   }
 
-  userId(userId: string) {
+  userId(userId: string): this {
     this.fields.userId = userId
 
     return this

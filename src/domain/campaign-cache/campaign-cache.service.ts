@@ -9,6 +9,7 @@ import {
 } from './helpers/campaign-cache-keys'
 import { RedisProvider } from '@/infra/redis/redis.provider'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { FullCampaign } from '@/domain/campaign/types'
 
 const NOT_FOUND = 'N'
 
@@ -20,13 +21,13 @@ export class CampaignCacheService {
     private readonly campaignRepository: CampaignRepository,
   ) {}
 
-  public async getFullByCode(code: string) {
+  public async getFullByCode(code: string): Promise<FullCampaign> {
     return this.redisWrap(fullCampaignCacheKey(code), () =>
       this.getCampaignFromDb(code),
     )
   }
 
-  private async getCampaignFromDb(code: string) {
+  private async getCampaignFromDb(code: string): Promise<FullCampaign> {
     const campaign = await this.campaignRepository.getFullByCode(code)
 
     if (!campaign) {
@@ -37,7 +38,7 @@ export class CampaignCacheService {
     return campaign
   }
 
-  private async setAdditionalCache(campaign: Campaign) {
+  private async setAdditionalCache(campaign: Campaign): Promise<void> {
     const { sourceId, offerIds, affiliateNetworkIdIds } =
       getCampaignAdditionalIds(campaign)
 

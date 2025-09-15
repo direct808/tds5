@@ -16,7 +16,7 @@ export class RequestSetupSubject {
     private readonly geoIpObserver: GeoIpObserver,
   ) {}
 
-  public async setup() {
+  public async setup(): Promise<void> {
     const requestSubject = new ClickSubject()
 
     requestSubject.attach(this.queryStringObserver)

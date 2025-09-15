@@ -5,7 +5,7 @@ import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { AppConfig } from './app-config.service'
 
-function validate(config: Record<string, unknown>) {
+function validate(config: Record<string, unknown>): AppConfig {
   const validatedConfig = plainToInstance(AppConfig, config, {
     enableImplicitConversion: true,
   })
@@ -30,7 +30,7 @@ function validate(config: Record<string, unknown>) {
   providers: [
     {
       provide: AppConfig,
-      useFactory() {
+      useFactory(): AppConfig {
         // eslint-disable-next-line no-process-env
         return validate(process.env)
       },

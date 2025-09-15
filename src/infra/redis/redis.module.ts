@@ -9,7 +9,7 @@ import { AppConfig } from '@/infra/config/app-config.service'
     {
       provide: Redis,
       inject: [AppConfig],
-      useFactory: (config: AppConfig) => {
+      useFactory: (config: AppConfig): Redis => {
         return new Redis({
           host: config.redisHost,
           port: +config.redisPort,
@@ -24,7 +24,7 @@ import { AppConfig } from '@/infra/config/app-config.service'
 export class RedisModule implements OnApplicationShutdown {
   constructor(private readonly redis: Redis) {}
 
-  async onApplicationShutdown() {
+  async onApplicationShutdown(): Promise<void> {
     await this.redis.quit()
   }
 }

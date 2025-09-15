@@ -1,6 +1,12 @@
 import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 
-export function getCampaignAdditionalIds(campaign: Campaign) {
+type Args = {
+  sourceId: string | undefined
+  offerIds: string[]
+  affiliateNetworkIdIds: string[]
+}
+
+export function getCampaignAdditionalIds(campaign: Campaign): Args {
   const sourceId = campaign.sourceId
   const offerIds: string[] = []
   const affiliateNetworkIdIds: string[] = []

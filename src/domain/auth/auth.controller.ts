@@ -14,7 +14,10 @@ export class AuthController {
   @SkipAuth()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Body() loginDto: LoginDto, @Req() req: LoginRequest) {
+  login(
+    @Body() loginDto: LoginDto,
+    @Req() req: LoginRequest,
+  ): { accessToken: string } {
     return this.authService.sign(req.user)
   }
 }

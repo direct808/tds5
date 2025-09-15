@@ -5,6 +5,7 @@ import archiver from 'archiver'
 import stream from 'stream'
 import { setTimeout } from 'timers/promises'
 import { AppConfig } from '@/infra/config/app-config.service'
+import http from 'http'
 
 describe('download-ip2-location-database.command.spec.ts', () => {
   it('Should be correct download', async () => {
@@ -89,7 +90,7 @@ describe('download-ip2-location-database.command.spec.ts', () => {
   })
 })
 
-function createFileServer(port = 3000, stream: stream.Readable) {
+function createFileServer(port = 3000, stream: stream.Readable): http.Server {
   const app = express()
 
   app.get('/', (req, res) => {
@@ -102,7 +103,9 @@ function createFileServer(port = 3000, stream: stream.Readable) {
   return app.listen(port).unref()
 }
 
-async function createFakeMmdbZipStream(files: File[]) {
+async function createFakeMmdbZipStream(
+  files: File[],
+): Promise<archiver.Archiver> {
   const archive = archiver('zip', {
     zlib: { level: 9 },
   })

@@ -29,7 +29,7 @@ export class AuthService {
     return bcrypt.compare(password, hash)
   }
 
-  sign(user: LoginUser) {
+  sign(user: LoginUser): { accessToken: string } {
     const payload = { email: user.email, sub: user.id }
 
     return {
