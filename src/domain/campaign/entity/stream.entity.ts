@@ -1,7 +1,7 @@
 import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm'
 import { Campaign } from './campaign.entity'
 import { StreamOffer } from './stream-offer.entity'
-import { Filters } from '@/domain/stream-filter/types'
+import { Filters } from '@/domain/click/stream/stream-filter/types'
 import {
   CampaignStreamSchema,
   StreamActionType,

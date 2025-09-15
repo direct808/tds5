@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { Filters } from '@/domain/stream-filter/types'
-import { StreamFilterService } from '@/domain/stream-filter/stream-filter.service'
+import { Filters } from '@/domain/click/stream/stream-filter/types'
+import { StreamFilterService } from '@/domain/click/stream/stream-filter/stream-filter.service'
 
 interface StreamSimple {
   id: string

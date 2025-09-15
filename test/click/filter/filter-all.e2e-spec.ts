@@ -3,11 +3,14 @@ import { DataSource } from 'typeorm'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { StreamActionType } from '@/domain/campaign/types'
-import { FilterLogic, FilterObject } from '@/domain/stream-filter/types'
+import {
+  FilterLogic,
+  FilterObject,
+} from '@/domain/click/stream/stream-filter/types'
 import { ClickRequestBuilder } from '../../utils/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
-import { ClickDataTextKeys } from '@/domain/stream-filter/filters/click-data-text/click-data-text-filter'
+import { ClickDataTextKeys } from '@/domain/click/stream/stream-filter/filters/click-data-text/click-data-text-filter'
 import { FakeIpExpressRequestAdapter } from '../../utils/fake-ip-express-request-adapter'
 import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
