@@ -1,9 +1,9 @@
 import { QueryStringObserver } from '@/domain/click/observers/request/query-string.observer'
+import { MockClickContext } from '../../../../../test/utils/mock-click-context.service'
 import {
   MockRequestAdapter,
   MockRequestAdapterData,
-} from '@/shared/request-adapter'
-import { MockClickContext } from '../../../../../test/utils/mock-click-context.service'
+} from '../../../../../test/utils/mock-request-adapter'
 
 describe('QueryStringObserver', () => {
   let observer: QueryStringObserver

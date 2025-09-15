@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ClickController } from './click.controller'
 import { ClickService } from './click.service'
-import { SelectStreamService } from './select-stream.service'
+import { SelectStreamService } from './stream/select-stream.service'
 import { JsonResponseHandler } from './response-handler/json-response-handler'
 import { HttpResponseHandler } from './response-handler/http-response-handler'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'

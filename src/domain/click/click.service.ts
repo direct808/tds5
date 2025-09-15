@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { SelectStreamService } from './select-stream.service'
+import { SelectStreamService } from './stream/select-stream.service'
 import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 import { SchemaService } from '@/domain/click/stream/schema/schema.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
