@@ -3,9 +3,9 @@ import request from 'supertest'
 import { DataSource } from 'typeorm'
 import { createAuthUser } from '../utils/helpers'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import { ClickRepository } from '@/click/shared/click.repository'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
+import { ClickRepository } from '@/infra/repositories/click.repository'
 
 describe('Offer params (e2e)', () => {
   let app: INestApplication

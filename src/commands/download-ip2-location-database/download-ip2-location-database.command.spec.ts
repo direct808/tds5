@@ -1,10 +1,10 @@
 import { DownloadIp2LocationDatabaseCommand } from '@/commands/download-ip2-location-database/download-ip2-location-database.command'
-import { AppConfig } from '@/config/app-config.service'
 import { spyOn } from '../../../test/utils/helpers'
 import express from 'express'
 import archiver from 'archiver'
 import stream from 'stream'
 import { setTimeout } from 'timers/promises'
+import { AppConfig } from '@/infra/config/app-config.service'
 
 describe('download-ip2-location-database.command.spec.ts', () => {
   it('Should be correct download', async () => {

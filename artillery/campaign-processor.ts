@@ -1,6 +1,6 @@
 import { name } from './common'
 import { faker } from '@faker-js/faker'
-import { CampaignStreamSchema, StreamActionType } from '@/campaign/types'
+import { CampaignStreamSchema, StreamActionType } from '@/domain/campaign/types'
 
 export async function createCampaign(requestParams: any) {
   const streamCount = faker.number.int({ min: 1, max: 3 })

@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { AffiliateNetwork } from '@/affiliate-network/affiliate-network.entity'
+import { AffiliateNetwork } from '@/domain/affiliate-network/affiliate-network.entity'
 
 export class AffiliateNetworkBuilder {
   private fields: Partial<AffiliateNetwork> = {}

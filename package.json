@@ -20,7 +20,7 @@
     "test:cov:watch": "npm run test:cov -- --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --detectOpenHandles --config ./test/jest-e2e.json",
-    "kysely-codegen": "kysely-codegen --out-file ./src/db.d.ts",
+    "kysely-codegen": "kysely-codegen --out-file ./src/shared/db.d.ts",
     "download-ip2-location-database": "nest start --entryFile cli.js -- download-ip2-location-database"
   },
   "dependencies": {

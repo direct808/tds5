@@ -4,15 +4,15 @@ import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser, spyOn } from '../utils/helpers'
-import { StreamActionType } from '@/campaign/types'
+import { StreamActionType } from '@/domain/campaign/types'
 import { ClickRequestBuilder } from '../utils/click-request-builder'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import request from 'supertest'
-import { CampaignRepository } from '@/campaign/campaign.repository'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { faker } from '@faker-js/faker/.'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
-import { CreateCampaignService } from '@/campaign/create-campaign.service'
+import { CreateCampaignService } from '@/domain/campaign/create-campaign.service'
 
 describe('Click-cache (e2e)', () => {
   let app: INestApplication

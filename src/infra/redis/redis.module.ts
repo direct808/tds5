@@ -1,7 +1,7 @@
 import { Module, OnApplicationShutdown } from '@nestjs/common'
 import Redis from 'ioredis'
-import { AppConfig } from '@/config/app-config.service'
 import { RedisProvider } from './redis.provider'
+import { AppConfig } from '@/infra/config/app-config.service'
 
 @Module({
   providers: [

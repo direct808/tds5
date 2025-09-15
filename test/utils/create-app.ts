@@ -1,8 +1,8 @@
-import { configureApp } from '@/utils/configure-app'
+import { configureApp } from '@/shared/configure-app'
 import { AppModule } from '@/app.module'
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
-import { GEO_IP_PROVIDER } from '@/geo-ip/types'
+import { GEO_IP_PROVIDER } from '@/domain/geo-ip/types'
 import { FakeGeoIpService } from './fake-geo-Ip-service'
 
 export async function createApp(): Promise<INestApplication> {

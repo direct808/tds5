@@ -1,4 +1,7 @@
-import { CampaignStreamSchema, StreamRedirectType } from '@/campaign/types'
+import {
+  CampaignStreamSchema,
+  StreamRedirectType,
+} from '@/domain/campaign/types'
 import { StreamBuilder } from './stream-builder'
 
 export class StreamTypeDirectUrlBuilder extends StreamBuilder {
