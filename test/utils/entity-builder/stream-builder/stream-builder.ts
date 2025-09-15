@@ -1,6 +1,6 @@
-import { Stream } from '@/campaign/entity/stream.entity'
+import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { DataSource } from 'typeorm'
-import { Filters } from '@/stream-filter/types'
+import { Filters } from '@/domain/click/stream/filter/types'
 
 export abstract class StreamBuilder {
   protected readonly fields: Partial<Stream> = {}

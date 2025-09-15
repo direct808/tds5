@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import { Click } from '@/click/click.entity'
+import { Click } from '@/domain/click/click.entity'
 
 export class ClickBuilder {
   private readonly fields: Partial<Click> = {}

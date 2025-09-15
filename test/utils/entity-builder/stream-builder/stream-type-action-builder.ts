@@ -1,6 +1,6 @@
 import { StreamBuilder } from './stream-builder'
-import { CampaignStreamSchema, StreamActionType } from '@/campaign/types'
-import { Stream } from '@/campaign/entity/stream.entity'
+import { CampaignStreamSchema, StreamActionType } from '@/domain/campaign/types'
+import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { CampaignBuilder } from '../campaign-builder'
 import { DataSource } from 'typeorm'
 

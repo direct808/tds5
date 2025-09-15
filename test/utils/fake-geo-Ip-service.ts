@@ -1,4 +1,4 @@
-import { GeoIpResult, GeoIpService } from '@/geo-ip/types'
+import { GeoIpResult, GeoIpService } from '@/domain/geo-ip/types'
 
 export class FakeGeoIpService implements GeoIpService {
   private data: GeoIpResult | undefined

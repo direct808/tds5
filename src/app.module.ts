@@ -1,27 +1,25 @@
 import { Module } from '@nestjs/common'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
-import { StartRequestInterceptor } from './start-request.interceptor'
-import { AppExceptionFilter } from './app-exception.filter'
-import { AppConfigModule } from './config/app-config.module'
-import { AppDbModule } from './config/app-db.module'
-import { SourceModule } from './source/source.module'
-import { UserModule } from './user/user.module'
-import { AuthModule } from './auth/auth.module'
-import { AffiliateNetworkModule } from './affiliate-network/affiliate-network.module'
-import { OfferModule } from './offer/offer.module'
-import { CampaignModule } from './campaign/campaign.module'
-import { ClickModule } from './click/click.module'
+import { SourceModule } from '@/domain/source/source.module'
+import { AuthModule } from '@/domain/auth/auth.module'
+import { AffiliateNetworkModule } from '@/domain/affiliate-network/affiliate-network.module'
+import { OfferModule } from '@/domain/offer/offer.module'
+import { CampaignModule } from '@/domain/campaign/campaign.module'
+import { ClickModule } from '@/domain/click/click.module'
 import { ClsModule } from 'nestjs-cls'
-import { GeoIpModule } from '@/geo-ip/geo-ip.module'
+import { GeoIpModule } from '@/domain/geo-ip/geo-ip.module'
 import { PrometheusModule } from '@willsoto/nestjs-prometheus'
 import { EventEmitterModule } from '@nestjs/event-emitter'
+import { AppConfigModule } from '@/infra/config/app-config.module'
+import { DatabaseModule } from '@/infra/database/database.module'
+import { StartRequestInterceptor } from '@/shared/start-request.interceptor'
+import { AppExceptionFilter } from '@/shared/app-exception.filter'
 
 @Module({
   imports: [
     AppConfigModule,
-    AppDbModule,
+    DatabaseModule,
     SourceModule,
-    UserModule,
     AuthModule,
     AffiliateNetworkModule,
     OfferModule,

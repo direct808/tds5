@@ -1,4 +1,4 @@
-import { StreamOffer } from '@/campaign/entity/stream-offer.entity'
+import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
 import { OfferBuilder } from './offer-builder'
 import { DataSource } from 'typeorm'
 
