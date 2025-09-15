@@ -6,13 +6,13 @@ import { SelectOfferService } from './select-offer.service'
 import { ClickSharedModule } from '@/domain/click/shared/click-shared.module'
 
 @Module({
-  exports: [LandingsOffersService],
+  imports: [ClickSharedModule],
   providers: [
     LandingsOffersService,
     OfferParamsService,
     OfferParamDataMapper,
     SelectOfferService,
   ],
-  imports: [ClickSharedModule],
+  exports: [LandingsOffersService],
 })
 export class LandingsOfferModule {}
