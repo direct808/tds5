@@ -2,7 +2,7 @@ import {
   ClickUniqueFilter,
   ClickUniqueFor,
   ClickUniqueProvider,
-} from '@/domain/click/stream/stream-filter/filters/click-unique/click-unique-filter'
+} from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 
 describe('click-unique-filter.ts', () => {
   const getCountByVisitorId = jest.fn()

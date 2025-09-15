@@ -2,18 +2,18 @@ import {
   FilterLogic,
   FilterObjectExtended,
   Filters,
-} from '@/domain/click/stream/stream-filter/types'
+} from '@/domain/click/stream/filter/types'
 import { Inject, Injectable } from '@nestjs/common'
 import {
   IStreamFilterFactory,
-  StreamFilterFactory,
-} from '@/domain/click/stream/stream-filter/stream-filter-factory'
+  FilterFactory,
+} from '@/domain/click/stream/filter/filter-factory'
 import { MaybePromise } from '@/shared/types'
 
 @Injectable()
-export class StreamFilterService {
+export class FilterService {
   constructor(
-    @Inject(StreamFilterFactory)
+    @Inject(FilterFactory)
     private readonly streamFilterFactory: IStreamFilterFactory,
   ) {}
 

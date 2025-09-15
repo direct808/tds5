@@ -8,7 +8,7 @@ import { ResponseHandlerFactory } from './response-handler/response-handler-fact
 import { RegisterClickService } from './register-click.service'
 import { ObserverModule } from '@/domain/click/observers/observer.module'
 import { ClickSharedModule } from '@/domain/click/shared/click-shared.module'
-import { StreamFilterModule } from '@/domain/click/stream/stream-filter/stream-filter.module'
+import { FilterModule } from '@/domain/click/stream/filter/filter.module'
 import { RequestAdapterModule } from '@/shared/request-adapter/request-adapter.module'
 import { CampaignCacheModule } from '@/domain/campaign-cache/campaign-cache.module'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
@@ -28,7 +28,7 @@ import { SchemaModule } from '@/domain/click/stream/schema/schema.module'
     SchemaModule,
     ObserverModule,
     ClickSharedModule,
-    StreamFilterModule,
+    FilterModule,
     RequestAdapterModule,
     CampaignCacheModule,
     RepositoryModule,

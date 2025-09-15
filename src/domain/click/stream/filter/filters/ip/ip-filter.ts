@@ -1,7 +1,7 @@
 import {
   BaseFilterObject,
   StreamFilter,
-} from '@/domain/click/stream/stream-filter/types'
+} from '@/domain/click/stream/filter/types'
 import { isIP } from 'class-validator'
 
 export interface IpFilterObject extends BaseFilterObject {

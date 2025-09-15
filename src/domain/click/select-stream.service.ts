@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { Filters } from '@/domain/click/stream/stream-filter/types'
-import { StreamFilterService } from '@/domain/click/stream/stream-filter/stream-filter.service'
+import { Filters } from '@/domain/click/stream/filter/types'
+import { FilterService } from '@/domain/click/stream/filter/filter.service'
 
 interface StreamSimple {
   id: string
@@ -9,7 +9,7 @@ interface StreamSimple {
 
 @Injectable()
 export class SelectStreamService {
-  constructor(private readonly streamFilterService: StreamFilterService) {}
+  constructor(private readonly streamFilterService: FilterService) {}
 
   public async selectStream<T extends StreamSimple>(streams: T[]): Promise<T> {
     if (streams.length === 0) {

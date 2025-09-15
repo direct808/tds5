@@ -1,4 +1,4 @@
-import { QueryParamFilter } from '@/domain/click/stream/stream-filter/filters/query-param/query-param-filter'
+import { QueryParamFilter } from '@/domain/click/stream/filter/filters/query-param/query-param-filter'
 import { MockRequestAdapter } from '@/shared/request-adapter'
 
 describe('query-param-filter.ts', () => {

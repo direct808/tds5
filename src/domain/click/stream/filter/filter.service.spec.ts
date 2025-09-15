@@ -1,26 +1,23 @@
-import { StreamFilterService } from '@/domain/click/stream/stream-filter/stream-filter.service'
+import { FilterService } from '@/domain/click/stream/filter/filter.service'
 import { Test } from '@nestjs/testing'
-import { StreamFilterFactory } from '@/domain/click/stream/stream-filter/stream-filter-factory'
-import {
-  FilterLogic,
-  FilterObject,
-} from '@/domain/click/stream/stream-filter/types'
+import { FilterFactory } from '@/domain/click/stream/filter/filter-factory'
+import { FilterLogic, FilterObject } from '@/domain/click/stream/filter/types'
 
 function filterObject(exclude = false): FilterObject {
   return { type: 'keyword', values: ['Value'], exclude }
 }
 
 describe('stream-filter.service.ts', () => {
-  let service: StreamFilterService
+  let service: FilterService
   const handle = jest.fn()
 
   beforeEach(async () => {
     jest.resetAllMocks()
     const module = await Test.createTestingModule({
       providers: [
-        StreamFilterService,
+        FilterService,
         {
-          provide: StreamFilterFactory,
+          provide: FilterFactory,
           useValue: {
             create: () => ({ handle }),
           },
@@ -28,7 +25,7 @@ describe('stream-filter.service.ts', () => {
       ],
     }).compile()
 
-    service = module.get(StreamFilterService)
+    service = module.get(FilterService)
   })
 
   it.each([

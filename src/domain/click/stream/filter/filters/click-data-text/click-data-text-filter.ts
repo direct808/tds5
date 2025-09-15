@@ -1,7 +1,7 @@
 import {
   BaseFilterObject,
   StreamFilter,
-} from '@/domain/click/stream/stream-filter/types'
+} from '@/domain/click/stream/filter/types'
 import { ClickData } from '@/domain/click/click-data'
 
 export type ClickDataTextKeys =

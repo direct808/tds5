@@ -1,4 +1,4 @@
-import { ClickDataTextFilter } from '@/domain/click/stream/stream-filter/filters/click-data-text/click-data-text-filter'
+import { ClickDataTextFilter } from '@/domain/click/stream/filter/filters/click-data-text/click-data-text-filter'
 
 describe('click-data-text-filter.ts', () => {
   it('Should return false if empty values', () => {

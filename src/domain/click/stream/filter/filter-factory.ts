@@ -3,16 +3,16 @@ import {
   FilterObject,
   FilterObjectExtended,
   StreamFilter,
-} from '@/domain/click/stream/stream-filter/types'
-import { DateIntervalFilter } from '@/domain/click/stream/stream-filter/filters/date-interval/date-interval-filter'
-import { IpFilter } from '@/domain/click/stream/stream-filter/filters/ip/ip-filter'
-import { QueryParamFilter } from '@/domain/click/stream/stream-filter/filters/query-param/query-param-filter'
-import { ScheduleFilter } from '@/domain/click/stream/stream-filter/filters/schedule/schedule-filter'
-import { ClickLimitFilter } from '@/domain/click/stream/stream-filter/filters/click-limit/click-limit-filter'
-import { ClickDataTextFilter } from '@/domain/click/stream/stream-filter/filters/click-data-text/click-data-text-filter'
+} from '@/domain/click/stream/filter/types'
+import { DateIntervalFilter } from '@/domain/click/stream/filter/filters/date-interval/date-interval-filter'
+import { IpFilter } from '@/domain/click/stream/filter/filters/ip/ip-filter'
+import { QueryParamFilter } from '@/domain/click/stream/filter/filters/query-param/query-param-filter'
+import { ScheduleFilter } from '@/domain/click/stream/filter/filters/schedule/schedule-filter'
+import { ClickLimitFilter } from '@/domain/click/stream/filter/filters/click-limit/click-limit-filter'
+import { ClickDataTextFilter } from '@/domain/click/stream/filter/filters/click-data-text/click-data-text-filter'
 import { ClickContext } from '@/domain/click/shared/click-context.service'
-import { IpV6Filter } from '@/domain/click/stream/stream-filter/filters/ipv6/ipv6-filter'
-import { ClickUniqueFilter } from '@/domain/click/stream/stream-filter/filters/click-unique/click-unique-filter'
+import { IpV6Filter } from '@/domain/click/stream/filter/filters/ipv6/ipv6-filter'
+import { ClickUniqueFilter } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 
 export interface IStreamFilterFactory {
@@ -20,7 +20,7 @@ export interface IStreamFilterFactory {
 }
 
 @Injectable()
-export class StreamFilterFactory implements IStreamFilterFactory {
+export class FilterFactory implements IStreamFilterFactory {
   constructor(
     private readonly clickContext: ClickContext,
     private readonly clickRepository: ClickRepository,
