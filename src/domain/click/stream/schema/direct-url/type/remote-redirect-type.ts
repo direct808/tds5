@@ -1,15 +1,11 @@
 import { isURL } from 'class-validator'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { RedirectType, StreamResponse } from '@/domain/click/types'
-import { HttpService } from '@nestjs/axios'
-import { firstValueFrom } from 'rxjs'
 
 @Injectable()
 export class RemoteRedirectType implements RedirectType {
-  constructor(private readonly httpService: HttpService) {}
-
   async handle(url: string): Promise<StreamResponse> {
-    const { data } = await firstValueFrom(this.httpService.get<string>(url))
+    const data = await fetch(url).then((res) => res.text())
     const preparedUrl = data.trim()
 
     if (!isURL(preparedUrl, { require_protocol: true })) {

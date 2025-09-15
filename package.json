@@ -24,7 +24,6 @@
     "download-ip2-location-database": "nest start --entryFile cli.js -- download-ip2-location-database"
   },
   "dependencies": {
-    "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^10.0.0",
@@ -34,10 +33,8 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^8.1.0",
     "@nestjs/typeorm": "^11.0.0",
-    "@types/archiver": "^6.0.3",
     "@willsoto/nestjs-prometheus": "^6.0.2",
     "archiver": "^7.0.1",
-    "axios": "^1.9.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -68,6 +65,7 @@
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
     "@testcontainers/postgresql": "^10.24.0",
+    "@types/archiver": "^6.0.3",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.0",
