@@ -8,20 +8,19 @@ import { ClickRequestBuilder } from '../../utils/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { ClickUniqueFor } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { createApp } from '../../utils/create-app'
-import { setTimeout } from 'timers/promises'
 
 async function clickAction(
   app: INestApplication,
   code: string,
   visitorId?: string,
 ): Promise<string> {
-  const builder = ClickRequestBuilder.create(app).setCode(code)
+  const builder = ClickRequestBuilder.create(app).code(code)
 
   if (visitorId) {
     builder.setVisitorId(visitorId)
   }
 
-  const { text } = await builder.request().expect(200)
+  const { text } = await builder.waitRegister().request().expect(200)
 
   return text
 }
@@ -84,11 +83,8 @@ describe('Filter click unique (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1)
-    await setTimeout(10)
     const content2 = await clickAction(app, code2)
-    await setTimeout(10)
     const content3 = await clickAction(app, code1, visitorId)
-    await setTimeout(10)
     const content4 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
@@ -136,9 +132,7 @@ describe('Filter click unique (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1, visitorId)
-    await setTimeout(10)
     const content2 = await clickAction(app, code2, visitorId)
-    await setTimeout(10)
     const content3 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
@@ -195,11 +189,8 @@ describe('Filter click unique (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1, visitorId)
-    await setTimeout(10)
     const content2 = await clickAction(app, code2, visitorId)
-    await setTimeout(10)
     const content3 = await clickAction(app, code2, visitorId)
-    await setTimeout(10)
     const content4 = await clickAction(app, code2, visitorId)
 
     // 3. Assert
