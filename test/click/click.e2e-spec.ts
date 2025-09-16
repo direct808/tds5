@@ -10,6 +10,7 @@ import { createApp } from '../utils/create-app'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { RegisterClickService } from '@/domain/click/register-click.service'
 import type { ClickData } from '@/domain/click/click-data'
+import { ClickRequestBuilder } from '../utils/click-request-builder'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
@@ -80,8 +81,10 @@ describe('Click (e2e)', () => {
         userId,
       })
 
-      const response = await request(app.getHttpServer())
-        .get('/' + campaign.code)
+      const response = await ClickRequestBuilder.create(app)
+        .code(campaign.code)
+        .waitRegister()
+        .request()
         .expect(302)
 
       expect(response.headers.location).toBe(redirectUrl)
@@ -123,8 +126,10 @@ describe('Click (e2e)', () => {
         userId,
       })
 
-      const response = await request(app.getHttpServer())
-        .get('/' + campaign.code)
+      const response = await ClickRequestBuilder.create(app)
+        .code(campaign.code)
+        .waitRegister()
+        .request()
         .expect(200)
 
       expect(response.text).toContain(content)
@@ -140,8 +145,10 @@ describe('Click (e2e)', () => {
 
       createServer(2345, 'http://redirect.domain/')
 
-      const response = await request(app.getHttpServer())
-        .get('/' + campaign.code)
+      const response = await ClickRequestBuilder.create(app)
+        .code(campaign.code)
+        .waitRegister()
+        .request()
         .expect(302)
 
       expect(response.headers.location).toContain(`http://redirect.domain/`)
@@ -166,8 +173,10 @@ describe('Click (e2e)', () => {
           })
           .save(dataSource)
 
-        const response = await request(app.getHttpServer())
-          .get('/abcdif')
+        const response = await ClickRequestBuilder.create(app)
+          .code('abcdif')
+          .waitRegister()
+          .request()
           .expect(status)
 
         expect(response.text).toBe(body)
@@ -207,8 +216,9 @@ describe('Click (e2e)', () => {
         .mockImplementation((cd: ClickData) => clickData.push(cd))
 
       // Act
-      const response = await request(app.getHttpServer())
-        .get('/abcdif')
+      const response = await ClickRequestBuilder.create(app)
+        .code('abcdif')
+        .request()
         .expect(302)
 
       const firstClick = clickData[0]
@@ -243,8 +253,10 @@ describe('Click (e2e)', () => {
         })
         .save(dataSource)
 
-      const response = await request(app.getHttpServer())
-        .get('/abcdif')
+      const response = await ClickRequestBuilder.create(app)
+        .code('abcdif')
+        .waitRegister()
+        .request()
         .expect(302)
 
       expect(response.headers.location).toBe(redirectUrl)
