@@ -10,7 +10,6 @@ import { ClickBuilder } from '../../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
-import { setTimeout } from 'timers/promises'
 import { Click } from '@/domain/click/click.entity'
 
 async function clickAction(
@@ -18,7 +17,8 @@ async function clickAction(
   code: string,
 ): Promise<string> {
   const { text } = await ClickRequestBuilder.create(app)
-    .setCode(code)
+    .code(code)
+    .waitRegister()
     .request()
     .expect(200)
 
@@ -95,11 +95,8 @@ describe('Filter click limit (e2e)', () => {
 
     // 2. Act
     const content1 = await clickAction(app, code1)
-    await setTimeout(10)
     const content2 = await clickAction(app, code2)
-    await setTimeout(10)
     const content3 = await clickAction(app, code2)
-    await setTimeout(10)
     const content4 = await clickAction(app, code2)
 
     // 3. Assert
@@ -152,9 +149,7 @@ describe('Filter click limit (e2e)', () => {
     await createClick(lastCampaign.id, dateTime, dataSource)
 
     const content1 = await clickAction(app, code2)
-    await setTimeout(10)
     const content2 = await clickAction(app, code2)
-    await setTimeout(10)
     const content3 = await clickAction(app, code2)
 
     // 3. Assert
@@ -206,9 +201,7 @@ describe('Filter click limit (e2e)', () => {
     await createClick(lastCampaign.id, dateTime, dataSource)
 
     const content1 = await clickAction(app, code2)
-    await setTimeout(10)
     const content2 = await clickAction(app, code2)
-    await setTimeout(10)
     const content3 = await clickAction(app, code2)
 
     // 3. Assert

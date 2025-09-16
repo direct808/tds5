@@ -58,11 +58,10 @@ describe('Click-cache (e2e)', () => {
     const getFullByCode = jest.spyOn(campaignRepository, 'getFullByCode')
 
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request()
-    await ClickRequestBuilder.create(app).setCode(code).request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
 
     // Assert
-
     expect(getFullByCode).toBeCalledTimes(1)
   })
 
@@ -80,8 +79,8 @@ describe('Click-cache (e2e)', () => {
       .save(dataSource)
 
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request()
-    await ClickRequestBuilder.create(app).setCode(code).request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
 
     await request(app.getHttpServer())
       .put('/api/campaign/' + campaign.id)
@@ -89,7 +88,7 @@ describe('Click-cache (e2e)', () => {
       .send(campaign)
       .expect(200)
 
-    await ClickRequestBuilder.create(app).setCode(code).request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -115,8 +114,8 @@ describe('Click-cache (e2e)', () => {
       .save(dataSource)
 
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request()
-    await ClickRequestBuilder.create(app).setCode(code).request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
 
     await request(app.getHttpServer())
       .patch('/api/source/' + source.id)
@@ -124,7 +123,7 @@ describe('Click-cache (e2e)', () => {
       .send({ name: 'updated name' })
       .expect(200)
 
-    await ClickRequestBuilder.create(app).setCode(code).request()
+    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -158,8 +157,17 @@ describe('Click-cache (e2e)', () => {
       .save(dataSource)
 
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(302)
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(302)
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(302)
+
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(302)
 
     await request(app.getHttpServer())
       .patch('/api/affiliate-network/' + affiliateNetwork.id)
@@ -167,7 +175,11 @@ describe('Click-cache (e2e)', () => {
       .send({ name: 'updated name' })
       .expect(200)
 
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(302)
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(302)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -192,8 +204,17 @@ describe('Click-cache (e2e)', () => {
       .save(dataSource)
 
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(302)
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(302)
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(302)
+
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(302)
 
     await request(app.getHttpServer())
       .patch('/api/offer/' + offer.id)
@@ -201,7 +222,11 @@ describe('Click-cache (e2e)', () => {
       .send({ name: 'updated name' })
       .expect(200)
 
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(302)
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(302)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -209,8 +234,8 @@ describe('Click-cache (e2e)', () => {
 
   it('Checks cache for not exists campaign', async () => {
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
+    await ClickRequestBuilder.create(app).code(code).request().expect(404)
+    await ClickRequestBuilder.create(app).code(code).request().expect(404)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(1)
@@ -218,8 +243,8 @@ describe('Click-cache (e2e)', () => {
 
   it('Checks cache for not exists campaign then after create', async () => {
     // Act
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(404)
+    await ClickRequestBuilder.create(app).code(code).request().expect(404)
+    await ClickRequestBuilder.create(app).code(code).request().expect(404)
 
     spyOn(app.get(CreateCampaignService), 'makeCode').mockReturnValue(code)
 
@@ -240,7 +265,11 @@ describe('Click-cache (e2e)', () => {
       })
       .expect(201)
 
-    await ClickRequestBuilder.create(app).setCode(code).request().expect(200)
+    await ClickRequestBuilder.create(app)
+      .code(code)
+      .waitRegister()
+      .request()
+      .expect(200)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)

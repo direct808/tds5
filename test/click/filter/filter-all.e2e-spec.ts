@@ -74,8 +74,9 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
       .addQueryParam(snake, value)
+      .waitRegister()
       .request()
 
     expect(text).toBe(type)
@@ -89,8 +90,9 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
       .addQueryParam('raw_query', 'raw_query_value')
+      .waitRegister()
       .request()
 
     expect(text).toBe('raw_query_content')
@@ -103,11 +105,12 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
       .addHeader(
         'user-agent',
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       )
+      .waitRegister()
       .request()
 
     expect(text).toBe('os')
@@ -120,11 +123,12 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
       .addHeader(
         'user-agent',
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       )
+      .waitRegister()
       .request()
 
     expect(text).toBe('osVersion')
@@ -145,7 +149,8 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
+      .waitRegister()
       .request()
 
     expect(text).toBe('ip')
@@ -165,7 +170,8 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
+      .waitRegister()
       .request()
 
     expect(text).toBe('ipv6')
@@ -180,7 +186,8 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
+      .waitRegister()
       .request()
 
     expect(text).toBe('schedule')
@@ -197,7 +204,8 @@ describe('Filter all (e2e)', () => {
     })
 
     const { text } = await ClickRequestBuilder.create(app)
-      .setCode(code1)
+      .code(code1)
+      .waitRegister()
       .request()
 
     expect(text).toBe('date-interval')
