@@ -25,6 +25,10 @@ export class MockRequestAdapter implements RequestAdapter {
     return this.data.query?.[name]
   }
 
+  public queryObject(): object {
+    return this.data.query as object
+  }
+
   public cookie(name: string): string | undefined {
     return this.data.cookies?.[name]
   }

@@ -9,6 +9,8 @@ import { SourceBuilder } from './source-builder'
 import { Source } from '@/domain/source/source.entity'
 import { UserBuilder } from './user-builder'
 import { User } from '@/domain/user/user.entity'
+import { StreamActionType } from '@/domain/campaign/types'
+import { faker } from '@faker-js/faker'
 
 type CampaignFields = Partial<
   Pick<Campaign, 'name' | 'code' | 'userId' | 'active' | 'sourceId'>
@@ -24,6 +26,20 @@ export class CampaignBuilder {
 
   static create(): CampaignBuilder {
     return new this()
+  }
+
+  static createRandomActionContent(): CampaignBuilder {
+    const code = faker.string.alphanumeric(6)
+
+    return CampaignBuilder.create()
+      .name(faker.commerce.productName())
+      .code(code)
+      .addStreamTypeAction((stream) =>
+        stream
+          .name(faker.commerce.productName())
+          .type(StreamActionType.SHOW_TEXT)
+          .content(faker.commerce.productName()),
+      )
   }
 
   public async save(ds: DataSource): Promise<Campaign> {

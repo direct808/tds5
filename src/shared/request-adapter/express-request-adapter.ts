@@ -13,6 +13,10 @@ export class ExpressRequestAdapter implements RequestAdapter {
     }
   }
 
+  public queryObject(): object {
+    return this.req.query
+  }
+
   public cookie(name: string): string | undefined {
     return this.req.cookies[name]
   }

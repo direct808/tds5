@@ -12,6 +12,7 @@ import { KyselyModule } from 'nestjs-kysely'
 import { PostgresDialect } from 'kysely'
 import { Pool } from 'pg'
 import { AppConfig } from '@/infra/config/app-config.service'
+import { Conversion } from '@/domain/conversion/conversion.entity'
 
 @Global()
 @Module({
@@ -34,6 +35,7 @@ import { AppConfig } from '@/infra/config/app-config.service'
             Campaign,
             Stream,
             StreamOffer,
+            Conversion,
           ],
           synchronize: true,
           logging: false,
