@@ -4,6 +4,7 @@ import { ConversionRepository } from '@/infra/repositories/conversion.repository
 import { ConversionStatusService } from '@/domain/conversion/conversion-status.service'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { ConversionService } from '@/domain/conversion/conversion.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 
 describe('conversion.service.ts', () => {
   let service: ConversionService
@@ -17,6 +18,7 @@ describe('conversion.service.ts', () => {
       providers: [
         ConversionService,
         ConversionStatusService,
+        EventEmitter2,
         {
           provide: ConversionRepository,
           useValue: {
