@@ -27,6 +27,10 @@ export class ClickRepository
     return this.repository.findBy({ campaignId })
   }
 
+  public getById(id: string): Promise<Click | null> {
+    return this.repository.findOneBy({ id })
+  }
+
   public async getCountByVisitorId(visitorId: string): Promise<number> {
     const { count } = await this.db
       .selectFrom('click')

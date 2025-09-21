@@ -15,6 +15,10 @@ export class AppConfig {
   declare jwtExpires: string
 
   @IsString()
+  @Expose({ name: 'POSTBACK_KEY' })
+  declare postbackKey: string
+
+  @IsString()
   @Expose({ name: 'DB_HOST' })
   declare dbHost: string
 
