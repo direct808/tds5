@@ -7,6 +7,11 @@ import {
 } from '@/domain/conversion/conversion.entity'
 import { RequestAdapter } from '@/shared/request-adapter'
 import { ConversionStatusService } from '@/domain/conversion/conversion-status.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  ConversionCreatedEvent,
+  conversionCreatedEventName,
+} from '@/domain/conversion/events/conversion-created.event'
 
 @Injectable()
 export class ConversionService {
@@ -15,6 +20,7 @@ export class ConversionService {
     private readonly clickRepository: ClickRepository,
     private readonly conversionRepository: ConversionRepository,
     private readonly conversionStatusService: ConversionStatusService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async handle(requestAdapter: RequestAdapter): Promise<void> {
@@ -47,9 +53,30 @@ export class ConversionService {
     if (existsConversion) {
       data.previousStatus = existsConversion.status
 
-      await this.conversionRepository.update(existsConversion.id, data)
+      await this.update(existsConversion, data)
     } else {
-      await this.conversionRepository.create(data)
+      await this.create(data)
     }
+  }
+
+  private async create(data: Partial<Conversion>): Promise<void> {
+    const id = await this.conversionRepository.create(data)
+
+    this.eventEmitter.emit(
+      conversionCreatedEventName,
+      new ConversionCreatedEvent(id),
+    )
+  }
+
+  private async update(
+    existsConversion: Conversion,
+    data: Partial<Conversion>,
+  ): Promise<void> {
+    await this.conversionRepository.update(existsConversion.id, data)
+
+    this.eventEmitter.emit(
+      conversionCreatedEventName,
+      new ConversionCreatedEvent(existsConversion.id),
+    )
   }
 }

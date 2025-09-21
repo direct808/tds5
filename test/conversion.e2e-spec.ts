@@ -8,6 +8,7 @@ import { ConversionRepository } from '@/infra/repositories/conversion.repository
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { flushRedisDb, truncateTables } from './utils/truncate-tables'
 import { PostbackRequestBuilder } from './utils/postback-request-builder'
+import { waitConversionRegistered } from './utils/waitConversionRegister'
 
 describe('Conversion (e2e)', () => {
   let app: INestApplication
@@ -49,10 +50,11 @@ describe('Conversion (e2e)', () => {
       .addQueryParam('rejected_status', 'status1,custom-status')
       .request()
 
-    const conversion = await conversionRepository.getList()
+    const conversionId = await waitConversionRegistered(app)
 
-    expect(conversion.length).toBe(1)
-    expect(conversion[0]).toEqual(
+    const conversion = await conversionRepository.getById(conversionId)
+
+    expect(conversion).toEqual(
       expect.objectContaining({
         clickId: click.id,
         originalStatus: 'custom-status',
@@ -80,12 +82,14 @@ describe('Conversion (e2e)', () => {
     const [click] = await clickRepository.getByCampaignId(campaign.id)
 
     await PostbackRequestBuilder.create(app).subid(click.id).request()
+    await waitConversionRegistered(app)
 
     await PostbackRequestBuilder.create(app)
       .subid(click.id)
       .addQueryParam('status', 'custom-status')
       .addQueryParam('rejected_status', 'status1,custom-status')
       .request()
+    await waitConversionRegistered(app)
 
     const conversion = await conversionRepository.getList()
 
