@@ -5,6 +5,8 @@ export interface RequestAdapter {
 
   query(name: string): string | undefined
 
+  queryObject(): object
+
   cookie(name: string): string | undefined
 
   header(name: HeaderName): string | undefined
