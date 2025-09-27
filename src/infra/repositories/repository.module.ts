@@ -7,6 +7,7 @@ import { SourceRepository } from '@/infra/repositories/source.repository'
 import { UserRepository } from '@/infra/repositories/user.repository'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
+import { ReportRepository } from '@/infra/repositories/report.repository'
 
 const repositories = [
   AffiliateNetworkRepository,
@@ -17,6 +18,8 @@ const repositories = [
   UserRepository,
   StreamOfferRepository,
   ConversionRepository,
+  ConversionRepository,
+  ReportRepository,
 ]
 
 @Module({

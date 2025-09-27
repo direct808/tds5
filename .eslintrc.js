@@ -23,6 +23,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    "max-depth": ['error', 3],
     "padding-line-between-statements": [
       "error",
       { blankLine: "always", prev: "function", next: "*" },

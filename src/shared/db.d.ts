@@ -5,6 +5,10 @@
 
 import type { ColumnType } from 'kysely'
 
+export type ConversionPreviousstatusEnum = 'lead' | 'rejected' | 'sale'
+
+export type ConversionStatusEnum = 'lead' | 'rejected' | 'sale'
+
 export type Generated<T> =
   T extends ColumnType<infer S, infer I, infer U>
     ? ColumnType<S, I | undefined, U>
@@ -112,6 +116,16 @@ export interface Click {
   visitorId: string
 }
 
+export interface Conversion {
+  clickId: string
+  createdAt: Generated<Timestamp>
+  id: Generated<string>
+  originalStatus: string | null
+  params: Json | null
+  previousStatus: ConversionPreviousstatusEnum | null
+  status: ConversionStatusEnum
+}
+
 export interface Offer {
   affiliateNetworkId: string | null
   createdAt: Generated<Timestamp>
@@ -165,6 +179,7 @@ export interface DB {
   affiliate_network: AffiliateNetwork
   campaign: Campaign
   click: Click
+  conversion: Conversion
   offer: Offer
   source: Source
   stream: Stream
