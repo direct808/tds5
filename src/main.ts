@@ -4,10 +4,9 @@ import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import { configureApp } from '@/shared/configure-app'
 import { AppConfig } from '@/infra/config/app-config.service'
-import {
-  Metrics,
-  ReportRepository,
-} from '@/infra/repositories/report.repository'
+import { ReportRepository } from '@/infra/repositories/report.repository'
+import jsep from 'jsep'
+import { inspect } from 'node:util'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule)
@@ -29,11 +28,25 @@ async function bootstrap(): Promise<void> {
   await app.listen(config.port)
   logger.log('Server is listening on port: ' + config.port)
 
+  const expr =
+    'cost / (conversions_lead + conversions_sale + conversions_rejected)'
+  const ast = jsep(expr)
+  // console.log(inspect(ast, false, 10))
+
   await app.get(ReportRepository).getReport({
     metrics: [
-      Metrics.clicks,
-      Metrics.uniqueClicksCampaign,
-      Metrics.uniqueClicksGlobal,
+      // 'clicks',
+      // 'cr',
+      // 'conversions',
+      // 'conversions_sale',
+      // 'conversions_lead',
+      // 'cost',
+      // 'cpa',
+      // 'cpc',
+      // 'cpl',
+      // 'cr_regs_to_deps',
+      'roi',
+      // 'deposits',
     ],
   })
 }

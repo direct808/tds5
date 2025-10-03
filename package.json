@@ -40,6 +40,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.7",
     "ioredis": "^5.7.0",
+    "jsep": "^1.4.0",
     "kysely": "^0.28.3",
     "luxon": "^3.6.1",
     "mmdb-lib": "^3.0.1",

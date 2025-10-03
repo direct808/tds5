@@ -1,7 +1,14 @@
 import { Injectable } from '@nestjs/common'
-import { ReportResult } from '@/domain/report/types'
+import {
+  GetReportArgs,
+  ReportRepository,
+} from '@/infra/repositories/report.repository'
 
 @Injectable()
 export class ReportService {
-  public async getReport(): Promise<any> {}
+  constructor(private readonly reportRepository: ReportRepository) {}
+
+  public async getReport(args: GetReportArgs): Promise<any> {
+    return this.reportRepository.getReport(args)
+  }
 }

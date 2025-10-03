@@ -14,17 +14,20 @@ export class Conversion {
   declare id: string
 
   @Column('char', { length: CLICK_ID_SIZE })
-  @Index({ unique: true })
+  @Index({ unique: false })
   declare clickId: string
 
   @ManyToOne(() => Click, (click) => click.id)
   declare click: Click
 
-  @Column('enum', { enum: ConversionStatus })
-  declare status: ConversionStatus
+  @Column('text')
+  declare status: string
 
-  @Column('enum', { enum: ConversionStatus, nullable: true })
-  declare previousStatus: ConversionStatus
+  @Column('numeric', { nullable: true, precision: 12, scale: 2 })
+  declare revenue?: number
+
+  @Column('text', { nullable: true })
+  declare previousStatus?: string
 
   @Column('text', { nullable: true })
   declare originalStatus?: string

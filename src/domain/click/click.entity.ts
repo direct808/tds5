@@ -5,6 +5,7 @@ import {
 } from '@/domain/click/observers/id-generator'
 import { IClick } from './click'
 import { Nullable } from '@/shared/types'
+import { Conversion } from '@/domain/conversion/conversion.entity'
 
 const ColumnTextNullable = (): PropertyDecorator =>
   Column('text', { nullable: true })
@@ -111,7 +112,7 @@ export class Click implements Nullable<IClick> {
   @Column('text', { nullable: true, comment: 'Источник (из параметров)' })
   declare source: string | null
 
-  @Column('decimal', { nullable: true, precision: 13, scale: 2 })
+  @Column('numeric', { nullable: true, precision: 12, scale: 2 })
   declare cost: number | null
 
   @ColumnTextNullable()
@@ -134,4 +135,6 @@ export class Click implements Nullable<IClick> {
 
   @ColumnTextNullable()
   declare extraParam2: string | null
+
+  declare conversions: Conversion[]
 }
