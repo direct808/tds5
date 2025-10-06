@@ -1,25 +1,21 @@
 import { Injectable } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely, SelectQueryBuilder, sql } from 'kysely'
 import { DB } from '@/shared/db'
 import jsep from 'jsep'
 import { conversionTypes } from '@/domain/conversion/types'
 
-// export enum Metrics {
-//   clicks = 'clicks',
-//   uniqueClicksGlobal = 'unique_clicks_global',
-//   uniqueClicksCampaign = 'unique_clicks_campaign',
-//   cr = 'cr',
-//   // cost = 'cost',
-// }
-
 const identifierMap: Record<string, string> = {
-  clicks: 'count(*)::float',
-  cost: 'sum(click.cost)::float',
+  clicks: 'count(*)',
+  cost: 'sum(click.cost)',
+  clicks_unique_global: 'count(distinct "visitorId")',
+  clicks_unique_campaign: 'count(distinct("visitorId", "campaignId"))',
+  clicks_unique_stream: 'count(distinct("visitorId", "streamId"))',
 }
 
 const formulasMap: Record<string, string> = {
+  revenue:
+    'revenue_sale + revenue_deposit + revenue_lead + revenue_registration',
   conversions:
     'conversions_sale + conversions_lead + conversions_registration + deposits',
   deposits: 'conversions_deposit',
@@ -28,7 +24,13 @@ const formulasMap: Record<string, string> = {
   cpc: 'cost / clicks',
   cpl: 'cost / conversions_lead',
   cr_regs_to_deps: 'conversions_registration / conversions_deposit * 100 ',
-  roi: '(conversions_lead + conversions_registration + conversions_sale+conversions_deposit - cost) / cost * 100',
+  roi: '(revenue - cost) / cost * 100',
+  roi_confirmed: '((revenue_sale + revenue_deposit) - cost) / cost * 100',
+  profit_loss: 'revenue / cost',
+  profit_loss_confirmed: '(revenue_sale + revenue_deposit) / cost',
+  clicks_unique_global_pct: 'clicks / clicks_unique_global * 100',
+  clicks_unique_campaign_pct: 'clicks / clicks_unique_campaign * 100',
+  clicks_unique_stream_pct: 'clicks / clicks_unique_stream * 100',
 }
 
 export type GetReportArgs = {
@@ -37,12 +39,9 @@ export type GetReportArgs = {
 
 @Injectable()
 export class ReportRepository {
-  constructor(
-    private readonly dataSource: DataSource,
-    @InjectKysely() private readonly db: Kysely<DB>,
-  ) {}
+  constructor(@InjectKysely() private readonly db: Kysely<DB>) {}
 
-  public async getReport(args: GetReportArgs): Promise<any> {
+  public getReport(args: GetReportArgs): Promise<any> {
     for (const [key] of Object.entries(conversionTypes)) {
       identifierMap[`conversions_${key}`] = `sum(c.conversions_${key})::int`
       identifierMap[`revenue_${key}`] = `sum(c.revenue_${key})::numeric(12,2)`
@@ -71,9 +70,7 @@ export class ReportRepository {
 
     // console.log(asdf.sql)
 
-    const result = await qb.execute()
-
-    return result
+    return qb.execute()
   }
 
   private getBaseQuery(): any {
@@ -148,24 +145,16 @@ function astToSQL(node: jsep.Expression): string {
   }
 }
 
-function replaceIdentifier(indefier: string): any {
-  if (identifierMap[indefier]) {
-    return identifierMap[indefier]
+function replaceIdentifier(identifier: string): any {
+  if (identifierMap[identifier]) {
+    return identifierMap[identifier]
   }
 
-  if (formulasMap[indefier]) {
-    const ast = jsep(formulasMap[indefier])
+  if (formulasMap[identifier]) {
+    const ast = jsep(formulasMap[identifier])
 
     return astToSQL(ast)
   }
 
-  throw new Error(`Unsupported identifier type: ${indefier}`)
-  // switch (indefier) {
-  //   case 'conversions':
-  //     return 'count(c.count)::float'
-  //   case 'clicks':
-  //     return 'count(*)::float'
-  //   default:
-  //     return indefier
-  // }
+  throw new Error(`Unsupported identifier type: ${identifier}`)
 }

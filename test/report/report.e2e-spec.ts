@@ -107,6 +107,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .query({
         'metrics[]': [
+          'revenue',
           'revenue_sale',
           'revenue_lead',
           'revenue_registration',
@@ -117,47 +118,83 @@ describe('Report (e2e)', () => {
       })
       .expect(200)
 
-    console.log(body)
-
     expect(body).toEqual([
       {
-        revenue_sale: 4.2233,
-        revenue_lead: 4.843,
-        revenue_deposit: 6.31,
-        revenue_registration: 3,
-        revenue_rejected: 4,
-        revenue_trash: 5,
+        revenue: '18.67',
+        revenue_sale: '4.22',
+        revenue_lead: '4.84',
+        revenue_deposit: '6.31',
+        revenue_registration: '3.30',
+        revenue_rejected: '4.43',
+        revenue_trash: '5.12',
       },
     ])
   })
 
-  it('getReport', async () => {
+  it('roi', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
       .save(dataSource)
 
-    // await createClicks(dataSource, campaign.id)
-    // const click = await ClickBuilder.create({
-    //   id: '234234',
-    //   visitorId: '123123',
-    //   campaignId: campaign.id,
-    //   cost: 123,
-    // }).save(dataSource)
-    //
-    // await ConversionBuilder.create({
-    //   clickId: click.id,
-    //   status: 'sale',
-    // }).save(dataSource)
-    //
-    // await ConversionBuilder.create({
-    //   clickId: click.id,
-    //   status: 'registration',
-    // }).save(dataSource)
-    //
-    // await ConversionBuilder.create({
-    //   clickId: click.id,
-    //   status: 'salse',
-    // }).save(dataSource)
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) =>
+        click
+          .cost(1.33)
+          .addConv((c) => c.revenue(3.1233).status('sale'))
+          .addConv((c) => c.revenue(2.643).status('lead')),
+      )
+      .add((click) =>
+        click
+          .cost(4.7)
+          .addConv((c) => c.revenue(1.1).status('sale'))
+          .addConv((c) => c.revenue(2.2).status('lead'))
+          .addConv((c) => c.revenue(3.3).status('registration'))
+          .addConv((c) => c.revenue(4.432).status('rejected'))
+          .addConv((c) => c.revenue(5.1234).status('trash'))
+          .addConv((c) => c.revenue(6.31232).status('deposit')),
+      )
+      .save(dataSource)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': [
+          'revenue',
+          'cost',
+          'roi',
+          'roi_confirmed',
+          'profit_loss',
+          'profit_loss_confirmed',
+          // 'revenue_sale',
+          // 'revenue_deposit',
+        ],
+      })
+      .expect(200)
+
+    expect(body).toEqual([
+      {
+        cost: '6.03',
+        revenue: '18.67',
+        roi: '209.6185737976782800',
+        roi_confirmed: '74.62686567164179104500',
+        profit_loss: '3.0961857379767828',
+        profit_loss_confirmed: '1.7462686567164179',
+      },
+    ])
+  })
+
+  it('clicks', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.cost(1.33))
+      .add((click) => click.cost(4.7))
+      .save(dataSource)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -165,24 +202,25 @@ describe('Report (e2e)', () => {
       .query({
         'metrics[]': [
           'clicks',
-          'conversions',
-          'cost',
-          'conversions_sale',
-          'conversions_lead',
-          'conversions_registration',
+          'clicks_unique_global',
+          'clicks_unique_campaign',
+          'clicks_unique_stream',
+          'clicks_unique_global_pct',
+          'clicks_unique_campaign_pct',
+          'clicks_unique_stream_pct',
         ],
       })
       .expect(200)
 
-    console.log(body)
     expect(body).toEqual([
       {
-        clicks: 1,
-        conversions: 3,
-        cost: 4,
-        conversions_sale: 1,
-        conversions_lead: 2,
-        conversions_registration: 0,
+        clicks: '2',
+        clicks_unique_global: '2',
+        clicks_unique_campaign: '2',
+        clicks_unique_stream: '2',
+        clicks_unique_global_pct: '100',
+        clicks_unique_campaign_pct: '100',
+        clicks_unique_stream_pct: '100',
       },
     ])
   })
