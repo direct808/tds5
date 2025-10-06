@@ -186,14 +186,19 @@ describe('Report (e2e)', () => {
   })
 
   it('clicks', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
+    const campaign1 = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    const campaign2 = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
       .save(dataSource)
 
     await createClicksBuilder()
-      .campaignId(campaign.id)
-      .add((click) => click.cost(1.33))
-      .add((click) => click.cost(4.7))
+      // .campaignId(campaign.id)
+      .add((click) => click.campaignId(campaign1.id).visitorId('aaa'))
+      .add((click) => click.campaignId(campaign1.id).visitorId('bbb'))
+      .add((click) => click.campaignId(campaign2.id).visitorId('aaa'))
       .save(dataSource)
 
     const { body } = await request(app.getHttpServer())
