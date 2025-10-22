@@ -7,6 +7,8 @@ import { createApp } from '../utils/create-app'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import './click'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
+import { StreamActionType } from '@/domain/campaign/types'
+import { faker } from '@faker-js/faker'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -66,14 +68,14 @@ describe('Report (e2e)', () => {
 
     expect(body).toEqual([
       {
-        clicks: 2,
-        conversions: 4,
-        conversions_sale: 1,
-        conversions_lead: 1,
-        conversions_registration: 1,
-        conversions_rejected: 1,
-        conversions_trash: 1,
-        conversions_deposit: 1,
+        clicks: '2',
+        conversions: '4',
+        conversions_sale: '1',
+        conversions_lead: '1',
+        conversions_registration: '1',
+        conversions_rejected: '1',
+        conversions_trash: '1',
+        conversions_deposit: '1',
       },
     ])
   })
@@ -167,8 +169,6 @@ describe('Report (e2e)', () => {
           'roi_confirmed',
           'profit_loss',
           'profit_loss_confirmed',
-          // 'revenue_sale',
-          // 'revenue_deposit',
         ],
       })
       .expect(200)
@@ -177,16 +177,30 @@ describe('Report (e2e)', () => {
       {
         cost: '6.03',
         revenue: '18.67',
-        roi: '209.6185737976782800',
-        roi_confirmed: '74.62686567164179104500',
-        profit_loss: '3.0961857379767828',
-        profit_loss_confirmed: '1.7462686567164179',
+        roi: '209.62',
+        roi_confirmed: '74.63',
+        profit_loss: '3.10',
+        profit_loss_confirmed: '1.75',
       },
     ])
   })
 
   it('clicks', async () => {
-    const campaign1 = await CampaignBuilder.createRandomActionContent()
+    const campaign1 = await CampaignBuilder.create()
+      .name(faker.commerce.productName())
+      .code(faker.string.alphanumeric(6))
+      .addStreamTypeAction((stream) =>
+        stream
+          .name('Stream 1')
+          .type(StreamActionType.SHOW_HTML)
+          .content('Content'),
+      )
+      .addStreamTypeAction((stream) =>
+        stream
+          .name('Stream 2')
+          .type(StreamActionType.SHOW_HTML)
+          .content('Content'),
+      )
       .userId(userId)
       .save(dataSource)
 
@@ -194,12 +208,23 @@ describe('Report (e2e)', () => {
       .userId(userId)
       .save(dataSource)
 
-    await createClicksBuilder()
-      // .campaignId(campaign.id)
-      .add((click) => click.campaignId(campaign1.id).visitorId('aaa'))
-      .add((click) => click.campaignId(campaign1.id).visitorId('bbb'))
-      .add((click) => click.campaignId(campaign2.id).visitorId('aaa'))
-      .save(dataSource)
+    const clicks = [
+      [campaign1.id, campaign1.streams[0].id, 'aaa'],
+      [campaign1.id, campaign1.streams[1].id, 'aaa'],
+      [campaign1.id, campaign1.streams[1].id, 'aaa'],
+      [campaign1.id, campaign1.streams[0].id, 'bbb'],
+      [campaign2.id, campaign2.streams[0].id, 'aaa'],
+    ]
+
+    const builder = createClicksBuilder()
+
+    for (const [campaignId, streamId, visitorId] of clicks) {
+      builder.add((click) =>
+        click.campaignId(campaignId).streamId(streamId).visitorId(visitorId),
+      )
+    }
+
+    await builder.save(dataSource)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -219,13 +244,13 @@ describe('Report (e2e)', () => {
 
     expect(body).toEqual([
       {
-        clicks: '2',
+        clicks: '5',
         clicks_unique_global: '2',
-        clicks_unique_campaign: '2',
-        clicks_unique_stream: '2',
-        clicks_unique_global_pct: '100',
-        clicks_unique_campaign_pct: '100',
-        clicks_unique_stream_pct: '100',
+        clicks_unique_campaign: '3',
+        clicks_unique_stream: '4',
+        clicks_unique_global_pct: '40',
+        clicks_unique_campaign_pct: '60',
+        clicks_unique_stream_pct: '80',
       },
     ])
   })

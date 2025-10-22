@@ -4,33 +4,17 @@ import { Kysely, SelectQueryBuilder, sql } from 'kysely'
 import { DB } from '@/shared/db'
 import jsep from 'jsep'
 import { conversionTypes } from '@/domain/conversion/types'
+import { formulas } from '@/domain/report/formulas'
+import { Formula } from '@/domain/report/types'
 
 const identifierMap: Record<string, string> = {
-  clicks: 'count(*)',
-  cost: 'sum(click.cost)',
-  clicks_unique_global: 'count(distinct "visitorId")',
-  clicks_unique_campaign: 'count(distinct("visitorId", "campaignId"))',
-  clicks_unique_stream: 'count(distinct("visitorId", "streamId"))',
-}
-
-const formulasMap: Record<string, string> = {
-  revenue:
-    'revenue_sale + revenue_deposit + revenue_lead + revenue_registration',
-  conversions:
-    'conversions_sale + conversions_lead + conversions_registration + deposits',
-  deposits: 'conversions_deposit',
-  cr: 'conversions / clicks * 100',
-  cpa: 'cost / (conversions_lead + conversions_sale + conversions_rejected)',
-  cpc: 'cost / clicks',
-  cpl: 'cost / conversions_lead',
-  cr_regs_to_deps: 'conversions_registration / conversions_deposit * 100 ',
-  roi: '(revenue - cost) / cost * 100',
-  roi_confirmed: '((revenue_sale + revenue_deposit) - cost) / cost * 100',
-  profit_loss: 'revenue / cost',
-  profit_loss_confirmed: '(revenue_sale + revenue_deposit) / cost',
-  clicks_unique_global_pct: 'clicks / clicks_unique_global * 100',
-  clicks_unique_campaign_pct: 'clicks / clicks_unique_campaign * 100',
-  clicks_unique_stream_pct: 'clicks / clicks_unique_stream * 100',
+  clicks: 'count(*)::numeric(12,0)',
+  cost: 'sum(click.cost)::numeric(12,2)',
+  clicks_unique_global: 'count(distinct "visitorId")::numeric(12,0)',
+  clicks_unique_campaign:
+    'count(distinct("visitorId", "campaignId"))::numeric(12,0)',
+  clicks_unique_stream:
+    'count(distinct("visitorId", "streamId"))::numeric(12,0)',
 }
 
 export type GetReportArgs = {
@@ -43,14 +27,15 @@ export class ReportRepository {
 
   public getReport(args: GetReportArgs): Promise<any> {
     for (const [key] of Object.entries(conversionTypes)) {
-      identifierMap[`conversions_${key}`] = `sum(c.conversions_${key})::int`
+      identifierMap[`conversions_${key}`] =
+        `sum(c.conversions_${key})::numeric(12,0)`
       identifierMap[`revenue_${key}`] = `sum(c.revenue_${key})::numeric(12,2)`
     }
 
     let qb = this.getBaseQuery()
 
     for (const metric of args.metrics) {
-      const formula = formulasMap[metric]
+      const formula = formulas[metric]
       const identifier = identifierMap[metric]
 
       if (formula) {
@@ -60,14 +45,9 @@ export class ReportRepository {
       } else {
         throw new Error('Unknown metric: ' + metric)
       }
-
-      // const ast = jsep(formula)
-      // const sqll = astToSQL(ast)
-      // qb = qb.select([sql.raw<number>(sqll).as(metric)])
     }
 
     // const asdf = qb.compile()
-
     // console.log(asdf.sql)
 
     return qb.execute()
@@ -110,12 +90,13 @@ export class ReportRepository {
 
   private applyFormula(
     qb: SelectQueryBuilder<any, any, any>,
-    formula: string,
+    formula: Formula,
     metric: string,
   ): any {
-    const ast = jsep(formula)
-    const sqll = astToSQL(ast)
-    qb = qb.select([sql.raw<number>(sqll).as(metric)])
+    const ast = jsep(formula.formula)
+    const decimals = formula.decimals ?? 0
+    const query = `${astToSQL(ast)}::numeric(12,${decimals})`
+    qb = qb.select([sql.raw<number>(query).as(metric)])
 
     return qb
   }
@@ -126,19 +107,17 @@ function astToSQL(node: jsep.Expression): string {
     case 'BinaryExpression':
       const right =
         node.operator === '/'
-          ? // @ts-ignore
-            `nullif(${astToSQL(node.right)}, 0)`
-          : // @ts-ignore
-            astToSQL(node.right)
+          ? `nullif(${astToSQL(node.right as jsep.Expression)}, 0)`
+          : astToSQL(node.right as jsep.Expression)
 
-      // @ts-ignore
-      return `(${astToSQL(node.left)} ${node.operator} ${right})`
+      return `(${astToSQL(node.left as jsep.Expression)} ${node.operator} ${right})`
     case 'Identifier':
-      // безопасно: экранируем имена колонок
-      // @ts-ignore
-      return replaceIdentifier(node.name)
+      return replaceIdentifier(node.name as string)
     case 'Literal':
-      // @ts-ignore
+      if (!node.value) {
+        throw new Error('No value for literal')
+      }
+
       return node.value.toString()
     default:
       throw new Error(`Unsupported node type: ${node.type}`)
@@ -150,8 +129,8 @@ function replaceIdentifier(identifier: string): any {
     return identifierMap[identifier]
   }
 
-  if (formulasMap[identifier]) {
-    const ast = jsep(formulasMap[identifier])
+  if (formulas[identifier]) {
+    const ast = jsep(formulas[identifier].formula)
 
     return astToSQL(ast)
   }

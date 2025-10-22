@@ -38,6 +38,12 @@ export class ClickBuilder {
     return this
   }
 
+  streamId(streamId: string): this {
+    this.fields.streamId = streamId
+
+    return this
+  }
+
   visitorId(visitorId: string): this {
     this.fields.visitorId = visitorId
 

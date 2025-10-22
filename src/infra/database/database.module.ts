@@ -48,7 +48,7 @@ import { Conversion } from '@/domain/conversion/conversion.entity'
       inject: [AppConfig],
       useFactory(config: AppConfig) {
         return {
-          log: ['query', 'error'],
+          // log: ['query', 'error'],
           dialect: new PostgresDialect({
             pool: new Pool({
               host: config.dbHost,
