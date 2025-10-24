@@ -62,6 +62,24 @@ export class ClickBuilder {
     return this
   }
 
+  isBot(isBot: boolean | null): this {
+    this.fields.isBot = isBot
+
+    return this
+  }
+
+  isProxy(isProxy: boolean | null): this {
+    this.fields.isProxy = isProxy
+
+    return this
+  }
+
+  referer(referer: string | null): this {
+    this.fields.referer = referer
+
+    return this
+  }
+
   async save(ds: DataSource): Promise<Click> {
     const click = await ds.getRepository(Click).save(this.fields)
     click.conversions = []

@@ -144,6 +144,7 @@ describe('Report (e2e)', () => {
         click
           .cost(1.33)
           .addConv((c) => c.revenue(3.1233).status('sale'))
+          .addConv((c) => c.revenue(4.56).status('lead'))
           .addConv((c) => c.revenue(2.643).status('lead')),
       )
       .add((click) =>
@@ -169,6 +170,7 @@ describe('Report (e2e)', () => {
           'roi_confirmed',
           'profit_loss',
           'profit_loss_confirmed',
+          'approve_pct',
         ],
       })
       .expect(200)
@@ -176,11 +178,12 @@ describe('Report (e2e)', () => {
     expect(body).toEqual([
       {
         cost: '6.03',
-        revenue: '18.67',
-        roi: '209.62',
+        revenue: '23.23',
+        roi: '285.24',
         roi_confirmed: '74.63',
-        profit_loss: '3.10',
+        profit_loss: '3.85',
         profit_loss_confirmed: '1.75',
+        approve_pct: '75',
       },
     ])
   })
@@ -251,6 +254,94 @@ describe('Report (e2e)', () => {
         clicks_unique_global_pct: '40',
         clicks_unique_campaign_pct: '60',
         clicks_unique_stream_pct: '80',
+      },
+    ])
+  })
+
+  it('bots, proxies', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    const clicks = [
+      [false, false, null],
+      [null, true, null],
+      [true, true, null],
+      [true, null, null],
+      [true, false, 'referer'],
+    ] as const
+
+    const builder = createClicksBuilder()
+
+    for (const [isBot, isProxy, referer] of clicks) {
+      builder
+        .campaignId(campaign.id)
+        .add((click) => click.isBot(isBot).isProxy(isProxy).referer(referer))
+    }
+
+    await builder.save(dataSource)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks', 'bots', 'bots_pct', 'proxies', 'empty_referer'],
+      })
+      .expect(200)
+    expect(body).toEqual([
+      {
+        clicks: '5',
+        bots: '3',
+        bots_pct: '60',
+        proxies: '2',
+        empty_referer: '4',
+      },
+    ])
+  })
+
+  it('cr', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add()
+      .add((click) => click.addConv((c) => c.status('lead')))
+      .add((click) => click.addConv((c) => c.status('lead')))
+      .add((click) => click.addConv((c) => c.status('lead')))
+      .add((click) => click.addConv((c) => c.status('lead')))
+      .add((click) => click.addConv((c) => c.status('sale')))
+      .add((click) => click.addConv((c) => c.status('sale')))
+      .add((click) => click.addConv((c) => c.status('sale')))
+      .add((click) => click.addConv((c) => c.status('deposit')))
+      .add((click) => click.addConv((c) => c.status('deposit')))
+      .add((click) => click.addConv((c) => c.status('registration')))
+      .save(dataSource)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': [
+          'cr',
+          'cr_sale',
+          'cr_deposit',
+          'cr_hold',
+          'cr_registration',
+          'cr_regs_to_deps',
+        ],
+      })
+      .expect(200)
+
+    expect(body).toEqual([
+      {
+        cr: '90.91',
+        cr_deposit: '18.18',
+        cr_hold: '36.36',
+        cr_registration: '9.09',
+        cr_regs_to_deps: '50.00',
+        cr_sale: '27.27',
       },
     ])
   })

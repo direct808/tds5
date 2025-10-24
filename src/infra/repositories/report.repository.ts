@@ -15,6 +15,9 @@ const identifierMap: Record<string, string> = {
     'count(distinct("visitorId", "campaignId"))::numeric(12,0)',
   clicks_unique_stream:
     'count(distinct("visitorId", "streamId"))::numeric(12,0)',
+  bots: 'count(*) FILTER (WHERE "isBot")::numeric(12,0)',
+  proxies: 'count(*) FILTER (WHERE "isProxy")::numeric(12,0)',
+  empty_referer: 'count(*) FILTER (WHERE "referer" IS NULL)::numeric(12,0)',
 }
 
 export type GetReportArgs = {

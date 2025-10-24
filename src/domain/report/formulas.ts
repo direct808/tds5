@@ -17,23 +17,39 @@ export const formulas: FormulaRecord = {
     formula: 'conversions / clicks * 100',
     decimals: 2,
   },
-  cpa: {
-    formula:
-      'cost / (conversions_lead + conversions_sale + conversions_rejected)',
+  cr_sale: {
+    formula: 'conversions_sale / clicks * 100',
     decimals: 2,
   },
-  cpc: {
-    formula: 'cost / clicks',
+  cr_deposit: {
+    formula: 'conversions_deposit / clicks * 100',
     decimals: 2,
   },
-  cpl: {
-    formula: 'cost / conversions_lead',
+  cr_hold: {
+    formula: 'conversions_lead / clicks * 100',
+    decimals: 2,
+  },
+  cr_registration: {
+    formula: 'conversions_registration / clicks * 100',
     decimals: 2,
   },
   cr_regs_to_deps: {
     formula: 'conversions_registration / conversions_deposit * 100 ',
     decimals: 2,
   },
+  // cpa: {
+  //   formula:
+  //     'cost / (conversions_lead + conversions_sale + conversions_rejected)',
+  //   decimals: 2,
+  // },
+  // cpc: {
+  //   formula: 'cost / clicks',
+  //   decimals: 2,
+  // },
+  // cpl: {
+  //   formula: 'cost / conversions_lead',
+  //   decimals: 2,
+  // },
   roi: {
     formula: '(revenue - cost) / cost * 100',
     decimals: 2,
@@ -58,5 +74,12 @@ export const formulas: FormulaRecord = {
   },
   clicks_unique_stream_pct: {
     formula: 'clicks_unique_stream / clicks * 100',
+  },
+  bots_pct: {
+    formula: 'bots / clicks * 100',
+  },
+  approve_pct: {
+    formula:
+      '(conversions_sale + conversions_deposit) / (conversions_lead + conversions_registration) * 100',
   },
 }
