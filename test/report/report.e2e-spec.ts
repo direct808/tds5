@@ -345,4 +345,61 @@ describe('Report (e2e)', () => {
       },
     ])
   })
+
+  it('epc', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    const data = [
+      ['id1', 1.1, 'lead'],
+      ['id2', 2.1, 'lead'],
+      ['id1', 3.1, 'registration'],
+      ['id2', 4.1, 'registration'],
+      ['id1', 5.1, 'sale'],
+      ['id2', 6.1, 'sale'],
+      ['id1', 7.1, 'deposit'],
+      ['id2', 8.1, 'deposit'],
+      ['id2', 9.1, 'trash'],
+      ['id2', 10.1, 'rejected'],
+    ] as const
+
+    const builder = createClicksBuilder().campaignId(campaign.id).add()
+
+    data.forEach(([visitorId, revenue, staus]) => {
+      builder.add((click) =>
+        click
+          .visitorId(visitorId)
+          .addConv((c) => c.revenue(revenue).status(staus)),
+      )
+    })
+
+    await builder.save(dataSource)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': [
+          'epc',
+          'uepc',
+          'epc_confirmed',
+          'uepc_confirmed',
+          'epc_hold',
+          'uepc_hold',
+        ],
+      })
+      .expect(200)
+
+    expect(body).toEqual([
+      {
+        epc: '3.35',
+        uepc: '12.27',
+        epc_confirmed: '2.40',
+        uepc_confirmed: '8.80',
+        epc_hold: '0.95',
+        uepc_hold: '3.47',
+      },
+    ])
+  })
 })

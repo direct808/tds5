@@ -82,4 +82,30 @@ export const formulas: FormulaRecord = {
     formula:
       '(conversions_sale + conversions_deposit) / (conversions_lead + conversions_registration) * 100',
   },
+  epc: {
+    formula:
+      '(revenue_sale + revenue_deposit + revenue_lead + revenue_registration) / clicks',
+    decimals: 2,
+  },
+  uepc: {
+    formula:
+      '(revenue_sale + revenue_deposit + revenue_lead + revenue_registration) / clicks_unique_global',
+    decimals: 2,
+  },
+  epc_hold: {
+    formula: '(revenue_lead + revenue_registration) / clicks',
+    decimals: 2,
+  },
+  uepc_hold: {
+    formula: '(revenue_lead + revenue_registration) / clicks_unique_global',
+    decimals: 2,
+  },
+  epc_confirmed: {
+    formula: '(revenue_sale + revenue_deposit) / clicks',
+    decimals: 2,
+  },
+  uepc_confirmed: {
+    formula: '(revenue_sale + revenue_deposit) / clicks_unique_global',
+    decimals: 2,
+  },
 }
