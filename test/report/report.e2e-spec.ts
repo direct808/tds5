@@ -346,30 +346,27 @@ describe('Report (e2e)', () => {
     ])
   })
 
-  it('epc', async () => {
+  it('epc, cp', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
       .save(dataSource)
 
     const data = [
-      ['id1', 1.1, 'lead'],
-      ['id2', 2.1, 'lead'],
-      ['id1', 3.1, 'registration'],
-      ['id2', 4.1, 'registration'],
-      ['id1', 5.1, 'sale'],
-      ['id2', 6.1, 'sale'],
-      ['id1', 7.1, 'deposit'],
-      ['id2', 8.1, 'deposit'],
-      ['id2', 9.1, 'trash'],
-      ['id2', 10.1, 'rejected'],
+      ['id1', 1.1, 'lead', 1.2],
+      ['id2', 2.1, 'registration', 2.2],
+      ['id1', 3.1, 'sale', 3.2],
+      ['id1', 4.1, 'deposit', 4.2],
+      ['id2', 5.1, 'trash', 5.2],
+      ['id2', 6.1, 'rejected', 6.2],
     ] as const
 
     const builder = createClicksBuilder().campaignId(campaign.id).add()
 
-    data.forEach(([visitorId, revenue, staus]) => {
+    data.forEach(([visitorId, revenue, staus, cost]) => {
       builder.add((click) =>
         click
           .visitorId(visitorId)
+          .cost(cost)
           .addConv((c) => c.revenue(revenue).status(staus)),
       )
     })
@@ -387,18 +384,38 @@ describe('Report (e2e)', () => {
           'uepc_confirmed',
           'epc_hold',
           'uepc_hold',
+
+          'cps',
+          'cpl',
+          'cpr',
+          'cpd',
+          'cpa',
+          'cpc',
+          'ucpc',
+          'ecpc',
+          'ecpm',
         ],
       })
       .expect(200)
 
     expect(body).toEqual([
       {
-        epc: '3.35',
-        uepc: '12.27',
-        epc_confirmed: '2.40',
-        uepc_confirmed: '8.80',
-        epc_hold: '0.95',
-        uepc_hold: '3.47',
+        epc: '1.49',
+        epc_confirmed: '1.03',
+        epc_hold: '0.46',
+        uepc: '3.47',
+        uepc_confirmed: '2.40',
+        uepc_hold: '1.07',
+
+        cps: '22.20',
+        cpl: '22.20',
+        cpr: '22.20',
+        cpd: '22.20',
+        cpa: '7.40',
+        cpc: '3.17',
+        ucpc: '7.40',
+        ecpc: '3171.43',
+        ecpm: '1485.71',
       },
     ])
   })

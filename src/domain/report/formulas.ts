@@ -8,10 +8,7 @@ export const formulas: FormulaRecord = {
   },
   conversions: {
     formula:
-      'conversions_sale + conversions_lead + conversions_registration + deposits',
-  },
-  deposits: {
-    formula: 'conversions_deposit',
+      'conversions_sale + conversions_lead + conversions_registration + conversions_deposit',
   },
   cr: {
     formula: 'conversions / clicks * 100',
@@ -37,19 +34,6 @@ export const formulas: FormulaRecord = {
     formula: 'conversions_registration / conversions_deposit * 100 ',
     decimals: 2,
   },
-  // cpa: {
-  //   formula:
-  //     'cost / (conversions_lead + conversions_sale + conversions_rejected)',
-  //   decimals: 2,
-  // },
-  // cpc: {
-  //   formula: 'cost / clicks',
-  //   decimals: 2,
-  // },
-  // cpl: {
-  //   formula: 'cost / conversions_lead',
-  //   decimals: 2,
-  // },
   roi: {
     formula: '(revenue - cost) / cost * 100',
     decimals: 2,
@@ -106,6 +90,44 @@ export const formulas: FormulaRecord = {
   },
   uepc_confirmed: {
     formula: '(revenue_sale + revenue_deposit) / clicks_unique_global',
+    decimals: 2,
+  },
+  cps: {
+    formula: 'cost / conversions_sale',
+    decimals: 2,
+  },
+  cpl: {
+    formula: 'cost / conversions_lead',
+    decimals: 2,
+  },
+  cpr: {
+    formula: 'cost / conversions_registration',
+    decimals: 2,
+  },
+  cpd: {
+    formula: 'cost / conversions_deposit',
+    decimals: 2,
+  },
+  cpa: {
+    formula:
+      'cost / (conversions_lead + conversions_sale + conversions_rejected)',
+    decimals: 2,
+  },
+  cpc: {
+    formula: 'cost / clicks',
+    decimals: 2,
+  },
+  ucpc: {
+    formula: 'cost / clicks_unique_global',
+    decimals: 2,
+  },
+  ecpc: {
+    formula: 'cpc * 1000',
+    decimals: 2,
+  },
+  ecpm: {
+    formula:
+      '(revenue_sale + revenue_lead + revenue_registration + revenue_deposit) / clicks * 1000',
     decimals: 2,
   },
 }
