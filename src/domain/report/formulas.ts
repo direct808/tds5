@@ -130,4 +130,12 @@ export const formulas: FormulaRecord = {
       '(revenue_sale + revenue_lead + revenue_registration + revenue_deposit) / clicks * 1000',
     decimals: 2,
   },
+  ecpm_confirmed: {
+    formula: '(revenue_sale + revenue_deposit) / clicks * 1000',
+    decimals: 2,
+  },
+  ucr: {
+    formula: 'conversions_registration / clicks_unique_global * 100',
+    decimals: 2,
+  },
 }

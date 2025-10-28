@@ -394,6 +394,8 @@ describe('Report (e2e)', () => {
           'ucpc',
           'ecpc',
           'ecpm',
+          'ecpm_confirmed',
+          'ucr',
         ],
       })
       .expect(200)
@@ -416,6 +418,8 @@ describe('Report (e2e)', () => {
         ucpc: '7.40',
         ecpc: '3171.43',
         ecpm: '1485.71',
+        ecpm_confirmed: '1028.57',
+        ucr: '33.33',
       },
     ])
   })
