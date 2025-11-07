@@ -1,9 +1,8 @@
-import { Kysely, sql } from 'kysely/dist/esm'
+import { Kysely, sql } from 'kysely'
 import { DB } from '@/shared/db'
-import { SelectQueryBuilder } from 'kysely'
 
 export class ReportQueryBuilder {
-  private qb: SelectQueryBuilder<any, any, any>
+  private qb: any
   private conversionTypes: string[] | null = null
 
   public static create(db: Kysely<DB>): ReportQueryBuilder {
@@ -56,14 +55,20 @@ export class ReportQueryBuilder {
     return this.conversionTypes
   }
 
+  public setConversionTypes(types: string[]): this {
+    this.conversionTypes = types
+
+    return this
+  }
+
   public select(field: string): this {
     this.qb = this.qb.select(field)
 
     return this
   }
 
-  public selectRaw<T>(query: string, alias: string): this {
-    this.qb = this.qb.select(sql.raw<T>(query).as(alias))
+  public selectRaw(query: string, alias: string): this {
+    this.qb = this.qb.select(sql.raw(query).as(alias))
 
     return this
   }
@@ -72,5 +77,15 @@ export class ReportQueryBuilder {
     this.qb = this.qb.groupBy(field)
 
     return this
+  }
+
+  public sql(): string {
+    const data = this.qb.compile()
+
+    return data.sql
+  }
+
+  public execute() {
+    return this.qb.execute()
   }
 }

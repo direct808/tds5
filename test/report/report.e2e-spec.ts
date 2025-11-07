@@ -534,10 +534,10 @@ describe('Report (e2e)', () => {
       .get('/report')
       .auth(accessToken, { type: 'bearer' })
       .query({
-        'metrics[]': ['clicks'],
+        'metrics[]': ['clicks', 'cpa'],
       })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '7' }])
+    expect(body).toEqual([{ clicks: '7', cpa: '7.40' }])
   })
 })

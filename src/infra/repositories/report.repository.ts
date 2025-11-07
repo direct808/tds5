@@ -43,18 +43,6 @@ export class ReportRepository {
     }
   }
 
-  public addSelect(
-    qb: SelectQueryBuilder<any, any, any>,
-    query: string,
-    metric: string,
-    decimals: number,
-  ): SelectQueryBuilder<any, any, any> {
-    query += `::numeric(12,${decimals})`
-    qb = qb.select([sql.raw<number>(query).as(metric)])
-
-    return qb
-  }
-
   public addConversionsIdentifiers(
     identifierMap: IdentifierMap,
     keys: string[],
@@ -64,41 +52,5 @@ export class ReportRepository {
         `sum(c.conversions_${key})::numeric(12,0)`
       identifierMap[`revenue_${key}`] = `sum(c.revenue_${key})::numeric(12,2)`
     }
-  }
-
-  public joinConversions(
-    usedIdentifiers: string[],
-    keys: string[],
-  ): SelectQueryBuilder<any, any, any> | null {
-    const sel: HZ[] = []
-
-    for (const key of keys) {
-      if (usedIdentifiers.includes('conversions_' + key)) {
-        sel.push(
-          this.db.fn
-            .countAll()
-            .filterWhere('status', '=', key)
-            .as('conversions_' + key),
-        )
-      }
-
-      if (usedIdentifiers.includes('revenue_' + key)) {
-        sel.push(
-          sql<number>`${this.db.fn.sum('revenue').filterWhere('status', '=', key)}::numeric(12,2)`.as(
-            'revenue_' + key,
-          ),
-        )
-      }
-    }
-
-    if (sel.length === 0) {
-      return null
-    }
-
-    return this.db
-      .selectFrom('conversion')
-      .select('clickId')
-      .groupBy('clickId')
-      .select(() => sel)
   }
 }

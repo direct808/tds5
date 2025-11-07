@@ -1,4 +1,6 @@
-export const groups = {
+type Groups = Record<string, { sql?: string }>
+
+export const groups: Groups = {
   country: {},
   city: {},
   region: {},
