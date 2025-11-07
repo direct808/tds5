@@ -33,22 +33,22 @@ async function bootstrap(): Promise<void> {
   const ast = jsep(expr)
   // console.log(inspect(ast, false, 10))
 
-  await app.get(ReportRepository).getReport({
-    metrics: [
-      // 'clicks',
-      // 'cr',
-      // 'conversions',
-      // 'conversions_sale',
-      // 'conversions_lead',
-      // 'cost',
-      // 'cpa',
-      // 'cpc',
-      // 'cpl',
-      // 'cr_regs_to_deps',
-      'roi',
-      // 'deposits',
-    ],
-  })
+  // await app.get(ReportRepository).getReport({
+  //   metrics: [
+  //     // 'clicks',
+  //     // 'cr',
+  //     // 'conversions',
+  //     // 'conversions_sale',
+  //     // 'conversions_lead',
+  //     // 'cost',
+  //     // 'cpa',
+  //     // 'cpc',
+  //     // 'cpl',
+  //     // 'cr_regs_to_deps',
+  //     'roi',
+  //     // 'deposits',
+  //   ],
+  // })
 }
 
 void bootstrap()

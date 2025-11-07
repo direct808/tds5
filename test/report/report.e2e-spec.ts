@@ -5,10 +5,10 @@ import { createAuthUser } from '../utils/helpers'
 import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import './click'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
 import { StreamActionType } from '@/domain/campaign/types'
 import { faker } from '@faker-js/faker'
+import { createClickBuilder } from '../utils/entity-builder/click-builder'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -422,5 +422,122 @@ describe('Report (e2e)', () => {
         ucr: '33.33',
       },
     ])
+  })
+
+  it('group', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    const clickData = {
+      id: 'id',
+      country: 'China',
+      city: 'City',
+      region: 'Region',
+      adCampaignId: 'AdCampaign Id',
+      campaignId: campaign.id,
+      previousCampaignId: faker.string.uuid(),
+      offerId: faker.string.uuid(),
+      affiliateNetworkId: faker.string.uuid(),
+      trafficSourceId: faker.string.uuid(),
+      streamId: faker.string.uuid(),
+
+      createdAt: new Date('2015-10-20 11:22'),
+    }
+
+    const builder = createClickBuilder(clickData).campaignId(campaign.id)
+
+    const click = await builder.save(dataSource)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks', 'cpa'],
+        'groups[]': [
+          'id',
+          'country',
+          'city',
+          'region',
+          'adCampaignId',
+          'campaignId',
+          'previousCampaignId',
+          'offerId',
+          'affiliateNetworkId',
+          'trafficSourceId',
+          'streamId',
+          'year',
+          'month',
+          'week',
+          'weekday',
+          'day',
+          'hour',
+          'day_hour',
+        ],
+      })
+      .expect(200)
+
+    expect(body).toEqual([
+      {
+        id: click.id,
+        country: 'China',
+        city: 'City',
+        region: 'Region',
+        adCampaignId: 'AdCampaign Id',
+        campaignId: campaign.id,
+        previousCampaignId: click.previousCampaignId,
+        offerId: click.offerId,
+        affiliateNetworkId: click.affiliateNetworkId,
+        trafficSourceId: click.trafficSourceId,
+        streamId: click.streamId,
+        year: 2015,
+        month: '2015-10',
+        week: 43,
+        weekday: 2,
+        day: '2015-10-20',
+        hour: 11,
+        day_hour: '2015-10-20 11:00',
+        cpa: null,
+        clicks: '1',
+      },
+    ])
+  })
+
+  it('asd', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    const data = [
+      ['id1', 1.1, 'lead', 1.2],
+      ['id2', 2.1, 'registration', 2.2],
+      ['id1', 3.1, 'sale', 3.2],
+      ['id1', 4.1, 'deposit', 4.2],
+      ['id2', 5.1, 'trash', 5.2],
+      ['id2', 6.1, 'rejected', 6.2],
+    ] as const
+
+    const builder = createClicksBuilder().campaignId(campaign.id).add()
+
+    data.forEach(([visitorId, revenue, staus, cost]) => {
+      builder.add((click) =>
+        click
+          .visitorId(visitorId)
+          .cost(cost)
+          .addConv((c) => c.revenue(revenue).status(staus)),
+      )
+    })
+
+    await builder.save(dataSource)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks'],
+      })
+      .expect(200)
+
+    expect(body).toEqual([{ clicks: '7' }])
   })
 })

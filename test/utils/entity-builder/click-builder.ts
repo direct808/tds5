@@ -3,13 +3,17 @@ import { Click } from '@/domain/click/click.entity'
 import { ConversionBuilder } from './conversion-builder'
 import { faker } from '@faker-js/faker/.'
 
+export function createClickBuilder(fields: Partial<Click> = {}): ClickBuilder {
+  return ClickBuilder.create(fields)
+}
+
 export class ClickBuilder {
   private readonly fields: Partial<Click> = {}
 
   private readonly conversions: ConversionBuilder[] = []
 
   private constructor(fields: Partial<Click> = {}) {
-    this.fields = fields
+    this.fields = structuredClone(fields)
     this.fields.id = faker.string.alphanumeric(12)
     this.fields.visitorId = faker.string.alphanumeric(6)
   }
@@ -76,6 +80,12 @@ export class ClickBuilder {
 
   referer(referer: string | null): this {
     this.fields.referer = referer
+
+    return this
+  }
+
+  country(country: string | null): this {
+    this.fields.country = country
 
     return this
   }

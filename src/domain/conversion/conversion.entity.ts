@@ -35,6 +35,6 @@ export class Conversion {
   @Column('jsonb', { nullable: true })
   declare params?: object
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   declare createdAt: Date
 }

@@ -65,7 +65,7 @@ export class Click implements Nullable<IClick> {
   @Column('inet', { nullable: true })
   declare ip: string | null
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   declare createdAt: Date
 
   // HEADER INFO
