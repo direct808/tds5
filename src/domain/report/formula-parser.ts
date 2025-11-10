@@ -3,12 +3,12 @@ import type { FormulaRecord } from '@/domain/report/types'
 
 type IdentifierMap = Record<string, string>
 
-export class FormulaBuilder {
+export class FormulaParser {
   public static create(
     formula: string,
     identifierMap: IdentifierMap,
     allFormulas: FormulaRecord,
-  ): FormulaBuilder {
+  ): FormulaParser {
     return new this(formula, identifierMap, allFormulas)
   }
 

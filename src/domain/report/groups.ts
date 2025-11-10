@@ -1,4 +1,10 @@
-type Groups = Record<string, { sql?: string }>
+type Groups = Record<
+  string,
+  {
+    sql?: string
+    include?: 'source' | 'campaign' | 'stream' | 'offer' | 'affiliateNetwork'
+  }
+>
 
 export const groups: Groups = {
   country: {},
@@ -11,66 +17,60 @@ export const groups: Groups = {
   id: {},
   offerId: {},
   affiliateNetworkId: {},
-  trafficSourceId: {},
+  sourceId: {},
   streamId: {},
 
-  year: { sql: `date_part('year', "createdAt")` },
-  month: { sql: `to_char("createdAt", 'YYYY-MM')` },
-  week: { sql: `date_part('week', "createdAt")` },
-  weekday: { sql: `date_part('dow', "createdAt")` },
-  day: { sql: `to_char("createdAt", 'YYYY-MM-DD')` },
-  hour: { sql: `date_part('hour', "createdAt")` },
-  day_hour: { sql: `to_char("createdAt", 'YYYY-MM-DD HH:00')` },
+  dateTime: { sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:MI:SS')` },
+  year: { sql: `date_part('year', click."createdAt")` },
+  month: { sql: `to_char(click."createdAt", 'YYYY-MM')` },
+  week: { sql: `date_part('week', click."createdAt")` },
+  weekday: { sql: `date_part('dow', click."createdAt")` },
+  day: { sql: `to_char(click."createdAt", 'YYYY-MM-DD')` },
+  hour: { sql: `date_part('hour', click."createdAt")` },
+  dayHour: { sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:00')` },
 
-  // Landing Page
-  // Source
-  // Campaign
-  // Flow
-  // Uniq clicks (flow)
-  // Date and time
-  // LP click time
-  // Destination
-  // Uniq clicks (campaign)
-  // Uniq clicks (global)
-  // Empty refere
-  // Landing clicked
-  // Domain
-  // Domain group
-  // Campaign group
-  // Landing page group
-  // offer group
-  // offer
-  // Aff network
-  // Site
-  // X-Req-With
-  // Referer
-  // Search engine
-  // Keyword
-  // Visitor code
-  // External ID
-  // Creative ID
-  //
-  // Language
-  // Bot
-  // Device type
-  //   User Agent
-  // OS Logo
-  // Operation system
-  // OS version
-  // Browser
-  // Browser version
-  // Device model
-  // Browser logo
-  // IP
-  //
-  // Using proxy
-  // Connection type
-  //   Mobile operator
-  // ISP
-  //
-  // sub_id_1
-  // sub_id_2
-  //
-  // IP 1.2.*.*
-  // IP 1.2.3.*
+  // landing
+  source: { sql: `source.name`, include: 'source' },
+  campaign: { sql: `campaign.name`, include: 'campaign' },
+  stream: { sql: `stream.name`, include: 'stream' },
+  offer: { sql: `offer.name`, include: 'offer' },
+  affiliateNetwork: {
+    sql: `affiliateNetwork.name`,
+    include: 'affiliateNetwork',
+  },
+
+  isUniqueGlobal: {},
+  isUniqueCampaign: {},
+  isUniqueStream: {},
+
+  destination: {},
+  emptyReferer: { sql: `referer is null` },
+  referer: {},
+  keyword: {},
+  visitorId: {},
+  externalId: {},
+  creativeId: {},
+
+  language: {},
+  isBot: {},
+  deviceType: {},
+  deviceModel: {},
+  userAgent: {},
+  os: {},
+  osVersion: {},
+  browser: {},
+  browserVersion: {},
+  ip: {},
+
+  isProxy: {},
+
+  subId1: {},
+  subId2: {},
+
+  ip2: {
+    sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2)`,
+  },
+  ip3: {
+    sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2) || '.' || split_part(ip::text, '.', 3)`,
+  },
 }

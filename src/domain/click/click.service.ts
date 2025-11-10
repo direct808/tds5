@@ -42,7 +42,7 @@ export class ClickService {
     const campaign = await this.campaignCacheService.getFullByCode(code)
 
     clickData.campaignId = campaign.id
-    clickData.trafficSourceId = campaign.sourceId
+    clickData.sourceId = campaign.sourceId
 
     const stream = await this.selectStreamService.selectStream(campaign.streams)
     clickData.streamId = stream.id

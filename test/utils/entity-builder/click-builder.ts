@@ -72,6 +72,24 @@ export class ClickBuilder {
     return this
   }
 
+  isUniqueGlobal(isUniqueGlobal: boolean | null): this {
+    this.fields.isUniqueGlobal = isUniqueGlobal
+
+    return this
+  }
+
+  isUniqueCampaign(isUniqueCampaign: boolean | null): this {
+    this.fields.isUniqueCampaign = isUniqueCampaign
+
+    return this
+  }
+
+  isUniqueStream(isUniqueStream: boolean | null): this {
+    this.fields.isUniqueStream = isUniqueStream
+
+    return this
+  }
+
   isProxy(isProxy: boolean | null): this {
     this.fields.isProxy = isProxy
 

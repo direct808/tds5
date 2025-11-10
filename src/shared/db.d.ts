@@ -107,7 +107,7 @@ export interface Click {
   streamId: string | null
   subId1: string | null
   subId2: string | null
-  trafficSourceId: string | null
+  sourceId: string | null
   userAgent: string | null
   visitorId: string
 }

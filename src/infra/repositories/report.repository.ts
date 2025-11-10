@@ -1,24 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { InjectKysely } from 'nestjs-kysely'
-import { AliasedRawBuilder, Kysely, SelectQueryBuilder, sql } from 'kysely'
+import { Kysely, sql } from 'kysely'
 import { DB } from '@/shared/db'
-import { AliasedAggregateFunctionBuilder } from 'kysely/dist/cjs/query-builder/aggregate-function-builder'
 
 export type IdentifierMap = Record<string, string>
 
 export type GetReportArgs = {
   metrics: string[]
-  groups?: string[]
+  groups: string[]
 }
-
-type HZ =
-  | AliasedRawBuilder<number, string>
-  | AliasedAggregateFunctionBuilder<
-      DB,
-      keyof DB,
-      number | string | bigint,
-      string
-    >
 
 @Injectable()
 export class ReportRepository {
@@ -32,14 +22,16 @@ export class ReportRepository {
     return {
       clicks: 'count(*)::numeric(12,0)',
       cost: 'sum(click.cost)::numeric(12,2)',
-      clicks_unique_global: 'count(distinct "visitorId")::numeric(12,0)',
+      clicks_unique_global:
+        'count(*) FILTER (WHERE click."isUniqueGlobal")::numeric(12,0)',
       clicks_unique_campaign:
-        'count(distinct("visitorId", "campaignId"))::numeric(12,0)',
+        'count(*) FILTER (WHERE click."isUniqueCampaign")::numeric(12,0)',
       clicks_unique_stream:
-        'count(distinct("visitorId", "streamId"))::numeric(12,0)',
-      bots: 'count(*) FILTER (WHERE "isBot")::numeric(12,0)',
-      proxies: 'count(*) FILTER (WHERE "isProxy")::numeric(12,0)',
-      empty_referer: 'count(*) FILTER (WHERE "referer" IS NULL)::numeric(12,0)',
+        'count(*) FILTER (WHERE click."isUniqueStream")::numeric(12,0)',
+      bots: 'count(*) FILTER (WHERE click."isBot")::numeric(12,0)',
+      proxies: 'count(*) FILTER (WHERE click."isProxy")::numeric(12,0)',
+      empty_referer:
+        'count(*) FILTER (WHERE click."referer" IS NULL)::numeric(12,0)',
     }
   }
 

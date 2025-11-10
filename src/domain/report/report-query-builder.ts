@@ -1,5 +1,6 @@
 import { Kysely, sql } from 'kysely'
 import { DB } from '@/shared/db'
+import { camelCase, snakeCase } from 'typeorm/util/StringUtils'
 
 export class ReportQueryBuilder {
   private qb: any
@@ -11,6 +12,36 @@ export class ReportQueryBuilder {
 
   private constructor(private db: Kysely<DB>) {
     this.qb = this.db.selectFrom('click')
+  }
+
+  public selectSourceName(): this {
+    return this.selectNameFrom('source')
+  }
+
+  public selectCampaignName(): this {
+    return this.selectNameFrom('campaign')
+  }
+
+  public selectStreamName(): this {
+    return this.selectNameFrom('stream')
+  }
+
+  public selectOfferName(): this {
+    return this.selectNameFrom('offer')
+  }
+
+  public selectAffiliateNetworkName(): this {
+    return this.selectNameFrom('affiliateNetwork')
+  }
+
+  private selectNameFrom(name: string): this {
+    const snaked = snakeCase(name)
+    this.qb = this.qb.leftJoin(snaked, `click.${name}Id`, `${snaked}.id`)
+    this.qb = this.qb
+      .select(sql.raw(`${snaked}.name`).as(name))
+      .groupBy(`${snaked}.name`)
+
+    return this
   }
 
   public includeConversionFields(fields: string[]): void {
@@ -62,7 +93,7 @@ export class ReportQueryBuilder {
   }
 
   public select(field: string): this {
-    this.qb = this.qb.select(field)
+    this.qb = this.qb.select('click.' + field)
 
     return this
   }
@@ -79,13 +110,19 @@ export class ReportQueryBuilder {
     return this
   }
 
+  public groupByClickField(field: string): this {
+    this.qb = this.qb.groupBy(`click.${field}`)
+
+    return this
+  }
+
   public sql(): string {
     const data = this.qb.compile()
 
     return data.sql
   }
 
-  public execute() {
+  public execute(): Promise<Record<string, string | number>> {
     return this.qb.execute()
   }
 }

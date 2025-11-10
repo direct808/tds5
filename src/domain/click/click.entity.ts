@@ -31,7 +31,7 @@ export class Click implements Nullable<IClick> {
   declare affiliateNetworkId: string | null
 
   @Column('uuid', { nullable: true })
-  declare trafficSourceId: string | null
+  declare sourceId: string | null
 
   @Column('uuid', { nullable: true })
   declare streamId: string | null

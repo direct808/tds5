@@ -5,7 +5,7 @@ export interface IClick {
   previousCampaignId: string
   offerId: string
   affiliateNetworkId: string
-  trafficSourceId: string
+  sourceId: string
   streamId: string
   destination: string
   // uniq

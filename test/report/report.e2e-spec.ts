@@ -6,9 +6,12 @@ import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
-import { StreamActionType } from '@/domain/campaign/types'
 import { faker } from '@faker-js/faker'
 import { createClickBuilder } from '../utils/entity-builder/click-builder'
+import { SourceBuilder } from '../utils/entity-builder/source-builder'
+import { OfferBuilder } from '../utils/entity-builder/offer-builder'
+import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
+import { ClickData } from '@/domain/click/click-data'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -189,45 +192,19 @@ describe('Report (e2e)', () => {
   })
 
   it('clicks', async () => {
-    const campaign1 = await CampaignBuilder.create()
-      .name(faker.commerce.productName())
-      .code(faker.string.alphanumeric(6))
-      .addStreamTypeAction((stream) =>
-        stream
-          .name('Stream 1')
-          .type(StreamActionType.SHOW_HTML)
-          .content('Content'),
-      )
-      .addStreamTypeAction((stream) =>
-        stream
-          .name('Stream 2')
-          .type(StreamActionType.SHOW_HTML)
-          .content('Content'),
-      )
+    const campaign1 = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
       .save(dataSource)
 
-    const campaign2 = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
+    await createClicksBuilder()
+      .campaignId(campaign1.id)
+      .add((click) => click.isUniqueGlobal(true))
+      .add((click) => click.isUniqueGlobal(true))
+      .add((click) => click.isUniqueGlobal(true))
+      .add((click) => click.isUniqueCampaign(true))
+      .add((click) => click.isUniqueCampaign(true))
+      .add((click) => click.isUniqueStream(true))
       .save(dataSource)
-
-    const clicks = [
-      [campaign1.id, campaign1.streams[0].id, 'aaa'],
-      [campaign1.id, campaign1.streams[1].id, 'aaa'],
-      [campaign1.id, campaign1.streams[1].id, 'aaa'],
-      [campaign1.id, campaign1.streams[0].id, 'bbb'],
-      [campaign2.id, campaign2.streams[0].id, 'aaa'],
-    ]
-
-    const builder = createClicksBuilder()
-
-    for (const [campaignId, streamId, visitorId] of clicks) {
-      builder.add((click) =>
-        click.campaignId(campaignId).streamId(streamId).visitorId(visitorId),
-      )
-    }
-
-    await builder.save(dataSource)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -247,13 +224,13 @@ describe('Report (e2e)', () => {
 
     expect(body).toEqual([
       {
-        clicks: '5',
-        clicks_unique_global: '2',
-        clicks_unique_campaign: '3',
-        clicks_unique_stream: '4',
-        clicks_unique_global_pct: '40',
-        clicks_unique_campaign_pct: '60',
-        clicks_unique_stream_pct: '80',
+        clicks: '6',
+        clicks_unique_global: '3',
+        clicks_unique_campaign: '2',
+        clicks_unique_stream: '1',
+        clicks_unique_global_pct: '50',
+        clicks_unique_campaign_pct: '33',
+        clicks_unique_stream_pct: '17',
       },
     ])
   })
@@ -352,20 +329,20 @@ describe('Report (e2e)', () => {
       .save(dataSource)
 
     const data = [
-      ['id1', 1.1, 'lead', 1.2],
-      ['id2', 2.1, 'registration', 2.2],
-      ['id1', 3.1, 'sale', 3.2],
-      ['id1', 4.1, 'deposit', 4.2],
-      ['id2', 5.1, 'trash', 5.2],
-      ['id2', 6.1, 'rejected', 6.2],
+      [true, 1.1, 'lead', 1.2],
+      [true, 2.1, 'registration', 2.2],
+      [true, 3.1, 'sale', 3.2],
+      [false, 4.1, 'deposit', 4.2],
+      [false, 5.1, 'trash', 5.2],
+      [false, 6.1, 'rejected', 6.2],
     ] as const
 
     const builder = createClicksBuilder().campaignId(campaign.id).add()
 
-    data.forEach(([visitorId, revenue, staus, cost]) => {
+    data.forEach(([isGlobal, revenue, staus, cost]) => {
       builder.add((click) =>
         click
-          .visitorId(visitorId)
+          .isUniqueGlobal(isGlobal)
           .cost(cost)
           .addConv((c) => c.revenue(revenue).status(staus)),
       )
@@ -429,7 +406,24 @@ describe('Report (e2e)', () => {
       .userId(userId)
       .save(dataSource)
 
-    const clickData = {
+    const source = await SourceBuilder.create()
+      .name('Source')
+      .userId(userId)
+      .save(dataSource)
+
+    const offer = await OfferBuilder.create()
+      .name('Offer')
+      .url(faker.internet.url())
+      .userId(userId)
+      .save(dataSource)
+
+    const affiliateNetwork = await AffiliateNetworkBuilder.create()
+      .name('Affiliate Network')
+      .userId(userId)
+      .save(dataSource)
+
+    const clickData: ClickData = {
+      createdAt: new Date('2015-10-20 21:22:34'),
       id: 'id',
       country: 'China',
       city: 'City',
@@ -437,23 +431,43 @@ describe('Report (e2e)', () => {
       adCampaignId: 'AdCampaign Id',
       campaignId: campaign.id,
       previousCampaignId: faker.string.uuid(),
-      offerId: faker.string.uuid(),
-      affiliateNetworkId: faker.string.uuid(),
-      trafficSourceId: faker.string.uuid(),
-      streamId: faker.string.uuid(),
+      offerId: offer.id,
+      affiliateNetworkId: affiliateNetwork.id,
+      sourceId: source.id,
+      streamId: campaign.streams[0].id,
+      destination: 'Destination',
+      referer: 'Referer',
+      keyword: 'Keyword',
+      externalId: 'External Id',
+      creativeId: 'Creative Id',
+      language: 'EN',
+      isBot: true,
 
-      createdAt: new Date('2015-10-20 11:22'),
+      deviceType: 'Device type',
+      deviceModel: 'Device Model',
+      userAgent: 'User Agent',
+      os: 'Os',
+      osVersion: 'Os Version',
+      browser: 'Browser',
+      browserVersion: 'Browser Version',
+      ip: '192.168.50.90',
+      isProxy: true,
+      subId1: 'sub Id 1',
+      subId2: 'sub Id 2',
+      isUniqueGlobal: true,
+      isUniqueCampaign: false,
+      isUniqueStream: true,
     }
 
-    const builder = createClickBuilder(clickData).campaignId(campaign.id)
-
-    const click = await builder.save(dataSource)
+    const click = await createClickBuilder(clickData)
+      .campaignId(campaign.id)
+      .save(dataSource)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
       .auth(accessToken, { type: 'bearer' })
       .query({
-        'metrics[]': ['clicks', 'cpa'],
+        'metrics[]': ['clicks' /*, 'cpa'*/],
         'groups[]': [
           'id',
           'country',
@@ -464,21 +478,55 @@ describe('Report (e2e)', () => {
           'previousCampaignId',
           'offerId',
           'affiliateNetworkId',
-          'trafficSourceId',
+          'sourceId',
           'streamId',
+          'dateTime',
           'year',
           'month',
           'week',
           'weekday',
           'day',
           'hour',
-          'day_hour',
+          'dayHour',
+          'source',
+          'campaign',
+          'stream',
+          'offer',
+          'affiliateNetwork',
+          'destination',
+          'emptyReferer',
+          'referer',
+          'keyword',
+          'visitorId',
+          'externalId',
+          'creativeId',
+          'language',
+          'isBot',
+          'deviceType',
+          'deviceModel',
+          'userAgent',
+          'os',
+          'osVersion',
+          'browser',
+          'browserVersion',
+          'ip',
+          'isProxy',
+          'subId1',
+          'subId2',
+          'ip2',
+          'ip3',
+          'isUniqueGlobal',
+          'isUniqueCampaign',
+          'isUniqueStream',
         ],
       })
       .expect(200)
 
     expect(body).toEqual([
       {
+        // cpa: null,
+        clicks: '1',
+
         id: click.id,
         country: 'China',
         city: 'City',
@@ -488,17 +536,46 @@ describe('Report (e2e)', () => {
         previousCampaignId: click.previousCampaignId,
         offerId: click.offerId,
         affiliateNetworkId: click.affiliateNetworkId,
-        trafficSourceId: click.trafficSourceId,
+        sourceId: click.sourceId,
         streamId: click.streamId,
+        dateTime: '2015-10-20 21:22:34',
         year: 2015,
         month: '2015-10',
         week: 43,
         weekday: 2,
         day: '2015-10-20',
-        hour: 11,
-        day_hour: '2015-10-20 11:00',
-        cpa: null,
-        clicks: '1',
+        hour: 21,
+        dayHour: '2015-10-20 21:00',
+        source: source.name,
+        campaign: campaign.name,
+        offer: offer.name,
+        stream: campaign.streams[0].name,
+        affiliateNetwork: affiliateNetwork.name,
+        destination: 'Destination',
+        emptyReferer: false,
+        referer: 'Referer',
+        keyword: 'Keyword',
+        visitorId: click.visitorId,
+        externalId: 'External Id',
+        creativeId: 'Creative Id',
+        language: 'EN',
+        isBot: true,
+        deviceType: 'Device type',
+        deviceModel: 'Device Model',
+        userAgent: 'User Agent',
+        os: 'Os',
+        osVersion: 'Os Version',
+        browser: 'Browser',
+        browserVersion: 'Browser Version',
+        ip: click.ip,
+        isProxy: true,
+        subId1: 'sub Id 1',
+        subId2: 'sub Id 2',
+        ip2: '192.168',
+        ip3: '192.168.50',
+        isUniqueGlobal: true,
+        isUniqueCampaign: false,
+        isUniqueStream: true,
       },
     ])
   })

@@ -134,7 +134,7 @@ describe('Click-data (e2e)', () => {
       streamId: clicks[0].streamId,
       subId1: 'sub_id_1 value',
       subId2: 'sub_id_2 value',
-      trafficSourceId: res.sourceId,
+      sourceId: res.sourceId,
       userAgent: userAgent,
     })
   })

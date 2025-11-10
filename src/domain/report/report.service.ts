@@ -11,7 +11,7 @@ import { formulas } from '@/domain/report/formulas'
 import { conversionTypes } from '@/domain/conversion/types'
 import { groups } from './groups'
 import { ReportQueryBuilder } from '@/domain/report/report-query-builder'
-import { FormulaBuilder } from '@/domain/report/formula-builder'
+import { FormulaParser } from '@/domain/report/formula-parser'
 
 @Injectable()
 export class ReportService {
@@ -34,24 +34,8 @@ export class ReportService {
       Object.keys(conversionTypes),
     )
 
-    for (const group of args.groups || []) {
-      if (!(group in groups)) {
-        throw new Error('Unknown group key ' + group)
-      }
-      const query = groups[group].sql
-
-      if (query) {
-        qb.selectRaw(query, group)
-      } else {
-        qb.select(group)
-      }
-      qb.groupBy(group)
-    }
-
-    for (const metric of args.metrics) {
-      this.processMetric(qb, identifierMap, metric)
-    }
-
+    this.processGroups(args.groups, qb)
+    this.processMetrics(qb, identifierMap, args.metrics)
     qb.includeConversionFields(usedIdentifiers)
 
     // console.log(qb.sql())
@@ -59,26 +43,66 @@ export class ReportService {
     return qb.execute()
   }
 
-  private processMetric(
+  private processGroups(groupKeys: string[], qb: ReportQueryBuilder): void {
+    for (const groupKey of groupKeys) {
+      if (!(groupKey in groups)) {
+        throw new Error('Unknown group key ' + groupKey)
+      }
+
+      const { sql: query, include } = groups[groupKey]
+
+      if (!query) {
+        qb.select(groupKey)
+        qb.groupByClickField(groupKey)
+        continue
+      }
+
+      switch (include) {
+        case 'affiliateNetwork':
+          qb.selectAffiliateNetworkName()
+          break
+        case 'offer':
+          qb.selectOfferName()
+          break
+        case 'stream':
+          qb.selectStreamName()
+          break
+        case 'campaign':
+          qb.selectCampaignName()
+          break
+        case 'source':
+          qb.selectSourceName()
+          break
+        default:
+          qb.selectRaw(query, groupKey)
+          qb.groupBy(groupKey)
+      }
+    }
+  }
+
+  private processMetrics(
     qb: ReportQueryBuilder,
     identifierMap: IdentifierMap,
-    metric: string,
+    metrics: string[],
   ): void {
-    const formula = formulas[metric]
-    const identifier = identifierMap[metric]
+    for (const metric of metrics) {
+      const formulaObj = formulas[metric]
+      const identifier = identifierMap[metric]
 
-    if (formula) {
-      let query = FormulaBuilder.create(
-        formula.formula,
-        identifierMap,
-        formulas,
-      ).build()
-      query = `CAST(${query} AS DECIMAL(12,${formula.decimals ?? 0}))`
-      qb.selectRaw(query, metric)
-    } else if (identifier) {
-      qb.selectRaw(identifier, metric)
-    } else {
-      throw new Error('Unknown metric: ' + metric)
+      if (formulaObj) {
+        const { formula, decimals } = formulaObj
+        let query = FormulaParser.create(
+          formula,
+          identifierMap,
+          formulas,
+        ).build()
+        query = `CAST(${query} AS DECIMAL(12,${decimals ?? 0}))`
+        qb.selectRaw(query, metric)
+      } else if (identifier) {
+        qb.selectRaw(identifier, metric)
+      } else {
+        throw new Error('Unknown metric: ' + metric)
+      }
     }
   }
 
