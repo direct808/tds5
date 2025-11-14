@@ -9,3 +9,8 @@ export type ReportResult = {
 
 export type Formula = { formula: string; decimals?: number }
 export type FormulaRecord = Record<string, Formula>
+
+export enum Direction {
+  asc = 'asc',
+  desc = 'desc',
+}

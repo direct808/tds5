@@ -5,11 +5,6 @@ import { DB } from '@/shared/db'
 
 export type IdentifierMap = Record<string, string>
 
-export type GetReportArgs = {
-  metrics: string[]
-  groups: string[]
-}
-
 @Injectable()
 export class ReportRepository {
   constructor(@InjectKysely() private readonly db: Kysely<DB>) {}

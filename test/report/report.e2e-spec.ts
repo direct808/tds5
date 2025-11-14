@@ -12,6 +12,7 @@ import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { ClickData } from '@/domain/click/click-data'
+import { ReportService } from '@/domain/report/report.service'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -265,6 +266,7 @@ describe('Report (e2e)', () => {
         'metrics[]': ['clicks', 'bots', 'bots_pct', 'proxies', 'empty_referer'],
       })
       .expect(200)
+
     expect(body).toEqual([
       {
         clicks: '5',
@@ -580,40 +582,51 @@ describe('Report (e2e)', () => {
     ])
   })
 
-  it('asd', async () => {
+  it('order', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
       .save(dataSource)
 
-    const data = [
-      ['id1', 1.1, 'lead', 1.2],
-      ['id2', 2.1, 'registration', 2.2],
-      ['id1', 3.1, 'sale', 3.2],
-      ['id1', 4.1, 'deposit', 4.2],
-      ['id2', 5.1, 'trash', 5.2],
-      ['id2', 6.1, 'rejected', 6.2],
-    ] as const
+    // const data = [
+    //   ['id1', 1.1, 'lead', 1.2],
+    //   ['id2', 2.1, 'registration', 2.2],
+    //   ['id1', 3.1, 'sale', 3.2],
+    //   ['id1', 4.1, 'deposit', 4.2],
+    //   ['id2', 5.1, 'trash', 5.2],
+    //   ['id2', 6.1, 'rejected', 6.2],
+    // ] as const
 
     const builder = createClicksBuilder().campaignId(campaign.id).add()
 
-    data.forEach(([visitorId, revenue, staus, cost]) => {
-      builder.add((click) =>
-        click
-          .visitorId(visitorId)
-          .cost(cost)
-          .addConv((c) => c.revenue(revenue).status(staus)),
-      )
-    })
+    // data.forEach(([visitorId, revenue, staus, cost]) => {
+    //   builder.add((click) =>
+    //     click
+    //       .visitorId(visitorId)
+    //       .cost(cost)
+    //       .addConv((c) => c.revenue(revenue).status(staus)),
+    //   )
+    // })
 
     await builder.save(dataSource)
+
+    const service = app.get(ReportService)
+    const metrics = service.getAllMetrics()
+    const orders = JSON.stringify(
+      metrics.map((metric) => ({ field: metric, order1: 'desc' })),
+    )
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
       .auth(accessToken, { type: 'bearer' })
       .query({
-        'metrics[]': ['clicks', 'cpa'],
+        'groups[]': ['id', 'dateTime'],
+        'metrics[]': metrics,
+        sortField: 'dateTime',
+        sortOrder: 'desc',
       })
-      .expect(200)
+    // .expect(200)
+
+    console.log(body)
 
     expect(body).toEqual([{ clicks: '7', cpa: '7.40' }])
   })

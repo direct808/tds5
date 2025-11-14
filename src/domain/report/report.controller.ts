@@ -1,13 +1,13 @@
 import { Controller, Get, Query } from '@nestjs/common'
+import { GetReportUseCase } from '@/domain/report/use-cases/get-report.use-case'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
-import { ReportService } from '@/domain/report/report.service'
 
 @Controller('report')
 export class ReportController {
-  constructor(private readonly reportService: ReportService) {}
+  constructor(private readonly getReportUseCase: GetReportUseCase) {}
 
   @Get()
-  getReport(@Query() args: any) {
-    return this.reportService.getReport(args)
+  getReport(@Query() args: GetReportDto): any {
+    return this.getReportUseCase.handle(args)
   }
 }

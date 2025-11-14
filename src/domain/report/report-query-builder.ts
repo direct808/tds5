@@ -1,6 +1,6 @@
 import { Kysely, sql } from 'kysely'
 import { DB } from '@/shared/db'
-import { camelCase, snakeCase } from 'typeorm/util/StringUtils'
+import { snakeCase } from 'typeorm/util/StringUtils'
 
 export class ReportQueryBuilder {
   private qb: any
@@ -106,6 +106,12 @@ export class ReportQueryBuilder {
 
   public groupBy(field: string): this {
     this.qb = this.qb.groupBy(field)
+
+    return this
+  }
+
+  public orderBy(field: string, order: 'asc' | 'desc'): this {
+    this.qb = this.qb.orderBy(field, order)
 
     return this
   }
