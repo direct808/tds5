@@ -12,22 +12,26 @@ import { InjectKysely } from 'nestjs-kysely'
 import { Kysely } from 'kysely'
 import { DB } from '@/shared/db'
 import { Direction } from '@/domain/report/types'
+import { CheckArgsService } from '@/domain/report/use-cases/get-report/check-args.service'
 
-type GetReportArgs = {
+export type GetReportArgs = {
   metrics: string[]
   groups: string[]
   sortField?: string
-  sortOrder: Direction
+  sortOrder?: Direction
 }
 
 @Injectable()
 export class GetReportUseCase {
   constructor(
     private readonly reportRepository: ReportRepository,
+    private readonly checkArgsService: CheckArgsService,
     @InjectKysely() private readonly db: Kysely<DB>,
   ) {}
 
   public async handle(args: GetReportArgs): Promise<any> {
+    this.checkArgsService.checkArgs(args)
+
     const { usedIdentifiers, identifierMap } = this.getIdentifierMapProxy()
 
     await this.reportRepository.setTimezone('Europe/Moscow')
@@ -41,30 +45,26 @@ export class GetReportUseCase {
       Object.keys(conversionTypes),
     )
 
-    this.processOrder(qb, args.sortOrder, args.sortField)
+    this.processOrder(qb, args.sortField, args.sortOrder)
     this.processGroups(args.groups, qb)
     this.processMetrics(qb, identifierMap, args.metrics)
     qb.includeConversionFields(usedIdentifiers)
 
-    console.log(qb.sql())
+    // console.log(qb.sql())
 
     return qb.execute()
   }
 
   private processOrder(
     qb: ReportQueryBuilder,
-    sortOrder: Direction,
     sortField?: string,
+    sortOrder: Direction = Direction.asc,
   ): void {
     if (!sortField) {
       return
     }
-    // for (const order of orders) {
+
     qb.orderBy(sortField, sortOrder)
-    // if (!(groupKey in groups)) {
-    //   throw new Error('Unknown group key ' + groupKey)
-    // }
-    // }
   }
 
   private processGroups(groupKeys: string[], qb: ReportQueryBuilder): void {

@@ -24,5 +24,5 @@ export class GetReportDto {
 
   @IsEnum(Direction)
   @IsOptional()
-  sortOrder: Direction = Direction.asc
+  declare sortOrder?: Direction
 }
