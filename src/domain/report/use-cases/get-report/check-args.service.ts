@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ReportService } from '@/domain/report/report.service'
 import { GetReportArgs } from '@/domain/report/use-cases/get-report/get-report.use-case'
+import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 
 @Injectable()
 export class CheckArgsService {
   constructor(private readonly reportService: ReportService) {}
 
-  public checkArgs(args: GetReportArgs): void {
+  public checkArgs(args: GetReportDto): void {
     this.checkExistOrderField(args.sortField)
     this.checkContainOrderField(args)
   }
@@ -27,7 +28,7 @@ export class CheckArgsService {
     throw new BadRequestException(`Unknown order fields ${name}`)
   }
 
-  private checkContainOrderField(args: GetReportArgs): void {
+  private checkContainOrderField(args: GetReportDto): void {
     const { sortField, groups, metrics } = args
 
     if (!sortField) {

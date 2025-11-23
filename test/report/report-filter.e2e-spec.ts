@@ -1,0 +1,328 @@
+import { INestApplication } from '@nestjs/common'
+import { DataSource } from 'typeorm'
+import { createAuthUser } from '../utils/helpers'
+import { truncateTables } from '../utils/truncate-tables'
+import { createApp } from '../utils/create-app'
+import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
+import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
+import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
+import { createClickBuilder } from '../utils/entity-builder/click-builder'
+import { faker } from '@faker-js/faker'
+
+describe('Report Filter (e2e)', () => {
+  let app: INestApplication
+  let accessToken: string
+  let userId: string
+  let dataSource: DataSource
+  let campaignId: string
+
+  afterEach(async () => {
+    await app.close()
+  })
+
+  beforeEach(async () => {
+    await truncateTables()
+    app = await createApp()
+    dataSource = app.get(DataSource)
+    const authData = await createAuthUser(app)
+    accessToken = authData.accessToken
+    userId = authData.user.id
+
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+    campaignId = campaign.id
+  })
+
+  it('Unknown filter field', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('unknown_field', '>', 40)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Unknown filter: unknown_field',
+      statusCode: 400,
+    })
+  })
+
+  it('Group filter null', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('source', '=', 'source1')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Unknown filter: source',
+      statusCode: 400,
+    })
+  })
+
+  it('Invalid bool value', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('isUniqueGlobal', '=', 'Invalid value ')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Invalid value for: isUniqueGlobal',
+      statusCode: 400,
+    })
+  })
+
+  it('Invalid numeric value', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('week', '=', 'Invalid value')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Invalid value for: week',
+      statusCode: 400,
+    })
+  })
+
+  it('Invalid string value', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('adCampaignId', '=', true)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(400)
+
+    expect(body).toEqual({
+      error: 'Bad Request',
+      message: 'Invalid value for: adCampaignId',
+      statusCode: 400,
+    })
+  })
+
+  it('Invalid ip value', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('ip', '=', 'Bad ip')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(400)
+
+    // console.log(body)
+
+    // expect(body).toEqual({
+    //   error: 'Bad Request',
+    //   message: 'Invalid value for: ip',
+    //   statusCode: 400,
+    // })
+  })
+
+  it('formula', async () => {
+    await createClicksBuilder()
+      .campaignId(campaignId)
+      .add((click) => click.isBot(false).isProxy(true))
+      .add((click) => click.isBot(false).isProxy(true))
+      .add((click) => click.isBot(true).isProxy(true))
+      .add((click) => click.isBot(true).isProxy(false))
+      .add((click) => click.isBot(false).isProxy(false))
+      .save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .groups(['isProxy'])
+      .metrics(['bots_pct'])
+      .addFilter('bots_pct', '>', 40)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toEqual([{ isProxy: false, bots_pct: '50' }])
+  })
+
+  it('identifier', async () => {
+    await createClicksBuilder()
+      .campaignId(campaignId)
+      .add((click) => click.isBot(false).isProxy(true))
+      .add((click) => click.isBot(false).isProxy(true))
+      .add((click) => click.isBot(true).isProxy(true))
+      .add((click) => click.isBot(true).isProxy(false))
+      .add((click) => click.isBot(false).isProxy(false))
+      .save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .groups(['isProxy'])
+      .metrics(['clicks'])
+      .addFilter('clicks', '=', 2)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // console.log(body)
+
+    expect(body).toEqual([{ isProxy: false, clicks: '2' }])
+  })
+
+  it.each([
+    ['dateTime', '2024-06-23 08:30:22'],
+    ['year', 2023],
+    ['month', '2024-06'],
+    ['week', 25],
+    ['weekday', 3],
+    ['day', '2023-07-26'],
+    ['hour', 9],
+    ['dayHour', '2023-07-26 09:00'],
+  ])('date %s', async (field, value) => {
+    await createClicksBuilder()
+      .campaignId(campaignId)
+      .add((click) => click.createdAt(new Date('2024-06-23 08:30:22')))
+      .add((click) => click.createdAt(new Date('2023-07-26 09:40:33')))
+      .save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      // .groups([field])
+      .addFilter(field, '=', value)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+    // console.log(body)
+
+    expect(body).toEqual([{ clicks: '1' }])
+  })
+
+  it('campaignId', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(dataSource)
+
+    await createClickBuilder().campaignId(campaignId).save(dataSource)
+    await createClickBuilder().campaignId(campaign.id).save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      // .groups(['campaignId'])
+      .addFilter('campaignId', '=', campaignId)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+    // console.log(body)
+
+    expect(body).toEqual([{ clicks: '1' }])
+  })
+
+  it('emptyReferer', async () => {
+    await createClickBuilder({ referer: 'Ref1' })
+      .campaignId(campaignId)
+      .save(dataSource)
+    await createClickBuilder().campaignId(campaignId).save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      // .groups(['campaignId'])
+      .addFilter('emptyReferer', '=', true)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+    // console.log(body)
+
+    expect(body).toEqual([{ clicks: '1' }])
+  })
+
+  it('ip2', async () => {
+    await createClickBuilder({ ip: '1.2.3.4' })
+      .campaignId(campaignId)
+      .save(dataSource)
+    await createClickBuilder({ ip: '4.3.2.1' })
+      .campaignId(campaignId)
+      .save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('ip2', '=', '4.3')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toEqual([{ clicks: '1' }])
+  })
+
+  it('ip3', async () => {
+    await createClickBuilder({ ip: '1.2.3.4' })
+      .campaignId(campaignId)
+      .save(dataSource)
+    await createClickBuilder({ ip: '4.3.2.1' })
+      .campaignId(campaignId)
+      .save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .addFilter('ip3', '=', '4.3.2')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toEqual([{ clicks: '1' }])
+  })
+
+  // todo id, visitorId
+
+  it.each([
+    ['country', 'US', 'GB'],
+    ['city', 'city1', 'city2'],
+    ['region', 'region1', 'region2'],
+    ['adCampaignId', 'value 1', 'value 2'],
+    ['previousCampaignId', faker.string.uuid(), faker.string.uuid()],
+    ['offerId', faker.string.uuid(), faker.string.uuid()],
+    ['affiliateNetworkId', faker.string.uuid(), faker.string.uuid()],
+    ['sourceId', faker.string.uuid(), faker.string.uuid()],
+    ['streamId', faker.string.uuid(), faker.string.uuid()],
+    ['isUniqueGlobal', true, false],
+    ['isUniqueCampaign', true, false],
+    ['isUniqueStream', true, false],
+    ['isBot', true, false],
+    ['isProxy', true, false],
+    ['destination', 'value 1', 'value 2'],
+    ['referer', 'value 1', 'value 2'],
+    ['keyword', 'value 1', 'value 2'],
+    ['externalId', 'value 1', 'value 2'],
+    ['creativeId', 'value 1', 'value 2'],
+    ['language', 'en', 'ch'],
+    ['deviceType', 'value 1', 'value 2'],
+    ['deviceModel', 'value 1', 'value 2'],
+    ['userAgent', 'value 1', 'value 2'],
+    ['os', 'value 1', 'value 2'],
+    ['osVersion', 'value 1', 'value 2'],
+    ['browser', 'value 1', 'value 2'],
+    ['browserVersion', 'value 1', 'value 2'],
+    ['ip', '192.168.1.3', '192.168.2.3'],
+    ['subId1', 'value 1', 'value 2'],
+    ['subId2', 'value 1', 'value 2'],
+  ])('field %s', async (field, value1, value2) => {
+    await createClickBuilder({ [field]: value1 })
+      .campaignId(campaignId)
+      .save(dataSource)
+
+    await createClickBuilder({ [field]: value2 })
+      .campaignId(campaignId)
+      .save(dataSource)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      // .groups([field])
+      .addFilter(field, '=', value2)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+    // console.log(body)
+
+    expect(body).toEqual([{ clicks: '1' }])
+  })
+})

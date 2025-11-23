@@ -10,7 +10,7 @@ import { createApp } from '../utils/create-app'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { RegisterClickService } from '@/domain/click/register-click.service'
 import type { ClickData } from '@/domain/click/click-data'
-import { ClickRequestBuilder } from '../utils/click-request-builder'
+import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 
 describe('Click (e2e)', () => {
   let app: INestApplication

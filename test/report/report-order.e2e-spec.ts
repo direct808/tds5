@@ -43,8 +43,8 @@ describe('Report Order (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .query({
         'groups[]': ['id', 'dateTime'],
-        'metrics[]': ['clicks'],
-        sortField: 'epcasd',
+        'metrics[]': ['clicks', 'epc'],
+        sortField: 'epc',
         sortOrder: 'desc',
       })
     // .expect(200)

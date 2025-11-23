@@ -98,6 +98,26 @@ export class ReportQueryBuilder {
     return this
   }
 
+  public having(
+    query: string,
+    operator: string,
+    value: number | string | boolean,
+  ): this {
+    this.qb = this.qb.having(sql.raw(`${query}`), operator, value)
+
+    return this
+  }
+
+  public where(
+    query: string,
+    operator: string,
+    value: number | string | boolean,
+  ): this {
+    this.qb = this.qb.where(sql.raw(`${query}`), operator, value)
+
+    return this
+  }
+
   public selectRaw(query: string, alias: string): this {
     this.qb = this.qb.select(sql.raw(query).as(alias))
 

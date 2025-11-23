@@ -1,76 +1,92 @@
-type Groups = Record<
-  string,
-  {
-    sql?: string
-    include?: 'source' | 'campaign' | 'stream' | 'offer' | 'affiliateNetwork'
-  }
->
+export type Group = {
+  filter:
+    | null
+    | 'numeric'
+    | 'boolean'
+    | 'list'
+    | 'string'
+    | 'equals_or_not'
+    | 'ip'
+  sql?: string
+  include?: 'source' | 'campaign' | 'stream' | 'offer' | 'affiliateNetwork'
+}
+
+type Groups = Record<string, Group>
 
 export const groups: Groups = {
-  country: {},
-  city: {},
-  region: {},
+  country: { filter: 'list' },
+  city: { filter: 'list' },
+  region: { filter: 'list' },
 
-  adCampaignId: {},
-  campaignId: {},
-  previousCampaignId: {},
-  id: {},
-  offerId: {},
-  affiliateNetworkId: {},
-  sourceId: {},
-  streamId: {},
+  adCampaignId: { filter: 'string' },
+  campaignId: { filter: 'list' },
+  previousCampaignId: { filter: 'list' },
+  id: { filter: 'string' },
+  offerId: { filter: 'list' },
+  affiliateNetworkId: { filter: 'list' },
+  sourceId: { filter: 'list' },
+  streamId: { filter: 'list' },
 
-  dateTime: { sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:MI:SS')` },
-  year: { sql: `date_part('year', click."createdAt")` },
-  month: { sql: `to_char(click."createdAt", 'YYYY-MM')` },
-  week: { sql: `date_part('week', click."createdAt")` },
-  weekday: { sql: `date_part('dow', click."createdAt")` },
-  day: { sql: `to_char(click."createdAt", 'YYYY-MM-DD')` },
-  hour: { sql: `date_part('hour', click."createdAt")` },
-  dayHour: { sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:00')` },
+  dateTime: {
+    filter: 'equals_or_not',
+    sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:MI:SS')`,
+  },
+  year: { filter: 'numeric', sql: `date_part('year', click."createdAt")` },
+  month: { filter: 'string', sql: `to_char(click."createdAt", 'YYYY-MM')` },
+  week: { filter: 'numeric', sql: `date_part('week', click."createdAt")` },
+  weekday: { filter: 'numeric', sql: `date_part('dow', click."createdAt")` },
+  day: { filter: 'string', sql: `to_char(click."createdAt", 'YYYY-MM-DD')` },
+  hour: { filter: 'numeric', sql: `date_part('hour', click."createdAt")` },
+  dayHour: {
+    filter: 'string',
+    sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:00')`,
+  },
 
   // landing
-  source: { sql: `source.name`, include: 'source' },
-  campaign: { sql: `campaign.name`, include: 'campaign' },
-  stream: { sql: `stream.name`, include: 'stream' },
-  offer: { sql: `offer.name`, include: 'offer' },
+  source: { filter: null, sql: `source.name`, include: 'source' },
+  campaign: { filter: null, sql: `campaign.name`, include: 'campaign' },
+  stream: { filter: null, sql: `stream.name`, include: 'stream' },
+  offer: { filter: null, sql: `offer.name`, include: 'offer' },
   affiliateNetwork: {
+    filter: null,
     sql: `affiliateNetwork.name`,
     include: 'affiliateNetwork',
   },
 
-  isUniqueGlobal: {},
-  isUniqueCampaign: {},
-  isUniqueStream: {},
+  isUniqueGlobal: { filter: 'boolean' },
+  isUniqueCampaign: { filter: 'boolean' },
+  isUniqueStream: { filter: 'boolean' },
 
-  destination: {},
-  emptyReferer: { sql: `referer is null` },
-  referer: {},
-  keyword: {},
-  visitorId: {},
-  externalId: {},
-  creativeId: {},
+  destination: { filter: 'string' },
+  emptyReferer: { filter: 'boolean', sql: `referer is null` },
+  referer: { filter: 'string' },
+  keyword: { filter: 'string' },
+  visitorId: { filter: 'string' },
+  externalId: { filter: 'string' },
+  creativeId: { filter: 'string' },
 
-  language: {},
-  isBot: {},
-  deviceType: {},
-  deviceModel: {},
-  userAgent: {},
-  os: {},
-  osVersion: {},
-  browser: {},
-  browserVersion: {},
-  ip: {},
+  language: { filter: 'list' },
+  isBot: { filter: 'boolean' },
+  deviceType: { filter: 'list' },
+  deviceModel: { filter: 'list' },
+  userAgent: { filter: 'string' },
+  os: { filter: 'list' },
+  osVersion: { filter: 'string' },
+  browser: { filter: 'list' },
+  browserVersion: { filter: 'string' },
+  ip: { filter: 'ip' },
 
-  isProxy: {},
+  isProxy: { filter: 'boolean' },
 
-  subId1: {},
-  subId2: {},
+  subId1: { filter: 'string' },
+  subId2: { filter: 'string' },
 
   ip2: {
+    filter: 'string',
     sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2)`,
   },
   ip3: {
+    filter: 'string',
     sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2) || '.' || split_part(ip::text, '.', 3)`,
   },
 }
