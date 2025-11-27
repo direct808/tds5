@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { AffiliateNetwork } from './affiliate-network.entity'
+// import { AffiliateNetwork } from './affiliate-network.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   affiliateNetworkEventName,
@@ -11,10 +11,11 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
+import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
 
 type CreateArgs = {
   name: string
-  offerParams?: string
+  offerParams: string | null
   userId: string
 }
 
@@ -37,7 +38,7 @@ export class AffiliateNetworkService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async create(args: CreateArgs): Promise<AffiliateNetwork> {
+  public async create(args: CreateArgs): Promise<AffiliateNetworkModel> {
     await checkUniqueNameForCreate(this.repository, args)
 
     const id = await this.repository.create(args)
@@ -63,7 +64,7 @@ export class AffiliateNetworkService {
     )
   }
 
-  public async getList(userId: string): Promise<AffiliateNetwork[]> {
+  public async getList(userId: string): Promise<AffiliateNetworkModel[]> {
     return this.repository.getListByUserId(userId)
   }
 
@@ -76,7 +77,7 @@ export class AffiliateNetworkService {
   public async getByIdAndUserIdOrFail(
     id: string,
     userId: string,
-  ): Promise<AffiliateNetwork> {
+  ): Promise<AffiliateNetworkModel> {
     const result = await this.repository.getByIdAndUserId({ id, userId })
 
     if (!result) {

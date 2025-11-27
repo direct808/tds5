@@ -4,60 +4,88 @@ import {
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
-import { DataSource, EntityManager } from 'typeorm'
 import { FullCampaign } from '@/domain/campaign/types'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
+import {
+  CampaignModel,
+  CampaignUncheckedCreateInput,
+} from '../../../generated/prisma/models/Campaign'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { PrismaClient } from '../../../generated/prisma/client'
+import { ITXClientDenyList } from '@prisma/client/runtime/client'
+import {
+  prismaTransaction,
+  PrismaTransaction,
+  Transaction,
+} from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class CampaignRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(Campaign)
+  // private readonly repository = this.dataSource.getRepository(Campaign)
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   public async getByNameAndUserId({
     name,
     userId,
-  }: NameAndUserId): Promise<Campaign | null> {
-    return this.repository.findOne({ where: { name, userId } })
+  }: NameAndUserId): Promise<CampaignModel | null> {
+    return this.prisma.campaign.findFirst({ where: { name, userId } })
   }
 
   public async create(
-    manager: EntityManager,
-    args: Partial<Campaign>,
-  ): Promise<Campaign> {
-    const campaign = manager.create(Campaign, args)
+    tr: Transaction,
+    data: CampaignUncheckedCreateInput,
+  ): Promise<CampaignModel> {
+    if (!(tr instanceof PrismaTransaction)) {
+      throw new Error('Not prisma trx')
+    }
 
-    return manager.save(campaign)
+    return tr.get().campaign.create({ data })
   }
 
   public async update(
-    manager: EntityManager,
+    trx: Transaction,
     id: string,
-    args: Partial<Campaign>,
+    data: Partial<CampaignModel>,
   ): Promise<void> {
-    await manager.update(Campaign, id, args)
+    await prismaTransaction(trx).get().campaign.update({ where: { id }, data })
   }
 
   public async getByIdAndUserId(
-    args: Pick<Campaign, 'id' | 'userId'>,
-  ): Promise<Campaign | null> {
-    return this.repository.findOne({
+    args: Pick<CampaignModel, 'id' | 'userId'>,
+  ): Promise<CampaignModel | null> {
+    return this.prisma.campaign.findFirst({
       where: { id: args.id, userId: args.userId },
     })
   }
 
   public async getFullByCode(code: string): Promise<FullCampaign | null> {
-    return this.repository.findOne({
+    return this.prisma.campaign.findFirst({
       where: { code, active: true },
-      relations: [
-        'streams',
-        'streams.streamOffers',
-        'streams.streamOffers.offer',
-        'streams.streamOffers.offer.affiliateNetwork',
-        'streams.actionCampaign',
-      ],
+      include: {
+        streams: {
+          include: {
+            streamOffers: {
+              include: {
+                offer: {
+                  include: {
+                    affiliateNetwork: true,
+                  },
+                },
+              },
+            },
+            actionCampaign: true,
+          },
+        },
+      },
+      // relations: [
+      //   'streams',
+      //   'streams.streamOffers',
+      //   'streams.streamOffers.offer',
+      //   'streams.streamOffers.offer.affiliateNetwork',
+      //   'streams.actionCampaign',
+      // ],
     })
   }
 }

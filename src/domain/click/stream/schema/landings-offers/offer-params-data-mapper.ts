@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 import { OfferParams } from './offer-params.service'
 import { ClickData } from '../../../click-data'
+import { CampaignModel } from '../../../../../../generated/prisma/models/Campaign'
 
 type ConvertArgs = {
-  campaign: Campaign
+  campaign: CampaignModel
   clickData: ClickData
 }
 

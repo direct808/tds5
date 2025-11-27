@@ -1,15 +1,16 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../utils/helpers'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { ClickRepository } from '@/infra/repositories/click.repository'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { ClickRequestBuilder } from '../utils/click-request-builder'
 
 describe('Offer params (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let clickRepo: ClickRepository
   let userId: string
 
@@ -20,7 +21,7 @@ describe('Offer params (e2e)', () => {
   beforeEach(async () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     clickRepo = app.get(ClickRepository)
     const authData = await createAuthUser(app)
     userId = authData.user.id
@@ -53,12 +54,17 @@ describe('Offer params (e2e)', () => {
           ),
         ),
       )
-      .save(dataSource)
+      .save(prisma)
 
     // Act
-    const response = await request(app.getHttpServer())
-      .get(`/${campaign.code}`)
-      .expect(302)
+    // const response = await request(app.getHttpServer())
+    //   .get(`/${campaign.code}`)
+    //   .expect(302)
+
+    const response = await ClickRequestBuilder.create(app)
+      .code(campaign.code)
+      .waitRegister()
+      .request()
 
     const clicks = await clickRepo.getByCampaignId(campaign.id)
     const clickId = clicks[0].id

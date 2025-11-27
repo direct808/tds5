@@ -1,18 +1,22 @@
-import { StreamBuilder } from './stream-builder'
-import { CampaignStreamSchema, StreamActionType } from '@/domain/campaign/types'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
+import { StreamBuilder, StreamFull } from './stream-builder'
 import { CampaignBuilder } from '../campaign-builder'
-import { DataSource } from 'typeorm'
+import {
+  StreamActionTypeEnum,
+  StreamSchemaEnum,
+} from '../../../../generated/prisma/enums'
+import { StreamModel } from '../../../../generated/prisma/models/Stream'
+import { PrismaClient } from '../../../../generated/prisma/client'
+import { CampaignModel } from '../../../../generated/prisma/models/Campaign'
 
 export class StreamTypeActionBuilder extends StreamBuilder {
   private actionCampaignBuilder?: CampaignBuilder
 
   constructor() {
     super()
-    this.fields.schema = CampaignStreamSchema.ACTION
+    this.fields.schema = StreamSchemaEnum.ACTION
   }
 
-  type(type: StreamActionType): this {
+  type(type: StreamActionTypeEnum): this {
     this.fields.actionType = type
 
     return this
@@ -30,13 +34,17 @@ export class StreamTypeActionBuilder extends StreamBuilder {
     callback(builder)
   }
 
-  async save(ds: DataSource, campaignId: string): Promise<Stream> {
+  async save(prisma: PrismaClient, campaignId: string): Promise<StreamFull> {
+    let actionCampaign: CampaignModel | null = null
     if (this.actionCampaignBuilder) {
-      const campaign = await this.actionCampaignBuilder.save(ds)
+      const campaign = await this.actionCampaignBuilder.save(prisma)
       this.fields.actionCampaignId = campaign.id
-      this.fields.actionCampaign = campaign
+      actionCampaign = campaign
     }
 
-    return super.save(ds, campaignId)
+    const res = await super.save(prisma, campaignId)
+    res.actionCampaign = actionCampaign
+
+    return res
   }
 }

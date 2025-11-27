@@ -12,7 +12,7 @@ export interface IpFilterObject extends BaseFilterObject {
 export class IpFilter implements StreamFilter {
   constructor(
     private readonly filterObj: IpFilterObject,
-    private readonly ip?: string,
+    private readonly ip: string | null,
   ) {}
 
   handle(): boolean {

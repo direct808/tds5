@@ -1,18 +1,16 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource, Repository } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
-import { Source } from '@/domain/source/source.entity'
 import { SourceBuilder } from './utils/entity-builder/source-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let userId: string
-  let sourceRepository: Repository<Source>
-  let dataSource: DataSource
+  let prisma: PrismaService
 
   afterEach(async () => {
     await app.close()
@@ -21,8 +19,7 @@ describe('SourceController (e2e)', () => {
   beforeEach(async () => {
     await truncateTables()
     app = await createApp()
-    dataSource = app.get(DataSource)
-    sourceRepository = dataSource.getRepository(Source)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken
     userId = authData.user.id
@@ -35,7 +32,7 @@ describe('SourceController (e2e)', () => {
       .send({ name: 'Source 1' })
       .expect(201)
 
-    const source = await sourceRepository.findOne({
+    const source = await prisma.source.findFirst({
       where: { name: 'Source 1' },
     })
 
@@ -43,10 +40,7 @@ describe('SourceController (e2e)', () => {
   })
 
   it('List source', async () => {
-    await SourceBuilder.create()
-      .name('Source 1')
-      .userId(userId)
-      .save(dataSource)
+    await SourceBuilder.create().name('Source 1').userId(userId).save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/api/source')
@@ -61,7 +55,7 @@ describe('SourceController (e2e)', () => {
     const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await request(app.getHttpServer())
       .patch('/api/source/' + source.id)
@@ -72,7 +66,7 @@ describe('SourceController (e2e)', () => {
       })
       .expect(200)
 
-    const sourceExists = await sourceRepository.findOneOrFail({
+    const sourceExists = await prisma.source.findFirstOrThrow({
       where: { id: source.id },
     })
 
@@ -83,15 +77,15 @@ describe('SourceController (e2e)', () => {
     const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await request(app.getHttpServer())
       .delete('/api/source/' + source.id)
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const sourceExists = await sourceRepository.findOneBy({
-      id: source.id,
+    const sourceExists = await prisma.source.findFirst({
+      where: { id: source.id },
     })
 
     expect(sourceExists).toBeNull()

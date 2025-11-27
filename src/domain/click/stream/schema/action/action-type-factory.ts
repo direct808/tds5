@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { ActionType, StreamResponse } from '../../../types'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
-import { StreamActionType } from '@/domain/campaign/types'
 import { ModuleRef } from '@nestjs/core'
 import {
   NothingActionType,
@@ -11,12 +9,14 @@ import {
   ToCampaignActionType,
 } from './type'
 import { MaybePromise } from '@/shared/types'
+import { StreamModel } from '../../../../../../generated/prisma/models/Stream'
+import { StreamActionTypeEnum } from '../../../../../../generated/prisma/enums'
 
 @Injectable()
 export class ActionTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  handle(stream: Stream): MaybePromise<StreamResponse> {
+  handle(stream: StreamModel): MaybePromise<StreamResponse> {
     if (!stream.actionType) {
       throw new Error('No actionType')
     }
@@ -24,17 +24,17 @@ export class ActionTypeFactory {
     return this.create(stream.actionType).handle(stream)
   }
 
-  private create(actionType: StreamActionType): ActionType {
+  private create(actionType: StreamActionTypeEnum): ActionType {
     switch (actionType) {
-      case StreamActionType.SHOW404:
+      case StreamActionTypeEnum.SHOW404:
         return this.moduleRef.get(Show404ActionType)
-      case StreamActionType.SHOW_HTML:
+      case StreamActionTypeEnum.SHOW_HTML:
         return this.moduleRef.get(ShowHtmlActionType)
-      case StreamActionType.SHOW_TEXT:
+      case StreamActionTypeEnum.SHOW_TEXT:
         return this.moduleRef.get(ShowTextActionType)
-      case StreamActionType.NOTHING:
+      case StreamActionTypeEnum.NOTHING:
         return this.moduleRef.get(NothingActionType)
-      case StreamActionType.TO_CAMPAIGN:
+      case StreamActionTypeEnum.TO_CAMPAIGN:
         return this.moduleRef.get(ToCampaignActionType)
     }
 

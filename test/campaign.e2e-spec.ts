@@ -1,25 +1,19 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource, Repository } from 'typeorm'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { CampaignStreamSchema, StreamActionType } from '@/domain/campaign/types'
-import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
 import { createAuthUser } from './utils/helpers'
 import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
 import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
-  let campaignRepository: Repository<Campaign>
-  let streamRepository: Repository<Stream>
-  let streamOfferRepository: Repository<StreamOffer>
-  let dataSource: DataSource
   let userId: string
+  let prisma: PrismaService
 
   afterEach(async () => {
     await app.close()
@@ -30,10 +24,7 @@ describe('CampaignController (e2e)', () => {
     app = await createApp()
 
     const authData = await createAuthUser(app)
-    dataSource = app.get(DataSource)
-    campaignRepository = dataSource.getRepository(Campaign)
-    streamRepository = dataSource.getRepository(Stream)
-    streamOfferRepository = dataSource.getRepository(StreamOffer)
+    prisma = app.get(PrismaService)
     userId = authData.user.id
     accessToken = authData.accessToken
   })
@@ -44,13 +35,13 @@ describe('CampaignController (e2e)', () => {
         .name('Offer 1')
         .userId(userId)
         .url(faker.internet.url())
-        .save(dataSource)
+        .save(prisma)
 
       const offer2 = await OfferBuilder.create()
         .name('Offer 2')
         .userId(userId)
         .url(faker.internet.url())
-        .save(dataSource)
+        .save(prisma)
 
       await request(app.getHttpServer())
         .post('/api/campaign')
@@ -79,12 +70,12 @@ describe('CampaignController (e2e)', () => {
         })
         .expect(201)
 
-      const campaign = await campaignRepository.findOne({
+      const campaign = await prisma.campaign.findFirst({
         where: { name: 'Test campaign 1' },
       })
 
-      const stream = await streamRepository.findOneBy({
-        name: 'Test stream 1',
+      const stream = await prisma.stream.findFirst({
+        where: { name: 'Test stream 1' },
       })
 
       expect(campaign).not.toBeNull()
@@ -112,7 +103,7 @@ describe('CampaignController (e2e)', () => {
         .name('Campaign 1')
         .code('abcdif')
         .userId(userId)
-        .save(dataSource)
+        .save(prisma)
 
       await request(app.getHttpServer())
         .post('/api/campaign')
@@ -243,14 +234,14 @@ describe('CampaignController (e2e)', () => {
         .name('Campaign 2')
         .code('abcdif')
         .userId(userId)
-        .save(dataSource)
+        .save(prisma)
 
       const campaign = await CampaignBuilder.create()
         .name('Campaign 1')
         .code('abcdi2')
         .userId(userId)
         .createSource((source) => source.name('Source 1').userId(userId))
-        .save(dataSource)
+        .save(prisma)
 
       await request(app.getHttpServer())
         .put('/api/campaign/' + campaign.id)
@@ -278,7 +269,7 @@ describe('CampaignController (e2e)', () => {
         .addStreamTypeAction((stream) =>
           stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
         )
-        .save(dataSource)
+        .save(prisma)
 
       await request(app.getHttpServer())
         .put('/api/campaign/' + campaign.id)
@@ -303,7 +294,7 @@ describe('CampaignController (e2e)', () => {
         .name('Campaign 1')
         .code('abcdif')
         .userId(userId)
-        .save(dataSource)
+        .save(prisma)
 
       await request(app.getHttpServer())
         .put('/api/campaign/' + campaign.id)
@@ -331,12 +322,12 @@ describe('CampaignController (e2e)', () => {
         .addStreamTypeAction((stream) =>
           stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
         )
-        .save(dataSource)
+        .save(prisma)
 
       const streamId = campaign.streams[0].id
 
-      const streamBeforeDelete = await streamRepository.findOneBy({
-        id: streamId,
+      const streamBeforeDelete = await prisma.stream.findFirst({
+        where: { id: streamId },
       })
 
       await request(app.getHttpServer())
@@ -355,12 +346,12 @@ describe('CampaignController (e2e)', () => {
         })
         .expect(200)
 
-      const streamAfterDelete = await streamRepository.findOneBy({
-        id: streamId,
+      const streamAfterDelete = await prisma.stream.findFirst({
+        where: { id: streamId },
       })
 
-      const newStream = await streamRepository.findOneBy({
-        name: 'Test stream 1',
+      const newStream = await prisma.stream.findFirst({
+        where: { name: 'Test stream 1' },
       })
 
       expect(streamBeforeDelete).not.toBeNull()
@@ -399,7 +390,7 @@ describe('CampaignController (e2e)', () => {
         .addStreamTypeAction((stream) =>
           stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
         )
-        .save(dataSource)
+        .save(prisma)
 
       async function sendRequest(withId: boolean): Promise<void> {
         await request(app.getHttpServer())
@@ -445,14 +436,14 @@ describe('CampaignController (e2e)', () => {
                 ),
             ),
         )
-        .save(dataSource)
+        .save(prisma)
 
       const streamId = campaign.streams[0].id
       const streamOfferId = campaign.streams[0].streamOffers![0].id
       const offerId = campaign.streams[0].streamOffers![0].offerId
 
-      const streamOfferBeforeDelete = await streamOfferRepository.findOneBy({
-        id: streamOfferId,
+      const streamOfferBeforeDelete = await prisma.streamOffer.findFirst({
+        where: { id: streamOfferId },
       })
 
       await request(app.getHttpServer())
@@ -478,8 +469,8 @@ describe('CampaignController (e2e)', () => {
         })
         .expect(200)
 
-      const streamOfferAfterDelete = await streamOfferRepository.findOneBy({
-        id: streamOfferId,
+      const streamOfferAfterDelete = await prisma.streamOffer.findFirst({
+        where: { id: streamOfferId },
       })
 
       expect(streamOfferBeforeDelete).not.toBeNull()

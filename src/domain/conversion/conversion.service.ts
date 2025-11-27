@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
-import {
-  Conversion,
-  ConversionStatus,
-} from '@/domain/conversion/conversion.entity'
+// import {
+//   Conversion,
+//   ConversionStatus,
+// } from '@/domain/conversion/conversion.entity'
 import { RequestAdapter } from '@/shared/request-adapter'
 import { ConversionStatusService } from '@/domain/conversion/conversion-status.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
@@ -12,6 +12,11 @@ import {
   ConversionCreatedEvent,
   conversionCreatedEventName,
 } from '@/domain/conversion/events/conversion-created.event'
+import {
+  ConversionModel,
+  ConversionUncheckedCreateInput,
+  ConversionUncheckedUpdateInput,
+} from '../../../generated/prisma/models/Conversion'
 
 @Injectable()
 export class ConversionService {
@@ -43,8 +48,8 @@ export class ConversionService {
     const originalStatus = requestAdapter.query('status')
     const status = this.conversionStatusService.getStatus(requestAdapter)
 
-    const data: Partial<Conversion> = {
-      status: status as ConversionStatus,
+    const data: ConversionUncheckedCreateInput = {
+      status: status,
       clickId: click.id,
       originalStatus,
       params: requestAdapter.queryObject(),
@@ -59,7 +64,7 @@ export class ConversionService {
     }
   }
 
-  private async create(data: Partial<Conversion>): Promise<void> {
+  private async create(data: ConversionUncheckedCreateInput): Promise<void> {
     const id = await this.conversionRepository.create(data)
 
     this.eventEmitter.emit(
@@ -69,8 +74,8 @@ export class ConversionService {
   }
 
   private async update(
-    existsConversion: Conversion,
-    data: Partial<Conversion>,
+    existsConversion: ConversionModel,
+    data: ConversionUncheckedUpdateInput,
   ): Promise<void> {
     await this.conversionRepository.update(existsConversion.id, data)
 

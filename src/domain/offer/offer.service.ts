@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { Offer } from './offer.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   OfferUpdatedEvent,
@@ -12,6 +11,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
+import { OfferModel } from '../../../generated/prisma/models/Offer'
 
 type CreateArgs = {
   name: string
@@ -82,7 +82,7 @@ export class OfferService {
    * Список партнерских сетей
    * @param userId
    */
-  public async getList(userId: string): Promise<Offer[]> {
+  public async getList(userId: string): Promise<OfferModel[]> {
     return this.repository.getListByUserId(userId)
   }
 

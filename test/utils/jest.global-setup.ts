@@ -1,6 +1,8 @@
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql/build/postgresql-container'
 import { truncateTables } from './truncate-tables'
+// import { migrateDbPush } from '@prisma/internals'
+import execa from 'execa'
 
 export default async function (): Promise<void> {
   await globalSetup()
@@ -13,6 +15,10 @@ async function globalSetup(): Promise<void> {
     const data = await createTestContainer()
     setEnv(data)
   }
+
+  await execa('npx', ['prisma', 'db', 'push', '--force-reset'], {
+    stdio: 'inherit',
+  })
 
   await truncateTables()
 }

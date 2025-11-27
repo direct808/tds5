@@ -1,12 +1,12 @@
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
+import { FullCampaign } from '@/domain/campaign/types'
 
 type Args = {
-  sourceId: string | undefined
+  sourceId: string | null
   offerIds: string[]
   affiliateNetworkIdIds: string[]
 }
 
-export function getCampaignAdditionalIds(campaign: Campaign): Args {
+export function getCampaignAdditionalIds(campaign: FullCampaign): Args {
   const sourceId = campaign.sourceId
   const offerIds: string[] = []
   const affiliateNetworkIdIds: string[] = []

@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AffiliateNetwork {
+  id          String    @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  offerParams String?   @map("offer_params")
+  userId      String    @map("user_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
+  user        User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  offer       Offer[]
+
+  @@index([userId])
+  @@map("affiliate_network")
+}
+
+model Campaign {
+  id            String    @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String    @db.VarChar
+  code          String    @unique() @db.VarChar
+  sourceId      String?   @map("source_id") @db.Uuid
+  active        Boolean
+  userId        String    @map("user_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(6)
+  user          User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  source        Source?   @relation(fields: [sourceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  streams       Stream[]  @relation("StreamCampaign")
+  actionStreams Stream[]  @relation("StreamActionCampaign")
+
+  @@index([userId])
+  @@map("campaign")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Click {
+  id                 String       @id() @db.Char(12)
+  visitorId          String       @db.Char(6)
+  campaignId         String       @db.Uuid
+  previousCampaignId String?      @db.Uuid
+  offerId            String?      @db.Uuid
+  affiliateNetworkId String?      @db.Uuid
+  sourceId           String?      @db.Uuid
+  streamId           String?      @db.Uuid
+  destination        String?
+  isUniqueGlobal     Boolean?
+  isUniqueCampaign   Boolean?
+  isUniqueStream     Boolean?
+  isProxy            Boolean?
+  country            String?
+  region             String?
+  city               String?
+  ip                 String?      @db.Inet
+  referer            String?
+  userAgent          String?
+  language           String?      @db.Char(2)
+  isBot              Boolean?
+  deviceType         String?
+  os                 String?
+  osVersion          String?
+  browser            String?
+  browserVersion     String?
+  deviceModel        String?
+  keyword            String?
+  source             String?
+  cost               Decimal?     @db.Decimal(12, 2)
+  externalId         String?
+  creativeId         String?
+  adCampaignId       String?
+  subId1             String?
+  subId2             String?
+  extraParam1        String?
+  extraParam2        String?
+  createdAt          DateTime     @default(now()) @db.Timestamptz(6)
+  conversion         Conversion[]
+
+  @@map("click")
+}
+
+model Conversion {
+  id             String   @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  originalStatus String?  @map("original_status")
+  clickId        String   @map("click_id") @db.Char(12)
+  params         Json?
+  status         String
+  previousStatus String?  @map("previous_status")
+  revenue        Decimal? @db.Decimal(12, 2)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  click          Click    @relation(fields: [clickId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([clickId])
+  @@map("conversion")
+}
+
+model Offer {
+  id                 String            @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String
+  url                String
+  affiliateNetworkId String?           @db.Uuid
+  userId             String            @db.Uuid
+  createdAt          DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime          @default(now()) @db.Timestamptz(6)
+  deletedAt          DateTime?         @db.Timestamptz(6)
+  affiliateNetwork   AffiliateNetwork? @relation(fields: [affiliateNetworkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user               User              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  streamOffers       StreamOffer[]
+
+  @@index([userId])
+  @@map("offer")
+}
+
+model Source {
+  id        String     @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  userId    String     @db.Uuid
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @default(now()) @db.Timestamptz(6)
+  deletedAt DateTime?  @db.Timestamptz(6)
+  campaign  Campaign[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([userId])
+  @@map("source")
+}
+
+model Stream {
+  id               String                  @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String                  @db.VarChar
+  campaignId       String                  @db.Uuid
+  schema           StreamSchemaEnum
+  redirectType     StreamRedirectTypeEnum?
+  redirectUrl      String?
+  actionType       StreamActionTypeEnum?
+  actionCampaignId String?                 @db.Uuid
+  actionContent    String?
+  filters          Json?
+  actionCampaign   Campaign?               @relation("StreamActionCampaign", fields: [actionCampaignId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  campaign         Campaign                @relation("StreamCampaign", fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  streamOffers     StreamOffer[]
+
+  @@index([campaignId])
+  @@map("stream")
+}
+
+model StreamOffer {
+  id       String  @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  offerId  String  @map("offer_id") @db.Uuid
+  percent  Int     @db.SmallInt
+  active   Boolean
+  streamId String  @map("stream_id") @db.Uuid
+  offer    Offer   @relation(fields: [offerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  stream   Stream  @relation(fields: [streamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([offerId, streamId])
+  @@map("stream_offer")
+}
+
+model User {
+  id               String             @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email            String             @unique()
+  password         String
+  createdAt        DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime           @default(now()) @db.Timestamptz(6)
+  affiliatenetwork AffiliateNetwork[]
+  campaign         Campaign[]
+  offer            Offer[]
+  source           Source[]
+
+  @@map("user")
+}
+
+enum StreamActionTypeEnum {
+  NOTHING
+  SHOW404
+  SHOW_HTML
+  SHOW_TEXT
+  TO_CAMPAIGN
+
+  @@map("stream_action_type_enum")
+}
+
+enum StreamRedirectTypeEnum {
+  CURL
+  FORM_SUBMIT
+  HTTP
+  IFRAME
+  JS
+  META
+  META2
+  REMOTE
+  WITHOUT_REFERER
+
+  @@map("stream_redirect_type_enum")
+}
+
+enum StreamSchemaEnum {
+  ACTION
+  DIRECT_URL
+  LANDINGS_OFFERS
+
+  @@map("stream_schema_enum")
+}

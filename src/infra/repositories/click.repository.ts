@@ -1,34 +1,34 @@
 import { Injectable } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { ClickLimitProvider } from '@/domain/click/stream/filter/filters/click-limit/click-limit-filter'
 import { ClickUniqueProvider } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
-import { IClick } from '@/domain/click/click'
-import { Click } from '@/domain/click/click.entity'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely, sql } from 'kysely'
 import { DB } from '@/shared/db'
+import {
+  ClickModel,
+  ClickUncheckedCreateInput,
+} from '../../../generated/prisma/models/Click'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 @Injectable()
 export class ClickRepository
   implements ClickUniqueProvider, ClickLimitProvider
 {
-  private readonly repository = this.dataSource.getRepository(Click)
-
   constructor(
-    private readonly dataSource: DataSource,
+    private readonly prisma: PrismaService,
     @InjectKysely() private readonly db: Kysely<DB>,
   ) {}
 
-  public async add(data: Partial<IClick>): Promise<void> {
-    await this.repository.insert(data)
+  public async add(data: ClickUncheckedCreateInput): Promise<void> {
+    await this.prisma.click.create({ data })
   }
 
-  public getByCampaignId(campaignId: string): Promise<Click[]> {
-    return this.repository.findBy({ campaignId })
+  public getByCampaignId(campaignId: string): Promise<ClickModel[]> {
+    return this.prisma.click.findMany({ where: { campaignId } })
   }
 
-  public getById(id: string): Promise<Click | null> {
-    return this.repository.findOneBy({ id })
+  public getById(id: string): Promise<ClickModel | null> {
+    return this.prisma.click.findFirst({ where: { id } })
   }
 
   public async getCountByVisitorId(visitorId: string): Promise<number> {

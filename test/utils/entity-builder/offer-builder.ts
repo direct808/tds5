@@ -1,10 +1,16 @@
-import { Offer } from '@/domain/offer/offer.entity'
-import { DataSource } from 'typeorm'
 import { AffiliateNetworkBuilder } from './affiliate-network-builder'
-import { AffiliateNetwork } from '@/domain/affiliate-network/affiliate-network.entity'
+import { PrismaClient } from '../../../generated/prisma/client'
+import {
+  OfferGetPayload,
+  OfferModel,
+  OfferUncheckedCreateInput,
+} from '../../../generated/prisma/models/Offer'
+import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
+
+export type OfferFull = OfferGetPayload<{ include: { affiliateNetwork: true } }>
 
 export class OfferBuilder {
-  private fields: Partial<Offer> = {}
+  private fields: OfferUncheckedCreateInput = {} as OfferUncheckedCreateInput
   private affiliateNetworkBuilder: AffiliateNetworkBuilder | undefined
 
   private constructor() {}
@@ -31,13 +37,18 @@ export class OfferBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<Offer> {
-    let affiliateNetwork: AffiliateNetwork | undefined
+  async save(prisma: PrismaClient): Promise<OfferFull> {
+    let affiliateNetwork: AffiliateNetworkModel | null = null
+
     if (this.affiliateNetworkBuilder) {
-      affiliateNetwork = await this.affiliateNetworkBuilder.save(ds)
+      affiliateNetwork = await this.affiliateNetworkBuilder.save(prisma)
       this.fields.affiliateNetworkId = affiliateNetwork.id
     }
-    const offer = await ds.getRepository(Offer).save(this.fields)
+
+    const offer = (await prisma.offer.create({
+      data: this.fields,
+    })) as OfferFull
+
     offer.affiliateNetwork = affiliateNetwork
 
     return offer

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { EntityManager } from 'typeorm'
 import { CreateStreamOfferDto } from '../dto/create-stream-offer.dto'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { CommonStreamOfferService } from './common-stream-offer.service'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class CreateStreamOfferService {
@@ -19,7 +19,7 @@ export class CreateStreamOfferService {
    * @param input
    */
   public async createStreamOffers(
-    manager: EntityManager,
+    trx: Transaction,
     streamId: string,
     userId: string,
     input: CreateStreamOfferDto[],
@@ -32,6 +32,6 @@ export class CreateStreamOfferService {
 
     const data = this.commonService.buildCreateData(streamId, input)
 
-    await this.streamOfferRepository.saveMany(manager, data)
+    await this.streamOfferRepository.saveMany(trx, data)
   }
 }
