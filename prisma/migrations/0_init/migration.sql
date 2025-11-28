@@ -11,11 +11,11 @@ CREATE TYPE "stream_schema_enum" AS ENUM ('ACTION', 'DIRECT_URL', 'LANDINGS_OFFE
 CREATE TABLE "affiliate_network" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
-    "offer_params" TEXT,
-    "user_id" UUID NOT NULL,
-    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deleted_at" TIMESTAMPTZ(6),
+    "offerParams" TEXT,
+    "userId" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMPTZ(6),
 
     CONSTRAINT "affiliate_network_pkey" PRIMARY KEY ("id")
 );
@@ -25,12 +25,12 @@ CREATE TABLE "campaign" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" VARCHAR NOT NULL,
     "code" VARCHAR NOT NULL,
-    "source_id" UUID,
+    "sourceId" UUID,
     "active" BOOLEAN NOT NULL,
-    "user_id" UUID NOT NULL,
-    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deleted_at" TIMESTAMPTZ(6),
+    "userId" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deletedAt" TIMESTAMPTZ(6),
 
     CONSTRAINT "campaign_pkey" PRIMARY KEY ("id")
 );
@@ -82,13 +82,13 @@ CREATE TABLE "click" (
 -- CreateTable
 CREATE TABLE "conversion" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "original_status" TEXT,
-    "click_id" CHAR(12) NOT NULL,
+    "originalStatus" TEXT,
+    "clickId" CHAR(12) NOT NULL,
     "params" JSONB,
     "status" TEXT NOT NULL,
-    "previous_status" TEXT,
+    "previousStatus" TEXT,
     "revenue" DECIMAL(12,2),
-    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "conversion_pkey" PRIMARY KEY ("id")
 );
@@ -138,10 +138,10 @@ CREATE TABLE "stream" (
 -- CreateTable
 CREATE TABLE "stream_offer" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "offer_id" UUID NOT NULL,
+    "offerId" UUID NOT NULL,
     "percent" SMALLINT NOT NULL,
     "active" BOOLEAN NOT NULL,
-    "stream_id" UUID NOT NULL,
+    "streamId" UUID NOT NULL,
 
     CONSTRAINT "stream_offer_pkey" PRIMARY KEY ("id")
 );
@@ -158,16 +158,16 @@ CREATE TABLE "user" (
 );
 
 -- CreateIndex
-CREATE INDEX "affiliate_network_user_id_idx" ON "affiliate_network"("user_id");
+CREATE INDEX "affiliate_network_userId_idx" ON "affiliate_network"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "campaign_code_key" ON "campaign"("code");
 
 -- CreateIndex
-CREATE INDEX "campaign_user_id_idx" ON "campaign"("user_id");
+CREATE INDEX "campaign_userId_idx" ON "campaign"("userId");
 
 -- CreateIndex
-CREATE INDEX "conversion_click_id_idx" ON "conversion"("click_id");
+CREATE INDEX "conversion_clickId_idx" ON "conversion"("clickId");
 
 -- CreateIndex
 CREATE INDEX "offer_userId_idx" ON "offer"("userId");
@@ -179,22 +179,22 @@ CREATE INDEX "source_userId_idx" ON "source"("userId");
 CREATE INDEX "stream_campaignId_idx" ON "stream"("campaignId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "stream_offer_offer_id_stream_id_key" ON "stream_offer"("offer_id", "stream_id");
+CREATE UNIQUE INDEX "stream_offer_offerId_streamId_key" ON "stream_offer"("offerId", "streamId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- AddForeignKey
-ALTER TABLE "affiliate_network" ADD CONSTRAINT "affiliate_network_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "affiliate_network" ADD CONSTRAINT "affiliate_network_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "campaign" ADD CONSTRAINT "campaign_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "campaign" ADD CONSTRAINT "campaign_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "campaign" ADD CONSTRAINT "campaign_source_id_fkey" FOREIGN KEY ("source_id") REFERENCES "source"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "campaign" ADD CONSTRAINT "campaign_sourceId_fkey" FOREIGN KEY ("sourceId") REFERENCES "source"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "conversion" ADD CONSTRAINT "conversion_click_id_fkey" FOREIGN KEY ("click_id") REFERENCES "click"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "conversion" ADD CONSTRAINT "conversion_clickId_fkey" FOREIGN KEY ("clickId") REFERENCES "click"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "offer" ADD CONSTRAINT "offer_affiliateNetworkId_fkey" FOREIGN KEY ("affiliateNetworkId") REFERENCES "affiliate_network"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -212,8 +212,8 @@ ALTER TABLE "stream" ADD CONSTRAINT "stream_actionCampaignId_fkey" FOREIGN KEY (
 ALTER TABLE "stream" ADD CONSTRAINT "stream_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "campaign"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "stream_offer" ADD CONSTRAINT "stream_offer_offer_id_fkey" FOREIGN KEY ("offer_id") REFERENCES "offer"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "stream_offer" ADD CONSTRAINT "stream_offer_offerId_fkey" FOREIGN KEY ("offerId") REFERENCES "offer"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "stream_offer" ADD CONSTRAINT "stream_offer_stream_id_fkey" FOREIGN KEY ("stream_id") REFERENCES "stream"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "stream_offer" ADD CONSTRAINT "stream_offer_streamId_fkey" FOREIGN KEY ("streamId") REFERENCES "stream"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 

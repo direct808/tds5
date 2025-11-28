@@ -10,11 +10,11 @@ datasource db {
 model AffiliateNetwork {
   id          String    @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
-  offerParams String?   @map("offer_params")
-  userId      String    @map("user_id") @db.Uuid
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
+  offerParams String?
+  userId      String    @db.Uuid
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt   DateTime? @db.Timestamptz(6)
   user        User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   offer       Offer[]
 
@@ -26,12 +26,12 @@ model Campaign {
   id            String    @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name          String    @db.VarChar
   code          String    @unique() @db.VarChar
-  sourceId      String?   @map("source_id") @db.Uuid
+  sourceId      String?   @db.Uuid
   active        Boolean
-  userId        String    @map("user_id") @db.Uuid
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt     DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(6)
+  userId        String    @db.Uuid
+  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime  @default(now()) @db.Timestamptz(6)
+  deletedAt     DateTime? @db.Timestamptz(6)
   user          User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   source        Source?   @relation(fields: [sourceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   streams       Stream[]  @relation("StreamCampaign")
@@ -49,7 +49,7 @@ model Click {
   previousCampaignId String?      @db.Uuid
   offerId            String?      @db.Uuid
   affiliateNetworkId String?      @db.Uuid
-  sourceId           String?      @db.Uuid
+  sourceId            String?      @db.Uuid
   streamId           String?      @db.Uuid
   destination        String?
   isUniqueGlobal     Boolean?
@@ -88,13 +88,13 @@ model Click {
 
 model Conversion {
   id             String   @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  originalStatus String?  @map("original_status")
-  clickId        String   @map("click_id") @db.Char(12)
+  originalStatus String?
+  clickId        String   @db.Char(12)
   params         Json?
   status         String
-  previousStatus String?  @map("previous_status")
+  previousStatus String?
   revenue        Decimal? @db.Decimal(12, 2)
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
   click          Click    @relation(fields: [clickId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([clickId])
@@ -153,10 +153,10 @@ model Stream {
 
 model StreamOffer {
   id       String  @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  offerId  String  @map("offer_id") @db.Uuid
+  offerId  String  @db.Uuid
   percent  Int     @db.SmallInt
   active   Boolean
-  streamId String  @map("stream_id") @db.Uuid
+  streamId String  @db.Uuid
   offer    Offer   @relation(fields: [offerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   stream   Stream  @relation(fields: [streamId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 

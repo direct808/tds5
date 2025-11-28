@@ -22,9 +22,13 @@
     "test:e2e": "jest --detectOpenHandles --config ./test/jest-e2e.json",
     "kysely-codegen": "kysely-codegen --out-file ./src/shared/db.d.ts",
     "download-ip2-location-database": "nest start --entryFile cli.js -- download-ip2-location-database",
-    "prisma:create-full-migraion": "npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
-    "prisma:generate": "npx prisma generate",
-    "prisma:format": "npx prisma format"
+    "prisma:create-full-migraion": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
+    "prisma:generate": "prisma generate",
+    "prisma:format": "prisma format",
+    "prisma:format-check": "prisma format --check",
+    "prisma:db:push": "prisma db push --accept-data-loss",
+
+    "cicd:lint": "yarn run lint && yarn run prisma:format-check"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
