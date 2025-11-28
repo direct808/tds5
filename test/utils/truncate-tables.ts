@@ -17,6 +17,8 @@ export async function truncateTables(): Promise<void> {
   )
 
   if (res.rows.length === 0) {
+    await client.end()
+
     return
   }
   const names = res.rows.map((row) => `"${row.tablename}"`).join(', ')

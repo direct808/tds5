@@ -2,10 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamService } from './common-stream.service'
 import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
-import { EntityManager } from 'typeorm'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
 import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CampaignStreamSchema } from '@/domain/campaign/types'
+import {
+  PrismaClient,
+  StreamSchemaEnum,
+} from '../../../../generated/prisma/client'
 
 describe('CreateStreamService', () => {
   let service: CreateStreamService
@@ -23,7 +25,7 @@ describe('CreateStreamService', () => {
     createStreamOffers: jest.fn(),
   }
 
-  const manager = {} as EntityManager
+  const prisma = {} as PrismaClient
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -54,7 +56,7 @@ describe('CreateStreamService', () => {
       const spy = jest
         .spyOn(service, 'createStream')
         .mockReturnValue(Promise.resolve())
-      await service.createStreams(manager, 'campaign-id', 'user-id', [
+      await service.createStreams(prisma, 'campaign-id', 'user-id', [
         {} as CreateStreamDto,
         {} as CreateStreamDto,
         {} as CreateStreamDto,
@@ -78,16 +80,16 @@ describe('CreateStreamService', () => {
         .mockReturnValue(Promise.resolve())
 
       repository.create.mockReturnValue({ id: 'stream-id' })
-      await service.createStream(manager, 'campaign-id', 'user-id', input)
+      await service.createStream(prisma, 'campaign-id', 'user-id', input)
 
       expect(commonService.ensureCampaignExists).toHaveBeenCalledWith(
         'user-id',
         'action-campaign-id',
       )
       expect(commonService.buildData).toHaveBeenCalledWith(input, 'campaign-id')
-      expect(repository.create).toHaveBeenCalledWith(manager, buildData)
+      expect(repository.create).toHaveBeenCalledWith(prisma, buildData)
       expect(service['createStreamOffers']).toHaveBeenCalledWith(
-        manager,
+        prisma,
         input,
         'stream-id',
         'user-id',
@@ -98,7 +100,7 @@ describe('CreateStreamService', () => {
   describe('createStreamOffers', () => {
     it('Should not be called createStreamOffers if schema is not LANDINGS_OFFERS', async () => {
       await service['createStreamOffers'](
-        manager,
+        prisma,
         {} as CreateStreamDto,
         'stream-id',
         'user-id',
@@ -109,15 +111,10 @@ describe('CreateStreamService', () => {
     it('Should be called createStreamOffers if schema is LANDINGS_OFFERS', async () => {
       const input: CreateStreamDto = {
         name: 'name-1',
-        schema: CampaignStreamSchema.LANDINGS_OFFERS,
+        schema: StreamSchemaEnum.LANDINGS_OFFERS,
         offers: [{ offerId: 'offer-id', active: true, percent: 100 }],
       }
-      await service['createStreamOffers'](
-        manager,
-        input,
-        'stream-id',
-        'user-id',
-      )
+      await service['createStreamOffers'](prisma, input, 'stream-id', 'user-id')
       expect(createStreamOfferService.createStreamOffers).toHaveBeenCalled()
     })
   })

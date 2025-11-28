@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { SourceService } from './source.service'
-import { Source } from './source.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { SourceRepository } from '@/infra/repositories/source.repository'
 import {
@@ -8,6 +7,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
+import { SourceModel } from '../../../generated/prisma/models/Source'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -74,7 +74,7 @@ describe('SourceService', () => {
   describe('getList', () => {
     it('should return list from repository', async () => {
       const userId = 'user123'
-      const list = [{ id: '1', name: 'Test' }] as unknown as Source[]
+      const list = [{ id: '1', name: 'Test' }] as unknown as SourceModel[]
       repository.getListByUserId.mockResolvedValue(list)
 
       const result = await service.getList(userId)

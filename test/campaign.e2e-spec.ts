@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { CampaignStreamSchema, StreamActionType } from '@/domain/campaign/types'
 import { createAuthUser } from './utils/helpers'
 import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
@@ -8,6 +7,10 @@ import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import {
+  StreamActionTypeEnum,
+  StreamSchemaEnum,
+} from '../generated/prisma/enums'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -267,7 +270,7 @@ describe('CampaignController (e2e)', () => {
         .code('abcdif')
         .userId(userId)
         .addStreamTypeAction((stream) =>
-          stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
+          stream.type(StreamActionTypeEnum.SHOW_TEXT).name('Stream 1'),
         )
         .save(prisma)
 
@@ -320,7 +323,7 @@ describe('CampaignController (e2e)', () => {
         .code('abcdif')
         .userId(userId)
         .addStreamTypeAction((stream) =>
-          stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
+          stream.type(StreamActionTypeEnum.SHOW_TEXT).name('Stream 1'),
         )
         .save(prisma)
 
@@ -388,7 +391,7 @@ describe('CampaignController (e2e)', () => {
         .code('abcdif')
         .userId(userId)
         .addStreamTypeAction((stream) =>
-          stream.type(StreamActionType.SHOW_TEXT).name('Stream 1'),
+          stream.type(StreamActionTypeEnum.SHOW_TEXT).name('Stream 1'),
         )
         .save(prisma)
 
@@ -404,7 +407,7 @@ describe('CampaignController (e2e)', () => {
                 id: withId ? campaign.streams[0].id : undefined,
                 name: 'Test stream 1',
                 schema: 'ACTION',
-                actionType: StreamActionType.TO_CAMPAIGN,
+                actionType: StreamActionTypeEnum.TO_CAMPAIGN,
                 actionCampaignId: campaign.id,
               },
             ],
@@ -456,7 +459,7 @@ describe('CampaignController (e2e)', () => {
             {
               id: streamId,
               name: 'Test stream 1',
-              schema: CampaignStreamSchema.LANDINGS_OFFERS,
+              schema: StreamSchemaEnum.LANDINGS_OFFERS,
               offers: [
                 {
                   offerId,

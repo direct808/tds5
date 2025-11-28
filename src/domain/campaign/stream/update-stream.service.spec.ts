@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamService } from './common-stream.service'
 import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
-import { EntityManager } from 'typeorm'
 import { UpdateStreamService } from './update-stream.service'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
 import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
-import { CampaignStreamSchema } from '@/domain/campaign/types'
 import { UpdateStreamDto } from '../dto/update-stream.dto'
+import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
+import { PrismaClient } from '../../../../generated/prisma/client'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -34,7 +34,7 @@ describe('UpdateStreamService', () => {
     createStream: jest.fn(),
   }
 
-  const manager = {} as EntityManager
+  const manager = {} as PrismaClient
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -69,7 +69,7 @@ describe('UpdateStreamService', () => {
       {
         id: 'stream-id',
         name: 'Name',
-        schema: CampaignStreamSchema.ACTION,
+        schema: StreamSchemaEnum.ACTION,
       },
     ]
     const ensureStreamExists = jest
@@ -119,7 +119,7 @@ describe('UpdateStreamService', () => {
       const stream: UpdateStreamDto = {
         id: 'stream-id',
         name: 'Name',
-        schema: CampaignStreamSchema.ACTION,
+        schema: StreamSchemaEnum.ACTION,
         actionCampaignId: 'actionCampaignId',
       }
 
@@ -144,7 +144,7 @@ describe('UpdateStreamService', () => {
     it('Check processStream without id', async () => {
       const stream: UpdateStreamDto = {
         name: 'Name',
-        schema: CampaignStreamSchema.ACTION,
+        schema: StreamSchemaEnum.ACTION,
         actionCampaignId: 'actionCampaignId',
       }
 
@@ -172,7 +172,7 @@ describe('UpdateStreamService', () => {
     const stream = {
       id: 'stream-id',
       name: 'Name',
-      schema: CampaignStreamSchema.ACTION,
+      schema: StreamSchemaEnum.ACTION,
       actionCampaignId: 'actionCampaignId',
     }
 
@@ -222,7 +222,7 @@ describe('UpdateStreamService', () => {
       const stream = {
         id: 'stream-id',
         name: 'Name',
-        schema: CampaignStreamSchema.LANDINGS_OFFERS,
+        schema: StreamSchemaEnum.LANDINGS_OFFERS,
       }
       await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
       expect(updateStreamOfferService.updateStreamOffers).not.toHaveBeenCalled()
@@ -232,7 +232,7 @@ describe('UpdateStreamService', () => {
       const stream = {
         id: 'stream-id',
         name: 'Name',
-        schema: CampaignStreamSchema.LANDINGS_OFFERS,
+        schema: StreamSchemaEnum.LANDINGS_OFFERS,
         offers: [],
       }
       await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
@@ -243,7 +243,7 @@ describe('UpdateStreamService', () => {
       const stream = {
         id: 'stream-id',
         name: 'Name',
-        schema: CampaignStreamSchema.ACTION,
+        schema: StreamSchemaEnum.ACTION,
         offers: [{ offerId: 'offer-1', percent: 100, active: true }],
       }
       await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
@@ -255,7 +255,7 @@ describe('UpdateStreamService', () => {
       const stream = {
         id: 'stream-id',
         name: 'Name',
-        schema: CampaignStreamSchema.LANDINGS_OFFERS,
+        schema: StreamSchemaEnum.LANDINGS_OFFERS,
         offers,
       }
       await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')

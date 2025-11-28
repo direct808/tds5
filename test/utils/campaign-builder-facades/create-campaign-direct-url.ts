@@ -1,13 +1,15 @@
-import { StreamRedirectType } from '@/domain/campaign/types'
 import { CampaignBuilder } from '../entity-builder/campaign-builder'
 import { faker } from '@faker-js/faker'
-import { PrismaClient } from '../../../generated/prisma/client'
+import {
+  PrismaClient,
+  StreamRedirectTypeEnum,
+} from '../../../generated/prisma/client'
 import { CampaignModel } from '../../../generated/prisma/models/Campaign'
 
 type CreateCampaignDirectUrlArgs = {
   prisma: PrismaClient
   url?: string
-  redirectType: StreamRedirectType
+  redirectType: StreamRedirectTypeEnum
   userId: string
 }
 

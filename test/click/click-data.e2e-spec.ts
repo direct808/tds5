@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common'
-import request from 'supertest'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
@@ -10,6 +9,8 @@ import { GEO_IP_PROVIDER } from '@/domain/geo-ip/types'
 import { FakeGeoIpService } from '../utils/fake-geo-Ip-service'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import { ClickRequestBuilder } from '../utils/click-request-builder'
+import { Decimal } from '@prisma/client/runtime/client'
 
 describe('Click-data (e2e)', () => {
   let app: INestApplication
@@ -68,29 +69,25 @@ describe('Click-data (e2e)', () => {
       })
       .save(prisma)
 
-    const q = new URLSearchParams()
-    q.append('cost', '5.3496876')
-    q.append('ad_campaign_id', 'ad Campaign Id')
-    q.append('creative_id', 'creative Id')
-    q.append('external_id', 'external_id')
-    q.append('extra_param_1', 'extraParam1')
-    q.append('extra_param_2', 'extraParam2')
-    q.append('sub_id_1', 'sub_id_1 value')
-    q.append('sub_id_2', 'sub_id_2 value')
-    q.append('keyword', 'keyword')
-    q.append('source', 'source value')
-
-    const response = await request(app.getHttpServer())
-      .get(`/${code}?${q.toString()}`)
-      .set({
-        'User-Agent': userAgent,
-        Referer: 'Referer value',
-        'Accept-Language': 'en-US,en;q=0.9,ru;q=0.8,fr;q=0.7',
-      })
-      .set('Cookie', ['visitorId=' + existsVisitorId])
+    const response = await ClickRequestBuilder.create(app)
+      .code(code)
+      .addQueryParam('cost', '5.3496876')
+      .addQueryParam('ad_campaign_id', 'ad Campaign Id')
+      .addQueryParam('creative_id', 'creative Id')
+      .addQueryParam('external_id', 'external_id')
+      .addQueryParam('extra_param_1', 'extraParam1')
+      .addQueryParam('extra_param_2', 'extraParam2')
+      .addQueryParam('sub_id_1', 'sub_id_1 value')
+      .addQueryParam('sub_id_2', 'sub_id_2 value')
+      .addQueryParam('keyword', 'keyword')
+      .addQueryParam('source', 'source value')
+      .addHeader('User-Agent', userAgent)
+      .addHeader('Referer', 'Referer value')
+      .addHeader('Accept-Language', 'en-US,en;q=0.9,ru;q=0.8,fr;q=0.7')
+      .setVisitorId(existsVisitorId)
+      .waitRegister()
+      .request()
       .expect(302)
-
-    await setTimeout(1000) //todo исправить
 
     expect(response.headers.location).toBe(redirectUrl)
 
@@ -110,7 +107,7 @@ describe('Click-data (e2e)', () => {
       country: 'US',
       region: 'Virginia',
       city: 'Ashburn',
-      cost: '5.35',
+      cost: Decimal('5.35'),
       createdAt: clicks[0].createdAt,
       creativeId: 'creative Id',
       destination: redirectUrl,

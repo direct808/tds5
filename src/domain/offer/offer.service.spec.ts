@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { OfferService } from './offer.service'
-import { Offer } from './offer.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import { OfferRepository } from '@/infra/repositories/offer.repository'
@@ -9,6 +8,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
+import { OfferModel } from '../../../generated/prisma/models/Offer'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -106,9 +106,9 @@ describe('OfferService', () => {
   describe('getList', () => {
     it('should return a list of offers', async () => {
       const userId = 'user1'
-      const offers = [{ id: 'offer1' }]
+      const offers = [{ id: 'offer1' } as OfferModel]
 
-      repository.getListByUserId.mockResolvedValue(offers as Offer[])
+      repository.getListByUserId.mockResolvedValue(offers)
 
       const result = await service.getList(userId)
 
