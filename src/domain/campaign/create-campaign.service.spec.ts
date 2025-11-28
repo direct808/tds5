@@ -7,6 +7,7 @@ import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 import { PrismaClient } from '../../../generated/prisma/client'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -33,6 +34,7 @@ describe('CreateCampaignService', () => {
     ensureSourceExists: jest.fn(),
   }
   const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -69,12 +71,12 @@ describe('CreateCampaignService', () => {
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await service.create(args, prisma)
+    await service.create(args, transaction)
     expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await service.create(args, prisma)
+    await service.create(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       args.userId,
       args.sourceId,
@@ -82,12 +84,12 @@ describe('CreateCampaignService', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await service.create(args, prisma)
+    await service.create(args, transaction)
     expect(checkUniqueNameForCreate).toHaveBeenCalledWith(repository, args)
   })
 
   it('should call repository.create with correct data', async () => {
-    await service.create(args, prisma)
+    await service.create(args, transaction)
     expect(repository.create).toHaveBeenCalledWith(
       prisma,
       expect.objectContaining({
@@ -100,7 +102,7 @@ describe('CreateCampaignService', () => {
   })
 
   it('should call createStreamService.createStreams with correct params', async () => {
-    await service.create(args, prisma)
+    await service.create(args, transaction)
     expect(createStreamService.createStreams).toHaveBeenCalledWith(
       prisma,
       'campaign-1',

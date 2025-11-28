@@ -7,6 +7,7 @@ import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { PrismaClient } from '../../../generated/prisma/client'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -35,6 +36,7 @@ describe('UpdateCampaignService', () => {
     ensureSourceExists: jest.fn(),
   }
   const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -71,12 +73,12 @@ describe('UpdateCampaignService', () => {
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await service.update(args, prisma)
+    await service.update(args, transaction)
     expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await service.update(args, prisma)
+    await service.update(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       args.userId,
       args.sourceId,
@@ -84,18 +86,18 @@ describe('UpdateCampaignService', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await service.update(args, prisma)
+    await service.update(args, transaction)
     expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
   })
 
   it('should not call checkUniqueNameForCreate without name', async () => {
     const { name, ...argsWithoutName } = args
-    await service.update(argsWithoutName as any, prisma)
+    await service.update(argsWithoutName as any, transaction)
     expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
   })
 
   it('should call repository.update with correct data', async () => {
-    await service.update(args, prisma)
+    await service.update(args, transaction)
     expect(repository.update).toHaveBeenCalledWith(
       prisma,
       args.id,
@@ -108,7 +110,7 @@ describe('UpdateCampaignService', () => {
   })
 
   it('should call updateStreams with correct params', async () => {
-    await service.update(args, prisma)
+    await service.update(args, transaction)
     expect(updateStreamService.updateStreams).toHaveBeenCalledWith(
       prisma,
       args.id,

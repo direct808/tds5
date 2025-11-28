@@ -8,6 +8,7 @@ import {
   PrismaClient,
   StreamSchemaEnum,
 } from '../../../../generated/prisma/client'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 describe('CreateStreamService', () => {
   let service: CreateStreamService
@@ -26,6 +27,7 @@ describe('CreateStreamService', () => {
   }
 
   const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -56,7 +58,7 @@ describe('CreateStreamService', () => {
       const spy = jest
         .spyOn(service, 'createStream')
         .mockReturnValue(Promise.resolve())
-      await service.createStreams(prisma, 'campaign-id', 'user-id', [
+      await service.createStreams(transaction, 'campaign-id', 'user-id', [
         {} as CreateStreamDto,
         {} as CreateStreamDto,
         {} as CreateStreamDto,
@@ -80,7 +82,7 @@ describe('CreateStreamService', () => {
         .mockReturnValue(Promise.resolve())
 
       repository.create.mockReturnValue({ id: 'stream-id' })
-      await service.createStream(prisma, 'campaign-id', 'user-id', input)
+      await service.createStream(transaction, 'campaign-id', 'user-id', input)
 
       expect(commonService.ensureCampaignExists).toHaveBeenCalledWith(
         'user-id',
@@ -100,7 +102,7 @@ describe('CreateStreamService', () => {
   describe('createStreamOffers', () => {
     it('Should not be called createStreamOffers if schema is not LANDINGS_OFFERS', async () => {
       await service['createStreamOffers'](
-        prisma,
+        transaction,
         {} as CreateStreamDto,
         'stream-id',
         'user-id',
@@ -114,7 +116,12 @@ describe('CreateStreamService', () => {
         schema: StreamSchemaEnum.LANDINGS_OFFERS,
         offers: [{ offerId: 'offer-id', active: true, percent: 100 }],
       }
-      await service['createStreamOffers'](prisma, input, 'stream-id', 'user-id')
+      await service['createStreamOffers'](
+        transaction,
+        input,
+        'stream-id',
+        'user-id',
+      )
       expect(createStreamOfferService.createStreamOffers).toHaveBeenCalled()
     })
   })

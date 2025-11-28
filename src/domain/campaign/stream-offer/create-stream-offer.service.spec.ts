@@ -3,6 +3,7 @@ import { CommonStreamOfferService } from './common-stream-offer.service'
 import { CreateStreamOfferService } from './create-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { PrismaClient } from '../../../../generated/prisma/client'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 describe('CommonStreamService', () => {
   let service: CreateStreamOfferService
@@ -19,6 +20,7 @@ describe('CommonStreamService', () => {
   }
 
   const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,7 +46,7 @@ describe('CommonStreamService', () => {
     const data = {}
     commonService.buildCreateData.mockReturnValue(data)
     const input = [{ offerId: 'offer-id', active: true, percent: 75 }]
-    await service.createStreamOffers(prisma, 'stream-id', 'user-id', input)
+    await service.createStreamOffers(transaction, 'stream-id', 'user-id', input)
 
     expect(commonService.checkPercentSum).toHaveBeenCalledWith(input)
     expect(commonService.checkForRepeatOffers).toHaveBeenCalledWith(input)

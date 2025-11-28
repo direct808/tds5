@@ -8,6 +8,7 @@ import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.se
 import { UpdateStreamDto } from '../dto/update-stream.dto'
 import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
 import { PrismaClient } from '../../../../generated/prisma/client'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -35,6 +36,7 @@ describe('UpdateStreamService', () => {
   }
 
   const manager = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -84,7 +86,7 @@ describe('UpdateStreamService', () => {
       .spyOn(service as any, 'processStream')
       .mockReturnValue(Promise.resolve())
 
-    await service.updateStreams(manager, 'campaign-id', 'user-id', streams)
+    await service.updateStreams(transaction, 'campaign-id', 'user-id', streams)
 
     expect(ensureStreamExists).toHaveBeenCalledWith(
       manager,
@@ -123,7 +125,12 @@ describe('UpdateStreamService', () => {
         actionCampaignId: 'actionCampaignId',
       }
 
-      await service['processStream'](manager, 'campaign-id', 'user-id', stream)
+      await service['processStream'](
+        transaction,
+        'campaign-id',
+        'user-id',
+        stream,
+      )
 
       expect(checkCampaignSelfReferencing).toHaveBeenCalledWith(
         'campaign-id',
@@ -148,7 +155,12 @@ describe('UpdateStreamService', () => {
         actionCampaignId: 'actionCampaignId',
       }
 
-      await service['processStream'](manager, 'campaign-id', 'user-id', stream)
+      await service['processStream'](
+        transaction,
+        'campaign-id',
+        'user-id',
+        stream,
+      )
 
       expect(checkCampaignSelfReferencing).toHaveBeenCalledWith(
         'campaign-id',
@@ -181,7 +193,7 @@ describe('UpdateStreamService', () => {
       .mockReturnValue({})
 
     await service['updateStream'](
-      manager,
+      transaction,
       'campaign-id',
       'user-id',
       stream,
@@ -224,7 +236,12 @@ describe('UpdateStreamService', () => {
         name: 'Name',
         schema: StreamSchemaEnum.LANDINGS_OFFERS,
       }
-      await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
+      await service['updateStreamOffers'](
+        transaction,
+        stream,
+        stream.id,
+        'user-id',
+      )
       expect(updateStreamOfferService.updateStreamOffers).not.toHaveBeenCalled()
     })
 
@@ -235,7 +252,12 @@ describe('UpdateStreamService', () => {
         schema: StreamSchemaEnum.LANDINGS_OFFERS,
         offers: [],
       }
-      await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
+      await service['updateStreamOffers'](
+        transaction,
+        stream,
+        stream.id,
+        'user-id',
+      )
       expect(updateStreamOfferService.updateStreamOffers).not.toHaveBeenCalled()
     })
 
@@ -246,7 +268,12 @@ describe('UpdateStreamService', () => {
         schema: StreamSchemaEnum.ACTION,
         offers: [{ offerId: 'offer-1', percent: 100, active: true }],
       }
-      await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
+      await service['updateStreamOffers'](
+        transaction,
+        stream,
+        stream.id,
+        'user-id',
+      )
       expect(updateStreamOfferService.updateStreamOffers).not.toHaveBeenCalled()
     })
 
@@ -258,7 +285,12 @@ describe('UpdateStreamService', () => {
         schema: StreamSchemaEnum.LANDINGS_OFFERS,
         offers,
       }
-      await service['updateStreamOffers'](manager, stream, stream.id, 'user-id')
+      await service['updateStreamOffers'](
+        transaction,
+        stream,
+        stream.id,
+        'user-id',
+      )
       expect(updateStreamOfferService.updateStreamOffers).toHaveBeenCalled()
       expect(updateStreamOfferService.updateStreamOffers).toHaveBeenCalledWith(
         manager,
@@ -274,7 +306,7 @@ describe('UpdateStreamService', () => {
       const getIdsForDelete = jest
         .spyOn(service as any, 'getIdsForDelete')
         .mockReturnValue([])
-      await service['deleteOldStreams'](manager, [], 'campaign-id')
+      await service['deleteOldStreams'](transaction, [], 'campaign-id')
 
       expect(getIdsForDelete).toHaveBeenCalledWith(manager, [], 'campaign-id')
       expect(repository.delete).not.toHaveBeenCalled()
@@ -284,7 +316,7 @@ describe('UpdateStreamService', () => {
       const getIdsForDelete = jest
         .spyOn(service as any, 'getIdsForDelete')
         .mockReturnValue(['1'])
-      await service['deleteOldStreams'](manager, [], 'campaign-id')
+      await service['deleteOldStreams'](transaction, [], 'campaign-id')
 
       expect(getIdsForDelete).toHaveBeenCalledWith(manager, [], 'campaign-id')
       expect(repository.delete).toHaveBeenCalled()
@@ -295,7 +327,11 @@ describe('UpdateStreamService', () => {
     it('should not be error if len equal', async () => {
       repository.getByIdsAndCampaignId.mockReturnValue([{ id: '1' }])
 
-      const promise = service['ensureStreamExists'](manager, [], 'campaign-id')
+      const promise = service['ensureStreamExists'](
+        transaction,
+        [],
+        'campaign-id',
+      )
 
       await expect(promise).rejects.toThrow('Some stream ids not found')
 
@@ -310,7 +346,7 @@ describe('UpdateStreamService', () => {
       repository.getByIdsAndCampaignId.mockReturnValue([{ id: '1' }])
 
       const promise = service['ensureStreamExists'](
-        manager,
+        transaction,
         [{ id: '1' }],
         'campaign-id',
       )
@@ -332,7 +368,11 @@ describe('UpdateStreamService', () => {
       repository.getByCampaignId.mockReturnValue(existsStreams)
       ;(getIdsForDelete as any).mockReturnValue(retValue)
 
-      const value = await service['getIdsForDelete'](manager, [], 'campaign-id')
+      const value = await service['getIdsForDelete'](
+        transaction,
+        [],
+        'campaign-id',
+      )
 
       expect(repository.getByCampaignId).toHaveBeenCalledWith(
         manager,
