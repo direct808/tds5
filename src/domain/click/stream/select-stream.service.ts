@@ -1,9 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Filters } from './filter/types'
 import { FilterService } from './filter/filter.service'
-import { StreamModel } from '../../../../generated/prisma/models/Stream'
-
-// type StreamSimple = Pick<StreamModel, 'id' | 'filters'>
 
 interface StreamSimple {
   id: string

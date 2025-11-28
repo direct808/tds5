@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common'
-import request from 'supertest'
 import { createAuthUser } from '../utils/helpers'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'

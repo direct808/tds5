@@ -6,11 +6,6 @@ import { CampaignGetPayload } from '../../../generated/prisma/models/Campaign'
 import { StreamRedirectTypeEnum } from '../../../generated/prisma/enums'
 import { StreamOfferGetPayload } from '../../../generated/prisma/models/StreamOffer'
 import { OfferGetPayload } from '../../../generated/prisma/models/Offer'
-import { Campaign } from '@/shared/db'
-// import { StreamFull } from '../../../test/utils/entity-builder/stream-builder/stream-builder'
-
-// export type StreamWithCampaign = StreamModel & { campaign: CampaignModel }
-// export type StreamFullWithCampaign = StreamFull & { campaign: Campaign }
 
 export type StreamOfferFull = StreamOfferGetPayload<{
   include: { offer: { include: { affiliateNetwork: true } } }

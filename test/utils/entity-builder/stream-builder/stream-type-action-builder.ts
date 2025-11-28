@@ -4,7 +4,6 @@ import {
   StreamActionTypeEnum,
   StreamSchemaEnum,
 } from '../../../../generated/prisma/enums'
-import { StreamModel } from '../../../../generated/prisma/models/Stream'
 import { PrismaClient } from '../../../../generated/prisma/client'
 import { CampaignModel } from '../../../../generated/prisma/models/Campaign'
 

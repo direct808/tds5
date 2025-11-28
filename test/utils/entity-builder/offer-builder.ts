@@ -2,7 +2,6 @@ import { AffiliateNetworkBuilder } from './affiliate-network-builder'
 import { PrismaClient } from '../../../generated/prisma/client'
 import {
   OfferGetPayload,
-  OfferModel,
   OfferUncheckedCreateInput,
 } from '../../../generated/prisma/models/Offer'
 import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'

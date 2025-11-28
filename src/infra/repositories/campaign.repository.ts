@@ -10,8 +10,6 @@ import {
   CampaignUncheckedCreateInput,
 } from '../../../generated/prisma/models/Campaign'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { PrismaClient } from '../../../generated/prisma/client'
-import { ITXClientDenyList } from '@prisma/client/runtime/client'
 import {
   prismaTransaction,
   PrismaTransaction,

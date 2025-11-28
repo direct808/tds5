@@ -1,8 +1,6 @@
 import type { HttpStatus } from '@nestjs/common'
 import { MaybePromise } from '@/shared/types'
 import { StreamModel } from '../../../generated/prisma/models/Stream'
-import { StreamOfferGetPayload } from '../../../generated/prisma/models/StreamOffer'
-import { OfferGetPayload } from '../../../generated/prisma/models/Offer'
 
 export type StreamResponse =
   | StreamContentResponse

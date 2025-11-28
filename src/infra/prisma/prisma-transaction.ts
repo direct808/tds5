@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common'
 import * as runtime from '@prisma/client/runtime/client'
 import { PrismaClient } from '../../../generated/prisma/client'
 
-export interface Transaction {}
+export interface Transaction {
+  get(): void
+}
 
 @Injectable()
 export class PrismaTransaction implements Transaction {

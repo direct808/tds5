@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import {
-  StreamOfferCreateManyInput,
   StreamOfferModel,
   StreamOfferUncheckedCreateInput,
 } from '../../../generated/prisma/models/StreamOffer'

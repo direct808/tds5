@@ -5,7 +5,6 @@ import {
   ClickContext,
   IClickContext,
 } from '@/domain/click/shared/click-context.service'
-import { RequestAdapter } from '@/shared/request-adapter'
 
 @Injectable()
 export class QueryStringObserver implements ClickObserver {

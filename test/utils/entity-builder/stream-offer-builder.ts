@@ -4,7 +4,6 @@ import {
   StreamOfferGetPayload,
   StreamOfferUncheckedCreateInput,
 } from '../../../generated/prisma/models/StreamOffer'
-import { OfferModel } from '../../../generated/prisma/models/Offer'
 
 export type StreamOfferFull = StreamOfferGetPayload<{
   include: { offer: { include: { affiliateNetwork: true } } }

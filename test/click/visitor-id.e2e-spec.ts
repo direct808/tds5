@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common'
-import request from 'supertest'
 import { VISITOR_ID_SIZE } from '@/domain/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
@@ -7,8 +6,6 @@ import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { setTimeout } from 'timers/promises'
-import { waitConversionRegistered } from '../utils/waitConversionRegister'
 import { ClickRequestBuilder } from '../utils/click-request-builder'
 
 describe('visitorId (e2e)', () => {
