@@ -7,11 +7,6 @@ export async function truncateTables(): Promise<void> {
   const client = new Client({ connectionString })
   await client.connect()
 
-  // const adapter = new PrismaPg({ connectionString })
-  // const prisma = new PrismaClient({ adapter })
-
-  // await prisma.$connect()
-
   const res = await client.query<{ tablename: string }>(
     `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
   )

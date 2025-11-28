@@ -17,13 +17,7 @@ import { TransactionFactory } from '@/infra/database/transaction-factory'
       useFactory(config: AppConfig) {
         return {
           dialect: new PostgresDialect({
-            pool: new Pool({
-              host: config.dbHost,
-              port: Number(config.dbPort),
-              database: config.dbName,
-              password: config.dbPass,
-              user: config.dbUser,
-            }),
+            pool: new Pool({ connectionString: config.dbUrl }),
           }),
         }
       },
