@@ -43,13 +43,8 @@ export class ClickService {
     clickData.campaignId = campaign.id
     clickData.sourceId = campaign.sourceId
 
-    const str = campaign.streams
-    const stream = await this.selectStreamService.selectStream(str)
+    const stream = await this.selectStreamService.selectStream(campaign.streams)
     clickData.streamId = stream.id
-
-    // todo удери это
-    //@ts-ignore
-    stream.campaign = campaign
 
     await this.setupSubject.setupStreamSubject(stream)
 
