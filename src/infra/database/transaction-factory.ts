@@ -9,10 +9,9 @@ import { PrismaService } from '@/infra/prisma/prisma.service'
 export class TransactionFactory {
   constructor(private readonly prisma: PrismaService) {}
 
-  public create<T>(cb: (tr: Transaction) => T): any {
-    // @ts-ignore
+  public create<T>(fn: (prisma: Transaction) => Promise<T>): Promise<T> {
     return this.prisma.$transaction((tr) => {
-      return cb(new PrismaTransaction(tr))
+      return fn(new PrismaTransaction(tr))
     })
   }
 }

@@ -38,12 +38,10 @@ export class CreateStreamDto {
   @IsUUID('4')
   actionCampaignId?: string
 
-  @ValidateIf((data: CreateStreamDto) =>
-    [StreamActionTypeEnum.SHOW_HTML, StreamActionTypeEnum.SHOW_TEXT].includes(
-      // todo убери меня
-      //@ts-ignore
-      data.actionType,
-    ),
+  @ValidateIf(
+    (data: CreateStreamDto) =>
+      data.actionType === StreamActionTypeEnum.SHOW_HTML ||
+      data.actionType === StreamActionTypeEnum.SHOW_TEXT,
   )
   @IsString()
   actionContent?: string
