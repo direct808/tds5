@@ -11,7 +11,7 @@ import {
 
 @Injectable()
 export class StreamRepository {
-  public async create(
+  public create(
     trx: Transaction,
     data: StreamUncheckedCreateInput,
   ): Promise<StreamModel> {

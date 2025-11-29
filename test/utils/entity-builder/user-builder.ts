@@ -25,7 +25,7 @@ export class UserBuilder {
     return this
   }
 
-  async save(prisma: PrismaClient): Promise<UserModel> {
+  save(prisma: PrismaClient): Promise<UserModel> {
     return prisma.user.create({ data: this.fields })
   }
 }
