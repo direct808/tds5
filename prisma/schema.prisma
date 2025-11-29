@@ -49,7 +49,7 @@ model Click {
   previousCampaignId String?      @db.Uuid
   offerId            String?      @db.Uuid
   affiliateNetworkId String?      @db.Uuid
-  sourceId            String?      @db.Uuid
+  sourceId           String?      @db.Uuid
   streamId           String?      @db.Uuid
   destination        String?
   isUniqueGlobal     Boolean?
