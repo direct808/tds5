@@ -81,7 +81,7 @@ model Click {
   extraParam1        String?
   extraParam2        String?
   createdAt          DateTime     @default(now()) @db.Timestamptz(6)
-  conversion         Conversion[]
+  conversions        Conversion[]
 
   @@map("click")
 }

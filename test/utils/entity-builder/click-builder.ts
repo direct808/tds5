@@ -1,24 +1,32 @@
-import { DataSource } from 'typeorm'
-import { Click } from '@/domain/click/click.entity'
 import { ConversionBuilder } from './conversion-builder'
 import { faker } from '@faker-js/faker/.'
+import {
+  ClickGetPayload,
+  ClickModel,
+  ClickUncheckedCreateInput,
+} from '../../../generated/prisma/models/Click'
+import { PrismaClient } from '../../../generated/prisma/client'
 
-export function createClickBuilder(fields: Partial<Click> = {}): ClickBuilder {
+export function createClickBuilder(
+  fields = {} as Partial<ClickUncheckedCreateInput>,
+): ClickBuilder {
   return ClickBuilder.create(fields)
 }
 
 export class ClickBuilder {
-  private readonly fields: Partial<Click> = {}
+  private readonly fields = {} as Partial<ClickUncheckedCreateInput>
 
   private readonly conversions: ConversionBuilder[] = []
 
-  private constructor(fields: Partial<Click> = {}) {
+  private constructor(fields = {} as Partial<ClickUncheckedCreateInput>) {
     this.fields = structuredClone(fields)
     this.fields.id = faker.string.alphanumeric(12)
     this.fields.visitorId = faker.string.alphanumeric(6)
   }
 
-  static create(fields: Partial<Click> = {}): ClickBuilder {
+  static create(
+    fields = {} as Partial<ClickUncheckedCreateInput>,
+  ): ClickBuilder {
     return new this(fields)
   }
 
@@ -108,11 +116,14 @@ export class ClickBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<Click> {
-    const click = await ds.getRepository(Click).save(this.fields)
+  async save(prisma: PrismaClient): Promise<ClickModel> {
+    const click = (await prisma.click.create({
+      data: this.fields as ClickUncheckedCreateInput,
+    })) as ClickGetPayload<{ include: { conversions: true } }>
+
     click.conversions = []
     for (const builder of this.conversions) {
-      const conversion = await builder.clickId(click.id).save(ds)
+      const conversion = await builder.clickId(click.id).save(prisma)
       click.conversions.push(conversion)
     }
 

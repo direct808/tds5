@@ -1,6 +1,6 @@
 import { Kysely, sql } from 'kysely'
 import { DB } from '@/shared/db'
-import { snakeCase } from 'typeorm/util/StringUtils'
+import toSnakeCase from 'to-snake-case'
 
 export class ReportQueryBuilder {
   private qb: any
@@ -35,7 +35,7 @@ export class ReportQueryBuilder {
   }
 
   private selectNameFrom(name: string): this {
-    const snaked = snakeCase(name)
+    const snaked = toSnakeCase(name)
     this.qb = this.qb.leftJoin(snaked, `click.${name}Id`, `${snaked}.id`)
     this.qb = this.qb
       .select(sql.raw(`${snaked}.name`).as(name))

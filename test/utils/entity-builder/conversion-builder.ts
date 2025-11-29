@@ -1,14 +1,19 @@
-import { DataSource } from 'typeorm'
-import { Conversion } from '@/domain/conversion/conversion.entity'
+import {
+  ConversionModel,
+  ConversionUncheckedCreateInput,
+} from '../../../generated/prisma/models/Conversion'
+import { PrismaClient } from '../../../generated/prisma/client'
 
 export class ConversionBuilder {
-  private readonly fields: Partial<Conversion> = {}
+  private readonly fields = {} as ConversionUncheckedCreateInput
 
-  private constructor(fields: Partial<Conversion> = {}) {
+  private constructor(fields = {} as ConversionUncheckedCreateInput) {
     this.fields = fields
   }
 
-  static create(fields: Partial<Conversion> = {}): ConversionBuilder {
+  static create(
+    fields = {} as ConversionUncheckedCreateInput,
+  ): ConversionBuilder {
     return new this(fields)
   }
 
@@ -30,7 +35,7 @@ export class ConversionBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<Conversion> {
-    return ds.getRepository(Conversion).save(this.fields)
+  async save(prisma: PrismaClient): Promise<ConversionModel> {
+    return prisma.conversion.create({ data: this.fields })
   }
 }

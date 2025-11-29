@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../utils/helpers'
 import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
@@ -8,12 +7,13 @@ import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
 import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
 import { createClickBuilder } from '../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('Report Filter (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let userId: string
-  let dataSource: DataSource
+  let prisma: PrismaService
   let campaignId: string
 
   afterEach(async () => {
@@ -23,14 +23,14 @@ describe('Report Filter (e2e)', () => {
   beforeEach(async () => {
     await truncateTables()
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken
     userId = authData.user.id
 
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
     campaignId = campaign.id
   })
 
@@ -134,7 +134,7 @@ describe('Report Filter (e2e)', () => {
       .add((click) => click.isBot(true).isProxy(true))
       .add((click) => click.isBot(true).isProxy(false))
       .add((click) => click.isBot(false).isProxy(false))
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .groups(['isProxy'])
@@ -155,7 +155,7 @@ describe('Report Filter (e2e)', () => {
       .add((click) => click.isBot(true).isProxy(true))
       .add((click) => click.isBot(true).isProxy(false))
       .add((click) => click.isBot(false).isProxy(false))
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .groups(['isProxy'])
@@ -184,7 +184,7 @@ describe('Report Filter (e2e)', () => {
       .campaignId(campaignId)
       .add((click) => click.createdAt(new Date('2024-06-23 08:30:22')))
       .add((click) => click.createdAt(new Date('2023-07-26 09:40:33')))
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
@@ -201,10 +201,10 @@ describe('Report Filter (e2e)', () => {
   it('campaignId', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
-    await createClickBuilder().campaignId(campaignId).save(dataSource)
-    await createClickBuilder().campaignId(campaign.id).save(dataSource)
+    await createClickBuilder().campaignId(campaignId).save(prisma)
+    await createClickBuilder().campaignId(campaign.id).save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
@@ -221,8 +221,8 @@ describe('Report Filter (e2e)', () => {
   it('emptyReferer', async () => {
     await createClickBuilder({ referer: 'Ref1' })
       .campaignId(campaignId)
-      .save(dataSource)
-    await createClickBuilder().campaignId(campaignId).save(dataSource)
+      .save(prisma)
+    await createClickBuilder().campaignId(campaignId).save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
@@ -239,10 +239,10 @@ describe('Report Filter (e2e)', () => {
   it('ip2', async () => {
     await createClickBuilder({ ip: '1.2.3.4' })
       .campaignId(campaignId)
-      .save(dataSource)
+      .save(prisma)
     await createClickBuilder({ ip: '4.3.2.1' })
       .campaignId(campaignId)
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
@@ -257,10 +257,10 @@ describe('Report Filter (e2e)', () => {
   it('ip3', async () => {
     await createClickBuilder({ ip: '1.2.3.4' })
       .campaignId(campaignId)
-      .save(dataSource)
+      .save(prisma)
     await createClickBuilder({ ip: '4.3.2.1' })
       .campaignId(campaignId)
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
@@ -308,11 +308,11 @@ describe('Report Filter (e2e)', () => {
   ])('field %s', async (field, value1, value2) => {
     await createClickBuilder({ [field]: value1 })
       .campaignId(campaignId)
-      .save(dataSource)
+      .save(prisma)
 
     await createClickBuilder({ [field]: value2 })
       .campaignId(campaignId)
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])

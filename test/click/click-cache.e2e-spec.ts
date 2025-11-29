@@ -3,8 +3,6 @@ import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser, spyOn } from '../utils/helpers'
-import { StreamActionType } from '@/domain/campaign/types'
-import { ClickRequestBuilder } from '../utils/click-request-builder'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import request from 'supertest'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
@@ -14,6 +12,7 @@ import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { CreateCampaignService } from '@/domain/campaign/create-campaign.service'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum } from '../../generated/prisma/enums'
+import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 
 describe('Click-cache (e2e)', () => {
   let app: INestApplication

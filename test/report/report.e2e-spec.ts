@@ -1,6 +1,5 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../utils/helpers'
 import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
@@ -11,14 +10,14 @@ import { createClickBuilder } from '../utils/entity-builder/click-builder'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
-import { ClickData } from '@/domain/click/click-data'
-import { ReportService } from '@/domain/report/report.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { ClickUncheckedCreateInput } from '../../generated/prisma/models/Click'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let userId: string
-  let dataSource: DataSource
+  let prisma: PrismaService
 
   afterEach(async () => {
     await app.close()
@@ -27,7 +26,7 @@ describe('Report (e2e)', () => {
   beforeEach(async () => {
     await truncateTables()
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken
     userId = authData.user.id
@@ -36,7 +35,7 @@ describe('Report (e2e)', () => {
   it('Metric count conversions', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await createClicksBuilder()
       .campaignId(campaign.id)
@@ -51,7 +50,7 @@ describe('Report (e2e)', () => {
           .addConv((c) => c.status('trash'))
           .addConv((c) => c.status('deposit')),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -87,7 +86,7 @@ describe('Report (e2e)', () => {
   it('Metric revenue', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await createClicksBuilder()
       .campaignId(campaign.id)
@@ -106,7 +105,7 @@ describe('Report (e2e)', () => {
           .addConv((c) => c.revenue(5.1234).status('trash'))
           .addConv((c) => c.revenue(6.31232).status('deposit')),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -140,7 +139,7 @@ describe('Report (e2e)', () => {
   it('roi', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await createClicksBuilder()
       .campaignId(campaign.id)
@@ -161,7 +160,7 @@ describe('Report (e2e)', () => {
           .addConv((c) => c.revenue(5.1234).status('trash'))
           .addConv((c) => c.revenue(6.31232).status('deposit')),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -195,7 +194,7 @@ describe('Report (e2e)', () => {
   it('clicks', async () => {
     const campaign1 = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await createClicksBuilder()
       .campaignId(campaign1.id)
@@ -205,7 +204,7 @@ describe('Report (e2e)', () => {
       .add((click) => click.isUniqueCampaign(true))
       .add((click) => click.isUniqueCampaign(true))
       .add((click) => click.isUniqueStream(true))
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -239,7 +238,7 @@ describe('Report (e2e)', () => {
   it('bots, proxies', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     const clicks = [
       [false, false, null],
@@ -257,7 +256,7 @@ describe('Report (e2e)', () => {
         .add((click) => click.isBot(isBot).isProxy(isProxy).referer(referer))
     }
 
-    await builder.save(dataSource)
+    await builder.save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -281,7 +280,7 @@ describe('Report (e2e)', () => {
   it('cr', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await createClicksBuilder()
       .campaignId(campaign.id)
@@ -296,7 +295,7 @@ describe('Report (e2e)', () => {
       .add((click) => click.addConv((c) => c.status('deposit')))
       .add((click) => click.addConv((c) => c.status('deposit')))
       .add((click) => click.addConv((c) => c.status('registration')))
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -328,7 +327,7 @@ describe('Report (e2e)', () => {
   it('epc, cp', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     const data = [
       [true, 1.1, 'lead', 1.2],
@@ -350,7 +349,7 @@ describe('Report (e2e)', () => {
       )
     })
 
-    await builder.save(dataSource)
+    await builder.save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')
@@ -406,25 +405,25 @@ describe('Report (e2e)', () => {
   it('group', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     const source = await SourceBuilder.create()
       .name('Source')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     const offer = await OfferBuilder.create()
       .name('Offer')
       .url(faker.internet.url())
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     const affiliateNetwork = await AffiliateNetworkBuilder.create()
       .name('Affiliate Network')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
-    const clickData: ClickData = {
+    const clickData: Partial<ClickUncheckedCreateInput> = {
       createdAt: new Date('2015-10-20 21:22:34'),
       id: 'id',
       country: 'China',
@@ -463,7 +462,7 @@ describe('Report (e2e)', () => {
 
     const click = await createClickBuilder(clickData)
       .campaignId(campaign.id)
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/report')

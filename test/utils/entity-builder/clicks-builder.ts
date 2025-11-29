@@ -1,6 +1,6 @@
-import { DataSource } from 'typeorm'
-import { Click } from '@/domain/click/click.entity'
 import { ClickBuilder } from './click-builder'
+import { PrismaClient } from '@prisma/client/extension'
+import { ClickModel } from '../../../generated/prisma/models/Click'
 
 export function createClicksBuilder(): ClicksBuilder {
   return ClicksBuilder.create()
@@ -35,8 +35,8 @@ class ClicksBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<Click[]> {
-    const result: Click[] = []
+  async save(ds: PrismaClient): Promise<ClickModel[]> {
+    const result: ClickModel[] = []
     for (const builder of this.clicks) {
       const click = await builder.save(ds)
       result.push(click)

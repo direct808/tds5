@@ -1,18 +1,18 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../utils/helpers'
 import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
 import { ReportService } from '@/domain/report/report.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('Report Order (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let userId: string
-  let dataSource: DataSource
+  let prisma: PrismaService
   let metrics: string[]
 
   afterEach(async () => {
@@ -22,7 +22,7 @@ describe('Report Order (e2e)', () => {
   beforeAll(async () => {
     await truncateTables()
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken
     userId = authData.user.id
@@ -32,9 +32,9 @@ describe('Report Order (e2e)', () => {
 
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
-    await createClicksBuilder().campaignId(campaign.id).add().save(dataSource)
+    await createClicksBuilder().campaignId(campaign.id).add().save(prisma)
   })
 
   it('order', async () => {
