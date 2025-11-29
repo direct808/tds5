@@ -1,28 +1,26 @@
 import { Injectable } from '@nestjs/common'
-import { ConversionStatus } from '@/domain/conversion/conversion.entity'
 import { RequestAdapter } from '@/shared/request-adapter'
+import { ConversionType } from '@/domain/conversion/conversion-type'
 
 const stausMap = [
-  ['sale_status', ConversionStatus.sale],
-  ['rejected_status', ConversionStatus.rejected],
-  ['lead_status', ConversionStatus.lead],
+  ['sale_status', ConversionType.sale],
+  ['rejected_status', ConversionType.rejected],
+  ['lead_status', ConversionType.lead],
 ] as const
 
 @Injectable()
 export class ConversionStatusService {
-  public getStatus(requestAdapter: RequestAdapter): ConversionStatus {
+  public getStatus(requestAdapter: RequestAdapter): ConversionType {
     const originalStatus = requestAdapter.query('status')
 
     if (!originalStatus) {
-      return ConversionStatus.sale
+      return ConversionType.sale
     }
 
     if (
-      Object.values(ConversionStatus).includes(
-        originalStatus as ConversionStatus,
-      )
+      Object.values(ConversionType).includes(originalStatus as ConversionType)
     ) {
-      return originalStatus as ConversionStatus
+      return originalStatus as ConversionType
     }
 
     for (const [name, status] of stausMap) {
@@ -32,6 +30,6 @@ export class ConversionStatusService {
       }
     }
 
-    return ConversionStatus.lead
+    return ConversionType.lead
   }
 }

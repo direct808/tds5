@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common'
-import { EntityManager } from 'typeorm'
-import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
+import {
+  StreamOfferModel,
+  StreamOfferUncheckedCreateInput,
+} from '../../../generated/prisma/models/StreamOffer'
+import {
+  prismaTransaction,
+  Transaction,
+} from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class StreamOfferRepository {
   public async saveMany(
-    manager: EntityManager,
-    args: Partial<StreamOffer>[],
-  ): Promise<StreamOffer[]> {
-    const entity = manager.create(StreamOffer, args)
-
-    return manager.save(entity)
+    trx: Transaction,
+    data: StreamOfferUncheckedCreateInput[],
+  ): Promise<void> {
+    await prismaTransaction(trx).get().streamOffer.createMany({
+      data,
+    })
   }
 
   public getByStreamId(
-    manager: EntityManager,
+    trx: Transaction,
     streamId: string,
-  ): Promise<StreamOffer[]> {
-    return manager.findBy(StreamOffer, { streamId })
+  ): Promise<StreamOfferModel[]> {
+    return prismaTransaction(trx)
+      .get()
+      .streamOffer.findMany({ where: { streamId } })
   }
 
-  public async delete(manager: EntityManager, ids: string[]): Promise<void> {
-    await manager.delete(StreamOffer, ids)
+  public async delete(trx: Transaction, ids: string[]): Promise<void> {
+    await prismaTransaction(trx)
+      .get()
+      .streamOffer.deleteMany({ where: { id: { in: ids } } })
   }
 }

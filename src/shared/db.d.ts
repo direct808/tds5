@@ -24,14 +24,14 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive
 
 export type Numeric = ColumnType<string, number | string, number | string>
 
-export type StreamActiontypeEnum =
+export type StreamActionTypeEnum =
   | 'NOTHING'
   | 'SHOW_HTML'
   | 'SHOW_TEXT'
   | 'SHOW404'
   | 'TO_CAMPAIGN'
 
-export type StreamRedirecttypeEnum =
+export type StreamRedirectTypeEnum =
   | 'CURL'
   | 'FORM_SUBMIT'
   | 'HTTP'
@@ -100,16 +100,24 @@ export interface Click {
   previousCampaignId: string | null
   referer: string | null
   region: string | null
-  /**
-   * Источник (из параметров)
-   */
   source: string | null
+  sourceId: string | null
   streamId: string | null
   subId1: string | null
   subId2: string | null
-  trafficSourceId: string | null
   userAgent: string | null
   visitorId: string
+}
+
+export interface Conversion {
+  clickId: string
+  createdAt: Generated<Timestamp>
+  id: Generated<string>
+  originalStatus: string | null
+  params: Json | null
+  previousStatus: string | null
+  revenue: Numeric | null
+  status: string
 }
 
 export interface Offer {
@@ -135,12 +143,12 @@ export interface Source {
 export interface Stream {
   actionCampaignId: string | null
   actionContent: string | null
-  actionType: StreamActiontypeEnum | null
+  actionType: StreamActionTypeEnum | null
   campaignId: string
   filters: Json | null
   id: Generated<string>
   name: string
-  redirectType: StreamRedirecttypeEnum | null
+  redirectType: StreamRedirectTypeEnum | null
   redirectUrl: string | null
   schema: StreamSchemaEnum
 }
@@ -165,6 +173,7 @@ export interface DB {
   affiliate_network: AffiliateNetwork
   campaign: Campaign
   click: Click
+  conversion: Conversion
   offer: Offer
   source: Source
   stream: Stream

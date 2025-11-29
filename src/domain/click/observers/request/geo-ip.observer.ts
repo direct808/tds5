@@ -22,7 +22,7 @@ export class GeoIpObserver implements ClickObserver {
       return
     }
 
-    const geoIpData = this.geoIpService.get(ip)
+    const geoIpData = this.geoIpService.get(ip) as ClickData
 
     if (!geoIpData) {
       return

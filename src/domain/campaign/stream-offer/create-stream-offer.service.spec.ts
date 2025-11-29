@@ -2,7 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { CreateStreamOfferService } from './create-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
-import { EntityManager } from 'typeorm'
+import { PrismaClient } from '../../../../generated/prisma/client'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 describe('CommonStreamService', () => {
   let service: CreateStreamOfferService
@@ -18,7 +19,8 @@ describe('CommonStreamService', () => {
     buildCreateData: jest.fn(),
   }
 
-  const manager = {} as EntityManager
+  const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,7 +46,7 @@ describe('CommonStreamService', () => {
     const data = {}
     commonService.buildCreateData.mockReturnValue(data)
     const input = [{ offerId: 'offer-id', active: true, percent: 75 }]
-    await service.createStreamOffers(manager, 'stream-id', 'user-id', input)
+    await service.createStreamOffers(transaction, 'stream-id', 'user-id', input)
 
     expect(commonService.checkPercentSum).toHaveBeenCalledWith(input)
     expect(commonService.checkForRepeatOffers).toHaveBeenCalledWith(input)
@@ -56,6 +58,6 @@ describe('CommonStreamService', () => {
       'stream-id',
       input,
     )
-    expect(streamOfferRepository.saveMany).toHaveBeenCalledWith(manager, data)
+    expect(streamOfferRepository.saveMany).toHaveBeenCalledWith(prisma, data)
   })
 })

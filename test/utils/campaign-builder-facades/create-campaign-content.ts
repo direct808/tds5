@@ -1,20 +1,22 @@
-import { CampaignBuilder } from '../entity-builder/campaign-builder'
-import { StreamActionType } from '@/domain/campaign/types'
-import { DataSource } from 'typeorm'
+import {
+  CampaignBuilder,
+  CampaignFull,
+} from '../entity-builder/campaign-builder'
 import { faker } from '@faker-js/faker'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
 
 type CreateCampaignContentArgs = {
-  dataSource: DataSource
+  prisma: PrismaService
   userId: string
   content?: string
 }
 
 export function createCampaignContent({
-  dataSource,
+  prisma,
   userId,
   content = faker.string.alphanumeric({ length: 6 }),
-}: CreateCampaignContentArgs): Promise<Campaign> {
+}: CreateCampaignContentArgs): Promise<CampaignFull> {
   return CampaignBuilder.create()
     .name(faker.company.name())
     .code(faker.string.alphanumeric({ length: 6 }))
@@ -22,8 +24,8 @@ export function createCampaignContent({
     .addStreamTypeAction((stream) => {
       stream
         .name(faker.company.name())
-        .type(StreamActionType.SHOW_TEXT)
+        .type(StreamActionTypeEnum.SHOW_TEXT)
         .content(content)
     })
-    .save(dataSource)
+    .save(prisma)
 }

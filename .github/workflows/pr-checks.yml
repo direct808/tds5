@@ -22,7 +22,7 @@ jobs:
         run: yarn install
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run cicd:lint
 
   unit-tests:
     name: Unit tests
@@ -41,7 +41,7 @@ jobs:
         run: yarn install
 
       - name: Run tests
-        run: npm run test:cov
+        run: npm run cicd:test
 
   e2e-tests:
     name: E2E tests

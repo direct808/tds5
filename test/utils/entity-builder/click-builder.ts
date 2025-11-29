@@ -1,14 +1,17 @@
-import { DataSource } from 'typeorm'
-import { Click } from '@/domain/click/click.entity'
+import {
+  ClickModel,
+  ClickUncheckedCreateInput,
+} from '../../../generated/prisma/models/Click'
+import { PrismaClient } from '../../../generated/prisma/client'
 
 export class ClickBuilder {
-  private readonly fields: Partial<Click> = {}
+  private readonly fields = {} as ClickUncheckedCreateInput
 
-  private constructor(fields: Partial<Click> = {}) {
+  private constructor(fields = {} as ClickUncheckedCreateInput) {
     this.fields = fields
   }
 
-  static create(fields: Partial<Click> = {}): ClickBuilder {
+  static create(fields = {} as ClickUncheckedCreateInput): ClickBuilder {
     return new this(fields)
   }
 
@@ -36,7 +39,7 @@ export class ClickBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<Click> {
-    return ds.getRepository(Click).save(this.fields)
+  save(prisma: PrismaClient): Promise<ClickModel> {
+    return prisma.click.create({ data: this.fields })
   }
 }

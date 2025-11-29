@@ -1,18 +1,16 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource, Repository } from 'typeorm'
-import { Offer } from '@/domain/offer/offer.entity'
 import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { createAuthUser } from './utils/helpers'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
-  let offerRepository: Repository<Offer>
-  let dataSource: DataSource
+  let prisma: PrismaService
   let userId: string
 
   afterEach(async () => {
@@ -22,8 +20,7 @@ describe('OfferController (e2e)', () => {
   beforeEach(async () => {
     await truncateTables()
     app = await createApp()
-    dataSource = app.get(DataSource)
-    offerRepository = dataSource.getRepository(Offer)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken
     userId = authData.user.id
@@ -37,7 +34,7 @@ describe('OfferController (e2e)', () => {
         .send({ name: 'Test offer 1', url: 'http://google.com' })
         .expect(201)
 
-      const offer = await offerRepository.findOne({
+      const offer = await prisma.offer.findFirst({
         where: { name: 'Test offer 1' },
       })
 
@@ -50,7 +47,7 @@ describe('OfferController (e2e)', () => {
       .name('Offer 1')
       .userId(userId)
       .url(faker.internet.url())
-      .save(dataSource)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
       .get('/api/offer')
@@ -66,7 +63,7 @@ describe('OfferController (e2e)', () => {
       .name('Offer 1')
       .userId(userId)
       .url(faker.internet.url())
-      .save(dataSource)
+      .save(prisma)
 
     await request(app.getHttpServer())
       .patch('/api/offer/' + offer.id)
@@ -77,7 +74,7 @@ describe('OfferController (e2e)', () => {
       })
       .expect(200)
 
-    const source = await offerRepository.findOneOrFail({
+    const source = await prisma.offer.findFirstOrThrow({
       where: { id: offer.id },
     })
 
@@ -89,15 +86,15 @@ describe('OfferController (e2e)', () => {
       .name('Offer 1')
       .userId(userId)
       .url(faker.internet.url())
-      .save(dataSource)
+      .save(prisma)
 
     await request(app.getHttpServer())
       .delete('/api/offer/' + offer.id)
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const source = await offerRepository.findOneBy({
-      id: offer.id,
+    const source = await prisma.offer.findFirst({
+      where: { id: offer.id },
     })
 
     expect(source).toBeNull()

@@ -1,9 +1,19 @@
-import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
-import { OfferBuilder } from './offer-builder'
-import { DataSource } from 'typeorm'
+import { OfferBuilder, OfferFull } from './offer-builder'
+import { PrismaClient } from '../../../generated/prisma/client'
+import {
+  StreamOfferGetPayload,
+  StreamOfferUncheckedCreateInput,
+} from '../../../generated/prisma/models/StreamOffer'
+
+export type StreamOfferFull = StreamOfferGetPayload<{
+  include: { offer: { include: { affiliateNetwork: true } } }
+}>
 
 export class StreamOfferBuilder {
-  private fields: Partial<StreamOffer> = { active: true }
+  private fields: StreamOfferUncheckedCreateInput = {
+    active: true,
+  } as StreamOfferUncheckedCreateInput
+
   private builder?: OfferBuilder
 
   private constructor() {}
@@ -32,14 +42,24 @@ export class StreamOfferBuilder {
     return this
   }
 
-  async save(ds: DataSource, streamId: string): Promise<StreamOffer> {
+  async save(prisma: PrismaClient, streamId: string): Promise<StreamOfferFull> {
     this.fields.streamId = streamId
+    let offer: OfferFull | undefined
+
     if (this.builder) {
-      const offer = await this.builder.save(ds)
-      this.fields.offerId = offer.id
-      this.fields.offer = offer
+      const off = await this.builder.save(prisma)
+      this.fields.offerId = off.id
+      offer = off
     }
 
-    return ds.getRepository(StreamOffer).save(this.fields)
+    const res = (await prisma.streamOffer.create({
+      data: this.fields,
+    })) as StreamOfferFull
+
+    if (offer) {
+      res.offer = offer
+    }
+
+    return res as StreamOfferFull
   }
 }

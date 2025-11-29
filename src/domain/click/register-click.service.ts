@@ -6,6 +6,7 @@ import {
   ClickRegisteredEvent,
   clickRegisteredEventName,
 } from '@/domain/click/events/click-registered.event'
+import { ClickUncheckedCreateInput } from '../../../generated/prisma/models/Click'
 
 @Injectable()
 export class RegisterClickService {
@@ -17,7 +18,7 @@ export class RegisterClickService {
 
   public register(clickData: ClickData): void {
     this.clickRepository
-      .add(clickData)
+      .add(clickData as ClickUncheckedCreateInput)
       .then(() =>
         this.eventEmitter.emit(
           clickRegisteredEventName,

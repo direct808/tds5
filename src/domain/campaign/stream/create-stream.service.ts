@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { EntityManager } from 'typeorm'
 import { CommonStreamService } from './common-stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamDto } from '../dto/create-stream.dto'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
-import { CampaignStreamSchema } from '@/domain/campaign/types'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
+import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
 
 @Injectable()
 export class CreateStreamService {
@@ -15,18 +15,18 @@ export class CreateStreamService {
   ) {}
 
   public async createStreams(
-    manager: EntityManager,
+    trx: Transaction,
     campaignId: string,
     userId: string,
     streams: CreateStreamDto[],
   ): Promise<void> {
     for (const stream of streams) {
-      await this.createStream(manager, campaignId, userId, stream)
+      await this.createStream(trx, campaignId, userId, stream)
     }
   }
 
   public async createStream(
-    manager: EntityManager,
+    trx: Transaction,
     campaignId: string,
     userId: string,
     input: CreateStreamDto,
@@ -36,13 +36,13 @@ export class CreateStreamService {
       input.actionCampaignId,
     )
     const data = this.commonService.buildData(input, campaignId)
-    const stream = await this.repository.create(manager, data)
+    const stream = await this.repository.create(trx, data)
 
-    await this.createStreamOffers(manager, input, stream.id, userId)
+    await this.createStreamOffers(trx, input, stream.id, userId)
   }
 
   private async createStreamOffers(
-    manager: EntityManager,
+    trx: Transaction,
     input: CreateStreamDto,
     streamId: string,
     userId: string,
@@ -50,13 +50,13 @@ export class CreateStreamService {
     if (
       !input.offers ||
       input.offers.length === 0 ||
-      input.schema !== CampaignStreamSchema.LANDINGS_OFFERS
+      input.schema !== StreamSchemaEnum.LANDINGS_OFFERS
     ) {
       return
     }
 
     await this.createStreamOfferService.createStreamOffers(
-      manager,
+      trx,
       streamId,
       userId,
       input.offers,

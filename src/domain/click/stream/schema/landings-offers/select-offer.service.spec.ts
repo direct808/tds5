@@ -1,7 +1,7 @@
 import { SelectOfferService } from './select-offer.service'
-import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
-import { Offer } from '@/domain/offer/offer.entity'
 import * as weighted from 'weighted'
+import { OfferModel } from '../../../../../../generated/prisma/models/Offer'
+import { StreamOfferFull } from '@/domain/campaign/types'
 
 jest.mock('weighted')
 
@@ -18,8 +18,11 @@ describe('SelectOfferService', () => {
     })
 
     it('should return the offer if only one streamOffer exists', () => {
-      const offer: Offer = { id: '1' } as Offer
-      const streamOffer: StreamOffer = { offer, percent: 100 } as StreamOffer
+      const offer: OfferModel = { id: '1' } as OfferModel
+      const streamOffer: StreamOfferFull = {
+        offer,
+        percent: 100,
+      } as StreamOfferFull
 
       const result = service.select([streamOffer])
 
@@ -27,18 +30,18 @@ describe('SelectOfferService', () => {
     })
 
     it('should select an offer using weighted.select if multiple streamOffers exist', () => {
-      const offer1: Offer = { id: '1' } as Offer
-      const offer2: Offer = { id: '2' } as Offer
+      const offer1: OfferModel = { id: '1' } as OfferModel
+      const offer2: OfferModel = { id: '2' } as OfferModel
 
-      const streamOffer1: StreamOffer = {
+      const streamOffer1: StreamOfferFull = {
         offer: offer1,
         percent: 30,
-      } as StreamOffer
+      } as StreamOfferFull
 
-      const streamOffer2: StreamOffer = {
+      const streamOffer2: StreamOfferFull = {
         offer: offer2,
         percent: 70,
-      } as StreamOffer
+      } as StreamOfferFull
 
       ;(weighted.select as unknown as jest.Mock).mockReturnValue(streamOffer2)
 
@@ -55,20 +58,19 @@ describe('SelectOfferService', () => {
   describe('getOffer', () => {
     it('should return offer', () => {
       const offer = { id: '1' }
-      const streamOffer: StreamOffer = {
+      const streamOffer: StreamOfferFull = {
         offer,
         percent: 100,
-      } as StreamOffer
+      } as StreamOfferFull
 
       const result = service['getOffer'](streamOffer)
       expect(result).toEqual(offer)
     })
 
     it('should throw an error if selected streamOffer has no offer', () => {
-      const streamOffer: StreamOffer = {
-        offer: undefined,
+      const streamOffer = {
         percent: 100,
-      } as StreamOffer
+      } as StreamOfferFull
 
       expect(() => service['getOffer'](streamOffer)).toThrowError(
         'No offer in streamOffers',

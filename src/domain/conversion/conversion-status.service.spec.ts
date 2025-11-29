@@ -1,6 +1,6 @@
 import { ConversionStatusService } from '@/domain/conversion/conversion-status.service'
 import { MockRequestAdapter } from '../../../test/utils/mock-request-adapter'
-import { ConversionStatus } from '@/domain/conversion/conversion.entity'
+import { ConversionType } from '@/domain/conversion/conversion-type'
 
 describe('conversion-status.service.ts', () => {
   let service: ConversionStatusService
@@ -12,15 +12,15 @@ describe('conversion-status.service.ts', () => {
   it('Should return status sale if status not provide', () => {
     const requestProvider = MockRequestAdapter.create()
     const status = service.getStatus(requestProvider)
-    expect(status).toEqual(ConversionStatus.sale)
+    expect(status).toEqual(ConversionType.sale)
   })
 
   it('Should return status rejected if status is rejected', () => {
     const requestProvider = MockRequestAdapter.create({
-      query: { status: ConversionStatus.rejected },
+      query: { status: ConversionType.rejected },
     })
     const status = service.getStatus(requestProvider)
-    expect(status).toEqual(ConversionStatus.rejected)
+    expect(status).toEqual(ConversionType.rejected)
   })
 
   it('Should return status rejected if status is custom-status', () => {
@@ -31,7 +31,7 @@ describe('conversion-status.service.ts', () => {
       },
     })
     const status = service.getStatus(requestProvider)
-    expect(status).toEqual(ConversionStatus.rejected)
+    expect(status).toEqual(ConversionType.rejected)
   })
 
   it('Should return status led if unknown status', () => {
@@ -41,6 +41,6 @@ describe('conversion-status.service.ts', () => {
       },
     })
     const status = service.getStatus(requestProvider)
-    expect(status).toEqual(ConversionStatus.lead)
+    expect(status).toEqual(ConversionType.lead)
   })
 })

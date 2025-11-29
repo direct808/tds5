@@ -1,8 +1,6 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import { StreamActionType, StreamRedirectType } from '@/domain/campaign/types'
 import express from 'express'
 import { createAuthUser } from '../utils/helpers'
 import { createCampaignDirectUrl } from '../utils/campaign-builder-facades/create-campaign-direct-url'
@@ -11,10 +9,15 @@ import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { RegisterClickService } from '@/domain/click/register-click.service'
 import type { ClickData } from '@/domain/click/click-data'
 import { ClickRequestBuilder } from '../utils/click-request-builder'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import {
+  StreamActionTypeEnum,
+  StreamRedirectTypeEnum,
+} from '../../generated/prisma/enums'
 
 describe('Click (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   const redirectUrl = 'https://example.com/'
   let userId: string
 
@@ -26,7 +29,7 @@ describe('Click (e2e)', () => {
     await Promise.all([truncateTables(), flushRedisDb()])
 
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     userId = authData.user.id
   })
@@ -40,7 +43,7 @@ describe('Click (e2e)', () => {
       .name('Test campaign 1')
       .code('abcdif')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     return request(app.getHttpServer()).get('/abcdif').expect(500)
   })
@@ -53,7 +56,7 @@ describe('Click (e2e)', () => {
       .addStreamTypeOffers((stream) => {
         stream.name('Name')
       })
-      .save(dataSource)
+      .save(prisma)
 
     return request(app.getHttpServer()).get('/abcdif').expect(500)
   })
@@ -65,9 +68,12 @@ describe('Click (e2e)', () => {
       .code('abcdif')
       .userId(userId)
       .addStreamTypeAction((stream) => {
-        stream.name('Name').type(StreamActionType.SHOW_TEXT).content('content')
+        stream
+          .name('Name')
+          .type(StreamActionTypeEnum.SHOW_TEXT)
+          .content('content')
       })
-      .save(dataSource)
+      .save(prisma)
 
     return request(app.getHttpServer()).get('/abcdif').expect(404)
   })
@@ -75,9 +81,9 @@ describe('Click (e2e)', () => {
   describe('Schema type direct url', () => {
     it('type HTTP', async () => {
       const campaign = await createCampaignDirectUrl({
-        redirectType: StreamRedirectType.HTTP,
+        redirectType: StreamRedirectTypeEnum.HTTP,
         url: redirectUrl,
-        dataSource,
+        prisma,
         userId,
       })
 
@@ -91,38 +97,38 @@ describe('Click (e2e)', () => {
     })
 
     it.each([
-      [StreamRedirectType.CURL, 'Example Domain'],
-      [StreamRedirectType.CURL, '<base href="//example.com/">'],
-      [StreamRedirectType.JS, 'process();</script>'],
+      [StreamRedirectTypeEnum.CURL, 'Example Domain'],
+      [StreamRedirectTypeEnum.CURL, '<base href="//example.com/">'],
+      [StreamRedirectTypeEnum.JS, 'process();</script>'],
       [
-        StreamRedirectType.META,
+        StreamRedirectTypeEnum.META,
         `<meta http-equiv="REFRESH" content="1; URL='https://example.com/'">`,
       ],
       [
-        StreamRedirectType.IFRAME,
+        StreamRedirectTypeEnum.IFRAME,
         '<iframe src="https://example.com/"></iframe>',
       ],
       [
-        StreamRedirectType.META2,
+        StreamRedirectTypeEnum.META2,
         `<meta http-equiv="REFRESH" content="1; URL=\'/gateway/`,
       ],
       [
-        StreamRedirectType.META2,
+        StreamRedirectTypeEnum.META2,
         `<script type="application/javascript">window.location = "/gateway/`,
       ],
       [
-        StreamRedirectType.FORM_SUBMIT,
+        StreamRedirectTypeEnum.FORM_SUBMIT,
         `<form action="https://example.com/" method="POST"></form>`,
       ],
       [
-        StreamRedirectType.WITHOUT_REFERER,
+        StreamRedirectTypeEnum.WITHOUT_REFERER,
         `window.frames[0].document.body.innerHTML = '<form target="_parent" method="post" action="https://example.com/"></form>'`,
       ],
     ])('type %s, content %s', async (type, content) => {
       const campaign = await createCampaignDirectUrl({
         redirectType: type,
         url: redirectUrl,
-        dataSource,
+        prisma,
         userId,
       })
 
@@ -137,9 +143,9 @@ describe('Click (e2e)', () => {
 
     it('REMOTE redirect', async () => {
       const campaign = await createCampaignDirectUrl({
-        redirectType: StreamRedirectType.REMOTE,
+        redirectType: StreamRedirectTypeEnum.REMOTE,
         url: 'http://localhost:2345',
-        dataSource,
+        prisma,
         userId,
       })
 
@@ -157,10 +163,10 @@ describe('Click (e2e)', () => {
 
   describe('Schema type action', () => {
     it.each([
-      [StreamActionType.SHOW_TEXT, '<Content>', 200, '&lt;Content&gt;'],
-      [StreamActionType.SHOW_HTML, '<Content>', 200, '<Content>'],
-      [StreamActionType.NOTHING, '<Content>', 200, ''],
-      [StreamActionType.SHOW404, '<Content>', 404, ''],
+      [StreamActionTypeEnum.SHOW_TEXT, '<Content>', 200, '&lt;Content&gt;'],
+      [StreamActionTypeEnum.SHOW_HTML, '<Content>', 200, '<Content>'],
+      [StreamActionTypeEnum.NOTHING, '<Content>', 200, ''],
+      [StreamActionTypeEnum.SHOW404, '<Content>', 404, ''],
     ])(
       'type %s witch content %s should return status %i with content %s',
       async (action, content, status, body) => {
@@ -171,7 +177,7 @@ describe('Click (e2e)', () => {
           .addStreamTypeAction((stream) => {
             stream.name('Stream 1').type(action).content(content)
           })
-          .save(dataSource)
+          .save(prisma)
 
         const response = await ClickRequestBuilder.create(app)
           .code('abcdif')
@@ -192,7 +198,7 @@ describe('Click (e2e)', () => {
         .addStreamTypeAction((stream) => {
           stream
             .name('Stream 1')
-            .type(StreamActionType.TO_CAMPAIGN)
+            .type(StreamActionTypeEnum.TO_CAMPAIGN)
             .createActionCampaign((campaign) => {
               campaign
                 .name('Sub campaign')
@@ -202,11 +208,11 @@ describe('Click (e2e)', () => {
                   stream
                     .name('s1')
                     .url(redirectUrl)
-                    .redirectType(StreamRedirectType.HTTP)
+                    .redirectType(StreamRedirectTypeEnum.HTTP)
                 })
             })
         })
-        .save(dataSource)
+        .save(prisma)
 
       const lastCampaign = res.streams[0].actionCampaign!
       const clickData: ClickData[] = []
@@ -251,7 +257,7 @@ describe('Click (e2e)', () => {
             })
           })
         })
-        .save(dataSource)
+        .save(prisma)
 
       const response = await ClickRequestBuilder.create(app)
         .code('abcdif')

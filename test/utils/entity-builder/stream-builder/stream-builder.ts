@@ -1,9 +1,21 @@
-import { Stream } from '@/domain/campaign/entity/stream.entity'
-import { DataSource } from 'typeorm'
 import { Filters } from '@/domain/click/stream/filter/types'
+import { PrismaClient } from '../../../../generated/prisma/client'
+import {
+  StreamGetPayload,
+  StreamUncheckedCreateInput,
+} from '../../../../generated/prisma/models/Stream'
+
+export type StreamFull = StreamGetPayload<{
+  include: {
+    streamOffers: {
+      include: { offer: { include: { affiliateNetwork: true } } }
+    }
+    actionCampaign: true
+  }
+}>
 
 export abstract class StreamBuilder {
-  protected readonly fields: Partial<Stream> = {}
+  protected readonly fields = {} as StreamUncheckedCreateInput
 
   protected constructor() {}
 
@@ -14,14 +26,16 @@ export abstract class StreamBuilder {
   }
 
   filters(filters: Filters): this {
-    this.fields.filters = filters
+    this.fields.filters = filters as any // todo проверить
 
     return this
   }
 
-  async save(ds: DataSource, campaignId: string): Promise<Stream> {
-    return ds
-      .getRepository(Stream)
-      .save({ ...this.fields, campaignId: campaignId })
+  async save(prisma: PrismaClient, campaignId: string): Promise<StreamFull> {
+    const res = await prisma.stream.create({
+      data: { ...this.fields, campaignId: campaignId },
+    })
+
+    return res as StreamFull
   }
 }

@@ -1,16 +1,16 @@
 import { INestApplication } from '@nestjs/common'
-import request from 'supertest'
-import { DataSource } from 'typeorm'
 import { VISITOR_ID_SIZE } from '@/domain/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { ClickRepository } from '@/infra/repositories/click.repository'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { ClickRequestBuilder } from '../utils/click-request-builder'
 
 describe('visitorId (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let clickRepo: ClickRepository
   let userId: string
 
@@ -21,7 +21,7 @@ describe('visitorId (e2e)', () => {
   beforeEach(async () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     clickRepo = app.get(ClickRepository)
     const authData = await createAuthUser(app)
     userId = authData.user.id
@@ -30,13 +30,15 @@ describe('visitorId (e2e)', () => {
   it('Should be receive visitor id form cookie', async () => {
     // Arrange
     const campaign = await createCampaignContent({
-      dataSource,
+      prisma,
       userId,
     })
 
     // Act
-    const response = await request(app.getHttpServer())
-      .get(`/${campaign.code}`)
+    const response = await ClickRequestBuilder.create(app)
+      .code(campaign.code)
+      .waitRegister()
+      .request()
       .expect(200)
 
     const cookies = response.get('Set-Cookie')!
@@ -54,14 +56,16 @@ describe('visitorId (e2e)', () => {
     // Arrange
     const existsVisitorId = 'abc123'
     const campaign = await createCampaignContent({
-      dataSource,
+      prisma,
       userId,
     })
 
     // Act
-    const response = await request(app.getHttpServer())
-      .get(`/${campaign.code}`)
-      .set('Cookie', ['visitorId=' + existsVisitorId])
+    const response = await ClickRequestBuilder.create(app)
+      .code(campaign.code)
+      .setVisitorId(existsVisitorId)
+      .waitRegister()
+      .request()
       .expect(200)
 
     const cookies = response.get('Set-Cookie')!
