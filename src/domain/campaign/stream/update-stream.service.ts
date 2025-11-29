@@ -1,4 +1,3 @@
-import { EntityManager } from 'typeorm'
 import {
   BadRequestException,
   Injectable,
@@ -11,7 +10,8 @@ import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
 import { arrayUnique } from '@/shared/helpers'
 import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
 import { UpdateStreamDto } from '../dto/update-stream.dto'
-import { CampaignStreamSchema } from '@/domain/campaign/types'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
+import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
 
 @Injectable()
 export class UpdateStreamService {
@@ -23,21 +23,21 @@ export class UpdateStreamService {
   ) {}
 
   public async updateStreams(
-    manager: EntityManager,
+    trx: Transaction,
     campaignId: string,
     userId: string,
     streams: UpdateStreamDto[],
   ): Promise<void> {
-    await this.ensureStreamExists(manager, streams, campaignId)
-    await this.deleteOldStreams(manager, streams, campaignId)
+    await this.ensureStreamExists(trx, streams, campaignId)
+    await this.deleteOldStreams(trx, streams, campaignId)
 
     for (const stream of streams) {
-      await this.processStream(manager, campaignId, userId, stream)
+      await this.processStream(trx, campaignId, userId, stream)
     }
   }
 
   private async processStream(
-    manager: EntityManager,
+    trx: Transaction,
     campaignId: string,
     userId: string,
     stream: UpdateStreamDto,
@@ -45,10 +45,10 @@ export class UpdateStreamService {
     this.checkCampaignSelfReferencing(campaignId, stream.actionCampaignId)
 
     if (stream.id) {
-      await this.updateStream(manager, campaignId, userId, stream, stream.id)
+      await this.updateStream(trx, campaignId, userId, stream, stream.id)
     } else {
       await this.createStreamService.createStream(
-        manager,
+        trx,
         campaignId,
         userId,
         stream,
@@ -57,7 +57,7 @@ export class UpdateStreamService {
   }
 
   private async updateStream(
-    manager: EntityManager,
+    trx: Transaction,
     campaignId: string,
     userId: string,
     input: UpdateStreamDto,
@@ -68,9 +68,9 @@ export class UpdateStreamService {
       input.actionCampaignId,
     )
     const data = this.commonService.buildData(input, campaignId)
-    await this.repository.update(manager, streamId, data)
+    await this.repository.update(trx, streamId, data)
 
-    await this.updateStreamOffers(manager, input, streamId, userId)
+    await this.updateStreamOffers(trx, input, streamId, userId)
   }
 
   private checkCampaignSelfReferencing(
@@ -83,21 +83,21 @@ export class UpdateStreamService {
   }
 
   private async updateStreamOffers(
-    manager: EntityManager,
+    trx: Transaction,
     input: UpdateStreamDto,
     streamId: string,
     userId: string,
   ): Promise<void> {
     if (
       !input.offers ||
-      input.schema !== CampaignStreamSchema.LANDINGS_OFFERS ||
+      input.schema !== StreamSchemaEnum.LANDINGS_OFFERS ||
       input.offers.length === 0
     ) {
       return
     }
 
     await this.updateStreamOfferService.updateStreamOffers(
-      manager,
+      trx,
       streamId,
       userId,
       input.offers,
@@ -105,21 +105,21 @@ export class UpdateStreamService {
   }
 
   private async deleteOldStreams(
-    manager: EntityManager,
+    trx: Transaction,
     input: UpdateStreamDto[],
     campaignId: string,
   ): Promise<void> {
-    const idsForDelete = await this.getIdsForDelete(manager, input, campaignId)
+    const idsForDelete = await this.getIdsForDelete(trx, input, campaignId)
 
     if (idsForDelete.length === 0) {
       return
     }
 
-    await this.repository.delete(manager, idsForDelete)
+    await this.repository.delete(trx, idsForDelete)
   }
 
   private async ensureStreamExists(
-    manager: EntityManager,
+    trx: Transaction,
     input: { id?: string }[],
     campaignId: string,
   ): Promise<void> {
@@ -128,7 +128,7 @@ export class UpdateStreamService {
     ) as string[]
 
     const offers = await this.repository.getByIdsAndCampaignId(
-      manager,
+      trx,
       offerIds,
       campaignId,
     )
@@ -139,14 +139,11 @@ export class UpdateStreamService {
   }
 
   private async getIdsForDelete(
-    manager: EntityManager,
+    trx: Transaction,
     input: UpdateStreamDto[],
     campaignId: string,
   ): Promise<string[]> {
-    const existsStreams = await this.repository.getByCampaignId(
-      manager,
-      campaignId,
-    )
+    const existsStreams = await this.repository.getByCampaignId(trx, campaignId)
 
     return getIdsForDelete(existsStreams, input)
   }

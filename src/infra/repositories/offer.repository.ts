@@ -1,62 +1,60 @@
-import { DataSource, In } from 'typeorm'
 import { Injectable } from '@nestjs/common'
 import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
-import { Offer } from '@/domain/offer/offer.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { OfferModel } from '../../../generated/prisma/models/Offer'
 
 @Injectable()
 export class OfferRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(Offer)
-
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   public async create(
-    args: Pick<Offer, 'name' | 'userId' | 'url'>,
+    data: Pick<OfferModel, 'name' | 'userId' | 'url'>,
   ): Promise<void> {
-    const source = this.repository.create(args)
-
-    await this.repository.insert(source)
+    await this.prisma.offer.create({ data })
   }
 
-  public async getByNameAndUserId({
+  public getByNameAndUserId({
     name,
     userId,
-  }: NameAndUserId): Promise<Offer | null> {
-    return this.repository.findOne({ where: { name, userId } })
+  }: NameAndUserId): Promise<OfferModel | null> {
+    return this.prisma.offer.findFirst({ where: { name, userId } })
   }
 
-  public async getListByUserId(userId: string): Promise<Offer[]> {
-    return this.repository.find({ where: { userId } })
+  public getListByUserId(userId: string): Promise<OfferModel[]> {
+    return this.prisma.offer.findMany({ where: { userId } })
   }
 
-  public async update(id: string, data: Partial<Offer>): Promise<void> {
-    await this.repository.update({ id }, data)
+  public async update(id: string, data: Partial<OfferModel>): Promise<void> {
+    await this.prisma.offer.update({ where: { id }, data })
   }
 
   public async delete(id: string): Promise<void> {
-    await this.repository.softDelete(id)
+    await this.prisma.offer.delete({ where: { id } })
   }
 
-  public async getByIdAndUserId(
-    args: Pick<Offer, 'id' | 'userId'>,
-  ): Promise<Offer | null> {
-    return this.repository.findOne({
+  public getByIdAndUserId(
+    args: Pick<OfferModel, 'id' | 'userId'>,
+  ): Promise<OfferModel | null> {
+    return this.prisma.offer.findFirst({
       where: { id: args.id, userId: args.userId },
     })
   }
 
-  public async getByIdsAndUserId(
+  public getByIdsAndUserId(
     ids: string[],
     userId: string,
-  ): Promise<Offer[]> {
-    return this.repository.findBy({
-      id: In(ids),
-      userId,
+  ): Promise<OfferModel[]> {
+    return this.prisma.offer.findMany({
+      where: {
+        id: { in: ids },
+        userId,
+      },
     })
   }
 }

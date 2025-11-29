@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
-import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferService } from './update-stream-offer.service'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
+import { PrismaClient } from '../../../../generated/prisma/client'
+import { StreamOfferUncheckedCreateInput } from '../../../../generated/prisma/models/StreamOffer'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -23,7 +25,8 @@ describe('CommonStreamService', () => {
     buildCreateData: jest.fn(),
   }
 
-  const manager = {} as EntityManager
+  const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -60,16 +63,16 @@ describe('CommonStreamService', () => {
       .spyOn(service as any, 'saveStreamOffers')
       .mockReturnValue([])
 
-    await service.updateStreamOffers(manager, 'stream-id', 'user-id', input)
+    await service.updateStreamOffers(transaction, 'stream-id', 'user-id', input)
 
     expect(prepareInput).toHaveBeenCalledWith(
-      manager,
+      prisma,
       'stream-id',
       'user-id',
       input,
     )
     expect(buildSaveData).toHaveBeenCalledWith('stream-id', input)
-    expect(saveStreamOffers).toHaveBeenCalledWith(manager, [])
+    expect(saveStreamOffers).toHaveBeenCalledWith(prisma, [])
   })
 
   it('check prepareInput', async () => {
@@ -81,10 +84,10 @@ describe('CommonStreamService', () => {
 
     commonService.buildCreateData.mockReturnValue([])
 
-    await service['prepareInput'](manager, 'stream-id', 'user-id', input)
+    await service['prepareInput'](transaction, 'stream-id', 'user-id', input)
 
     expect(deleteOldStreamOffers).toHaveBeenCalledWith(
-      manager,
+      prisma,
       input,
       'stream-id',
     )
@@ -117,13 +120,15 @@ describe('CommonStreamService', () => {
 
   describe('saveStreamOffers', () => {
     it('should not be call saveMany if length=0', async () => {
-      await service['saveStreamOffers'](manager, [])
+      await service['saveStreamOffers'](transaction, [])
       expect(streamOfferRepository.saveMany).not.toHaveBeenCalled()
     })
 
     it('should be call saveMany if length>0', async () => {
-      await service['saveStreamOffers'](manager, [{ percent: 75 }])
-      expect(streamOfferRepository.saveMany).toHaveBeenCalledWith(manager, [
+      await service['saveStreamOffers'](transaction, [
+        { percent: 75 } as StreamOfferUncheckedCreateInput,
+      ])
+      expect(streamOfferRepository.saveMany).toHaveBeenCalledWith(prisma, [
         { percent: 75 },
       ])
     })
@@ -135,8 +140,8 @@ describe('CommonStreamService', () => {
         .spyOn(service as any, 'getIdsForDelete')
         .mockReturnValue([])
 
-      await service['deleteOldStreamOffers'](manager, [], 'stream-id')
-      expect(getIdsForDelete).toHaveBeenCalledWith(manager, [], 'stream-id')
+      await service['deleteOldStreamOffers'](transaction, [], 'stream-id')
+      expect(getIdsForDelete).toHaveBeenCalledWith(prisma, [], 'stream-id')
       expect(streamOfferRepository.delete).not.toHaveBeenCalled()
     })
 
@@ -145,9 +150,9 @@ describe('CommonStreamService', () => {
         .spyOn(service as any, 'getIdsForDelete')
         .mockReturnValue([{}])
 
-      await service['deleteOldStreamOffers'](manager, [], 'stream-id')
-      expect(getIdsForDelete).toHaveBeenCalledWith(manager, [], 'stream-id')
-      expect(streamOfferRepository.delete).toHaveBeenCalledWith(manager, [{}])
+      await service['deleteOldStreamOffers'](transaction, [], 'stream-id')
+      expect(getIdsForDelete).toHaveBeenCalledWith(prisma, [], 'stream-id')
+      expect(streamOfferRepository.delete).toHaveBeenCalledWith(prisma, [{}])
     })
   })
 
@@ -169,10 +174,14 @@ describe('CommonStreamService', () => {
   it('check getIdsForDelete', async () => {
     streamOfferRepository.getByStreamId.mockReturnValue([])
     ;(getIdsForDelete as any).mockReturnValue([])
-    const result = await service['getIdsForDelete'](manager, [], 'stream-id')
+    const result = await service['getIdsForDelete'](
+      transaction,
+      [],
+      'stream-id',
+    )
 
     expect(streamOfferRepository.getByStreamId).toHaveBeenCalledWith(
-      manager,
+      prisma,
       'stream-id',
     )
     expect(getIdsForDelete).toHaveBeenCalledWith([], [])

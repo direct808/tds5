@@ -1,7 +1,7 @@
 import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 import { ClickData } from '../../../click-data'
 import { OfferParams } from './offer-params.service'
+import { CampaignModel } from '../../../../../../generated/prisma/models/Campaign'
 
 describe('OfferParamDataMapper', () => {
   let mapper: OfferParamDataMapper
@@ -11,7 +11,7 @@ describe('OfferParamDataMapper', () => {
   })
 
   it('should convert valid input to OfferParams', () => {
-    const campaign: Campaign = { name: 'Test Campaign' } as Campaign
+    const campaign = { name: 'Test Campaign' } as CampaignModel
     const clickData: ClickData = { id: '12345' } as ClickData
 
     const result: OfferParams = mapper.convert({ campaign, clickData })
@@ -23,7 +23,7 @@ describe('OfferParamDataMapper', () => {
   })
 
   it('should throw error if clickData.id is missing', () => {
-    const campaign: Campaign = { name: 'Test Campaign' } as Campaign
+    const campaign = { name: 'Test Campaign' } as CampaignModel
     const clickData: ClickData = {} as ClickData
 
     expect(() => mapper.convert({ campaign, clickData })).toThrowError(

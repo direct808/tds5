@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AffiliateNetworkService } from './affiliate-network.service'
-import { AffiliateNetwork } from './affiliate-network.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
@@ -8,6 +7,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
+import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -41,7 +41,11 @@ describe('AffiliateNetworkService', () => {
 
   describe('create', () => {
     it('should check uniqueness and create entity', async () => {
-      const args = { name: 'Test Network', userId: 'user123' }
+      const args = {
+        name: 'Test Network',
+        userId: 'user123',
+        offerParams: null,
+      }
 
       await service.create(args)
 
@@ -78,7 +82,7 @@ describe('AffiliateNetworkService', () => {
       const list = [
         { id: '1', name: 'Net A', userId },
         { id: '2', name: 'Net B', userId },
-      ] as unknown as AffiliateNetwork[]
+      ] as unknown as AffiliateNetworkModel[]
 
       repository.getListByUserId.mockResolvedValue(list)
 

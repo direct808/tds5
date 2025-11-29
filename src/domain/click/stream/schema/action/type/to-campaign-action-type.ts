@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { ActionType, StreamResponse } from '@/domain/click/types'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { ClickContext } from '@/domain/click/shared/click-context.service'
+import { StreamGetPayload } from '../../../../../../../generated/prisma/models/Stream'
 
 @Injectable()
 export class ToCampaignActionType implements ActionType {
   constructor(private readonly clickContext: ClickContext) {}
 
-  handle({ actionCampaign }: Stream): StreamResponse {
+  handle({
+    actionCampaign,
+  }: StreamGetPayload<{ include: { actionCampaign: true } }>): StreamResponse {
     if (!actionCampaign) {
       throw new Error('No actionCampaign')
     }

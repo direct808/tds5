@@ -1,15 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { SelectStreamService } from './stream/select-stream.service'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 import { SchemaService } from '@/domain/click/stream/schema/schema.service'
 import { ResponseHandlerFactory } from './response-handler/response-handler-factory'
 import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from './observers/setup-subject'
 import { ClickContext } from './shared/click-context.service'
-import { StreamWithCampaign } from '@/domain/campaign/types'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { CampaignCacheService } from '@/domain/campaign-cache/campaign-cache.service'
+import { CampaignModel } from '../../../generated/prisma/models/Campaign'
+import { StreamFull, StreamFullWithCampaign } from '@/domain/campaign/types'
 
 type RedirectData = { count: number }
 
@@ -42,11 +41,10 @@ export class ClickService {
     const campaign = await this.campaignCacheService.getFullByCode(code)
 
     clickData.campaignId = campaign.id
-    clickData.trafficSourceId = campaign.sourceId
+    clickData.sourceId = campaign.sourceId
 
     const stream = await this.selectStreamService.selectStream(campaign.streams)
     clickData.streamId = stream.id
-    stream.campaign = campaign
 
     await this.setupSubject.setupStreamSubject(stream)
 
@@ -70,9 +68,9 @@ export class ClickService {
   }
 
   private makeStreamWithCampaign(
-    stream: Stream,
-    campaign: Campaign,
-  ): StreamWithCampaign {
+    stream: StreamFull,
+    campaign: CampaignModel,
+  ): StreamFullWithCampaign {
     return {
       ...stream,
       campaign,

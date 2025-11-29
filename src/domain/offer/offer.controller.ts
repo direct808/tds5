@@ -14,7 +14,7 @@ import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UpdateOfferDto } from './dto/update-offer.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { Offer } from '@/domain/offer/offer.entity'
+import { OfferModel } from '../../../generated/prisma/models/Offer'
 
 @ApiTags('Оферы')
 @Controller(GLOBAL_PREFIX + 'offer')
@@ -22,7 +22,7 @@ export class OfferController {
   constructor(private readonly offerService: OfferService) {}
 
   @Get()
-  getOffers(@UserId() userId: string): Promise<Offer[]> {
+  getOffers(@UserId() userId: string): Promise<OfferModel[]> {
     return this.offerService.getList(userId)
   }
 

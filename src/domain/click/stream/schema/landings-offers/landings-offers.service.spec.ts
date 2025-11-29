@@ -2,12 +2,14 @@ import { LandingsOffersService } from './landings-offers.service'
 import { SelectOfferService } from './select-offer.service'
 import { OfferParamsService } from './offer-params.service'
 import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { StreamWithCampaign } from '@/domain/campaign/types'
-import { Offer } from '@/domain/offer/offer.entity'
 import { HttpStatus } from '@nestjs/common'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
-import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
 import { MockClickContext } from '../../../../../../test/utils/mock-click-context.service'
+import {
+  OfferFull,
+  StreamFullWithCampaign,
+  StreamOfferFull,
+} from '@/domain/campaign/types'
+import { CampaignModel } from '../../../../../../generated/prisma/models/Campaign'
 
 describe('LandingsOffersService', () => {
   let service: LandingsOffersService
@@ -41,40 +43,32 @@ describe('LandingsOffersService', () => {
 
   describe('handle', () => {
     it('should throw error if streamOffers is empty', () => {
-      const stream: StreamWithCampaign = {
-        streamOffers: [] as StreamOffer[],
-      } as StreamWithCampaign
-
-      expect(() => service.handle(stream)).toThrow('No streamOffers')
-    })
-
-    it('should throw error if streamOffers is null', () => {
-      const stream: StreamWithCampaign = {
-        streamOffers: null,
-      } as StreamWithCampaign
+      const stream: StreamFullWithCampaign = {
+        streamOffers: [] as StreamOfferFull[],
+      } as StreamFullWithCampaign
 
       expect(() => service.handle(stream)).toThrow('No streamOffers')
     })
 
     it('should select offer and build redirect url', () => {
       const offerParams = 'subid={subid}&campaign={campaign_name}'
-      const campaign = { name: 'TestCampaign' } as Campaign
+      const campaign = { name: 'TestCampaign' } as CampaignModel
       const offerUrl = 'https://example.com'
       const resultUrl =
         'https://example.com?subid=click123&campaign=TestCampaign'
-      const offer: Offer = {
+      const offer: OfferFull = {
         id: '1',
         affiliateNetworkId: '2',
         url: offerUrl,
         affiliateNetwork: {
           offerParams,
-        } as any,
-      } as Offer
+        },
+      } as OfferFull
 
-      const stream: StreamWithCampaign = {
+      const stream: StreamFullWithCampaign = {
         streamOffers: [{} as any],
         campaign,
-      } as StreamWithCampaign
+      } as StreamFullWithCampaign
 
       const clickData = clickContext.getClickData()
 
@@ -110,7 +104,7 @@ describe('LandingsOffersService', () => {
     it('should return offerUrl if offerParams is empty', () => {
       const res = service['buildOfferUrl'](
         undefined,
-        {} as Campaign,
+        {} as CampaignModel,
         'offerUrl',
         {},
       )
@@ -119,7 +113,7 @@ describe('LandingsOffersService', () => {
     })
 
     it('should return value', () => {
-      const campaign = {} as Campaign
+      const campaign = {} as CampaignModel
       const clickData = {}
       const paramData = 'convertResult'
       const expectedResult = 'expectedResult'

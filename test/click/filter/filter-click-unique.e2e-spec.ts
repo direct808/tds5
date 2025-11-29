@@ -1,13 +1,13 @@
 import { INestApplication } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
-import { StreamActionType } from '@/domain/campaign/types'
 import { FilterLogic } from '@/domain/click/stream/filter/types'
 import { ClickRequestBuilder } from '../../utils/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { ClickUniqueFor } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { createApp } from '../../utils/create-app'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
 
 async function clickAction(
   app: INestApplication,
@@ -27,7 +27,7 @@ async function clickAction(
 
 describe('Filter click unique (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let userId: string
   const code1 = 'abcdif'
   const code2 = 'abcdi2'
@@ -40,7 +40,7 @@ describe('Filter click unique (e2e)', () => {
   beforeEach(async () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     userId = authData.user.id
   })
@@ -54,10 +54,10 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Custom'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -66,7 +66,7 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
@@ -76,10 +76,10 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Last stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Last stream'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     // 2. Act
     const content1 = await clickAction(app, code1)
@@ -103,10 +103,10 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Custom'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -115,7 +115,7 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
@@ -125,10 +125,10 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Last stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Last stream'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     // 2. Act
     const content1 = await clickAction(app, code1, visitorId)
@@ -150,10 +150,10 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Custom'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -162,7 +162,7 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
@@ -172,7 +172,7 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Second stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Second stream')
           .filters({
             logic: FilterLogic.And,
@@ -182,10 +182,10 @@ describe('Filter click unique (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Last stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Last stream'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     // 2. Act
     const content1 = await clickAction(app, code1, visitorId)

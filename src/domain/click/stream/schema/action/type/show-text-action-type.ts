@@ -1,10 +1,10 @@
 import { ActionType, StreamResponse } from '@/domain/click/types'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { Injectable } from '@nestjs/common'
+import { StreamModel } from '../../../../../../../generated/prisma/models/Stream'
 
 @Injectable()
 export class ShowTextActionType implements ActionType {
-  handle(stream: Stream): StreamResponse {
+  handle(stream: StreamModel): StreamResponse {
     return {
       content: this.#escape(stream.actionContent ?? ''),
     }

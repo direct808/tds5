@@ -19,24 +19,8 @@ export class AppConfig {
   declare postbackKey: string
 
   @IsString()
-  @Expose({ name: 'DB_HOST' })
-  declare dbHost: string
-
-  @IsPort()
-  @Expose({ name: 'DB_PORT' })
-  declare dbPort: string
-
-  @IsString()
-  @Expose({ name: 'DB_USER' })
-  declare dbUser: string
-
-  @IsString()
-  @Expose({ name: 'DB_PASS' })
-  declare dbPass: string
-
-  @IsString()
-  @Expose({ name: 'DB_NAME' })
-  declare dbName: string
+  @Expose({ name: 'DATABASE_URL' })
+  declare dbUrl: string
 
   @IsString()
   @IsOptional()

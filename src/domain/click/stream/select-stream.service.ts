@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { Filters } from './filter/types'
 import { FilterService } from './filter/filter.service'
 
 interface StreamSimple {
   id: string
-  filters: Filters | null
+  filters: any // todo убери это
 }
 
 @Injectable()

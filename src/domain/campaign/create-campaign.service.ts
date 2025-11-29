@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { DataSource, EntityManager } from 'typeorm'
 import { CommonCampaignService } from './common-campaign.service'
 import { nanoid } from 'nanoid'
 import { CreateStreamService } from './stream/create-stream.service'
 import { CreateCampaignDto } from './dto/create-campaign.dto'
-import { Campaign } from './entity/campaign.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   CampaignCreatedEvent,
@@ -12,24 +10,27 @@ import {
 } from './events/campaign-created.event'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
+import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
+import { CampaignUncheckedCreateInput } from '../../../generated/prisma/models/Campaign'
 
 @Injectable()
 export class CreateCampaignService {
   constructor(
-    private readonly dataSource: DataSource,
     private readonly repository: CampaignRepository,
     private readonly createStreamService: CreateStreamService,
     private readonly commonCampaignService: CommonCampaignService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly tr: TransactionFactory,
   ) {}
 
   public async create(
     args: CreateCampaignDto & { userId: string },
-    manager: EntityManager | null,
+    tr: Transaction | null,
   ): Promise<void> {
-    if (!manager) {
-      return this.dataSource.transaction((manage) => {
-        return this.create(args, manage)
+    if (!tr) {
+      return this.tr.create((tr) => {
+        return this.create(args, tr)
       })
     }
 
@@ -42,10 +43,10 @@ export class CreateCampaignService {
 
     const data = this.buildCreateData(args)
 
-    const campaign = await this.repository.create(manager, data)
+    const campaign = await this.repository.create(tr, data)
 
     await this.createStreamService.createStreams(
-      manager,
+      tr,
       campaign.id,
       args.userId,
       args.streams,
@@ -59,7 +60,7 @@ export class CreateCampaignService {
 
   private buildCreateData(
     args: CreateCampaignDto & { userId: string },
-  ): Partial<Campaign> {
+  ): CampaignUncheckedCreateInput {
     return {
       name: args.name,
       code: this.makeCode(),

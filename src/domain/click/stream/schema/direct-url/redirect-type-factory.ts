@@ -13,7 +13,8 @@ import {
 } from './type'
 import { RedirectType, StreamResponse } from '../../../types'
 import { MaybePromise } from '@/shared/types'
-import { StreamDirectUrl, StreamRedirectType } from '@/domain/campaign/types'
+import { StreamDirectUrl } from '@/domain/campaign/types'
+import { StreamRedirectTypeEnum } from '../../../../../../generated/prisma/enums'
 
 @Injectable()
 export class RedirectTypeFactory {
@@ -23,25 +24,25 @@ export class RedirectTypeFactory {
     return this.create(stream.redirectType).handle(stream.redirectUrl)
   }
 
-  private create(redirectType: StreamRedirectType): RedirectType {
+  private create(redirectType: StreamRedirectTypeEnum): RedirectType {
     switch (redirectType) {
-      case StreamRedirectType.HTTP:
+      case StreamRedirectTypeEnum.HTTP:
         return this.moduleRef.get(HttpRedirectType)
-      case StreamRedirectType.META:
+      case StreamRedirectTypeEnum.META:
         return this.moduleRef.get(MetaRedirectType)
-      case StreamRedirectType.CURL:
+      case StreamRedirectTypeEnum.CURL:
         return this.moduleRef.get(CurlRedirectType)
-      case StreamRedirectType.FORM_SUBMIT:
+      case StreamRedirectTypeEnum.FORM_SUBMIT:
         return this.moduleRef.get(FormSubmitRedirectType)
-      case StreamRedirectType.META2:
+      case StreamRedirectTypeEnum.META2:
         return this.moduleRef.get(Meta2RedirectType)
-      case StreamRedirectType.JS:
+      case StreamRedirectTypeEnum.JS:
         return this.moduleRef.get(JsRedirectType)
-      case StreamRedirectType.IFRAME:
+      case StreamRedirectTypeEnum.IFRAME:
         return this.moduleRef.get(IframeRedirectType)
-      case StreamRedirectType.REMOTE:
+      case StreamRedirectTypeEnum.REMOTE:
         return this.moduleRef.get(RemoteRedirectType)
-      case StreamRedirectType.WITHOUT_REFERER:
+      case StreamRedirectTypeEnum.WITHOUT_REFERER:
         return this.moduleRef.get(WithoutRefererRedirectType)
     }
 

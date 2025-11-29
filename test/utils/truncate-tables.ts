@@ -1,30 +1,24 @@
-import { DataSource } from 'typeorm'
 import { Redis } from 'ioredis'
+import { Client } from 'pg'
 
 export async function truncateTables(): Promise<void> {
-  const { DB_HOST, DB_PORT, DB_USER, DB_PASS, DB_NAME } = process.env
+  const connectionString = `${process.env.DATABASE_URL}`
 
-  const dataSource = new DataSource({
-    type: 'postgres',
-    host: DB_HOST,
-    port: +DB_PORT!,
-    username: DB_USER,
-    password: DB_PASS,
-    database: DB_NAME,
-  })
+  const client = new Client({ connectionString })
+  await client.connect()
 
-  await dataSource.initialize()
-
-  const tables: { tablename: string }[] = await dataSource.query(
+  const res = await client.query<{ tablename: string }>(
     `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`,
   )
-  if (tables.length === 0) {
+
+  if (res.rows.length === 0) {
+    await client.end()
+
     return
   }
-  const names = tables.map((row) => `"${row.tablename}"`).join(', ')
-  const sql = `TRUNCATE TABLE ${names} CASCADE;`
-  await dataSource.query(sql)
-  await dataSource.destroy()
+  const names = res.rows.map((row) => `"${row.tablename}"`).join(', ')
+  await client.query(`TRUNCATE TABLE ${names} CASCADE;`)
+  await client.end()
 }
 
 export async function flushRedisDb(): Promise<void> {

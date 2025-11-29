@@ -1,14 +1,12 @@
-import { DataSource } from 'typeorm'
 import { Injectable } from '@nestjs/common'
-import { User } from '@/domain/user/user.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { UserModel } from '../../../generated/prisma/models/User'
 
 @Injectable()
 export class UserRepository {
-  private readonly repository = this.dataSource.getRepository(User)
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(private readonly dataSource: DataSource) {}
-
-  public async getByEmail(email: string): Promise<User | null> {
-    return this.repository.findOne({ where: { email } })
+  public getByEmail(email: string): Promise<UserModel | null> {
+    return this.prisma.user.findFirst({ where: { email } })
   }
 }

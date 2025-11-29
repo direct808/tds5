@@ -1,24 +1,42 @@
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
-import { DataSource } from 'typeorm'
-import { StreamBuilder } from './stream-builder/stream-builder'
+import { StreamBuilder, StreamFull } from './stream-builder/stream-builder'
 import { StreamTypeDirectUrlBuilder } from './stream-builder/stream-type-direct-url-builder'
 import { StreamTypeActionBuilder } from './stream-builder/stream-type-action-builder'
 import { StreamTypeOffersBuilder } from './stream-builder/stream-type-offers-builder'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
 import { SourceBuilder } from './source-builder'
-import { Source } from '@/domain/source/source.entity'
 import { UserBuilder } from './user-builder'
-import { User } from '@/domain/user/user.entity'
-import { StreamActionType } from '@/domain/campaign/types'
 import { faker } from '@faker-js/faker'
+import {
+  PrismaClient,
+  StreamActionTypeEnum,
+} from '../../../generated/prisma/client'
+import {
+  CampaignGetPayload,
+  CampaignUncheckedCreateInput,
+} from '../../../generated/prisma/models/Campaign'
+import { SourceModel } from '../../../generated/prisma/models/Source'
+import { UserModel } from '../../../generated/prisma/models/User'
 
-type CampaignFields = Partial<
-  Pick<Campaign, 'name' | 'code' | 'userId' | 'active' | 'sourceId'>
->
+export type CampaignFull = CampaignGetPayload<{
+  include: {
+    streams: {
+      include: {
+        streamOffers: {
+          include: { offer: { include: { affiliateNetwork: true } } }
+        }
+        actionCampaign: true
+      }
+    }
+    source: true
+    user: true
+  }
+}>
 
 export class CampaignBuilder {
   private readonly streamBuilders: StreamBuilder[] = []
-  private readonly fields: CampaignFields = { active: true }
+  private readonly fields: CampaignUncheckedCreateInput = {
+    active: true,
+  } as CampaignUncheckedCreateInput
+
   private sourceBuilder?: SourceBuilder
   private userBuilder?: UserBuilder
 
@@ -37,31 +55,36 @@ export class CampaignBuilder {
       .addStreamTypeAction((stream) =>
         stream
           .name(faker.commerce.productName())
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content(faker.commerce.productName()),
       )
   }
 
-  public async save(ds: DataSource): Promise<Campaign> {
-    const streams: Stream[] = []
-    let source: Source | undefined
-    let user: User | undefined
+  public async save(prisma: PrismaClient): Promise<CampaignFull> {
+    const streams: StreamFull[] = []
+    let source: SourceModel | null = null
+    let user: UserModel | undefined
 
     if (this.userBuilder) {
-      user = await this.userBuilder.save(ds)
+      user = await this.userBuilder.save(prisma)
       this.fields.userId = user.id
     }
 
     if (this.sourceBuilder) {
-      source = await this.sourceBuilder.save(ds)
+      source = await this.sourceBuilder.save(prisma)
       this.fields.sourceId = source.id
     }
 
-    const campaign = await ds.getRepository(Campaign).save(this.fields)
+    const campaign = (await prisma.campaign.create({
+      data: this.fields,
+      include: { streams: true, source: true, user: true },
+    })) as CampaignFull
+
     for (const builder of this.streamBuilders) {
-      const stream = await builder.save(ds, campaign.id)
+      const stream = (await builder.save(prisma, campaign.id)) as StreamFull
       streams.push(stream)
     }
+
     campaign.streams = streams
     campaign.source = source
 

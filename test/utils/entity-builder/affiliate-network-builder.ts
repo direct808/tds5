@@ -1,8 +1,12 @@
-import { DataSource } from 'typeorm'
-import { AffiliateNetwork } from '@/domain/affiliate-network/affiliate-network.entity'
+import { PrismaClient } from '../../../generated/prisma/client'
+import {
+  AffiliateNetworkModel,
+  AffiliateNetworkUncheckedCreateInput,
+} from '../../../generated/prisma/models/AffiliateNetwork'
 
 export class AffiliateNetworkBuilder {
-  private fields: Partial<AffiliateNetwork> = {}
+  private fields: AffiliateNetworkUncheckedCreateInput =
+    {} as AffiliateNetworkUncheckedCreateInput
 
   private constructor() {}
 
@@ -28,7 +32,9 @@ export class AffiliateNetworkBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<AffiliateNetwork> {
-    return ds.getRepository(AffiliateNetwork).save(this.fields)
+  save(prisma: PrismaClient): Promise<AffiliateNetworkModel> {
+    return prisma.affiliateNetwork.create({
+      data: this.fields as AffiliateNetworkUncheckedCreateInput,
+    })
   }
 }

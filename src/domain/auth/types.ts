@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { CustomDecorator, SetMetadata } from '@nestjs/common'
-import { User } from '@/domain/user/user.entity'
+import { UserModel } from '../../../generated/prisma/models/User'
 
 export type JwrPayload = {
   sub: string
@@ -9,7 +9,7 @@ export type JwrPayload = {
 
 export type AppRequest = Request & { user: JwrPayload }
 export type LoginRequest = Request & { user: LoginUser }
-export type LoginUser = Pick<User, 'id' | 'email'>
+export type LoginUser = Pick<UserModel, 'id' | 'email'>
 
 export const SKIP_AUTH = 'SKIP_AUTH'
 export const SkipAuth: () => CustomDecorator = () =>

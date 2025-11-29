@@ -1,9 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { DataSource, EntityManager } from 'typeorm'
 import { UpdateStreamService } from './stream/update-stream.service'
 import { CommonCampaignService } from './common-campaign.service'
 import { UpdateCampaignDto } from './dto/update-campaign.dto'
-import { Campaign } from './entity/campaign.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   CampaignUpdatedEvent,
@@ -11,24 +9,27 @@ import {
 } from '@/domain/campaign/events/campaign-updated.event'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
+import { CampaignModel } from '../../../generated/prisma/models/Campaign'
+import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class UpdateCampaignService {
   constructor(
-    private readonly dataSource: DataSource,
     private readonly repository: CampaignRepository,
     private readonly updateStreamService: UpdateStreamService,
     private readonly commonCampaignService: CommonCampaignService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly trx: TransactionFactory,
   ) {}
 
   public async update(
     args: UpdateCampaignDto & { userId: string; id: string },
-    manager: EntityManager | null,
+    trx: Transaction | null,
   ): Promise<void> {
-    if (!manager) {
-      return this.dataSource.transaction((manage) => {
-        return this.update(args, manage)
+    if (!trx) {
+      return this.trx.create((trx) => {
+        return this.update(args, trx)
       })
     }
 
@@ -46,10 +47,10 @@ export class UpdateCampaignService {
       })
     }
 
-    await this.repository.update(manager, args.id, this.buildUpdateData(args))
+    await this.repository.update(trx, args.id, this.buildUpdateData(args))
 
     await this.updateStreamService.updateStreams(
-      manager,
+      trx,
       args.id,
       args.userId,
       args.streams,
@@ -61,7 +62,7 @@ export class UpdateCampaignService {
     )
   }
 
-  private buildUpdateData(args: UpdateCampaignDto): Partial<Campaign> {
+  private buildUpdateData(args: UpdateCampaignDto): Partial<CampaignModel> {
     return {
       name: args.name,
       sourceId: args.sourceId,
@@ -69,7 +70,10 @@ export class UpdateCampaignService {
     }
   }
 
-  private async getCampaign(id: string, userId: string): Promise<Campaign> {
+  private async getCampaign(
+    id: string,
+    userId: string,
+  ): Promise<CampaignModel> {
     const campaign = await this.repository.getByIdAndUserId({
       id,
       userId,

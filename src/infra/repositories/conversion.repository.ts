@@ -1,36 +1,39 @@
 import { Injectable } from '@nestjs/common'
-import { DataSource } from 'typeorm'
-import { Conversion } from '@/domain/conversion/conversion.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import {
+  ConversionModel,
+  ConversionUncheckedCreateInput,
+  ConversionUncheckedUpdateInput,
+} from '../../../generated/prisma/models/Conversion'
 
 @Injectable()
 export class ConversionRepository {
-  private readonly repository = this.dataSource.getRepository(Conversion)
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(private readonly dataSource: DataSource) {}
-
-  public getList(): Promise<Conversion[]> {
-    return this.repository.find()
+  public getList(): Promise<ConversionModel[]> {
+    return this.prisma.conversion.findMany()
   }
 
-  public async create(data: Partial<Conversion>): Promise<string> {
-    const entity = this.repository.create(data)
+  public async create(data: ConversionUncheckedCreateInput): Promise<string> {
+    const res = await this.prisma.conversion.create({ data })
 
-    const res = await this.repository.insert(entity)
-
-    return res.identifiers[0].id
+    return res.id
   }
 
-  public async getByClickId(clickId: string): Promise<Conversion | null> {
-    const list = await this.repository.findBy({ clickId })
+  public async getByClickId(clickId: string): Promise<ConversionModel | null> {
+    const list = await this.prisma.conversion.findMany({ where: { clickId } })
 
     return list[0]
   }
 
-  public async getById(id: string): Promise<Conversion | null> {
-    return this.repository.findOneBy({ id })
+  public getById(id: string): Promise<ConversionModel | null> {
+    return this.prisma.conversion.findFirst({ where: { id } })
   }
 
-  public async update(id: string, data: Partial<Conversion>): Promise<void> {
-    await this.repository.update({ id }, data)
+  public async update(
+    id: string,
+    data: ConversionUncheckedUpdateInput,
+  ): Promise<void> {
+    await this.prisma.conversion.update({ where: { id }, data })
   }
 }

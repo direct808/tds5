@@ -1,10 +1,8 @@
 import { INestApplication } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser, spyOn } from '../utils/helpers'
-import { StreamActionType } from '@/domain/campaign/types'
 import { ClickRequestBuilder } from '../utils/click-request-builder'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import request from 'supertest'
@@ -13,10 +11,12 @@ import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-netwo
 import { faker } from '@faker-js/faker/.'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { CreateCampaignService } from '@/domain/campaign/create-campaign.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { StreamActionTypeEnum } from '../../generated/prisma/enums'
 
 describe('Click-cache (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let userId: string
   let campaignRepository: CampaignRepository
   const code = 'abcdif'
@@ -34,7 +34,7 @@ describe('Click-cache (e2e)', () => {
 
   beforeEach(async () => {
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     campaignRepository = app.get(CampaignRepository)
     const authData = await createAuthUser(app)
     userId = authData.user.id
@@ -50,10 +50,10 @@ describe('Click-cache (e2e)', () => {
       .addStreamTypeAction((stream) => {
         stream
           .name('Stream 1')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Campaign content')
       })
-      .save(dataSource)
+      .save(prisma)
 
     const getFullByCode = jest.spyOn(campaignRepository, 'getFullByCode')
 
@@ -73,10 +73,10 @@ describe('Click-cache (e2e)', () => {
       .addStreamTypeAction((stream) => {
         stream
           .name('Stream 1')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Campaign content')
       })
-      .save(dataSource)
+      .save(prisma)
 
     // Act
     await ClickRequestBuilder.create(app).code(code).waitRegister().request()
@@ -98,7 +98,7 @@ describe('Click-cache (e2e)', () => {
     const source = await SourceBuilder.create()
       .name('Source 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -108,10 +108,10 @@ describe('Click-cache (e2e)', () => {
       .addStreamTypeAction((stream) => {
         stream
           .name('Stream 1')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Campaign content')
       })
-      .save(dataSource)
+      .save(prisma)
 
     // Act
     await ClickRequestBuilder.create(app).code(code).waitRegister().request()
@@ -133,7 +133,7 @@ describe('Click-cache (e2e)', () => {
     const affiliateNetwork = await AffiliateNetworkBuilder.create()
       .name('Network 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -154,7 +154,7 @@ describe('Click-cache (e2e)', () => {
               ),
           )
       })
-      .save(dataSource)
+      .save(prisma)
 
     // Act
     await ClickRequestBuilder.create(app)
@@ -190,7 +190,7 @@ describe('Click-cache (e2e)', () => {
       .name('Offer 1')
       .userId(userId)
       .url(faker.internet.url())
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -201,7 +201,7 @@ describe('Click-cache (e2e)', () => {
           .name('Stream 1')
           .addOffer((builder) => builder.percent(100).offerId(offer.id))
       })
-      .save(dataSource)
+      .save(prisma)
 
     // Act
     await ClickRequestBuilder.create(app)
