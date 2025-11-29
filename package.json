@@ -25,9 +25,8 @@
     "prisma:create-full-migraion": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
     "prisma:generate": "prisma generate",
     "prisma:format": "prisma format",
-    "prisma:format-check": "set DATABASE_URL=postgres://fake && prisma format --check",
+    "prisma:format-check": "cross-env DATABASE_URL=postgres://fake prisma format --check",
     "prisma:db:push": "prisma db push --accept-data-loss",
-
     "cicd:lint": "yarn run lint && yarn run prisma:format-check"
   },
   "dependencies": {
@@ -86,6 +85,7 @@
     "@types/unzipper": "^0.10.11",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^8.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
