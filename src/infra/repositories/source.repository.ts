@@ -19,14 +19,14 @@ export class SourceRepository
     await this.prisma.source.create({ data })
   }
 
-  public async getByNameAndUserId({
+  public getByNameAndUserId({
     name,
     userId,
   }: NameAndUserId): Promise<SourceModel | null> {
     return this.prisma.source.findFirst({ where: { name, userId } })
   }
 
-  public async getListByUserId(userId: string): Promise<SourceModel[]> {
+  public getListByUserId(userId: string): Promise<SourceModel[]> {
     return this.prisma.source.findMany({ where: { userId } })
   }
 
@@ -38,7 +38,7 @@ export class SourceRepository
     await this.prisma.source.delete({ where: { id } })
   }
 
-  public async getByIdAndUserId(
+  public getByIdAndUserId(
     args: Pick<SourceModel, 'id' | 'userId'>,
   ): Promise<SourceModel | null> {
     return this.prisma.source.findFirst({

@@ -24,14 +24,14 @@ export class CampaignRepository
 
   constructor(private readonly prisma: PrismaService) {}
 
-  public async getByNameAndUserId({
+  public getByNameAndUserId({
     name,
     userId,
   }: NameAndUserId): Promise<CampaignModel | null> {
     return this.prisma.campaign.findFirst({ where: { name, userId } })
   }
 
-  public async create(
+  public create(
     tr: Transaction,
     data: CampaignUncheckedCreateInput,
   ): Promise<CampaignModel> {
@@ -50,7 +50,7 @@ export class CampaignRepository
     await prismaTransaction(trx).get().campaign.update({ where: { id }, data })
   }
 
-  public async getByIdAndUserId(
+  public getByIdAndUserId(
     args: Pick<CampaignModel, 'id' | 'userId'>,
   ): Promise<CampaignModel | null> {
     return this.prisma.campaign.findFirst({
@@ -58,7 +58,7 @@ export class CampaignRepository
     })
   }
 
-  public async getFullByCode(code: string): Promise<FullCampaign | null> {
+  public getFullByCode(code: string): Promise<FullCampaign | null> {
     return this.prisma.campaign.findFirst({
       where: { code, active: true },
       include: {
@@ -77,13 +77,6 @@ export class CampaignRepository
           },
         },
       },
-      // relations: [
-      //   'streams',
-      //   'streams.streamOffers',
-      //   'streams.streamOffers.offer',
-      //   'streams.streamOffers.offer.affiliateNetwork',
-      //   'streams.actionCampaign',
-      // ],
     })
   }
 }

@@ -28,7 +28,7 @@ export class AffiliateNetworkRepository
     return res.id
   }
 
-  public async getByNameAndUserId({
+  public getByNameAndUserId({
     name,
     userId,
   }: NameAndUserId): Promise<AffiliateNetworkModel | null> {
@@ -37,7 +37,7 @@ export class AffiliateNetworkRepository
     })
   }
 
-  public async getByIdAndUserId(
+  public getByIdAndUserId(
     args: Pick<AffiliateNetworkModel, 'id' | 'userId'>,
   ): Promise<AffiliateNetworkModel | null> {
     return this.prisma.affiliateNetwork.findFirst({
@@ -45,9 +45,7 @@ export class AffiliateNetworkRepository
     })
   }
 
-  public async getListByUserId(
-    userId: string,
-  ): Promise<AffiliateNetworkModel[]> {
+  public getListByUserId(userId: string): Promise<AffiliateNetworkModel[]> {
     return this.prisma.affiliateNetwork.findMany({ where: { userId } })
   }
 

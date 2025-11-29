@@ -26,7 +26,7 @@ export class ConversionRepository {
     return list[0]
   }
 
-  public async getById(id: string): Promise<ConversionModel | null> {
+  public getById(id: string): Promise<ConversionModel | null> {
     return this.prisma.conversion.findFirst({ where: { id } })
   }
 

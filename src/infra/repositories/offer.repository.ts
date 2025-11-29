@@ -19,14 +19,14 @@ export class OfferRepository
     await this.prisma.offer.create({ data })
   }
 
-  public async getByNameAndUserId({
+  public getByNameAndUserId({
     name,
     userId,
   }: NameAndUserId): Promise<OfferModel | null> {
     return this.prisma.offer.findFirst({ where: { name, userId } })
   }
 
-  public async getListByUserId(userId: string): Promise<OfferModel[]> {
+  public getListByUserId(userId: string): Promise<OfferModel[]> {
     return this.prisma.offer.findMany({ where: { userId } })
   }
 
@@ -38,7 +38,7 @@ export class OfferRepository
     await this.prisma.offer.delete({ where: { id } })
   }
 
-  public async getByIdAndUserId(
+  public getByIdAndUserId(
     args: Pick<OfferModel, 'id' | 'userId'>,
   ): Promise<OfferModel | null> {
     return this.prisma.offer.findFirst({
@@ -46,7 +46,7 @@ export class OfferRepository
     })
   }
 
-  public async getByIdsAndUserId(
+  public getByIdsAndUserId(
     ids: string[],
     userId: string,
   ): Promise<OfferModel[]> {

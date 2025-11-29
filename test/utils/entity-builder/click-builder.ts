@@ -39,7 +39,7 @@ export class ClickBuilder {
     return this
   }
 
-  async save(prisma: PrismaClient): Promise<ClickModel> {
+  save(prisma: PrismaClient): Promise<ClickModel> {
     return prisma.click.create({ data: this.fields })
   }
 }

@@ -6,7 +6,7 @@ import { UserModel } from '../../../generated/prisma/models/User'
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  public async getByEmail(email: string): Promise<UserModel | null> {
+  public getByEmail(email: string): Promise<UserModel | null> {
     return this.prisma.user.findFirst({ where: { email } })
   }
 }

@@ -32,7 +32,7 @@ export class AffiliateNetworkBuilder {
     return this
   }
 
-  async save(prisma: PrismaClient): Promise<AffiliateNetworkModel> {
+  save(prisma: PrismaClient): Promise<AffiliateNetworkModel> {
     return prisma.affiliateNetwork.create({
       data: this.fields as AffiliateNetworkUncheckedCreateInput,
     })

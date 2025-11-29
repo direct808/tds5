@@ -25,7 +25,7 @@ export class SourceBuilder {
     return this
   }
 
-  async save(prisma: PrismaClient): Promise<SourceModel> {
+  save(prisma: PrismaClient): Promise<SourceModel> {
     return prisma.source.create({ data: this.fields })
   }
 }
