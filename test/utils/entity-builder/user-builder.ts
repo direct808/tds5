@@ -1,8 +1,11 @@
-import { DataSource } from 'typeorm'
-import { User } from '@/domain/user/user.entity'
+import { PrismaClient } from '../../../generated/prisma/client'
+import {
+  UserModel,
+  UserUncheckedCreateInput,
+} from '../../../generated/prisma/models/User'
 
 export class UserBuilder {
-  private fields: Partial<User> = {}
+  private fields: UserUncheckedCreateInput = {} as UserUncheckedCreateInput
 
   private constructor() {}
 
@@ -22,7 +25,7 @@ export class UserBuilder {
     return this
   }
 
-  async save(ds: DataSource): Promise<User> {
-    return ds.getRepository(User).save(this.fields)
+  save(prisma: PrismaClient): Promise<UserModel> {
+    return prisma.user.create({ data: this.fields })
   }
 }

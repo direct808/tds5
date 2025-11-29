@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { Source } from './source.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   SourceUpdatedEvent,
@@ -11,6 +10,7 @@ import {
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
 import { SourceRepository } from '@/infra/repositories/source.repository'
+import { SourceModel } from '../../../generated/prisma/models/Source'
 
 type CreateArgs = {
   name: string
@@ -59,7 +59,7 @@ export class SourceService {
     )
   }
 
-  public getList(userId: string): Promise<Source[]> {
+  public getList(userId: string): Promise<SourceModel[]> {
     return this.repository.getListByUserId(userId)
   }
 

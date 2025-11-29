@@ -1,8 +1,6 @@
 import { INestApplication } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
-import { StreamActionType } from '@/domain/campaign/types'
 import { FilterLogic } from '@/domain/click/stream/filter/types'
 import { ClickRequestBuilder } from '../../utils/click-builders/click-request-builder'
 import { DateTime } from 'luxon'
@@ -10,7 +8,9 @@ import { ClickBuilder } from '../../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
-import { Click } from '@/domain/click/click.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { ClickModel } from '../../../generated/prisma/models/Click'
+import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
 
 async function clickAction(
   app: INestApplication,
@@ -28,19 +28,19 @@ async function clickAction(
 function createClick(
   campaignId: string,
   createdAt: DateTime,
-  dataSource: DataSource,
-): Promise<Click> {
+  prisma: PrismaService,
+): Promise<ClickModel> {
   return ClickBuilder.create()
     .id(faker.string.alpha(12))
     .campaignId(campaignId)
     .visitorId(faker.string.alpha(6))
     .createdAt(createdAt.toJSDate())
-    .save(dataSource)
+    .save(prisma)
 }
 
 describe('Filter click limit (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let userId: string
   const code1 = 'abcdif'
   const code2 = 'abcdi2'
@@ -52,7 +52,7 @@ describe('Filter click limit (e2e)', () => {
   beforeEach(async () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     const authData = await createAuthUser(app)
     userId = authData.user.id
   })
@@ -66,10 +66,10 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Custom'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -78,7 +78,7 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
@@ -88,10 +88,10 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Last stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Last stream'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     // 2. Act
     const content1 = await clickAction(app, code1)
@@ -115,10 +115,10 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Custom'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const lastCampaign = await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -127,7 +127,7 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
@@ -137,16 +137,16 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Last stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Last stream'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const dateTime = DateTime.now().minus({ hour: 4 })
 
     // 2. Act
-    await createClick(firstCampaign.id, dateTime, dataSource)
-    await createClick(lastCampaign.id, dateTime, dataSource)
+    await createClick(firstCampaign.id, dateTime, prisma)
+    await createClick(lastCampaign.id, dateTime, prisma)
 
     const content1 = await clickAction(app, code2)
     const content2 = await clickAction(app, code2)
@@ -167,10 +167,10 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Custom'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const lastCampaign = await CampaignBuilder.create()
       .name('Test campaign 1')
@@ -179,7 +179,7 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('First stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('First stream')
           .filters({
             logic: FilterLogic.And,
@@ -189,16 +189,16 @@ describe('Filter click limit (e2e)', () => {
       .addStreamTypeAction((stream) =>
         stream
           .name('Last stream')
-          .type(StreamActionType.SHOW_TEXT)
+          .type(StreamActionTypeEnum.SHOW_TEXT)
           .content('Last stream'),
       )
-      .save(dataSource)
+      .save(prisma)
 
     const dateTime = DateTime.now().minus({ day: 4 })
 
     // 2. Act
-    await createClick(firstCampaign.id, dateTime, dataSource)
-    await createClick(lastCampaign.id, dateTime, dataSource)
+    await createClick(firstCampaign.id, dateTime, prisma)
+    await createClick(lastCampaign.id, dateTime, prisma)
 
     const content1 = await clickAction(app, code2)
     const content2 = await clickAction(app, code2)

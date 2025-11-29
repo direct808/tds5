@@ -61,8 +61,8 @@ describe('QueryStringObserver', () => {
   it('should return number when string is a valid number', () => {
     expect(observer['getCost']('12.34')).toBe(12.34)
     expect(observer['getCost']('12,34')).toBe(12.34)
-    expect(observer['getCost']('string value')).toBeUndefined()
-    expect(observer['getCost'](undefined)).toBeUndefined()
+    expect(observer['getCost']('string value')).toBeNull()
+    expect(observer['getCost'](undefined)).toBeNull()
     expect(observer['getCost']('0')).toBe(0)
   })
 })

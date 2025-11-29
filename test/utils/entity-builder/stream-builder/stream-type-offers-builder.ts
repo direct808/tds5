@@ -1,16 +1,14 @@
-import { CampaignStreamSchema } from '@/domain/campaign/types'
-import { StreamBuilder } from './stream-builder'
-import { StreamOfferBuilder } from '../stream-offer-builder'
-import { DataSource } from 'typeorm'
-import { StreamOffer } from '@/domain/campaign/entity/stream-offer.entity'
-import { Stream } from '@/domain/campaign/entity/stream.entity'
+import { StreamBuilder, StreamFull } from './stream-builder'
+import { StreamOfferBuilder, StreamOfferFull } from '../stream-offer-builder'
+import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
+import { PrismaClient } from '../../../../generated/prisma/client'
 
 export class StreamTypeOffersBuilder extends StreamBuilder {
   private streamOffersBuilders: StreamOfferBuilder[] = []
 
   constructor() {
     super()
-    this.fields.schema = CampaignStreamSchema.LANDINGS_OFFERS
+    this.fields.schema = StreamSchemaEnum.LANDINGS_OFFERS
   }
 
   addOffer(callback: (builder: StreamOfferBuilder) => void): this {
@@ -21,12 +19,12 @@ export class StreamTypeOffersBuilder extends StreamBuilder {
     return this
   }
 
-  async save(ds: DataSource, campaignId: string): Promise<Stream> {
-    const streamOffers: StreamOffer[] = []
-    const result = await super.save(ds, campaignId)
+  async save(prisma: PrismaClient, campaignId: string): Promise<StreamFull> {
+    const streamOffers: StreamOfferFull[] = []
+    const result = (await super.save(prisma, campaignId)) as StreamFull
 
     for (const builder of this.streamOffersBuilders) {
-      const streamOffer = await builder.save(ds, result.id)
+      const streamOffer = await builder.save(prisma, result.id)
       streamOffers.push(streamOffer)
     }
     result.streamOffers = streamOffers

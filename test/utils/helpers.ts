@@ -1,9 +1,9 @@
-import { DataSource } from 'typeorm'
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserBuilder } from './entity-builder/user-builder'
-import { User } from '@/domain/user/user.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { UserModel } from '../../generated/prisma/models/User'
 
 async function authUser(
   app: INestApplication,
@@ -18,7 +18,7 @@ async function authUser(
 }
 
 export async function createAuthUser(app: INestApplication): Promise<{
-  user: User
+  user: UserModel
   accessToken: string
 }> {
   const email = 'admin@gmail.com'
@@ -27,7 +27,7 @@ export async function createAuthUser(app: INestApplication): Promise<{
   const user = await UserBuilder.create()
     .email(email)
     .password(pass)
-    .save(app.get(DataSource))
+    .save(app.get(PrismaService))
 
   const accessToken = await authUser(app, { email, password: '1234' })
 

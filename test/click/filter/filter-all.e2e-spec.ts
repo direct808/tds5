@@ -1,8 +1,6 @@
 import { INestApplication } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
-import { StreamActionType } from '@/domain/campaign/types'
 import { FilterLogic, FilterObject } from '@/domain/click/stream/filter/types'
 import { ClickRequestBuilder } from '../../utils/click-builders/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
@@ -11,9 +9,11 @@ import { ClickDataTextKeys } from '@/domain/click/stream/filter/filters/click-da
 import { FakeIpExpressRequestAdapter } from '../../utils/fake-ip-express-request-adapter'
 import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
 
 async function addStream(
-  dataSource: DataSource,
+  prisma: PrismaService,
   content: string,
   userId: string,
   filter?: FilterObject,
@@ -24,7 +24,7 @@ async function addStream(
     .userId(userId)
 
   campaign.addStreamTypeAction((stream) => {
-    stream.name(content).type(StreamActionType.SHOW_TEXT).content(content)
+    stream.name(content).type(StreamActionTypeEnum.SHOW_TEXT).content(content)
 
     if (filter) {
       stream.filters({
@@ -34,12 +34,12 @@ async function addStream(
     }
   })
 
-  await campaign.save(dataSource)
+  await campaign.save(prisma)
 }
 
 describe('Filter all (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let userId: string
   const code1 = 'abcdif'
 
@@ -52,7 +52,7 @@ describe('Filter all (e2e)', () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     const authData = await createAuthUser(app)
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
     userId = authData.user.id
     jest.useFakeTimers({ doNotFake: ['nextTick'] })
   })
@@ -68,7 +68,7 @@ describe('Filter all (e2e)', () => {
     ['extraParam2', 'extra_param_2'],
   ])('Click data %s', async (type, snake) => {
     const value = 'Value ' + type
-    await addStream(dataSource, type, userId, {
+    await addStream(prisma, type, userId, {
       type: type as ClickDataTextKeys,
       values: [value],
     })
@@ -83,7 +83,7 @@ describe('Filter all (e2e)', () => {
   })
 
   it('Raw query param', async () => {
-    await addStream(dataSource, 'raw_query_content', userId, {
+    await addStream(prisma, 'raw_query_content', userId, {
       type: 'query-param',
       name: 'raw_query',
       values: ['raw_query_value'],
@@ -99,7 +99,7 @@ describe('Filter all (e2e)', () => {
   })
 
   it('os', async () => {
-    await addStream(dataSource, 'os', userId, {
+    await addStream(prisma, 'os', userId, {
       type: 'os',
       values: ['Windows'],
     })
@@ -117,7 +117,7 @@ describe('Filter all (e2e)', () => {
   })
 
   it('osVersion', async () => {
-    await addStream(dataSource, 'osVersion', userId, {
+    await addStream(prisma, 'osVersion', userId, {
       type: 'osVersion',
       values: ['10'],
     })
@@ -143,7 +143,7 @@ describe('Filter all (e2e)', () => {
         (req) => new FakeIpExpressRequestAdapter(req, '192.168.10.20'),
       )
 
-    await addStream(dataSource, 'ip', userId, {
+    await addStream(prisma, 'ip', userId, {
       type: 'ip',
       values: ['192.168.10.20'],
     })
@@ -165,7 +165,7 @@ describe('Filter all (e2e)', () => {
         (req) => new FakeIpExpressRequestAdapter(req, '::7711'),
       )
 
-    await addStream(dataSource, 'ipv6', userId, {
+    await addStream(prisma, 'ipv6', userId, {
       type: 'ipv6',
     })
 
@@ -179,7 +179,7 @@ describe('Filter all (e2e)', () => {
 
   it('schedule', async () => {
     jest.setSystemTime(DateTime.fromISO('2025-08-05T10:33+03:00').toJSDate())
-    await addStream(dataSource, 'schedule', userId, {
+    await addStream(prisma, 'schedule', userId, {
       type: 'schedule',
       timezone: 'Europe/Moscow',
       items: [{ fromDay: 2, formTime: '10:30', toDay: 2, toTime: '11:30' }],
@@ -196,7 +196,7 @@ describe('Filter all (e2e)', () => {
   it('date-interval', async () => {
     jest.setSystemTime(DateTime.fromISO('2025-08-05T10:33').toJSDate())
 
-    await addStream(dataSource, 'date-interval', userId, {
+    await addStream(prisma, 'date-interval', userId, {
       type: 'date-interval',
       from: '2025-08-05',
       to: '2025-08-06',

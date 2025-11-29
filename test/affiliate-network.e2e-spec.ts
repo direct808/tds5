@@ -1,18 +1,17 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { DataSource, Repository } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
-import { AffiliateNetwork } from '@/domain/affiliate-network/affiliate-network.entity'
 import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-network-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
+import { PrismaClient } from '../generated/prisma/client'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('AffiliateNetworkController (e2e)', () => {
   let app: INestApplication
   let accessToken: string
   let userId: string
-  let affiliateNetworkRepository: Repository<AffiliateNetwork>
-  let dataSource: DataSource
+  let prisma: PrismaClient
 
   afterEach(async () => {
     await app.close()
@@ -21,12 +20,11 @@ describe('AffiliateNetworkController (e2e)', () => {
   beforeEach(async () => {
     await truncateTables()
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
 
     const authData = await createAuthUser(app)
     userId = authData.user.id
     accessToken = authData.accessToken
-    affiliateNetworkRepository = dataSource.getRepository(AffiliateNetwork)
   })
 
   it('Create affiliate network', async () => {
@@ -56,7 +54,7 @@ describe('AffiliateNetworkController (e2e)', () => {
     const affiliateNetwork = await AffiliateNetworkBuilder.create()
       .name('Af 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     const response = await request(app.getHttpServer())
       .get('/api/affiliate-network')
@@ -74,7 +72,7 @@ describe('AffiliateNetworkController (e2e)', () => {
     const affiliateNetwork = await AffiliateNetworkBuilder.create()
       .name('Af 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await request(app.getHttpServer())
       .patch('/api/affiliate-network/' + affiliateNetwork.id)
@@ -85,7 +83,7 @@ describe('AffiliateNetworkController (e2e)', () => {
       })
       .expect(200)
 
-    const anFounded = await affiliateNetworkRepository.findOneOrFail({
+    const anFounded = await prisma.affiliateNetwork.findFirstOrThrow({
       where: { id: affiliateNetwork.id },
     })
 
@@ -96,15 +94,15 @@ describe('AffiliateNetworkController (e2e)', () => {
     const affiliateNetwork = await AffiliateNetworkBuilder.create()
       .name('Af 1')
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await request(app.getHttpServer())
       .delete('/api/affiliate-network/' + affiliateNetwork.id)
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const deletedSource = await affiliateNetworkRepository.findOneBy({
-      id: affiliateNetwork.id,
+    const deletedSource = await prisma.affiliateNetwork.findFirst({
+      where: { id: affiliateNetwork.id },
     })
 
     expect(deletedSource).toBeNull()

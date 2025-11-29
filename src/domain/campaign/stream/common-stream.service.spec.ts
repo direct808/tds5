@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamService } from './common-stream.service'
 import { CreateStreamDto } from '../dto/create-stream.dto'
-import {
-  CampaignStreamSchema,
-  StreamActionType,
-  StreamRedirectType,
-} from '@/domain/campaign/types'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
+import {
+  StreamActionTypeEnum,
+  StreamRedirectTypeEnum,
+  StreamSchemaEnum,
+} from '../../../../generated/prisma/enums'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -55,10 +55,10 @@ describe('CommonStreamService', () => {
   it('should be called buildData with correct result', () => {
     const input: CreateStreamDto = {
       name: 'name',
-      schema: CampaignStreamSchema.ACTION,
-      redirectType: StreamRedirectType.CURL,
+      schema: StreamSchemaEnum.ACTION,
+      redirectType: StreamRedirectTypeEnum.CURL,
       redirectUrl: '/',
-      actionType: StreamActionType.TO_CAMPAIGN,
+      actionType: StreamActionTypeEnum.TO_CAMPAIGN,
       actionCampaignId: 'actionCampaignId',
       actionContent: 'actionContent',
     }

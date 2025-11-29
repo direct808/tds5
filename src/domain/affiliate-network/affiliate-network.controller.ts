@@ -14,7 +14,7 @@ import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
 import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { AffiliateNetwork } from './affiliate-network.entity'
+import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')
@@ -24,7 +24,9 @@ export class AffiliateNetworkController {
   ) {}
 
   @Get()
-  getAffiliateNetworks(@UserId() userId: string): Promise<AffiliateNetwork[]> {
+  getAffiliateNetworks(
+    @UserId() userId: string,
+  ): Promise<AffiliateNetworkModel[]> {
     return this.affiliateNetworkService.getList(userId)
   }
 
@@ -32,7 +34,7 @@ export class AffiliateNetworkController {
   async createAffiliateNetwork(
     @Body() args: CreateAffiliateNetworkDto,
     @UserId() userId: string,
-  ): Promise<AffiliateNetwork> {
+  ): Promise<AffiliateNetworkModel> {
     return this.affiliateNetworkService.create({ ...args, userId })
   }
 

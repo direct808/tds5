@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { EntityManager } from 'typeorm'
 import { UpdateStreamOfferDto } from '../dto/update-stream-offer.dto'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
-import { StreamOffer } from '../entity/stream-offer.entity'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
+import { StreamOfferUncheckedCreateInput } from '../../../../generated/prisma/models/StreamOffer'
 
 type BuildUpdateDataResult = {
   id: string | undefined
@@ -29,23 +29,23 @@ export class UpdateStreamOfferService {
    * @param input
    */
   public async updateStreamOffers(
-    manager: EntityManager,
+    trx: Transaction,
     streamId: string,
     userId: string,
     input: UpdateStreamOfferDto[],
   ): Promise<void> {
-    await this.prepareInput(manager, streamId, userId, input)
+    await this.prepareInput(trx, streamId, userId, input)
     const dataForSave = this.buildSaveData(streamId, input)
-    await this.saveStreamOffers(manager, dataForSave)
+    await this.saveStreamOffers(trx, dataForSave)
   }
 
   private async prepareInput(
-    manager: EntityManager,
+    trx: Transaction,
     streamId: string,
     userId: string,
     input: UpdateStreamOfferDto[],
   ): Promise<void> {
-    await this.deleteOldStreamOffers(manager, input, streamId)
+    await this.deleteOldStreamOffers(trx, input, streamId)
     this.commonService.checkPercentSum(input)
     this.commonService.checkForRepeatOffers(input)
     await this.commonService.ensureOffersExists(input, userId)
@@ -54,7 +54,7 @@ export class UpdateStreamOfferService {
   private buildSaveData(
     streamId: string,
     input: UpdateStreamOfferDto[],
-  ): Partial<StreamOffer>[] {
+  ): StreamOfferUncheckedCreateInput[] {
     const dataForCreate = this.commonService.buildCreateData(
       streamId,
       input.filter((item) => !item.id),
@@ -69,11 +69,11 @@ export class UpdateStreamOfferService {
   }
 
   private async saveStreamOffers(
-    manager: EntityManager,
-    dataForSave: Partial<StreamOffer>[],
+    trx: Transaction,
+    dataForSave: StreamOfferUncheckedCreateInput[],
   ): Promise<void> {
     if (dataForSave.length > 0) {
-      await this.streamOfferRepository.saveMany(manager, dataForSave)
+      await this.streamOfferRepository.saveMany(trx, dataForSave)
     }
   }
 
@@ -85,17 +85,17 @@ export class UpdateStreamOfferService {
    * @private
    */
   private async deleteOldStreamOffers(
-    manager: EntityManager,
+    trx: Transaction,
     input: UpdateStreamOfferDto[],
     streamId: string,
   ): Promise<void> {
-    const idsForDelete = await this.getIdsForDelete(manager, input, streamId)
+    const idsForDelete = await this.getIdsForDelete(trx, input, streamId)
 
     if (idsForDelete.length === 0) {
       return
     }
 
-    await this.streamOfferRepository.delete(manager, idsForDelete)
+    await this.streamOfferRepository.delete(trx, idsForDelete)
   }
 
   /**
@@ -118,12 +118,12 @@ export class UpdateStreamOfferService {
   }
 
   private async getIdsForDelete(
-    manager: EntityManager,
+    trx: Transaction,
     input: UpdateStreamOfferDto[],
     streamId: string,
   ): Promise<string[]> {
     const existsStreamOffers = await this.streamOfferRepository.getByStreamId(
-      manager,
+      trx,
       streamId,
     )
 

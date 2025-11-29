@@ -1,45 +1,54 @@
 import { Injectable } from '@nestjs/common'
-import { EntityManager, In } from 'typeorm'
-import { Stream } from '../entity/stream.entity'
+import {
+  StreamCreateInput,
+  StreamModel,
+  StreamUncheckedCreateInput,
+} from '../../../../generated/prisma/models/Stream'
+import {
+  prismaTransaction,
+  Transaction,
+} from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class StreamRepository {
-  public async create(
-    manager: EntityManager,
-    args: Partial<Stream>,
-  ): Promise<Stream> {
-    const campaign = manager.create(Stream, args)
-
-    return manager.save(campaign)
+  public create(
+    trx: Transaction,
+    data: StreamUncheckedCreateInput,
+  ): Promise<StreamModel> {
+    return prismaTransaction(trx).get().stream.create({ data })
   }
 
   public async update(
-    manager: EntityManager,
+    trx: Transaction,
     id: string,
-    args: Partial<Stream>,
+    data: Partial<StreamCreateInput>,
   ): Promise<void> {
-    await manager.update(Stream, id, args)
+    // await manager.update(Stream, id, args)
+    await prismaTransaction(trx).get().stream.update({ where: { id }, data })
   }
 
   public getByCampaignId(
-    manager: EntityManager,
+    trx: Transaction,
     campaignId: string,
-  ): Promise<Stream[]> {
-    return manager.findBy(Stream, { campaignId })
+  ): Promise<StreamModel[]> {
+    return prismaTransaction(trx)
+      .get()
+      .stream.findMany({ where: { campaignId } })
   }
 
-  public async delete(manager: EntityManager, ids: string[]): Promise<void> {
-    await manager.delete(Stream, ids)
+  public async delete(trx: Transaction, ids: string[]): Promise<void> {
+    await prismaTransaction(trx)
+      .get()
+      .stream.deleteMany({ where: { id: { in: ids } } })
   }
 
   getByIdsAndCampaignId(
-    manager: EntityManager,
+    trx: Transaction,
     ids: string[],
     campaignId: string,
-  ): Promise<Stream[]> {
-    return manager.findBy(Stream, {
-      id: In(ids),
-      campaignId,
-    })
+  ): Promise<StreamModel[]> {
+    return prismaTransaction(trx)
+      .get()
+      .stream.findMany({ where: { id: { in: ids }, campaignId } })
   }
 }

@@ -1,5 +1,4 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common'
-import { Campaign } from '@/domain/campaign/entity/campaign.entity'
 import { getCampaignAdditionalIds } from '@/domain/campaign-cache/helpers/get-campaign-additional-ids'
 import {
   affiliateNetworkCacheKey,
@@ -38,7 +37,7 @@ export class CampaignCacheService {
     return campaign
   }
 
-  private async setAdditionalCache(campaign: Campaign): Promise<void> {
+  private async setAdditionalCache(campaign: FullCampaign): Promise<void> {
     const { sourceId, offerIds, affiliateNetworkIdIds } =
       getCampaignAdditionalIds(campaign)
 

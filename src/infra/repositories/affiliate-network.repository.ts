@@ -1,57 +1,62 @@
-import { DataSource } from 'typeorm'
 import { Injectable } from '@nestjs/common'
 import {
   IGetEntityByIdAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
-import { AffiliateNetwork } from '@/domain/affiliate-network/affiliate-network.entity'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
 
 @Injectable()
 export class AffiliateNetworkRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  private readonly repository = this.dataSource.getRepository(AffiliateNetwork)
+  // private readonly repository = this.dataSource.getRepository(AffiliateNetwork)
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    // private readonly dataSource: DataSource,
+    private prisma: PrismaService,
+  ) {}
 
   public async create(
-    args: Pick<AffiliateNetwork, 'name' | 'offerParams' | 'userId'>,
+    args: Pick<AffiliateNetworkModel, 'name' | 'offerParams' | 'userId'>,
   ): Promise<string> {
-    const source = this.repository.create(args)
+    const res = await this.prisma.affiliateNetwork.create({
+      data: args,
+    })
 
-    const res = await this.repository.insert(source)
-
-    return res.identifiers[0].id
+    return res.id
   }
 
-  public async getByNameAndUserId({
+  public getByNameAndUserId({
     name,
     userId,
-  }: NameAndUserId): Promise<AffiliateNetwork | null> {
-    return this.repository.findOne({ where: { name, userId } })
+  }: NameAndUserId): Promise<AffiliateNetworkModel | null> {
+    return this.prisma.affiliateNetwork.findFirst({
+      where: { name, userId },
+    })
   }
 
-  public async getByIdAndUserId(
-    args: Pick<AffiliateNetwork, 'id' | 'userId'>,
-  ): Promise<AffiliateNetwork | null> {
-    return this.repository.findOne({
+  public getByIdAndUserId(
+    args: Pick<AffiliateNetworkModel, 'id' | 'userId'>,
+  ): Promise<AffiliateNetworkModel | null> {
+    return this.prisma.affiliateNetwork.findFirst({
       where: { id: args.id, userId: args.userId },
     })
   }
 
-  public async getListByUserId(userId: string): Promise<AffiliateNetwork[]> {
-    return this.repository.find({ where: { userId } })
+  public getListByUserId(userId: string): Promise<AffiliateNetworkModel[]> {
+    return this.prisma.affiliateNetwork.findMany({ where: { userId } })
   }
 
   public async update(
     id: string,
-    data: Partial<AffiliateNetwork>,
+    data: Partial<AffiliateNetworkModel>,
   ): Promise<void> {
-    await this.repository.update({ id }, data)
+    await this.prisma.affiliateNetwork.update({ data, where: { id } })
   }
 
   public async delete(id: string): Promise<void> {
-    await this.repository.softDelete(id)
+    await this.prisma.affiliateNetwork.delete({ where: { id } })
   }
 }

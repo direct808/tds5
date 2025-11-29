@@ -36,7 +36,7 @@ export class ClickContext implements IClickContext {
   }
 
   createClickData(): void {
-    this.cls.set('clickData', {})
+    this.cls.set('clickData', {} as ClickData)
   }
 
   getClickData(): ClickData {

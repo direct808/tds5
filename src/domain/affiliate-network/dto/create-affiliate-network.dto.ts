@@ -11,5 +11,5 @@ export class CreateAffiliateNetworkDto {
   @IsString()
   @IsOptional()
   @IsNotEmpty()
-  offerParams?: string
+  declare offerParams: string | null
 }

@@ -2,7 +2,7 @@ import { IpV6Filter } from './ipv6-filter'
 
 describe('IpV6Filter', () => {
   it.each([
-    [undefined, false],
+    [null, false],
     ['22.33.43.2', false],
     ['2001:db8::1', true],
     ['bad ip value', false],

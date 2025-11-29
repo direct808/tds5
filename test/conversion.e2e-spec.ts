@@ -1,5 +1,4 @@
 import { INestApplication } from '@nestjs/common'
-import { DataSource } from 'typeorm'
 import { createAuthUser } from './utils/helpers'
 import { createApp } from './utils/create-app'
 import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
@@ -9,13 +8,14 @@ import { ClickRepository } from '@/infra/repositories/click.repository'
 import { flushRedisDb, truncateTables } from './utils/truncate-tables'
 import { PostbackRequestBuilder } from './utils/postback-request-builder'
 import { waitConversionRegistered } from './utils/waitConversionRegister'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('Conversion (e2e)', () => {
   let app: INestApplication
-  let dataSource: DataSource
+  let prisma: PrismaService
   let clickRepository: ClickRepository
-  let userId: string
   let conversionRepository: ConversionRepository
+  let userId: string
 
   afterEach(async () => {
     await app.close()
@@ -24,18 +24,18 @@ describe('Conversion (e2e)', () => {
   beforeEach(async () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
-    dataSource = app.get(DataSource)
+    prisma = app.get(PrismaService)
+    clickRepository = app.get(ClickRepository)
+    conversionRepository = app.get(ConversionRepository)
 
     const authData = await createAuthUser(app)
     userId = authData.user.id
-    conversionRepository = app.get(ConversionRepository)
-    clickRepository = app.get(ClickRepository)
   })
 
   it('Create conversion', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await ClickRequestBuilder.create(app)
       .code(campaign.code)
@@ -72,7 +72,7 @@ describe('Conversion (e2e)', () => {
   it('Create second conversion', async () => {
     const campaign = await CampaignBuilder.createRandomActionContent()
       .userId(userId)
-      .save(dataSource)
+      .save(prisma)
 
     await ClickRequestBuilder.create(app)
       .code(campaign.code)

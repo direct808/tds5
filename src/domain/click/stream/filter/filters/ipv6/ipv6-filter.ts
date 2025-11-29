@@ -9,7 +9,7 @@ export interface IpV6FilterObject extends BaseFilterObject {
 }
 
 export class IpV6Filter implements StreamFilter {
-  constructor(private readonly ip?: string) {}
+  constructor(private readonly ip: string | null | undefined) {}
 
   handle(): boolean {
     if (!this.ip) {

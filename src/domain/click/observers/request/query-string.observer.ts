@@ -34,16 +34,16 @@ export class QueryStringObserver implements ClickObserver {
 
       subId1: request.query('sub_id_1'),
       subId2: request.query('sub_id_2'),
-    }
+    } as ClickData
 
     Object.assign(clickData, data)
   }
 
-  private getCost(val: string | undefined): number | undefined {
+  private getCost(val: string | undefined): number | null {
     let costStr = val
     costStr = costStr ? costStr.replace(',', '.') : costStr
-    const costRaw = costStr ? parseFloat(costStr) : undefined
+    const costRaw = costStr ? parseFloat(costStr) : null
 
-    return Number.isNaN(costRaw) ? undefined : costRaw
+    return Number.isNaN(costRaw) ? null : costRaw
   }
 }

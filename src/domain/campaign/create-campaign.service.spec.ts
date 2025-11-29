@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CreateCampaignService } from './create-campaign.service'
 import { CommonCampaignService } from './common-campaign.service'
-import { DataSource, EntityManager } from 'typeorm'
 import { CreateStreamService } from './stream/create-stream.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
+import { PrismaClient } from '../../../generated/prisma/client'
+import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -19,8 +21,8 @@ const args = {
 
 describe('CreateCampaignService', () => {
   let service: CreateCampaignService
-  const dataSource = {
-    transaction: jest.fn().mockImplementation((cb) => cb(manager)),
+  const transactionFactory = {
+    create: jest.fn().mockImplementation((cb) => cb(prisma)),
   }
   const repository = {
     create: jest.fn().mockResolvedValue({ id: 'campaign-1' }),
@@ -31,7 +33,8 @@ describe('CreateCampaignService', () => {
   const commonCampaignService = {
     ensureSourceExists: jest.fn(),
   }
-  const manager = {} as EntityManager
+  const prisma = {} as PrismaClient
+  const transaction = {} as Transaction
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -39,8 +42,8 @@ describe('CreateCampaignService', () => {
         CreateCampaignService,
         EventEmitter2,
         {
-          provide: DataSource,
-          useValue: dataSource,
+          provide: TransactionFactory,
+          useValue: transactionFactory,
         },
         {
           provide: CampaignRepository,
@@ -64,16 +67,16 @@ describe('CreateCampaignService', () => {
 
   it('should use transaction when manager is not provided', async () => {
     await service.create(args, null)
-    expect(dataSource.transaction).toHaveBeenCalled()
+    expect(transactionFactory.create).toHaveBeenCalled()
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await service.create(args, manager)
-    expect(dataSource.transaction).not.toHaveBeenCalled()
+    await service.create(args, transaction)
+    expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await service.create(args, manager)
+    await service.create(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       args.userId,
       args.sourceId,
@@ -81,14 +84,14 @@ describe('CreateCampaignService', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await service.create(args, manager)
+    await service.create(args, transaction)
     expect(checkUniqueNameForCreate).toHaveBeenCalledWith(repository, args)
   })
 
   it('should call repository.create with correct data', async () => {
-    await service.create(args, manager)
+    await service.create(args, transaction)
     expect(repository.create).toHaveBeenCalledWith(
-      manager,
+      prisma,
       expect.objectContaining({
         name: args.name,
         sourceId: args.sourceId,
@@ -99,9 +102,9 @@ describe('CreateCampaignService', () => {
   })
 
   it('should call createStreamService.createStreams with correct params', async () => {
-    await service.create(args, manager)
+    await service.create(args, transaction)
     expect(createStreamService.createStreams).toHaveBeenCalledWith(
-      manager,
+      prisma,
       'campaign-1',
       args.userId,
       args.streams,
