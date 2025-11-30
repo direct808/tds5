@@ -7,7 +7,7 @@ import {
   StreamDirectUrl,
   StreamFullWithCampaign,
 } from '@/domain/campaign/types'
-import { StreamSchemaEnum } from '../../../../../generated/prisma/enums'
+import { StreamSchemaEnum } from '@generated/prisma/enums'
 
 @Injectable()
 export class SchemaService {

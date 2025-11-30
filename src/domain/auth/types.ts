@@ -1,6 +1,6 @@
 import { Request } from 'express'
 import { CustomDecorator, SetMetadata } from '@nestjs/common'
-import { UserModel } from '../../../generated/prisma/models/User'
+import { UserModel } from '@generated/prisma/models/User'
 
 export type JwrPayload = {
   sub: string

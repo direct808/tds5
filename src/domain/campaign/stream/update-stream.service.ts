@@ -11,7 +11,7 @@ import { arrayUnique } from '@/shared/helpers'
 import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
 import { UpdateStreamDto } from '../dto/update-stream.dto'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
-import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
+import { StreamSchemaEnum } from '@generated/prisma/enums'
 
 @Injectable()
 export class UpdateStreamService {

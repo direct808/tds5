@@ -21,7 +21,8 @@
     "noFallthroughCasesInSwitch": false,
     "lib": ["ES2021"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@generated/*": ["./generated/*"]
     }
   }
 }

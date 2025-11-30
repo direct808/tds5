@@ -3,8 +3,8 @@ import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { UpdateStreamOfferService } from './update-stream-offer.service'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
-import { PrismaClient } from '../../../../generated/prisma/client'
-import { StreamOfferUncheckedCreateInput } from '../../../../generated/prisma/models/StreamOffer'
+import { PrismaClient } from '@generated/prisma/client'
+import { StreamOfferUncheckedCreateInput } from '@generated/prisma/models/StreamOffer'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')

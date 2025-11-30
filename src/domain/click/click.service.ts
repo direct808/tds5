@@ -7,7 +7,7 @@ import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from './observers/setup-subject'
 import { ClickContext } from './shared/click-context.service'
 import { CampaignCacheService } from '@/domain/campaign-cache/campaign-cache.service'
-import { CampaignModel } from '../../../generated/prisma/models/Campaign'
+import { CampaignModel } from '@generated/prisma/models/Campaign'
 import { StreamFull, StreamFullWithCampaign } from '@/domain/campaign/types'
 
 type RedirectData = { count: number }

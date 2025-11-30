@@ -9,8 +9,8 @@ import {
   ClickContext,
   IClickContext,
 } from '@/domain/click/shared/click-context.service'
-import { OfferModel } from '../../../../../../generated/prisma/models/Offer'
-import { CampaignModel } from '../../../../../../generated/prisma/models/Campaign'
+import { OfferModel } from '@generated/prisma/models/Offer'
+import { CampaignModel } from '@generated/prisma/models/Campaign'
 
 @Injectable()
 export class LandingsOffersService {

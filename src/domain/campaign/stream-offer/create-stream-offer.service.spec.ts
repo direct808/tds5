@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { CreateStreamOfferService } from './create-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
-import { PrismaClient } from '../../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 describe('CommonStreamService', () => {
