@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { CreateStreamDto } from '../dto/create-stream.dto'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
-import { StreamUncheckedCreateInput } from '../../../../generated/prisma/models/Stream'
+import { StreamUncheckedCreateInput } from '@generated/prisma/models/Stream'
 
 @Injectable()
 export class CommonStreamService {

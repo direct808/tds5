@@ -1,11 +1,8 @@
-import {
-  StreamGetPayload,
-  StreamModel,
-} from '../../../generated/prisma/models/Stream'
-import { CampaignGetPayload } from '../../../generated/prisma/models/Campaign'
-import { StreamRedirectTypeEnum } from '../../../generated/prisma/enums'
-import { StreamOfferGetPayload } from '../../../generated/prisma/models/StreamOffer'
-import { OfferGetPayload } from '../../../generated/prisma/models/Offer'
+import { StreamGetPayload, StreamModel } from '@generated/prisma/models/Stream'
+import { CampaignGetPayload } from '@generated/prisma/models/Campaign'
+import { StreamRedirectTypeEnum } from '@generated/prisma/enums'
+import { StreamOfferGetPayload } from '@generated/prisma/models/StreamOffer'
+import { OfferGetPayload } from '@generated/prisma/models/Offer'
 
 export type StreamOfferFull = StreamOfferGetPayload<{
   include: { offer: { include: { affiliateNetwork: true } } }

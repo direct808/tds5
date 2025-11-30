@@ -4,10 +4,7 @@ import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
 import { CreateStreamDto } from '../dto/create-stream.dto'
-import {
-  PrismaClient,
-  StreamSchemaEnum,
-} from '../../../../generated/prisma/client'
+import { PrismaClient, StreamSchemaEnum } from '@generated/prisma/client'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 describe('CreateStreamService', () => {

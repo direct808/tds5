@@ -7,7 +7,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
-import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
+import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 

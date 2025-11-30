@@ -9,7 +9,7 @@ import {
   StreamFullWithCampaign,
   StreamOfferFull,
 } from '@/domain/campaign/types'
-import { CampaignModel } from '../../../../../../generated/prisma/models/Campaign'
+import { CampaignModel } from '@generated/prisma/models/Campaign'
 
 describe('LandingsOffersService', () => {
   let service: LandingsOffersService

@@ -5,7 +5,7 @@ import {
   NameAndUserId,
 } from './utils/repository-utils'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { OfferModel } from '../../../generated/prisma/models/Offer'
+import { OfferModel } from '@generated/prisma/models/Offer'
 
 @Injectable()
 export class OfferRepository

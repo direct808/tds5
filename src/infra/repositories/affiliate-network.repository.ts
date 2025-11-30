@@ -5,7 +5,7 @@ import {
   NameAndUserId,
 } from './utils/repository-utils'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
+import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
 @Injectable()
 export class AffiliateNetworkRepository

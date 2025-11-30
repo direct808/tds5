@@ -2,7 +2,7 @@ import { ActionTypeFactory } from './action-type-factory'
 import { StreamResponse } from '../../../types'
 import { Injectable } from '@nestjs/common'
 import { MaybePromise } from '@/shared/types'
-import { StreamModel } from '../../../../../../generated/prisma/models/Stream'
+import { StreamModel } from '@generated/prisma/models/Stream'
 
 @Injectable()
 export class ActionService {

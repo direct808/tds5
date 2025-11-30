@@ -8,7 +8,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
-import { OfferModel } from '../../../generated/prisma/models/Offer'
+import { OfferModel } from '@generated/prisma/models/Offer'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 

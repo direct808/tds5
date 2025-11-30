@@ -5,7 +5,7 @@ import {
   NameAndUserId,
 } from './utils/repository-utils'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { SourceModel } from '../../../generated/prisma/models/Source'
+import { SourceModel } from '@generated/prisma/models/Source'
 
 @Injectable()
 export class SourceRepository

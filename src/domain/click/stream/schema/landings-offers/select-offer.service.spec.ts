@@ -1,6 +1,6 @@
 import { SelectOfferService } from './select-offer.service'
 import * as weighted from 'weighted'
-import { OfferModel } from '../../../../../../generated/prisma/models/Offer'
+import { OfferModel } from '@generated/prisma/models/Offer'
 import { StreamOfferFull } from '@/domain/campaign/types'
 
 jest.mock('weighted')

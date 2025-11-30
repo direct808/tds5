@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import {
   StreamOfferModel,
   StreamOfferUncheckedCreateInput,
-} from '../../../generated/prisma/models/StreamOffer'
+} from '@generated/prisma/models/StreamOffer'
 import {
   prismaTransaction,
   Transaction,

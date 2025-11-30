@@ -5,7 +5,7 @@ import { CreateStreamService } from './stream/create-stream.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 
