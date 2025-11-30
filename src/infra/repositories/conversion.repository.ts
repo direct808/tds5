@@ -4,7 +4,7 @@ import {
   ConversionModel,
   ConversionUncheckedCreateInput,
   ConversionUncheckedUpdateInput,
-} from '../../../generated/prisma/models/Conversion'
+} from '@generated/prisma/models/Conversion'
 
 @Injectable()
 export class ConversionRepository {

@@ -1,7 +1,7 @@
 import { ClickSubject } from '@/domain/click/observers/subject'
 import { ClickIdObserver } from '@/domain/click/observers/stream/click-id.observer'
 import { Injectable } from '@nestjs/common'
-import { StreamModel } from '../../../../generated/prisma/models/Stream'
+import { StreamModel } from '@generated/prisma/models/Stream'
 
 @Injectable()
 export class StreamSetupSubject {

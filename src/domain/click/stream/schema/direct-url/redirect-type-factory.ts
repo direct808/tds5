@@ -14,7 +14,7 @@ import {
 import { RedirectType, StreamResponse } from '../../../types'
 import { MaybePromise } from '@/shared/types'
 import { StreamDirectUrl } from '@/domain/campaign/types'
-import { StreamRedirectTypeEnum } from '../../../../../../generated/prisma/enums'
+import { StreamRedirectTypeEnum } from '@generated/prisma/enums'
 
 @Injectable()
 export class RedirectTypeFactory {

@@ -5,7 +5,7 @@ import { CommonCampaignService } from './common-campaign.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 

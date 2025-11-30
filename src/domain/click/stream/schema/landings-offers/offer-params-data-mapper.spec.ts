@@ -1,7 +1,7 @@
 import { OfferParamDataMapper } from './offer-params-data-mapper'
 import { ClickData } from '../../../click-data'
 import { OfferParams } from './offer-params.service'
-import { CampaignModel } from '../../../../../../generated/prisma/models/Campaign'
+import { CampaignModel } from '@generated/prisma/models/Campaign'
 
 describe('OfferParamDataMapper', () => {
   let mapper: OfferParamDataMapper

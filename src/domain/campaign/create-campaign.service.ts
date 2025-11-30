@@ -12,7 +12,7 @@ import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
-import { CampaignUncheckedCreateInput } from '../../../generated/prisma/models/Campaign'
+import { CampaignUncheckedCreateInput } from '@generated/prisma/models/Campaign'
 
 @Injectable()
 export class CreateCampaignService {

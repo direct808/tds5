@@ -4,7 +4,7 @@ import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
-import { StreamOfferUncheckedCreateInput } from '../../../../generated/prisma/models/StreamOffer'
+import { StreamOfferUncheckedCreateInput } from '@generated/prisma/models/StreamOffer'
 
 type BuildUpdateDataResult = {
   id: string | undefined

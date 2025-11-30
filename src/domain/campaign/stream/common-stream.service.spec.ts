@@ -7,7 +7,7 @@ import {
   StreamActionTypeEnum,
   StreamRedirectTypeEnum,
   StreamSchemaEnum,
-} from '../../../../generated/prisma/enums'
+} from '@generated/prisma/enums'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 

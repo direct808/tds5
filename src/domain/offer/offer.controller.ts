@@ -14,7 +14,7 @@ import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UpdateOfferDto } from './dto/update-offer.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { OfferModel } from '../../../generated/prisma/models/Offer'
+import { OfferModel } from '@generated/prisma/models/Offer'
 
 @ApiTags('Оферы')
 @Controller(GLOBAL_PREFIX + 'offer')

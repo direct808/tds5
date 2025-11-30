@@ -14,7 +14,7 @@ import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
 import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
+import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')

@@ -6,7 +6,7 @@ import {
 } from '@/domain/click/observers/id-generator'
 import { ClickObserver } from '@/domain/click/observers/subject'
 import { ClickContext } from '@/domain/click/shared/click-context.service'
-import { StreamModel } from '../../../../../generated/prisma/models/Stream'
+import { StreamModel } from '@generated/prisma/models/Stream'
 
 const SIZE = CLICK_ID_SIZE - VISITOR_ID_SIZE
 
