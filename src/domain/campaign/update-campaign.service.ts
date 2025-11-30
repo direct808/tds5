@@ -9,7 +9,7 @@ import {
 } from '@/domain/campaign/events/campaign-updated.event'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
-import { CampaignModel } from '../../../generated/prisma/models/Campaign'
+import { CampaignModel } from '@generated/prisma/models/Campaign'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 

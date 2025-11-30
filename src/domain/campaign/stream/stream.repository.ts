@@ -3,7 +3,7 @@ import {
   StreamCreateInput,
   StreamModel,
   StreamUncheckedCreateInput,
-} from '../../../../generated/prisma/models/Stream'
+} from '@generated/prisma/models/Stream'
 import {
   prismaTransaction,
   Transaction,

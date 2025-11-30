@@ -15,7 +15,7 @@ import {
   StreamActionTypeEnum,
   StreamRedirectTypeEnum,
   StreamSchemaEnum,
-} from '../../../../generated/prisma/enums'
+} from '@generated/prisma/enums'
 
 export class CreateStreamDto {
   @IsString()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import * as runtime from '@prisma/client/runtime/client'
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 
 export interface Transaction {
   get(): void

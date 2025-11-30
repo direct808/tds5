@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ActionType, StreamResponse } from '@/domain/click/types'
 import { ClickContext } from '@/domain/click/shared/click-context.service'
-import { StreamGetPayload } from '../../../../../../../generated/prisma/models/Stream'
+import { StreamGetPayload } from '@generated/prisma/models/Stream'
 
 @Injectable()
 export class ToCampaignActionType implements ActionType {

@@ -8,7 +8,7 @@ import { FullCampaign } from '@/domain/campaign/types'
 import {
   CampaignModel,
   CampaignUncheckedCreateInput,
-} from '../../../generated/prisma/models/Campaign'
+} from '@generated/prisma/models/Campaign'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import {
   prismaTransaction,

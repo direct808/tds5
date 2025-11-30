@@ -10,7 +10,7 @@ import {
   ensureEntityExists,
 } from '@/infra/repositories/utils/repository-utils'
 import { SourceRepository } from '@/infra/repositories/source.repository'
-import { SourceModel } from '../../../generated/prisma/models/Source'
+import { SourceModel } from '@generated/prisma/models/Source'
 
 type CreateArgs = {
   name: string

@@ -4,7 +4,7 @@ import { StreamRepository } from './stream.repository'
 import { CreateStreamDto } from '../dto/create-stream.dto'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
-import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
+import { StreamSchemaEnum } from '@generated/prisma/enums'
 
 @Injectable()
 export class CreateStreamService {

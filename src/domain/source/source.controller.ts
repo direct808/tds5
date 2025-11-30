@@ -14,7 +14,7 @@ import { UserId } from '@/domain/auth/user-id.decorator'
 import { CreateSourceDto } from './dto/create-source.dto'
 import { UpdateSourceDto } from './dto/update-source.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { SourceModel } from '../../../generated/prisma/models/Source'
+import { SourceModel } from '@generated/prisma/models/Source'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')

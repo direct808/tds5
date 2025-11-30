@@ -9,8 +9,8 @@ import {
   ToCampaignActionType,
 } from './type'
 import { MaybePromise } from '@/shared/types'
-import { StreamModel } from '../../../../../../generated/prisma/models/Stream'
-import { StreamActionTypeEnum } from '../../../../../../generated/prisma/enums'
+import { StreamModel } from '@generated/prisma/models/Stream'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 @Injectable()
 export class ActionTypeFactory {
