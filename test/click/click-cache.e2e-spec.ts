@@ -11,7 +11,7 @@ import { faker } from '@faker-js/faker/.'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { CreateCampaignService } from '@/domain/campaign/create-campaign.service'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { StreamActionTypeEnum } from '../../generated/prisma/enums'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 
 describe('Click-cache (e2e)', () => {

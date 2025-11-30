@@ -5,16 +5,13 @@ import { StreamTypeOffersBuilder } from './stream-builder/stream-type-offers-bui
 import { SourceBuilder } from './source-builder'
 import { UserBuilder } from './user-builder'
 import { faker } from '@faker-js/faker'
-import {
-  PrismaClient,
-  StreamActionTypeEnum,
-} from '../../../generated/prisma/client'
+import { PrismaClient, StreamActionTypeEnum } from '@generated/prisma/client'
 import {
   CampaignGetPayload,
   CampaignUncheckedCreateInput,
-} from '../../../generated/prisma/models/Campaign'
-import { SourceModel } from '../../../generated/prisma/models/Source'
-import { UserModel } from '../../../generated/prisma/models/User'
+} from '@generated/prisma/models/Campaign'
+import { SourceModel } from '@generated/prisma/models/Source'
+import { UserModel } from '@generated/prisma/models/User'
 
 export type CampaignFull = CampaignGetPayload<{
   include: {

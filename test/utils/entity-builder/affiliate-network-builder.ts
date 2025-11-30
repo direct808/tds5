@@ -1,8 +1,8 @@
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   AffiliateNetworkModel,
   AffiliateNetworkUncheckedCreateInput,
-} from '../../../generated/prisma/models/AffiliateNetwork'
+} from '@generated/prisma/models/AffiliateNetwork'
 
 export class AffiliateNetworkBuilder {
   private fields: AffiliateNetworkUncheckedCreateInput =

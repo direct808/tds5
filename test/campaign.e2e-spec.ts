@@ -7,10 +7,7 @@ import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import {
-  StreamActionTypeEnum,
-  StreamSchemaEnum,
-} from '../generated/prisma/enums'
+import { StreamActionTypeEnum, StreamSchemaEnum } from '@generated/prisma/enums'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication

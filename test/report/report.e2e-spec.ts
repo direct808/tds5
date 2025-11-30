@@ -11,7 +11,7 @@ import { SourceBuilder } from '../utils/entity-builder/source-builder'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { ClickUncheckedCreateInput } from '../../generated/prisma/models/Click'
+import { ClickUncheckedCreateInput } from '@generated/prisma/models/Click'
 
 describe('Report (e2e)', () => {
   let app: INestApplication

@@ -12,7 +12,7 @@ import { PrismaService } from '@/infra/prisma/prisma.service'
 import {
   StreamActionTypeEnum,
   StreamRedirectTypeEnum,
-} from '../../generated/prisma/enums'
+} from '@generated/prisma/enums'
 import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 
 describe('Click (e2e)', () => {

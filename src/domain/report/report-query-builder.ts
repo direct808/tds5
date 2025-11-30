@@ -1,5 +1,5 @@
 import { Kysely, sql } from 'kysely'
-import { DB } from '@/shared/db'
+import { DB } from '@generated/kysely'
 import toSnakeCase from 'to-snake-case'
 
 export class ReportQueryBuilder {

@@ -7,7 +7,7 @@ import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { ClickUniqueFor } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { createApp } from '../../utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 async function clickAction(
   app: INestApplication,

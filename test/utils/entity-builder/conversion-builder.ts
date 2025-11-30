@@ -1,8 +1,8 @@
 import {
   ConversionModel,
   ConversionUncheckedCreateInput,
-} from '../../../generated/prisma/models/Conversion'
-import { PrismaClient } from '../../../generated/prisma/client'
+} from '@generated/prisma/models/Conversion'
+import { PrismaClient } from '@generated/prisma/client'
 
 export class ConversionBuilder {
   private readonly fields = {} as ConversionUncheckedCreateInput

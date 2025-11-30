@@ -1,6 +1,6 @@
 import { ClickBuilder } from './click-builder'
 import { PrismaClient } from '@prisma/client/extension'
-import { ClickModel } from '../../../generated/prisma/models/Click'
+import { ClickModel } from '@generated/prisma/models/Click'
 
 export function createClicksBuilder(): ClicksBuilder {
   return ClicksBuilder.create()

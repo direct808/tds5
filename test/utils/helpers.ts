@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserBuilder } from './entity-builder/user-builder'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { UserModel } from '../../generated/prisma/models/User'
+import { UserModel } from '@generated/prisma/models/User'
 
 async function authUser(
   app: INestApplication,

@@ -4,8 +4,8 @@ import {
   ClickGetPayload,
   ClickModel,
   ClickUncheckedCreateInput,
-} from '../../../generated/prisma/models/Click'
-import { PrismaClient } from '../../../generated/prisma/client'
+} from '@generated/prisma/models/Click'
+import { PrismaClient } from '@generated/prisma/client'
 
 export function createClickBuilder(
   fields = {} as Partial<ClickUncheckedCreateInput>,

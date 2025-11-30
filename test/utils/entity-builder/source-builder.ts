@@ -1,8 +1,8 @@
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   SourceModel,
   SourceUncheckedCreateInput,
-} from '../../../generated/prisma/models/Source'
+} from '@generated/prisma/models/Source'
 
 export class SourceBuilder {
   private fields: SourceUncheckedCreateInput = {} as SourceUncheckedCreateInput

@@ -2,7 +2,7 @@ import { StreamBuilder } from './stream-builder'
 import {
   StreamRedirectTypeEnum,
   StreamSchemaEnum,
-} from '../../../../generated/prisma/enums'
+} from '@generated/prisma/enums'
 
 export class StreamTypeDirectUrlBuilder extends StreamBuilder {
   constructor() {

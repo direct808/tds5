@@ -1,10 +1,10 @@
 import { AffiliateNetworkBuilder } from './affiliate-network-builder'
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   OfferGetPayload,
   OfferUncheckedCreateInput,
-} from '../../../generated/prisma/models/Offer'
-import { AffiliateNetworkModel } from '../../../generated/prisma/models/AffiliateNetwork'
+} from '@generated/prisma/models/Offer'
+import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
 export type OfferFull = OfferGetPayload<{ include: { affiliateNetwork: true } }>
 

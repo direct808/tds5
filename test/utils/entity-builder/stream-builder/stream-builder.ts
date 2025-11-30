@@ -1,9 +1,9 @@
 import { Filters } from '@/domain/click/stream/filter/types'
-import { PrismaClient } from '../../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   StreamGetPayload,
   StreamUncheckedCreateInput,
-} from '../../../../generated/prisma/models/Stream'
+} from '@generated/prisma/models/Stream'
 
 export type StreamFull = StreamGetPayload<{
   include: {

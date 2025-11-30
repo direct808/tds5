@@ -9,8 +9,8 @@ import { faker } from '@faker-js/faker'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { ClickModel } from '../../../generated/prisma/models/Click'
-import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
+import { ClickModel } from '@generated/prisma/models/Click'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 async function clickAction(
   app: INestApplication,

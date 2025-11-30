@@ -1,8 +1,8 @@
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   UserModel,
   UserUncheckedCreateInput,
-} from '../../../generated/prisma/models/User'
+} from '@generated/prisma/models/User'
 
 export class UserBuilder {
   private fields: UserUncheckedCreateInput = {} as UserUncheckedCreateInput

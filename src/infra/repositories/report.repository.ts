@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely, sql } from 'kysely'
-import { DB } from '@/shared/db'
+import { DB } from '@generated/kysely'
 
 export type IdentifierMap = Record<string, string>
 

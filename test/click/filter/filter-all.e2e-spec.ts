@@ -10,7 +10,7 @@ import { FakeIpExpressRequestAdapter } from '../../utils/fake-ip-express-request
 import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 async function addStream(
   prisma: PrismaService,
