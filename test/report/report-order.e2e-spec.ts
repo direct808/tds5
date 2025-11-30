@@ -51,6 +51,13 @@ describe('Report Order (e2e)', () => {
 
     console.log(body)
 
-    expect(body).toEqual([{ clicks: '7', cpa: '7.40' }])
+    expect(body).toEqual([
+      {
+        clicks: '1',
+        dateTime: '2025-11-29 18:24:20',
+        epc: null,
+        id: 'jqQwfQorLrTG',
+      },
+    ])
   })
 })
