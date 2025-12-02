@@ -25,11 +25,7 @@ export class ReportRequestBuilder {
     return this
   }
 
-  public addFilter(
-    field: string,
-    operation: string,
-    value: string | boolean | number,
-  ): this {
+  public addFilter(field: string, operation: string, value: unknown): this {
     this._filter = this._filter || []
     this._filter.push([field, operation, value])
 

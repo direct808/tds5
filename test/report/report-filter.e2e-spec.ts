@@ -325,4 +325,109 @@ describe('Report Filter (e2e)', () => {
 
     expect(body).toEqual([{ clicks: '1' }])
   })
+
+  describe('String value', () => {
+    it.each([
+      ['=', 'value1', 'value1', 'value2', 200],
+      ['<>', 'value1', 'value1', 'value2', 200],
+      ['>', 'value1', 'value1', 'value2', 400],
+      ['<', 'value1', 'value1', 'value2', 400],
+      ['in', ['value1'], 'value1', 'value2', 200],
+      ['not_in', ['value1'], 'value1', 'value2', 200],
+      ['contains', 'lue1_', 'value1_', 'value_b', 200],
+      ['not_contains', 'lue1_', 'value1_', 'value_b', 200],
+      ['starts_with', 'value1', 'value1_', 'value_b', 200],
+      ['ends_with', 'ue_b', 'value1_', 'value_b', 200],
+      ['regex', 'v[ab]lue\\d', 'value1_', 'value_b', 200],
+      ['not_regex', 'v[ab]lue\\d', 'value1_', 'value_b', 200],
+      ['between', ['a', 'b'], 'value1_', 'value_b', 400],
+    ])(`operator %s`, async (operator, filterValue, value1, value2, status) => {
+      await createClicksBuilder()
+        .campaignId(campaignId)
+        .add((click) => click.destination(value1))
+        .add((click) => click.destination(value2))
+        .save(prisma)
+
+      const { body } = await ReportRequestBuilder.create(app)
+        .metrics(['clicks'])
+        .addFilter('destination', operator, filterValue)
+        .request()
+        .auth(accessToken, { type: 'bearer' })
+        .expect(status)
+
+      if (status == 200) {
+        expect(body).toEqual([{ clicks: '1' }])
+      }
+    })
+  })
+
+  describe('Numeric value', () => {
+    it.each([
+      ['=', 2025, 200],
+      ['<>', 2025, 200],
+      ['>', 2024, 200],
+      ['<', 2025, 200],
+      ['in', [2025], 400],
+      ['not_in', [2025], 400],
+      ['contains', 2025, 400],
+      ['not_contains', 2025, 400],
+      ['starts_with', 2025, 400],
+      ['ends_with', 2025, 400],
+      ['regex', 2025, 400],
+      ['not_regex', 2025, 400],
+      ['between', [2024, 2025], 200],
+    ])(`operator %s`, async (operator, filterValue, status) => {
+      await createClicksBuilder()
+        .campaignId(campaignId)
+        .add((click) => click.createdAt(new Date('2025-12-01')))
+        .add((click) => click.createdAt(new Date('2023-12-01')))
+        .save(prisma)
+
+      const { body } = await ReportRequestBuilder.create(app)
+        .metrics(['clicks'])
+        .addFilter('year', operator, filterValue)
+        .request()
+        .auth(accessToken, { type: 'bearer' })
+        .expect(status)
+
+      if (status == 200) {
+        expect(body).toEqual([{ clicks: '1' }])
+      }
+    })
+  })
+
+  describe('Boolean value', () => {
+    it.each([
+      ['=', true, 200],
+      ['<>', true, 400],
+      ['>', true, 400],
+      ['<', true, 400],
+      ['in', [true], 400],
+      ['not_in', [true], 400],
+      ['contains', true, 400],
+      ['not_contains', true, 400],
+      ['starts_with', true, 400],
+      ['ends_with', true, 400],
+      ['regex', true, 400],
+      ['not_regex', true, 400],
+      ['between', [true, false], 400],
+    ])(`operator %s`, async (operator, filterValue, status) => {
+      await createClicksBuilder()
+        .campaignId(campaignId)
+        .add((click) => click.isUniqueGlobal(true))
+        .add((click) => click.isUniqueGlobal(false))
+        .save(prisma)
+
+      const { body } = await ReportRequestBuilder.create(app)
+        .metrics(['clicks'])
+        .addFilter('isUniqueGlobal', operator, filterValue)
+        .request()
+        .auth(accessToken, { type: 'bearer' })
+        .expect(status)
+
+      if (status == 200) {
+        expect(body).toEqual([{ clicks: '1' }])
+      }
+    })
+  })
 })

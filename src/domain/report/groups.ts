@@ -1,4 +1,7 @@
+import { FilterTypeEnum } from '@/domain/report/types'
+
 export type Group = {
+  type: null | FilterTypeEnum
   filter:
     | null
     | 'numeric'
@@ -14,78 +17,116 @@ export type Group = {
 type Groups = Record<string, Group>
 
 export const groups: Groups = {
-  country: { filter: 'list' },
-  city: { filter: 'list' },
-  region: { filter: 'list' },
+  country: { type: FilterTypeEnum.string, filter: 'list' },
+  city: { type: FilterTypeEnum.string, filter: 'list' },
+  region: { type: FilterTypeEnum.string, filter: 'list' },
 
-  adCampaignId: { filter: 'string' },
-  campaignId: { filter: 'list' },
-  previousCampaignId: { filter: 'list' },
-  id: { filter: 'string' },
-  offerId: { filter: 'list' },
-  affiliateNetworkId: { filter: 'list' },
-  sourceId: { filter: 'list' },
-  streamId: { filter: 'list' },
+  adCampaignId: { type: FilterTypeEnum.string, filter: FilterTypeEnum.string },
+  campaignId: { type: FilterTypeEnum.string, filter: 'list' },
+  previousCampaignId: { type: FilterTypeEnum.string, filter: 'list' },
+  id: { type: FilterTypeEnum.string, filter: FilterTypeEnum.string },
+  offerId: { type: FilterTypeEnum.string, filter: 'list' },
+  affiliateNetworkId: { type: FilterTypeEnum.string, filter: 'list' },
+  sourceId: { type: FilterTypeEnum.string, filter: 'list' },
+  streamId: { type: FilterTypeEnum.string, filter: 'list' },
 
   dateTime: {
+    type: FilterTypeEnum.string,
     filter: 'equals_or_not',
     sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:MI:SS')`,
   },
-  year: { filter: 'numeric', sql: `date_part('year', click."createdAt")` },
-  month: { filter: 'string', sql: `to_char(click."createdAt", 'YYYY-MM')` },
-  week: { filter: 'numeric', sql: `date_part('week', click."createdAt")` },
-  weekday: { filter: 'numeric', sql: `date_part('dow', click."createdAt")` },
-  day: { filter: 'string', sql: `to_char(click."createdAt", 'YYYY-MM-DD')` },
-  hour: { filter: 'numeric', sql: `date_part('hour', click."createdAt")` },
+  year: {
+    type: FilterTypeEnum.numeric,
+    filter: 'numeric',
+    sql: `date_part('year', click."createdAt")`,
+  },
+  month: {
+    type: FilterTypeEnum.string,
+    filter: FilterTypeEnum.string,
+    sql: `to_char(click."createdAt", 'YYYY-MM')`,
+  },
+  week: {
+    type: FilterTypeEnum.numeric,
+    filter: 'numeric',
+    sql: `date_part('week', click."createdAt")`,
+  },
+  weekday: {
+    type: FilterTypeEnum.numeric,
+    filter: 'numeric',
+    sql: `date_part('dow', click."createdAt")`,
+  },
+  day: {
+    type: FilterTypeEnum.string,
+    filter: 'string',
+    sql: `to_char(click."createdAt", 'YYYY-MM-DD')`,
+  },
+  hour: {
+    type: FilterTypeEnum.numeric,
+    filter: 'numeric',
+    sql: `date_part('hour', click."createdAt")`,
+  },
   dayHour: {
+    type: FilterTypeEnum.string,
     filter: 'string',
     sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:00')`,
   },
 
   // landing
-  source: { filter: null, sql: `source.name`, include: 'source' },
-  campaign: { filter: null, sql: `campaign.name`, include: 'campaign' },
-  stream: { filter: null, sql: `stream.name`, include: 'stream' },
-  offer: { filter: null, sql: `offer.name`, include: 'offer' },
+  source: { type: null, filter: null, sql: `source.name`, include: 'source' },
+  campaign: {
+    type: null,
+    filter: null,
+    sql: `campaign.name`,
+    include: 'campaign',
+  },
+  stream: { type: null, filter: null, sql: `stream.name`, include: 'stream' },
+  offer: { type: null, filter: null, sql: `offer.name`, include: 'offer' },
   affiliateNetwork: {
+    type: null,
     filter: null,
     sql: `affiliateNetwork.name`,
     include: 'affiliateNetwork',
   },
 
-  isUniqueGlobal: { filter: 'boolean' },
-  isUniqueCampaign: { filter: 'boolean' },
-  isUniqueStream: { filter: 'boolean' },
+  isUniqueGlobal: { type: FilterTypeEnum.boolean, filter: 'boolean' },
+  isUniqueCampaign: { type: FilterTypeEnum.boolean, filter: 'boolean' },
+  isUniqueStream: { type: FilterTypeEnum.boolean, filter: 'boolean' },
 
-  destination: { filter: 'string' },
-  emptyReferer: { filter: 'boolean', sql: `referer is null` },
-  referer: { filter: 'string' },
-  keyword: { filter: 'string' },
-  visitorId: { filter: 'string' },
-  externalId: { filter: 'string' },
-  creativeId: { filter: 'string' },
+  destination: { type: FilterTypeEnum.string, filter: 'string' },
+  emptyReferer: {
+    type: FilterTypeEnum.boolean,
+    filter: 'boolean',
+    sql: `referer is null`,
+  },
+  referer: { type: FilterTypeEnum.string, filter: 'string' },
+  keyword: { type: FilterTypeEnum.string, filter: 'string' },
+  visitorId: { type: FilterTypeEnum.string, filter: 'string' },
+  externalId: { type: FilterTypeEnum.string, filter: 'string' },
+  creativeId: { type: FilterTypeEnum.string, filter: 'string' },
 
-  language: { filter: 'list' },
-  isBot: { filter: 'boolean' },
-  deviceType: { filter: 'list' },
-  deviceModel: { filter: 'list' },
-  userAgent: { filter: 'string' },
-  os: { filter: 'list' },
-  osVersion: { filter: 'string' },
-  browser: { filter: 'list' },
-  browserVersion: { filter: 'string' },
-  ip: { filter: 'ip' },
+  language: { type: FilterTypeEnum.string, filter: 'list' },
+  isBot: { type: FilterTypeEnum.boolean, filter: 'boolean' },
+  deviceType: { type: FilterTypeEnum.string, filter: 'list' },
+  deviceModel: { type: FilterTypeEnum.string, filter: 'list' },
+  userAgent: { type: FilterTypeEnum.string, filter: 'string' },
+  os: { type: FilterTypeEnum.string, filter: 'list' },
+  osVersion: { type: FilterTypeEnum.string, filter: 'string' },
+  browser: { type: FilterTypeEnum.string, filter: 'list' },
+  browserVersion: { type: FilterTypeEnum.string, filter: 'string' },
+  ip: { type: FilterTypeEnum.ip, filter: 'ip' },
 
-  isProxy: { filter: 'boolean' },
+  isProxy: { type: FilterTypeEnum.boolean, filter: 'boolean' },
 
-  subId1: { filter: 'string' },
-  subId2: { filter: 'string' },
+  subId1: { type: FilterTypeEnum.string, filter: 'string' },
+  subId2: { type: FilterTypeEnum.string, filter: 'string' },
 
   ip2: {
+    type: FilterTypeEnum.string,
     filter: 'string',
     sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2)`,
   },
   ip3: {
+    type: FilterTypeEnum.string,
     filter: 'string',
     sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2) || '.' || split_part(ip::text, '.', 3)`,
   },

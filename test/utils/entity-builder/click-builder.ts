@@ -62,6 +62,12 @@ export class ClickBuilder {
     return this
   }
 
+  destination(destination: string): this {
+    this.fields.destination = destination
+
+    return this
+  }
+
   cost(cost: number): this {
     this.fields.cost = cost
 

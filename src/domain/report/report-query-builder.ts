@@ -108,11 +108,7 @@ export class ReportQueryBuilder {
     return this
   }
 
-  public where(
-    query: string,
-    operator: string,
-    value: number | string | boolean,
-  ): this {
+  public where(query: string, operator: string, value: unknown): this {
     this.qb = this.qb.where(sql.raw(`${query}`), operator, value)
 
     return this

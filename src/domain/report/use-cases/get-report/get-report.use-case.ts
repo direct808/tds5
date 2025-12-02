@@ -11,75 +11,15 @@ import { FormulaParser } from '@/domain/report/formula-parser'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely } from 'kysely'
 import { DB } from '@generated/kysely'
-import { Direction } from '@/domain/report/types'
+import {
+  Direction,
+  FilterOperatorEnum,
+  FilterOperators,
+  FilterTypeEnum,
+} from '@/domain/report/types'
 import { CheckArgsService } from '@/domain/report/use-cases/get-report/check-args.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { isIPv4 } from 'node:net'
-
-// type OperatorNumeric = 'equal' | 'not_equal' | 'less_then' | 'greater_then'
-// type OperatorList = 'equal' | 'not_equal' | 'in' | 'not_in'
-// type OperatorBoolean = 'is_true' | 'is_false'
-// type OperatorString =
-//   | 'equal'
-//   | 'not_equal'
-//   | 'contains'
-//   | 'not_contains'
-//   | 'match_regexp'
-//   | 'not_match_regexp'
-//   | 'begins_with'
-//   | 'ends_with'
-// type OperatorEqualsOrNot = 'equal' | 'not_equal'
-// type OperatorIp = 'equal' | 'not_equal' | 'begins_with' | 'between'
-
-// type FilterNumeric = {
-//   type: 'numeric'
-//   field: string
-//   operator: OperatorNumeric
-//   value: number
-// }
-//
-// type FilterList = {
-//   type: 'list'
-//   field: string
-//   operator: OperatorList
-//   value: (number | string)[]
-// }
-//
-// type FilterBoolean = {
-//   type: 'boolean'
-//   field: string
-//   operator: OperatorBoolean
-//   value: boolean
-// }
-//
-// type FilterString = {
-//   type: 'string'
-//   field: string
-//   operator: OperatorString
-//   value: string
-// }
-//
-// type FilterEqualsOrNot = {
-//   type: 'equals_or_not'
-//   field: string
-//   operator: OperatorEqualsOrNot
-//   value: string | number
-// }
-//
-// type FilterIp = {
-//   type: 'ip'
-//   field: string
-//   operator: OperatorIp
-//   value: string
-// }
-
-// type Filter =
-//   | FilterNumeric
-//   | FilterList
-//   | FilterBoolean
-//   | FilterString
-//   | FilterEqualsOrNot
-//   | FilterIp
 
 export type GetReportArgs = {
   metrics: string[]
@@ -149,17 +89,167 @@ export class GetReportUseCase {
       } else if (identifier) {
         qb.having(identifier, operator, value)
       } else if (group && group.filter !== null) {
-        this.checkGroupValue(field, group, value)
+        // this.checkGroupValue(field, group, value)
         const query = group.sql ? group.sql : `"${field}"`
-        qb.where(query, operator, value)
+        // qb.where(query, operator, value)
+        this.checkOperator(operator, group.type!)
+        this.buildWhere(qb, group.type, field, query, operator, value)
       } else {
         throw new BadRequestException('Unknown filter: ' + field)
       }
     }
   }
 
+  private checkValue(
+    operator: FilterOperatorEnum,
+    field: string,
+    filterType: FilterTypeEnum,
+    value: unknown,
+  ): void {
+    const valueNeedArray = [
+      FilterOperatorEnum.in,
+      FilterOperatorEnum.not_in,
+      FilterOperatorEnum.between,
+    ].includes(operator)
+
+    if (valueNeedArray && !Array.isArray(value)) {
+      throw new BadRequestException(
+        `Value type for field '${field}' must be a array}`,
+      )
+    }
+
+    if (valueNeedArray && Array.isArray(value) && value.length !== 2) {
+      throw new BadRequestException(`Must be two values for field '${field}'`)
+    }
+
+    switch (filterType) {
+      case FilterTypeEnum.string:
+        if (typeof value !== 'string') {
+          throw new BadRequestException(
+            `Value type for field '${field}' must be a string}`,
+          )
+        }
+        break
+      case FilterTypeEnum.numeric:
+        if (typeof value !== 'number') {
+          throw new BadRequestException(
+            `Value type for field '${field}' must be a number}`,
+          )
+        }
+        break
+      case FilterTypeEnum.boolean:
+        if (typeof value !== 'boolean') {
+          throw new BadRequestException(
+            `Value type for field '${field}' must be a boolean}`,
+          )
+        }
+        break
+      case FilterTypeEnum.ip:
+        if (typeof value !== 'string') {
+          throw new BadRequestException(
+            `Value type for field '${field}' must be a string}`,
+          )
+        }
+        break
+      default:
+        const ft: never = filterType
+        throw new Error('Unknown filter type ' + ft)
+    }
+  }
+
+  private checkOperator(
+    operator: FilterOperatorEnum,
+    type: FilterTypeEnum,
+  ): void {
+    const op = FilterOperators[operator]
+
+    if (!op) {
+      throw new BadRequestException(`Unsupported operator '${operator}'`)
+    }
+
+    if (!op.types.includes(type)) {
+      throw new BadRequestException(`Operator not support for type '${type}'`)
+    }
+  }
+
+  private buildWhere(
+    qb: ReportQueryBuilder,
+    type: string | null,
+    field: string,
+    query: string,
+    operator: FilterOperatorEnum,
+    value: unknown,
+  ): void {
+    switch (operator) {
+      case '>':
+      case '<':
+        qb.where(query, operator, value)
+        break
+      case '=':
+      case '<>':
+        qb.where(query, operator, value)
+        break
+      case 'in':
+        // this.checkArrayValue(field, value)
+        qb.where(query, 'in', value)
+        break
+      case 'not_in':
+        // this.checkArrayValue(field, value)
+        qb.where(query, 'not in', value)
+        break
+      case 'contains':
+        // this.checkStringValue(field, value)
+        qb.where(query, 'ilike', `%${value}%`)
+        break
+      case 'not_contains':
+        // this.checkStringValue(field, value)
+        qb.where(query, 'not ilike', `%${value}%`)
+        break
+      case 'starts_with':
+        // this.checkStringValue(field, value)
+        qb.where(query, 'ilike', `${value}%`)
+        break
+      case 'ends_with':
+        // this.checkStringValue(field, value)
+        qb.where(query, 'ilike', `%${value}`)
+        break
+      case 'regex':
+        // this.checkStringValue(field, value)
+        qb.where(query, '~*', value)
+        break
+      case 'not_regex':
+        // this.checkStringValue(field, value)
+        qb.where(query, '!~*', value)
+        break
+      case 'between':
+        if (this.checkArrayValue(field, value)) {
+          qb.where(query, '>=', value[0])
+          qb.where(query, '<=', value[1])
+        }
+        break
+      default:
+        throw new BadRequestException('Unsupported operator: ' + operator)
+    }
+  }
+
+  private checkArrayValue(field: string, value: unknown): value is unknown[] {
+    if (!Array.isArray(value)) {
+      throw new BadRequestException(`Value for field ${field} must be an array`)
+    }
+
+    return true
+  }
+
+  private checkStringValue(field: string, value: unknown): value is string {
+    if (typeof value !== 'string') {
+      throw new BadRequestException(`Value for field ${field} must be a string`)
+    }
+
+    return true
+  }
+
   private checkGroupValue(field: string, group: Group, value: unknown): void {
-    switch (group.filter) {
+    switch (group.type) {
       case 'boolean':
         if (typeof value !== 'boolean') {
           this.throwInvalidValue(field)
