@@ -13,9 +13,9 @@ CREATE TABLE "affiliate_network" (
     "name" TEXT NOT NULL,
     "offerParams" TEXT,
     "userId" UUID NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deletedAt" TIMESTAMPTZ(6),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "affiliate_network_pkey" PRIMARY KEY ("id")
 );
@@ -28,9 +28,9 @@ CREATE TABLE "campaign" (
     "sourceId" UUID,
     "active" BOOLEAN NOT NULL,
     "userId" UUID NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deletedAt" TIMESTAMPTZ(6),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "campaign_pkey" PRIMARY KEY ("id")
 );
@@ -74,7 +74,7 @@ CREATE TABLE "click" (
     "subId2" TEXT,
     "extraParam1" TEXT,
     "extraParam2" TEXT,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "click_pkey" PRIMARY KEY ("id")
 );
@@ -88,7 +88,7 @@ CREATE TABLE "conversion" (
     "status" TEXT NOT NULL,
     "previousStatus" TEXT,
     "revenue" DECIMAL(12,2),
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "conversion_pkey" PRIMARY KEY ("id")
 );
@@ -100,9 +100,9 @@ CREATE TABLE "offer" (
     "url" TEXT NOT NULL,
     "affiliateNetworkId" UUID,
     "userId" UUID NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deletedAt" TIMESTAMPTZ(6),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "offer_pkey" PRIMARY KEY ("id")
 );
@@ -112,9 +112,9 @@ CREATE TABLE "source" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
     "userId" UUID NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "deletedAt" TIMESTAMPTZ(6),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "source_pkey" PRIMARY KEY ("id")
 );
@@ -151,8 +151,8 @@ CREATE TABLE "user" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
