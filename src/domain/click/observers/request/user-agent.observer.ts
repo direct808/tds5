@@ -20,12 +20,12 @@ export class UserAgentObserver implements ClickObserver {
 
     const data: Partial<ClickData> = {
       userAgent: userAgent,
-      os: parser.os.name || null,
-      osVersion: parser.os.version || null,
-      browser: parser.browser.name || null,
-      browserVersion: parser.browser.version || null,
-      deviceModel: parser.device.model || null,
-      deviceType: parser.device.type || null,
+      os: parser.os.name,
+      osVersion: parser.os.version,
+      browser: parser.browser.name,
+      browserVersion: parser.browser.version,
+      deviceModel: parser.device.model,
+      deviceType: parser.device.type,
     }
 
     Object.assign(clickData, data)
