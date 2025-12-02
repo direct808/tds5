@@ -40,16 +40,19 @@ module.exports = {
     ],
     "no-unused-private-class-members": "error",
     'max-lines-per-function': ['error', { max: 40 }],
+    'max-lines': ['error', { max: 300 }],
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/require-await": "error",
-    "max-classes-per-file": ["error", 1]
+    'max-depth': ['error', 4],
+    'complexity': ['error', 10],
   },
   overrides: [
     {
       files: ['**/*spec.ts'],
       rules: {
         'max-lines-per-function': 'off',
+        'max-lines': 'off',
         'max-params': 'off',
       },
     },
