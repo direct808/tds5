@@ -22,7 +22,7 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
     "padding-line-between-statements": [
       "error",
       { blankLine: "always", prev: "function", next: "*" },
@@ -53,7 +53,8 @@ module.exports = {
         'max-lines-per-function': 'off',
         'max-lines': 'off',
         'max-params': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off'
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        "@typescript-eslint/no-explicit-any": "off",
       },
     },
   ],

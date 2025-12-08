@@ -1,6 +1,3 @@
-import { Group } from '@/domain/report/groups'
-import { s } from '@faker-js/faker/dist/airline-BUL6NtOJ'
-
 type Row = {
   [key: string]: string | number
 }
