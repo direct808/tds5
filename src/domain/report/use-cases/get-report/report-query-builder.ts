@@ -4,6 +4,7 @@ import toSnakeCase from 'to-snake-case'
 import { FilterOperatorEnum } from '@/domain/report/types'
 
 export class ReportQueryBuilder {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private qb: any
   private conversionTypes: string[] | null = null
 
@@ -77,7 +78,8 @@ export class ReportQueryBuilder {
 
   public includeConversionFields(fields: string[]): void {
     const conversionTypes = this.getConversionTypes()
-    const sel: any[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sel: any[] = [] // todo исправить
     for (const key of conversionTypes) {
       if (fields.includes('conversions_' + key)) {
         const conv = this.db.fn

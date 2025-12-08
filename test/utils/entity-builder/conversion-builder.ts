@@ -35,7 +35,7 @@ export class ConversionBuilder {
     return this
   }
 
-  async save(prisma: PrismaClient): Promise<ConversionModel> {
+  save(prisma: PrismaClient): Promise<ConversionModel> {
     return prisma.conversion.create({ data: this.fields })
   }
 }

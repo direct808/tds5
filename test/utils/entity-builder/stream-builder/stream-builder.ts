@@ -26,6 +26,7 @@ export abstract class StreamBuilder {
   }
 
   filters(filters: Filters): this {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.fields.filters = filters as any // todo исправить
 
     return this
