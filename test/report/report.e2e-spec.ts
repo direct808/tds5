@@ -3,7 +3,10 @@ import request from 'supertest'
 import { createAuthUser } from '../utils/helpers'
 import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
-import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
+import {
+  CampaignBuilder,
+  CampaignFull,
+} from '../utils/entity-builder/campaign-builder'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
 import { faker } from '@faker-js/faker'
 import { createClickBuilder } from '../utils/entity-builder/click-builder'
@@ -18,6 +21,7 @@ describe('Report (e2e)', () => {
   let accessToken: string
   let userId: string
   let prisma: PrismaService
+  let campaign: CampaignFull
 
   afterEach(async () => {
     await app.close()
@@ -30,13 +34,12 @@ describe('Report (e2e)', () => {
     const authData = await createAuthUser(app)
     accessToken = authData.accessToken
     userId = authData.user.id
+    campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(prisma)
   })
 
   it('Metric count conversions', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     await createClicksBuilder()
       .campaignId(campaign.id)
       .add()
@@ -84,10 +87,6 @@ describe('Report (e2e)', () => {
   })
 
   it('Metric revenue', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     await createClicksBuilder()
       .campaignId(campaign.id)
       .add((click) =>
@@ -137,10 +136,6 @@ describe('Report (e2e)', () => {
   })
 
   it('roi', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     await createClicksBuilder()
       .campaignId(campaign.id)
       .add((click) =>
@@ -192,12 +187,8 @@ describe('Report (e2e)', () => {
   })
 
   it('clicks', async () => {
-    const campaign1 = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     await createClicksBuilder()
-      .campaignId(campaign1.id)
+      .campaignId(campaign.id)
       .add((click) => click.isUniqueGlobal(true))
       .add((click) => click.isUniqueGlobal(true))
       .add((click) => click.isUniqueGlobal(true))
@@ -236,10 +227,6 @@ describe('Report (e2e)', () => {
   })
 
   it('bots, proxies', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     const clicks = [
       [false, false, null],
       [null, true, null],
@@ -278,10 +265,6 @@ describe('Report (e2e)', () => {
   })
 
   it('cr', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     await createClicksBuilder()
       .campaignId(campaign.id)
       .add()
@@ -325,10 +308,6 @@ describe('Report (e2e)', () => {
   })
 
   it('epc, cp', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     const data = [
       [true, 1.1, 'lead', 1.2],
       [true, 2.1, 'registration', 2.2],
@@ -403,10 +382,6 @@ describe('Report (e2e)', () => {
   })
 
   it('group', async () => {
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .save(prisma)
-
     const source = await SourceBuilder.create()
       .name('Source')
       .userId(userId)
@@ -525,9 +500,7 @@ describe('Report (e2e)', () => {
 
     expect(body).toEqual([
       {
-        // cpa: null,
         clicks: '1',
-
         id: click.id,
         country: 'China',
         city: 'City',
@@ -579,5 +552,32 @@ describe('Report (e2e)', () => {
         isUniqueStream: true,
       },
     ])
+  })
+
+  it('order', async () => {
+    // Arrange
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.createdAt(new Date('2027-06-07')))
+      .add((click) => click.createdAt(new Date('2023-06-07')))
+      .add((click) => click.createdAt(new Date('2025-06-07')))
+      .save(prisma)
+
+    // Act
+    const { body } = await request(app.getHttpServer())
+      .get('/report')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'groups[]': ['year'],
+        'metrics[]': ['clicks'],
+        sortField: 'year',
+        sortOrder: 'asc',
+      })
+      .expect(200)
+
+    const result = body.map((item: any) => item.year)
+
+    // Assert
+    expect(result).toEqual([2023, 2025, 2027])
   })
 })
