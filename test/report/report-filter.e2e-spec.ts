@@ -8,6 +8,7 @@ import { ReportRequestBuilder } from '../utils/click-builders/report-request-bui
 import { createClickBuilder } from '../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import { FilterOperatorEnum as Op } from '@/domain/report/types'
 
 describe('Report Filter (e2e)', () => {
   let app: INestApplication
@@ -47,7 +48,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .groups(['isProxy'])
       .metrics(['bots_pct'])
-      .addFilter('bots_pct', '>', 40)
+      .addFilter('bots_pct', Op['>'], 40)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -68,7 +69,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .groups(['isProxy'])
       .metrics(['clicks'])
-      .addFilter('clicks', '=', 2)
+      .addFilter('clicks', Op['='], 2)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -97,7 +98,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
       // .groups([field])
-      .addFilter(field, '=', value)
+      .addFilter(field, Op['='], value)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -117,7 +118,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
       // .groups(['campaignId'])
-      .addFilter('campaignId', '=', campaignId)
+      .addFilter('campaignId', Op['='], campaignId)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -135,7 +136,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
       // .groups(['campaignId'])
-      .addFilter('emptyReferer', '=', true)
+      .addFilter('emptyReferer', Op['='], true)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -154,7 +155,7 @@ describe('Report Filter (e2e)', () => {
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
-      .addFilter('ip2', '=', '4.3')
+      .addFilter('ip2', Op['='], '4.3')
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -172,7 +173,7 @@ describe('Report Filter (e2e)', () => {
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
-      .addFilter('ip3', '=', '4.3.2')
+      .addFilter('ip3', Op['='], '4.3.2')
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -200,7 +201,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
       // .groups([field])
-      .addFilter(field, '=', value2)
+      .addFilter(field, Op['='], value2)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)

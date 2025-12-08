@@ -1,11 +1,14 @@
 import { INestApplication } from '@nestjs/common'
 import TestAgent from 'supertest/lib/agent'
 import request from 'supertest'
+import { FilterOperatorEnum, InputFilterData } from '@/domain/report/types'
 
 export class ReportRequestBuilder {
   private _groups: string[] | undefined
   private _metrics: string[] | undefined
-  private _filter: any[][] | undefined
+  private _filter: InputFilterData[] | undefined
+  private sortField: string | undefined
+  private sortOrder: 'asc' | 'desc' | undefined
 
   private constructor(private readonly app: INestApplication) {}
 
@@ -25,7 +28,18 @@ export class ReportRequestBuilder {
     return this
   }
 
-  public addFilter(field: string, operation: string, value: unknown): this {
+  public sort(sortField: string, sortOrder: 'asc' | 'desc'): this {
+    this.sortField = sortField
+    this.sortOrder = sortOrder
+
+    return this
+  }
+
+  public addFilter(
+    field: string,
+    operation: FilterOperatorEnum,
+    value: unknown,
+  ): this {
     this._filter = this._filter || []
     this._filter.push([field, operation, value])
 
@@ -45,6 +59,14 @@ export class ReportRequestBuilder {
     }
     if (this._filter) {
       query['filter'] = JSON.stringify(this._filter)
+    }
+
+    if (this.sortField) {
+      query['sortField'] = this.sortField
+    }
+
+    if (this.sortOrder) {
+      query['sortOrder'] = this.sortOrder
     }
 
     return req.get('/report').query(query)

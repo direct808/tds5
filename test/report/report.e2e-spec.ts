@@ -15,6 +15,7 @@ import { OfferBuilder } from '../utils/entity-builder/offer-builder'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ClickUncheckedCreateInput } from '@generated/prisma/models/Click'
+import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -55,21 +56,19 @@ describe('Report (e2e)', () => {
       )
       .save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics([
+        'clicks',
+        'conversions',
+        'conversions_sale',
+        'conversions_lead',
+        'conversions_registration',
+        'conversions_rejected',
+        'conversions_trash',
+        'conversions_deposit',
+      ])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': [
-          'clicks',
-          'conversions',
-          'conversions_sale',
-          'conversions_lead',
-          'conversions_registration',
-          'conversions_rejected',
-          'conversions_trash',
-          'conversions_deposit',
-        ],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -106,20 +105,18 @@ describe('Report (e2e)', () => {
       )
       .save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics([
+        'revenue',
+        'revenue_sale',
+        'revenue_lead',
+        'revenue_registration',
+        'revenue_rejected',
+        'revenue_trash',
+        'revenue_deposit',
+      ])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': [
-          'revenue',
-          'revenue_sale',
-          'revenue_lead',
-          'revenue_registration',
-          'revenue_rejected',
-          'revenue_trash',
-          'revenue_deposit',
-        ],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -157,20 +154,18 @@ describe('Report (e2e)', () => {
       )
       .save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics([
+        'revenue',
+        'cost',
+        'roi',
+        'roi_confirmed',
+        'profit_loss',
+        'profit_loss_confirmed',
+        'approve_pct',
+      ])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': [
-          'revenue',
-          'cost',
-          'roi',
-          'roi_confirmed',
-          'profit_loss',
-          'profit_loss_confirmed',
-          'approve_pct',
-        ],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -197,20 +192,18 @@ describe('Report (e2e)', () => {
       .add((click) => click.isUniqueStream(true))
       .save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics([
+        'clicks',
+        'clicks_unique_global',
+        'clicks_unique_campaign',
+        'clicks_unique_stream',
+        'clicks_unique_global_pct',
+        'clicks_unique_campaign_pct',
+        'clicks_unique_stream_pct',
+      ])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': [
-          'clicks',
-          'clicks_unique_global',
-          'clicks_unique_campaign',
-          'clicks_unique_stream',
-          'clicks_unique_global_pct',
-          'clicks_unique_campaign_pct',
-          'clicks_unique_stream_pct',
-        ],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -245,12 +238,10 @@ describe('Report (e2e)', () => {
 
     await builder.save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks', 'bots', 'bots_pct', 'proxies', 'empty_referer'])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': ['clicks', 'bots', 'bots_pct', 'proxies', 'empty_referer'],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -280,19 +271,17 @@ describe('Report (e2e)', () => {
       .add((click) => click.addConv((c) => c.status('registration')))
       .save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics([
+        'cr',
+        'cr_sale',
+        'cr_deposit',
+        'cr_hold',
+        'cr_registration',
+        'cr_regs_to_deps',
+      ])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': [
-          'cr',
-          'cr_sale',
-          'cr_deposit',
-          'cr_hold',
-          'cr_registration',
-          'cr_regs_to_deps',
-        ],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -330,31 +319,29 @@ describe('Report (e2e)', () => {
 
     await builder.save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
-      .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': [
-          'epc',
-          'uepc',
-          'epc_confirmed',
-          'uepc_confirmed',
-          'epc_hold',
-          'uepc_hold',
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics([
+        'epc',
+        'uepc',
+        'epc_confirmed',
+        'uepc_confirmed',
+        'epc_hold',
+        'uepc_hold',
 
-          'cps',
-          'cpl',
-          'cpr',
-          'cpd',
-          'cpa',
-          'cpc',
-          'ucpc',
-          'ecpc',
-          'ecpm',
-          'ecpm_confirmed',
-          'ucr',
-        ],
-      })
+        'cps',
+        'cpl',
+        'cpr',
+        'cpd',
+        'cpa',
+        'cpc',
+        'ucpc',
+        'ecpc',
+        'ecpm',
+        'ecpm_confirmed',
+        'ucr',
+      ])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     expect(body).toEqual([
@@ -439,63 +426,61 @@ describe('Report (e2e)', () => {
       .campaignId(campaign.id)
       .save(prisma)
 
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .metrics(['clicks'])
+      .groups([
+        'id',
+        'country',
+        'city',
+        'region',
+        'adCampaignId',
+        'campaignId',
+        'previousCampaignId',
+        'offerId',
+        'affiliateNetworkId',
+        'sourceId',
+        'streamId',
+        'dateTime',
+        'year',
+        'month',
+        'week',
+        'weekday',
+        'day',
+        'hour',
+        'dayHour',
+        'source',
+        'campaign',
+        'stream',
+        'offer',
+        'affiliateNetwork',
+        'destination',
+        'emptyReferer',
+        'referer',
+        'keyword',
+        'visitorId',
+        'externalId',
+        'creativeId',
+        'language',
+        'isBot',
+        'deviceType',
+        'deviceModel',
+        'userAgent',
+        'os',
+        'osVersion',
+        'browser',
+        'browserVersion',
+        'ip',
+        'isProxy',
+        'subId1',
+        'subId2',
+        'ip2',
+        'ip3',
+        'isUniqueGlobal',
+        'isUniqueCampaign',
+        'isUniqueStream',
+      ])
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'metrics[]': ['clicks' /*, 'cpa'*/],
-        'groups[]': [
-          'id',
-          'country',
-          'city',
-          'region',
-          'adCampaignId',
-          'campaignId',
-          'previousCampaignId',
-          'offerId',
-          'affiliateNetworkId',
-          'sourceId',
-          'streamId',
-          'dateTime',
-          'year',
-          'month',
-          'week',
-          'weekday',
-          'day',
-          'hour',
-          'dayHour',
-          'source',
-          'campaign',
-          'stream',
-          'offer',
-          'affiliateNetwork',
-          'destination',
-          'emptyReferer',
-          'referer',
-          'keyword',
-          'visitorId',
-          'externalId',
-          'creativeId',
-          'language',
-          'isBot',
-          'deviceType',
-          'deviceModel',
-          'userAgent',
-          'os',
-          'osVersion',
-          'browser',
-          'browserVersion',
-          'ip',
-          'isProxy',
-          'subId1',
-          'subId2',
-          'ip2',
-          'ip3',
-          'isUniqueGlobal',
-          'isUniqueCampaign',
-          'isUniqueStream',
-        ],
-      })
       .expect(200)
 
     expect(body).toEqual([
@@ -564,15 +549,12 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     // Act
-    const { body } = await request(app.getHttpServer())
-      .get('/report')
+    const { body } = await ReportRequestBuilder.create(app)
+      .groups(['year'])
+      .metrics(['clicks'])
+      .sort('year', 'asc')
+      .request()
       .auth(accessToken, { type: 'bearer' })
-      .query({
-        'groups[]': ['year'],
-        'metrics[]': ['clicks'],
-        sortField: 'year',
-        sortOrder: 'asc',
-      })
       .expect(200)
 
     const result = body.map((item: any) => item.year)
