@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ReportService } from '@/domain/report/report.service'
-import { GetReportArgs } from '@/domain/report/use-cases/get-report/get-report.use-case'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 
 @Injectable()

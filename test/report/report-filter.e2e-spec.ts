@@ -181,8 +181,6 @@ describe('Report Filter (e2e)', () => {
     expect(body).toEqual([{ clicks: '1' }])
   })
 
-  // todo id, visitorId
-
   it.each([
     ['country', 'US', 'GB'],
     ['offerId', faker.string.uuid(), faker.string.uuid()],

@@ -26,7 +26,7 @@ export abstract class StreamBuilder {
   }
 
   filters(filters: Filters): this {
-    this.fields.filters = filters as any // todo проверить
+    this.fields.filters = filters as any // todo исправить
 
     return this
   }

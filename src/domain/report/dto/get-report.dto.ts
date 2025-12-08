@@ -6,11 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator'
-import {
-  Direction,
-  FilterOperatorEnum,
-  InputFilterData,
-} from '@/domain/report/types'
+import { Direction, InputFilterData } from '@/domain/report/types'
 import { Transform, TransformFnParams } from 'class-transformer'
 
 export class GetReportDto {
@@ -45,7 +41,5 @@ function transformFilter({ value }: TransformFnParams): object {
     return value
   }
 
-  const obj = JSON.parse(value)
-
-  return obj //.map(transformFilterItem)
+  return JSON.parse(value)
 }

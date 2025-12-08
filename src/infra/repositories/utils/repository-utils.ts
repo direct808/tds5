@@ -1,7 +1,7 @@
 import { ConflictException, NotFoundException } from '@nestjs/common'
 
 interface ObjectLiteral {
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export type NameAndUserId = { name: string; userId: string }

@@ -36,7 +36,10 @@ export class GetReportUseCase {
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async handle(args: GetReportDto, userEmail: string): Promise<any> {
+  public async handle(
+    args: GetReportDto,
+    userEmail: string,
+  ): Promise<Record<string, string | number>> {
     this.checkArgsService.checkArgs(args)
 
     const { usedIdentifiers, identifierMap } = this.getIdentifierMapProxy()
@@ -59,7 +62,7 @@ export class GetReportUseCase {
 
     qb.includeConversionFields(usedIdentifiers)
 
-    console.log(qb.sql())
+    // console.log(qb.sql())
 
     return qb.execute()
   }
