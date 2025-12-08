@@ -22,13 +22,13 @@ describe('FormulaParser', () => {
 
   it('parses simple binary expression', () => {
     const parser = FormulaParser.create(
-      '(a + sumAB + 5) / 12',
+      '(a + -sumAB + 5) / 12',
       identifierMap,
       allFormulas,
     )
 
     expect(parser.build()).toBe(
-      '(((table.a + (table.a + table.b)) + 5) / nullif(12, 0))',
+      '(((table.a + - (table.a + table.b)) + 5) / nullif(12, 0))',
     )
   })
 

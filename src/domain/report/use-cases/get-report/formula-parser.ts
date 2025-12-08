@@ -33,6 +33,8 @@ export class FormulaParser {
     switch (node.type) {
       case 'BinaryExpression':
         return this.processBinaryExpression(node as jsep.BinaryExpression)
+      case 'UnaryExpression':
+        return this.processUnaryExpression(node as jsep.UnaryExpression)
       case 'Identifier':
         return this.replaceIdentifier(node as jsep.Identifier)
       case 'Literal':
@@ -48,6 +50,12 @@ export class FormulaParser {
     const right = node.operator === '/' ? `nullif(${sqlRight}, 0)` : sqlRight
 
     return `(${sqlLeft} ${node.operator} ${right})`
+  }
+
+  private processUnaryExpression(node: jsep.UnaryExpression): string {
+    const sql = this.astToSQL(node.argument)
+
+    return `${node.operator} ${sql}`
   }
 
   private processLiteral(node: jsep.Literal): string {
