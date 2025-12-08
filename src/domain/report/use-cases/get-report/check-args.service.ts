@@ -11,20 +11,20 @@ export class CheckArgsService {
     this.checkContainOrderField(args)
   }
 
-  private checkExistOrderField(name?: string): void {
-    if (!name) {
+  private checkExistOrderField(sortField?: string): void {
+    if (!sortField) {
       return
     }
 
-    if (this.reportService.getAllGroupFieldNames().includes(name)) {
+    if (this.reportService.getAllGroupFieldNames().includes(sortField)) {
       return
     }
 
-    if (this.reportService.getAllMetricsFieldNames().includes(name)) {
+    if (this.reportService.getAllMetricsFieldNames().includes(sortField)) {
       return
     }
 
-    throw new BadRequestException(`Unknown order fields ${name}`)
+    throw new BadRequestException(`Unknown order fields ${sortField}`)
   }
 
   private checkContainOrderField(args: GetReportDto): void {
