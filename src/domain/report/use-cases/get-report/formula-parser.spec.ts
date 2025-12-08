@@ -36,13 +36,13 @@ describe('FormulaParser', () => {
     const fn = () =>
       FormulaParser.create('asd(5)', identifierMap, allFormulas).build()
 
-    expect(fn).toThrow(BadRequestException)
+    expect(fn).toThrow(`Unsupported node type: CallExpression`)
   })
 
   it('Unsupported identifier type', () => {
     const fn = () =>
       FormulaParser.create('hz', identifierMap, allFormulas).build()
 
-    expect(fn).toThrow(BadRequestException)
+    expect(fn).toThrow('Unsupported identifier type: hz')
   })
 })

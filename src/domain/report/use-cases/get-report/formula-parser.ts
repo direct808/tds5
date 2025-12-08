@@ -77,6 +77,6 @@ export class FormulaParser {
       return this.astToSQL(ast)
     }
 
-    throw new Error(`Unsupported identifier type: ${name}`)
+    throw new BadRequestException(`Unsupported identifier type: ${name}`)
   }
 }
