@@ -6,7 +6,11 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator'
-import { Direction } from '@/domain/report/types'
+import {
+  Direction,
+  FilterOperatorEnum,
+  InputFilterData,
+} from '@/domain/report/types'
 import { Transform, TransformFnParams } from 'class-transformer'
 
 export class GetReportDto {
@@ -33,7 +37,7 @@ export class GetReportDto {
   @IsArray({ each: true })
   @ArrayMinSize(3, { each: true })
   @ArrayMaxSize(3, { each: true })
-  filter: string[][] = []
+  filter: InputFilterData[] = []
 }
 
 function transformFilter({ value }: TransformFnParams): object {

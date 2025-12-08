@@ -5,12 +5,14 @@ import {
 } from '@generated/prisma/models/User'
 
 export class UserBuilder {
-  private fields: UserUncheckedCreateInput = {} as UserUncheckedCreateInput
+  private constructor(private readonly fields: UserUncheckedCreateInput) {}
 
-  private constructor() {}
-
-  static create(): UserBuilder {
-    return new this()
+  static create(
+    fields = {
+      timeZone: 'Europe/Moscow',
+    } as UserUncheckedCreateInput,
+  ): UserBuilder {
+    return new this(fields)
   }
 
   email(email: string): UserBuilder {

@@ -44,12 +44,12 @@ describe('Report Filter (e2e)', () => {
 
     expect(body).toEqual({
       error: 'Bad Request',
-      message: 'Unknown filter: unknown_field',
+      message: "Unknown field: 'unknown_field'",
       statusCode: 400,
     })
   })
 
-  it('Group filter null', async () => {
+  it('Disable filter for field', async () => {
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
       .addFilter('source', '=', 'source1')
@@ -59,7 +59,7 @@ describe('Report Filter (e2e)', () => {
 
     expect(body).toEqual({
       error: 'Bad Request',
-      message: 'Unknown filter: source',
+      message: "Filter disable for field 'source'",
       statusCode: 400,
     })
   })
@@ -74,7 +74,7 @@ describe('Report Filter (e2e)', () => {
 
     expect(body).toEqual({
       error: 'Bad Request',
-      message: 'Invalid value for: isUniqueGlobal',
+      message: "Value for field 'isUniqueGlobal' must be a boolean",
       statusCode: 400,
     })
   })
@@ -89,7 +89,7 @@ describe('Report Filter (e2e)', () => {
 
     expect(body).toEqual({
       error: 'Bad Request',
-      message: 'Invalid value for: week',
+      message: "Value for field 'week' must be a number",
       statusCode: 400,
     })
   })
@@ -104,7 +104,7 @@ describe('Report Filter (e2e)', () => {
 
     expect(body).toEqual({
       error: 'Bad Request',
-      message: 'Invalid value for: adCampaignId',
+      message: "Value for field 'adCampaignId' must be a string",
       statusCode: 400,
     })
   })
@@ -361,7 +361,7 @@ describe('Report Filter (e2e)', () => {
     })
   })
 
-  describe('Numeric value', () => {
+  describe.each(['year'])('Numeric value', (field) => {
     it.each([
       ['=', 2025, 200],
       ['<>', 2025, 200],
@@ -385,7 +385,7 @@ describe('Report Filter (e2e)', () => {
 
       const { body } = await ReportRequestBuilder.create(app)
         .metrics(['clicks'])
-        .addFilter('year', operator, filterValue)
+        .addFilter(field, operator, filterValue)
         .request()
         .auth(accessToken, { type: 'bearer' })
         .expect(status)

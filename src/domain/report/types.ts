@@ -1,3 +1,6 @@
+import { Group } from '@/domain/report/groups'
+import { s } from '@faker-js/faker/dist/airline-BUL6NtOJ'
+
 type Row = {
   [key: string]: string | number
 }
@@ -31,37 +34,59 @@ export enum FilterOperatorEnum {
   between = 'between',
 }
 
+export const FILTER_TYPE_MAP: Record<FilterTypeEnum, string> = {
+  number: 'number',
+  boolean: 'boolean',
+  string: 'string',
+  ip: 'string',
+}
+
 export enum FilterTypeEnum {
-  numeric = 'numeric',
+  number = 'number',
   boolean = 'boolean',
   string = 'string',
   ip = 'ip',
 }
 type FilterOperator = {
   types: FilterTypeEnum[]
+  sqlOperator: string
 }
 
 export const FilterOperators: Record<FilterOperatorEnum, FilterOperator> = {
   '=': {
+    sqlOperator: '=',
     types: [
       FilterTypeEnum.string,
-      FilterTypeEnum.numeric,
+      FilterTypeEnum.number,
       FilterTypeEnum.boolean,
       FilterTypeEnum.ip,
     ],
   },
   '<>': {
-    types: [FilterTypeEnum.string, FilterTypeEnum.numeric, FilterTypeEnum.ip],
+    sqlOperator: '<>',
+    types: [FilterTypeEnum.string, FilterTypeEnum.number, FilterTypeEnum.ip],
   },
-  '>': { types: [FilterTypeEnum.numeric] },
-  '<': { types: [FilterTypeEnum.numeric] },
-  in: { types: [FilterTypeEnum.string] },
-  not_in: { types: [FilterTypeEnum.string] },
-  contains: { types: [FilterTypeEnum.string] },
-  not_contains: { types: [FilterTypeEnum.string] },
-  starts_with: { types: [FilterTypeEnum.string, FilterTypeEnum.ip] },
-  ends_with: { types: [FilterTypeEnum.string, FilterTypeEnum.ip] },
-  regex: { types: [FilterTypeEnum.string] },
-  not_regex: { types: [FilterTypeEnum.string] },
-  between: { types: [FilterTypeEnum.numeric] },
+  '>': { sqlOperator: '>', types: [FilterTypeEnum.number] },
+  '<': { sqlOperator: '<', types: [FilterTypeEnum.number] },
+  in: { sqlOperator: 'in', types: [FilterTypeEnum.string] },
+  not_in: { sqlOperator: 'not in', types: [FilterTypeEnum.string] },
+  contains: { sqlOperator: 'ilike', types: [FilterTypeEnum.string] },
+  not_contains: { sqlOperator: 'not ilike', types: [FilterTypeEnum.string] },
+  starts_with: {
+    sqlOperator: '=',
+    types: [FilterTypeEnum.string, FilterTypeEnum.ip],
+  },
+  ends_with: {
+    sqlOperator: '=',
+    types: [FilterTypeEnum.string, FilterTypeEnum.ip],
+  },
+  regex: { sqlOperator: '=', types: [FilterTypeEnum.string] },
+  not_regex: { sqlOperator: '=', types: [FilterTypeEnum.string] },
+  between: { sqlOperator: '=', types: [FilterTypeEnum.number] },
 } as const
+
+export type InputFilterData = [
+  field: string,
+  operaor: FilterOperatorEnum,
+  value: unknown,
+]
