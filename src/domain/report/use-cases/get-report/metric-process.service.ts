@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { ReportQueryBuilder } from '@/domain/report/report-query-builder'
+import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
 import { IdentifierMap } from '@/infra/repositories/report.repository'
 import {
   FieldTypeFormula,
@@ -7,7 +7,7 @@ import {
   FilterFieldTypeEnum,
   getFieldTypeData,
 } from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
-import { FormulaParser } from '@/domain/report/formula-parser'
+import { FormulaParser } from '@/domain/report/use-cases/get-report/formula-parser'
 import { formulas } from '@/domain/report/formulas'
 
 @Injectable()

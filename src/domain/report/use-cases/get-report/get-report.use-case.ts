@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { conversionTypes } from '@/domain/conversion/types'
-import { ReportQueryBuilder } from '@/domain/report/report-query-builder'
+import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
 import {
   IdentifierMap,
   ReportRepository,

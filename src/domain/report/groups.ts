@@ -60,7 +60,6 @@ export const groups: Groups = {
     sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:00')`,
   },
 
-  // landing
   source: {
     type: FilterTypeEnum.string,
     disableFilter: true,
@@ -125,12 +124,10 @@ export const groups: Groups = {
 
   ip2: {
     type: FilterTypeEnum.string,
-
     sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2)`,
   },
   ip3: {
     type: FilterTypeEnum.string,
-
     sql: `split_part(ip::text, '.', 1) || '.' || split_part(ip::text, '.', 2) || '.' || split_part(ip::text, '.', 3)`,
   },
 }

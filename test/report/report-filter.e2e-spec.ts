@@ -74,8 +74,6 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    // console.log(body)
-
     expect(body).toEqual([{ isProxy: false, clicks: '2' }])
   })
 
@@ -97,12 +95,10 @@ describe('Report Filter (e2e)', () => {
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
-      // .groups([field])
       .addFilter(field, Op['='], value)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
-    // console.log(body)
 
     expect(body).toEqual([{ clicks: '1' }])
   })
@@ -117,12 +113,10 @@ describe('Report Filter (e2e)', () => {
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
-      // .groups(['campaignId'])
       .addFilter('campaignId', Op['='], campaignId)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
-    // console.log(body)
 
     expect(body).toEqual([{ clicks: '1' }])
   })
@@ -135,12 +129,10 @@ describe('Report Filter (e2e)', () => {
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
-      // .groups(['campaignId'])
       .addFilter('emptyReferer', Op['='], true)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
-    // console.log(body)
 
     expect(body).toEqual([{ clicks: '1' }])
   })
@@ -198,12 +190,10 @@ describe('Report Filter (e2e)', () => {
 
     const { body } = await ReportRequestBuilder.create(app)
       .metrics(['clicks'])
-      // .groups([field])
       .addFilter(field, Op['='], value2)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
-    // console.log(body)
 
     expect(body).toEqual([{ clicks: '1' }])
   })

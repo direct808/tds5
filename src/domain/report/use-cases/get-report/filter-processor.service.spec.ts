@@ -1,5 +1,5 @@
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
-import { ReportQueryBuilder } from '@/domain/report/report-query-builder'
+import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
 import { FilterOperatorEnum as Operators } from '@/domain/report/types'
 import { IdentifierMap } from '@/infra/repositories/report.repository'
 import { spyOn } from '../../../../../test/utils/helpers'
@@ -44,7 +44,6 @@ describe('FilterProcessorService', () => {
 
     service.process(qb, identifierMap, [['ucr', Operators['='], 2]])
 
-    // expect(fn).toThrow("Unknown field: 'Bad'")
     expect(checkFilterData).toHaveBeenCalledTimes(1)
     expect(having).toHaveBeenCalledTimes(1)
   })

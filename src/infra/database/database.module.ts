@@ -16,7 +16,6 @@ import { TransactionFactory } from '@/infra/database/transaction-factory'
       inject: [AppConfig],
       useFactory(config: AppConfig) {
         return {
-          // log: ['query', 'error'],
           dialect: new PostgresDialect({
             pool: new Pool({ connectionString: config.dbUrl }),
           }),

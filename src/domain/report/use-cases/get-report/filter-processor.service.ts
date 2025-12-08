@@ -5,10 +5,10 @@ import {
   FilterTypeEnum,
   InputFilterData,
 } from '@/domain/report/types'
-import { ReportQueryBuilder } from '@/domain/report/report-query-builder'
+import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
 import { IdentifierMap } from '@/infra/repositories/report.repository'
 import { formulas } from '@/domain/report/formulas'
-import { FormulaParser } from '@/domain/report/formula-parser'
+import { FormulaParser } from '@/domain/report/use-cases/get-report/formula-parser'
 import {
   FieldTypeFormula,
   FieldTypeGroup,
