@@ -1,5 +1,6 @@
 import jsep from 'jsep'
 import type { FormulaRecord } from '@/domain/report/types'
+import { BadRequestException } from '@nestjs/common'
 
 type IdentifierMap = Record<string, string>
 
@@ -19,9 +20,13 @@ export class FormulaParser {
   ) {}
 
   public build(): string {
-    const ast = jsep(this.formula)
+    try {
+      const ast = jsep(this.formula)
 
-    return this.astToSQL(ast)
+      return this.astToSQL(ast)
+    } catch (e) {
+      throw new BadRequestException(e)
+    }
   }
 
   private astToSQL(node: jsep.Expression): string {
@@ -33,7 +38,7 @@ export class FormulaParser {
       case 'Literal':
         return this.processLiteral(node as jsep.Literal)
       default:
-        throw new Error(`Unsupported node type: ${node.type}`)
+        throw new BadRequestException(`Unsupported node type: ${node.type}`)
     }
   }
 
