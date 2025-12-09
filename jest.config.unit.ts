@@ -25,7 +25,6 @@ const config: Config = {
     },
   },
   coveragePathIgnorePatterns: [
-    '\\.entity\\.ts',
     '\\.repository\\.ts',
     '\\.dto\\.ts',
     '\\.module\\.ts',
@@ -38,7 +37,6 @@ const config: Config = {
     '/.eslintrc.js',
     '/jest.config.ts',
     '/jest.config.unit.ts',
-    '/src/@types',
   ],
 }
 
