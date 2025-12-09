@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { FilterLogic, FilterObject } from '@/domain/click/stream/filter/types'
-import { ClickRequestBuilder } from '../../utils/click-request-builder'
+import { ClickRequestBuilder } from '../../utils/click-builders/click-request-builder'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '@/domain/click/stream/filter/filters/click-data-text/click-data-text-filter'
@@ -10,7 +10,7 @@ import { FakeIpExpressRequestAdapter } from '../../utils/fake-ip-express-request
 import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 async function addStream(
   prisma: PrismaService,

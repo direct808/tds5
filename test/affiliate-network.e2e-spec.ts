@@ -4,7 +4,7 @@ import { createAuthUser } from './utils/helpers'
 import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-network-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
-import { PrismaClient } from '../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('AffiliateNetworkController (e2e)', () => {

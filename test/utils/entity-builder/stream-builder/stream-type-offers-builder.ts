@@ -1,7 +1,7 @@
 import { StreamBuilder, StreamFull } from './stream-builder'
 import { StreamOfferBuilder, StreamOfferFull } from '../stream-offer-builder'
-import { StreamSchemaEnum } from '../../../../generated/prisma/enums'
-import { PrismaClient } from '../../../../generated/prisma/client'
+import { StreamSchemaEnum } from '@generated/prisma/enums'
+import { PrismaClient } from '@generated/prisma/client'
 
 export class StreamTypeOffersBuilder extends StreamBuilder {
   private streamOffersBuilders: StreamOfferBuilder[] = []

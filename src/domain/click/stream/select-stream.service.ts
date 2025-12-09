@@ -3,6 +3,7 @@ import { FilterService } from './filter/filter.service'
 
 interface StreamSimple {
   id: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: any // todo убери это
 }
 

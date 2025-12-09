@@ -76,13 +76,20 @@ export class ClickRequestBuilder {
     return superTest
   }
 
-  private replaceThen(superTest: Promise<any>): void {
+  private replaceThen(superTest: Promise<unknown>): void {
     const app = this.app
     const waitClickRegistered = this.waitClickRegistered
     const origThen = superTest.then.bind(superTest)
 
-    superTest.then = function (onFulfilled?: any, onRejected?: any): any {
-      return origThen(async (value: any) => {
+    superTest.then = function <TResult1 = unknown, TResult2 = never>(
+      onFulfilled?:
+        | ((value: unknown) => TResult1 | PromiseLike<TResult1>)
+        | null,
+      onRejected?:
+        | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
+        | null,
+    ): Promise<TResult1 | TResult2> {
+      return origThen(async (value: unknown) => {
         try {
           await waitClickRegistered(app)
         } catch (err) {

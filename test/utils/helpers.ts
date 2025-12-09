@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserBuilder } from './entity-builder/user-builder'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { UserModel } from '../../generated/prisma/models/User'
+import { UserModel } from '@generated/prisma/models/User'
 
 async function authUser(
   app: INestApplication,
@@ -38,9 +38,6 @@ export function spyOn<T extends object>(
   service: T,
   key: string,
 ): jest.SpyInstance {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return jest.spyOn(service, key as any)
-}
-
-export function mockWrap(method: (...args: any[]) => any): jest.Mock {
-  return method as jest.Mock
 }

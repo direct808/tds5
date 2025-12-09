@@ -9,7 +9,7 @@ import { GEO_IP_PROVIDER } from '@/domain/geo-ip/types'
 import { FakeGeoIpService } from '../utils/fake-geo-Ip-service'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { ClickRequestBuilder } from '../utils/click-request-builder'
+import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 import { Decimal } from '@prisma/client/runtime/client'
 
 describe('Click-data (e2e)', () => {

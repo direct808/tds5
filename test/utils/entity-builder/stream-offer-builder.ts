@@ -1,9 +1,9 @@
 import { OfferBuilder, OfferFull } from './offer-builder'
-import { PrismaClient } from '../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   StreamOfferGetPayload,
   StreamOfferUncheckedCreateInput,
-} from '../../../generated/prisma/models/StreamOffer'
+} from '@generated/prisma/models/StreamOffer'
 
 export type StreamOfferFull = StreamOfferGetPayload<{
   include: { offer: { include: { affiliateNetwork: true } } }

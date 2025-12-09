@@ -1,9 +1,9 @@
 import { Filters } from '@/domain/click/stream/filter/types'
-import { PrismaClient } from '../../../../generated/prisma/client'
+import { PrismaClient } from '@generated/prisma/client'
 import {
   StreamGetPayload,
   StreamUncheckedCreateInput,
-} from '../../../../generated/prisma/models/Stream'
+} from '@generated/prisma/models/Stream'
 
 export type StreamFull = StreamGetPayload<{
   include: {
@@ -26,7 +26,8 @@ export abstract class StreamBuilder {
   }
 
   filters(filters: Filters): this {
-    this.fields.filters = filters as any // todo проверить
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.fields.filters = filters as any // todo исправить
 
     return this
   }

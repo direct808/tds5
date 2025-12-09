@@ -11,7 +11,7 @@ import { finalize, Observable } from 'rxjs'
 export class StartRequestInterceptor implements NestInterceptor {
   private readonly logger = new Logger('StartRequestInterceptor')
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const now = Date.now()
     const name = context.getHandler().name
     this.logger.log(`Start request ${name}`)

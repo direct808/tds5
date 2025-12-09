@@ -2,15 +2,15 @@ import { INestApplication } from '@nestjs/common'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
 import { FilterLogic } from '@/domain/click/stream/filter/types'
-import { ClickRequestBuilder } from '../../utils/click-request-builder'
+import { ClickRequestBuilder } from '../../utils/click-builders/click-request-builder'
 import { DateTime } from 'luxon'
 import { ClickBuilder } from '../../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { ClickModel } from '../../../generated/prisma/models/Click'
-import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
+import { ClickModel } from '@generated/prisma/models/Click'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 async function clickAction(
   app: INestApplication,

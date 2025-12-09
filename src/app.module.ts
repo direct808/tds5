@@ -15,9 +15,11 @@ import { DatabaseModule } from '@/infra/database/database.module'
 import { StartRequestInterceptor } from '@/shared/start-request.interceptor'
 import { AppExceptionFilter } from '@/shared/app-exception.filter'
 import { ConversionModule } from '@/domain/conversion/conversion.module'
+import { ReportModule } from '@/domain/report/report.module'
 
 @Module({
   imports: [
+    ReportModule,
     AppConfigModule,
     DatabaseModule,
     SourceModule,

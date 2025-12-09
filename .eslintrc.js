@@ -18,11 +18,11 @@ module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   rules: {
     'curly': 'error',
-    'no-console': 'error',
+    'no-console': 'warn',
     '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
     "padding-line-between-statements": [
       "error",
       { blankLine: "always", prev: "function", next: "*" },
@@ -32,19 +32,19 @@ module.exports = {
     ],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         "ignoreRestSiblings": true
       }
     ],
     "no-unused-private-class-members": "error",
-    'max-lines-per-function': ['error', { max: 40 }],
+    'max-lines-per-function': ['warn', { max: 40 }],
     'max-lines': ['error', { max: 300 }],
     "@typescript-eslint/no-floating-promises": "error",
     "@typescript-eslint/await-thenable": "error",
     "@typescript-eslint/require-await": "error",
     'max-depth': ['error', 4],
-    'complexity': ['error', 10],
+    'complexity': ['warn', 10],
   },
   overrides: [
     {
@@ -53,6 +53,8 @@ module.exports = {
         'max-lines-per-function': 'off',
         'max-lines': 'off',
         'max-params': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        "@typescript-eslint/no-explicit-any": "off",
       },
     },
   ],

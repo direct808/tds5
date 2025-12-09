@@ -1,11 +1,8 @@
 import { StreamBuilder, StreamFull } from './stream-builder'
 import { CampaignBuilder } from '../campaign-builder'
-import {
-  StreamActionTypeEnum,
-  StreamSchemaEnum,
-} from '../../../../generated/prisma/enums'
-import { PrismaClient } from '../../../../generated/prisma/client'
-import { CampaignModel } from '../../../../generated/prisma/models/Campaign'
+import { StreamActionTypeEnum, StreamSchemaEnum } from '@generated/prisma/enums'
+import { PrismaClient } from '@generated/prisma/client'
+import { CampaignModel } from '@generated/prisma/models/Campaign'
 
 export class StreamTypeActionBuilder extends StreamBuilder {
   private actionCampaignBuilder?: CampaignBuilder

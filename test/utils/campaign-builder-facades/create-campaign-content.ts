@@ -4,7 +4,7 @@ import {
 } from '../entity-builder/campaign-builder'
 import { faker } from '@faker-js/faker'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { StreamActionTypeEnum } from '../../../generated/prisma/enums'
+import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 type CreateCampaignContentArgs = {
   prisma: PrismaService
