@@ -1,7 +1,6 @@
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql/build/postgresql-container'
 import { truncateTables } from './truncate-tables'
-// import { migrateDbPush } from '@prisma/internals'
 import execa from 'execa'
 
 export default async function (): Promise<void> {

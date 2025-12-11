@@ -1,5 +1,14 @@
 import { Expose } from 'class-transformer'
 import { IsInt, IsOptional, IsPort, IsString } from 'class-validator'
+import { env } from 'prisma/config'
+
+export const postbackKey = (): string => {
+  return env('POSTBACK_KEY')
+}
+export const nodeEnv = (): string | undefined => {
+  // eslint-disable-next-line no-process-env
+  return process.env.NODE_ENV
+}
 
 export class AppConfig {
   @IsPort()

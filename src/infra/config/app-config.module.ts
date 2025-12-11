@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { resolve } from 'node:path'
 import { plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
-import { AppConfig } from './app-config.service'
+import { AppConfig, nodeEnv } from './app-config.service'
 
 function validate(config: Record<string, unknown>): AppConfig {
   const validatedConfig = plainToInstance(AppConfig, config, {
@@ -23,7 +23,7 @@ function validate(config: Record<string, unknown>): AppConfig {
 @Module({
   imports: [
     ConfigModule.forRoot({
-      ignoreEnvFile: process.env.NODE_ENV === 'test',
+      ignoreEnvFile: nodeEnv() === 'test',
       envFilePath: resolve(process.cwd(), './.env'),
     }),
   ],
