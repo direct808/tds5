@@ -168,6 +168,108 @@ CREATE UNIQUE INDEX "campaign_code_key" ON "campaign"("code");
 CREATE INDEX "campaign_userId_idx" ON "campaign"("userId");
 
 -- CreateIndex
+CREATE INDEX "click_campaignId_idx" ON "click"("campaignId");
+
+-- CreateIndex
+CREATE INDEX "click_previousCampaignId_idx" ON "click"("previousCampaignId");
+
+-- CreateIndex
+CREATE INDEX "click_offerId_idx" ON "click"("offerId");
+
+-- CreateIndex
+CREATE INDEX "click_affiliateNetworkId_idx" ON "click"("affiliateNetworkId");
+
+-- CreateIndex
+CREATE INDEX "click_sourceId_idx" ON "click"("sourceId");
+
+-- CreateIndex
+CREATE INDEX "click_streamId_idx" ON "click"("streamId");
+
+-- CreateIndex
+CREATE INDEX "click_destination_idx" ON "click"("destination");
+
+-- CreateIndex
+CREATE INDEX "click_isUniqueGlobal_idx" ON "click"("isUniqueGlobal");
+
+-- CreateIndex
+CREATE INDEX "click_isUniqueCampaign_idx" ON "click"("isUniqueCampaign");
+
+-- CreateIndex
+CREATE INDEX "click_isUniqueStream_idx" ON "click"("isUniqueStream");
+
+-- CreateIndex
+CREATE INDEX "click_isProxy_idx" ON "click"("isProxy");
+
+-- CreateIndex
+CREATE INDEX "click_country_idx" ON "click"("country");
+
+-- CreateIndex
+CREATE INDEX "click_region_idx" ON "click"("region");
+
+-- CreateIndex
+CREATE INDEX "click_city_idx" ON "click"("city");
+
+-- CreateIndex
+CREATE INDEX "click_ip_idx" ON "click"("ip");
+
+-- CreateIndex
+CREATE INDEX "click_referer_idx" ON "click"("referer");
+
+-- CreateIndex
+CREATE INDEX "click_userAgent_idx" ON "click"("userAgent");
+
+-- CreateIndex
+CREATE INDEX "click_language_idx" ON "click"("language");
+
+-- CreateIndex
+CREATE INDEX "click_isBot_idx" ON "click"("isBot");
+
+-- CreateIndex
+CREATE INDEX "click_deviceType_idx" ON "click"("deviceType");
+
+-- CreateIndex
+CREATE INDEX "click_os_idx" ON "click"("os");
+
+-- CreateIndex
+CREATE INDEX "click_osVersion_idx" ON "click"("osVersion");
+
+-- CreateIndex
+CREATE INDEX "click_browser_idx" ON "click"("browser");
+
+-- CreateIndex
+CREATE INDEX "click_browserVersion_idx" ON "click"("browserVersion");
+
+-- CreateIndex
+CREATE INDEX "click_deviceModel_idx" ON "click"("deviceModel");
+
+-- CreateIndex
+CREATE INDEX "click_keyword_idx" ON "click"("keyword");
+
+-- CreateIndex
+CREATE INDEX "click_source_idx" ON "click"("source");
+
+-- CreateIndex
+CREATE INDEX "click_externalId_idx" ON "click"("externalId");
+
+-- CreateIndex
+CREATE INDEX "click_creativeId_idx" ON "click"("creativeId");
+
+-- CreateIndex
+CREATE INDEX "click_adCampaignId_idx" ON "click"("adCampaignId");
+
+-- CreateIndex
+CREATE INDEX "click_subId1_idx" ON "click"("subId1");
+
+-- CreateIndex
+CREATE INDEX "click_subId2_idx" ON "click"("subId2");
+
+-- CreateIndex
+CREATE INDEX "click_extraParam1_idx" ON "click"("extraParam1");
+
+-- CreateIndex
+CREATE INDEX "click_extraParam2_idx" ON "click"("extraParam2");
+
+-- CreateIndex
 CREATE INDEX "conversion_clickId_idx" ON "conversion"("clickId");
 
 -- CreateIndex

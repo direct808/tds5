@@ -17,36 +17,47 @@ module.exports = {
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
-    'curly': 'error',
+    curly: 'error',
     'no-console': 'warn',
+    'no-process-env': 'warn',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
-    "padding-line-between-statements": [
-      "error",
-      { blankLine: "always", prev: "function", next: "*" },
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: 'function', next: '*' },
       { blankLine: 'always', prev: 'import', next: '*' },
       { blankLine: 'never', prev: 'import', next: 'import' },
-      { blankLine: "always", prev: "*", next: "return" },
+      { blankLine: 'always', prev: '*', next: 'return' },
     ],
-    'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
+    'lines-between-class-members': [
+      'error',
+      'always',
+      { exceptAfterSingleLine: true },
+    ],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
       {
-        "ignoreRestSiblings": true
-      }
+        ignoreRestSiblings: true,
+      },
     ],
-    "no-unused-private-class-members": "error",
+    'no-unused-private-class-members': 'error',
     'max-lines-per-function': ['warn', { max: 40 }],
     'max-lines': ['error', { max: 300 }],
-    "@typescript-eslint/no-floating-promises": "error",
-    "@typescript-eslint/await-thenable": "error",
-    "@typescript-eslint/require-await": "error",
+    '@typescript-eslint/no-floating-promises': 'error',
+    '@typescript-eslint/await-thenable': 'error',
+    '@typescript-eslint/require-await': 'error',
     'max-depth': ['error', 4],
-    'complexity': ['warn', 10],
+    complexity: ['warn', 10],
   },
   overrides: [
+    {
+      files: ['test/**/*.ts'],
+      rules: {
+        'no-process-env': 'off',
+      },
+    },
     {
       files: ['**/*spec.ts'],
       rules: {
@@ -54,8 +65,8 @@ module.exports = {
         'max-lines': 'off',
         'max-params': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
-        "@typescript-eslint/no-explicit-any": "off",
+        '@typescript-eslint/no-explicit-any': 'off',
       },
     },
   ],
-};
+}

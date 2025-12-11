@@ -1,5 +1,4 @@
 import { Controller, Get, Req } from '@nestjs/common'
-import * as process from 'node:process'
 import { SkipAuth } from '@/domain/auth/types'
 import { ConversionService } from '@/domain/conversion/conversion.service'
 import { Request } from 'express'
@@ -9,8 +8,9 @@ import {
   PostbackEvent,
   postbackEventName,
 } from '@/domain/conversion/events/postback.event'
+import { postbackKey } from '@/infra/config/app-config.service'
 
-@Controller(process.env.POSTBACK_KEY!)
+@Controller(postbackKey())
 export class ConversionController {
   constructor(
     private readonly conversionService: ConversionService,
