@@ -23,7 +23,6 @@ export class StreamRepository {
     id: string,
     data: Partial<StreamCreateInput>,
   ): Promise<void> {
-    // await manager.update(Stream, id, args)
     await prismaTransaction(trx).get().stream.update({ where: { id }, data })
   }
 

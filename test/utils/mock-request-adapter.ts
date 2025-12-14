@@ -15,14 +15,22 @@ export class MockRequestAdapter implements RequestAdapter {
 
   static create(data?: MockRequestAdapterData): MockRequestAdapter {
     data = data || {}
+    data.query ??= {}
 
     return new MockRequestAdapter(data)
   }
 
   private constructor(private readonly data: MockRequestAdapterData) {}
 
-  public query(name: string): string | undefined {
-    return this.data.query?.[name]
+  public query(name: string, value: string): this
+  public query(name: string): string | undefined
+  public query(name: string, value?: string): string | undefined | this {
+    if (!value) {
+      return this.data.query?.[name]
+    }
+    this.data.query![name] = value
+
+    return this
   }
 
   public queryObject(): object {

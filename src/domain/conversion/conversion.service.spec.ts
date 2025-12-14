@@ -1,7 +1,7 @@
 import { MockRequestAdapter } from '../../../test/utils/mock-request-adapter'
 import { Test, TestingModule } from '@nestjs/testing'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
-import { ConversionStatusService } from '@/domain/conversion/conversion-status.service'
+import { ConversionTypeService } from '@/domain/conversion/conversion-type.service'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { ConversionService } from '@/domain/conversion/conversion.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
@@ -17,7 +17,7 @@ describe('conversion.service.ts', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConversionService,
-        ConversionStatusService,
+        ConversionTypeService,
         EventEmitter2,
         {
           provide: ConversionRepository,

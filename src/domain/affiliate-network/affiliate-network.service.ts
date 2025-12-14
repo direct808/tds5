@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-// import { AffiliateNetwork } from './affiliate-network.entity'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   affiliateNetworkEventName,
