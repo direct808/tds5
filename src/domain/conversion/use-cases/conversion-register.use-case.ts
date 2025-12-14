@@ -27,6 +27,7 @@ export class ConversionRegisterUseCase {
   async handle(requestAdapter: RequestAdapter): Promise<void> {
     const clickId = requestAdapter.query('subid')
     const originalStatus = requestAdapter.query('status')
+    const tid = requestAdapter.query('tid')
 
     if (!originalStatus || !clickId) {
       return
@@ -38,9 +39,6 @@ export class ConversionRegisterUseCase {
 
       return
     }
-
-    const existsConversion =
-      await this.conversionRepository.getByClickId(clickId)
 
     const type = this.conversionTypeService.getType(
       originalStatus,
@@ -57,8 +55,14 @@ export class ConversionRegisterUseCase {
       status: type,
       clickId: click.id,
       originalStatus,
+      tid,
       params: requestAdapter.queryObject(),
     }
+
+    const existsConversion = await this.conversionRepository.getByClickIdAndTid(
+      clickId,
+      tid,
+    )
 
     if (existsConversion) {
       data.previousStatus = existsConversion.status

@@ -116,12 +116,11 @@ describe('Conversion (e2e)', () => {
       expect.objectContaining({
         clickId: click.id,
         originalStatus: 'sale',
+        status: 'sale',
         params: {
           status: 'sale',
           subid: click.id,
         },
-        previousStatus: null,
-        status: 'sale',
       }),
     )
   })
@@ -152,6 +151,77 @@ describe('Conversion (e2e)', () => {
         },
         previousStatus: null,
         status: 'sale',
+      }),
+    )
+  })
+
+  it('Вторая конверсия с тем же subid должна перезаписаться', async () => {
+    const click = await ClickBuilder.create()
+      .campaignId(campaign.id)
+      .id('sub-id')
+      .save(prisma)
+
+    const requestAdapter = MockRequestAdapter.create().query('subid', click.id)
+
+    await usecase.handle(requestAdapter.query('status', 'lead'))
+    await usecase.handle(requestAdapter.query('status', 'sale'))
+
+    const conversions = await conversionRepository.getList()
+    expect(conversions.length).toBe(1)
+    expect(conversions[0]).toEqual(
+      expect.objectContaining({
+        clickId: click.id,
+        originalStatus: 'sale',
+        previousStatus: 'lead',
+        status: 'sale',
+        params: {
+          status: 'sale',
+          subid: click.id,
+        },
+      }),
+    )
+  })
+
+  it('Вторая конверсия с тем же subid, но с tid должна создаться', async () => {
+    const click = await ClickBuilder.create()
+      .campaignId(campaign.id)
+      .id('sub-id')
+      .save(prisma)
+
+    const requestAdapter = MockRequestAdapter.create().query('subid', click.id)
+
+    await usecase.handle(requestAdapter.query('status', 'lead'))
+    await usecase.handle(
+      requestAdapter.query('status', 'sale').query('tid', 'trx-id'),
+    )
+
+    const conversions = await conversionRepository.getList()
+    expect(conversions.length).toBe(2)
+
+    expect(conversions[0]).toEqual(
+      expect.objectContaining({
+        clickId: click.id,
+        originalStatus: 'sale',
+        status: 'sale',
+        tid: 'trx-id',
+        params: {
+          status: 'sale',
+          subid: click.id,
+          tid: 'trx-id',
+        },
+      }),
+    )
+
+    expect(conversions[1]).toEqual(
+      expect.objectContaining({
+        clickId: click.id,
+        originalStatus: 'lead',
+        status: 'lead',
+        tid: null,
+        params: {
+          status: 'lead',
+          subid: click.id,
+        },
       }),
     )
   })
