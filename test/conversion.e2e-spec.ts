@@ -6,7 +6,6 @@ import {
   CampaignFull,
 } from './utils/entity-builder/campaign-builder'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
-import { ClickRepository } from '@/infra/repositories/click.repository'
 import { flushRedisDb, truncateTables } from './utils/truncate-tables'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ConversionRegisterUseCase } from '@/domain/conversion/use-cases/conversion-register.use-case'
@@ -16,7 +15,6 @@ import { ClickBuilder } from './utils/entity-builder/click-builder'
 describe('Conversion (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
-  let clickRepository: ClickRepository
   let conversionRepository: ConversionRepository
   let usecase: ConversionRegisterUseCase
   let userId: string
@@ -30,7 +28,6 @@ describe('Conversion (e2e)', () => {
     await Promise.all([truncateTables(), flushRedisDb()])
     app = await createApp()
     prisma = app.get(PrismaService)
-    clickRepository = app.get(ClickRepository)
     conversionRepository = app.get(ConversionRepository)
     usecase = app.get(ConversionRegisterUseCase)
 
