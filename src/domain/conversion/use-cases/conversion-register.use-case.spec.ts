@@ -61,9 +61,6 @@ describe('ConversionRegisterUseCase', () => {
       .query('foo', 'bar')
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
-    // conversionRepo.getByClickIdAndTid.mockResolvedValue(null)
-    // conversionTypeService.getType.mockReturnValue('approved')
-    // conversionRepo.create.mockResolvedValue('conv-1')
 
     await useCase.handle(requestAdapter)
 
