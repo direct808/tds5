@@ -15,7 +15,7 @@ async function globalSetup(): Promise<void> {
     setEnv(data)
   }
 
-  await execa('npx', ['prisma', 'db', 'push', '--force-reset'], {
+  await execa('npx', ['prisma', 'migrate', 'reset', '--force'], {
     stdio: 'inherit',
   })
 

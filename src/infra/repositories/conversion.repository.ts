@@ -20,15 +20,13 @@ export class ConversionRepository {
     return res.id
   }
 
-  public async getByClickIdAndTid(
+  public getByClickIdAndTid(
     clickId: string,
     tid: string | undefined,
   ): Promise<ConversionModel | null> {
-    const list = await this.prisma.conversion.findMany({
+    return this.prisma.conversion.findFirst({
       where: { clickId, tid },
     })
-
-    return list[0]
   }
 
   public getById(id: string): Promise<ConversionModel | null> {

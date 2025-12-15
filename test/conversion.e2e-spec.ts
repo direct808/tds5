@@ -5,16 +5,10 @@ import {
   CampaignBuilder,
   CampaignFull,
 } from './utils/entity-builder/campaign-builder'
-import { ClickRequestBuilder } from './utils/click-builders/click-request-builder'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { flushRedisDb, truncateTables } from './utils/truncate-tables'
-import { PostbackRequestBuilder } from './utils/postback-request-builder'
-import { waitConversionRegistered } from './utils/waitConversionRegister'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { EventEmitter2 } from '@nestjs/event-emitter'
-import { spyOn } from './utils/helpers'
-import { setTimeout } from 'timers/promises'
 import { ConversionRegisterUseCase } from '@/domain/conversion/use-cases/conversion-register.use-case'
 import { MockRequestAdapter } from './utils/mock-request-adapter'
 import { ClickBuilder } from './utils/entity-builder/click-builder'
