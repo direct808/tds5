@@ -46,12 +46,12 @@ describe('Report (e2e)', () => {
       .add((click) =>
         click
           .cost(4)
-          .addConv((c) => c.status('sale'))
-          .addConv((c) => c.status('lead'))
-          .addConv((c) => c.status('registration'))
-          .addConv((c) => c.status('rejected'))
-          .addConv((c) => c.status('trash'))
-          .addConv((c) => c.status('deposit')),
+          .addConv((c) => c.tid('1').status('sale'))
+          .addConv((c) => c.tid('2').status('lead'))
+          .addConv((c) => c.tid('3').status('registration'))
+          .addConv((c) => c.tid('4').status('rejected'))
+          .addConv((c) => c.tid('5').status('trash'))
+          .addConv((c) => c.tid('6').status('deposit')),
       )
       .save(prisma)
 
@@ -89,18 +89,18 @@ describe('Report (e2e)', () => {
       .campaignId(campaign.id)
       .add((click) =>
         click
-          .addConv((c) => c.revenue(3.1233).status('sale'))
-          .addConv((c) => c.revenue(2.643).status('lead')),
+          .addConv((c) => c.tid('1').revenue(3.1233).status('sale'))
+          .addConv((c) => c.tid('2').revenue(2.643).status('lead')),
       )
       .add((click) =>
         click
           .cost(4)
-          .addConv((c) => c.revenue(1.1).status('sale'))
-          .addConv((c) => c.revenue(2.2).status('lead'))
-          .addConv((c) => c.revenue(3.3).status('registration'))
-          .addConv((c) => c.revenue(4.432).status('rejected'))
-          .addConv((c) => c.revenue(5.1234).status('trash'))
-          .addConv((c) => c.revenue(6.31232).status('deposit')),
+          .addConv((c) => c.tid('1').revenue(1.1).status('sale'))
+          .addConv((c) => c.tid('2').revenue(2.2).status('lead'))
+          .addConv((c) => c.tid('3').revenue(3.3).status('registration'))
+          .addConv((c) => c.tid('4').revenue(4.432).status('rejected'))
+          .addConv((c) => c.tid('5').revenue(5.1234).status('trash'))
+          .addConv((c) => c.tid('6').revenue(6.31232).status('deposit')),
       )
       .save(prisma)
 
@@ -137,19 +137,19 @@ describe('Report (e2e)', () => {
       .add((click) =>
         click
           .cost(1.33)
-          .addConv((c) => c.revenue(3.1233).status('sale'))
-          .addConv((c) => c.revenue(4.56).status('lead'))
-          .addConv((c) => c.revenue(2.643).status('lead')),
+          .addConv((c) => c.tid('1').revenue(3.1233).status('sale'))
+          .addConv((c) => c.tid('2').revenue(4.56).status('lead'))
+          .addConv((c) => c.tid('3').revenue(2.643).status('lead')),
       )
       .add((click) =>
         click
           .cost(4.7)
-          .addConv((c) => c.revenue(1.1).status('sale'))
-          .addConv((c) => c.revenue(2.2).status('lead'))
-          .addConv((c) => c.revenue(3.3).status('registration'))
-          .addConv((c) => c.revenue(4.432).status('rejected'))
-          .addConv((c) => c.revenue(5.1234).status('trash'))
-          .addConv((c) => c.revenue(6.31232).status('deposit')),
+          .addConv((c) => c.tid('1').revenue(1.1).status('sale'))
+          .addConv((c) => c.tid('2').revenue(2.2).status('lead'))
+          .addConv((c) => c.tid('3').revenue(3.3).status('registration'))
+          .addConv((c) => c.tid('4').revenue(4.432).status('rejected'))
+          .addConv((c) => c.tid('5').revenue(5.1234).status('trash'))
+          .addConv((c) => c.tid('6').revenue(6.31232).status('deposit')),
       )
       .save(prisma)
 

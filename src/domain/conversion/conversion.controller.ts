@@ -1,6 +1,5 @@
 import { Controller, Get, Req } from '@nestjs/common'
 import { SkipAuth } from '@/domain/auth/types'
-import { ConversionService } from '@/domain/conversion/conversion.service'
 import { Request } from 'express'
 import { ExpressRequestAdapter } from '@/shared/request-adapter'
 import { EventEmitter2 } from '@nestjs/event-emitter'
@@ -12,10 +11,7 @@ import { postbackKey } from '@/infra/config/app-config.service'
 
 @Controller(postbackKey())
 export class ConversionController {
-  constructor(
-    private readonly conversionService: ConversionService,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private readonly eventEmitter: EventEmitter2) {}
 
   @Get('postback')
   @SkipAuth()

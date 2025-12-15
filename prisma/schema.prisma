@@ -135,8 +135,10 @@ model Conversion {
   previousStatus String?
   revenue        Decimal? @db.Decimal(12, 2)
   createdAt      DateTime @default(now()) @db.Timestamptz()
+  tid            String?  @db.VarChar(100)
   click          Click    @relation(fields: [clickId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
+  @@unique([clickId, tid])
   @@index([clickId])
   @@map("conversion")
 }

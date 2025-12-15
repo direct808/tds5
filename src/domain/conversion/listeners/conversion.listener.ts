@@ -1,20 +1,19 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
-import { ConversionService } from '@/domain/conversion/conversion.service'
 import {
   PostbackEvent,
   postbackEventName,
 } from '@/domain/conversion/events/postback.event'
+import { ConversionRegisterUseCase } from '@/domain/conversion/use-cases/conversion-register.use-case'
 
 @Injectable()
 export class ConversionListener {
-  private readonly logger = new Logger(ConversionListener.name)
-  constructor(private readonly conversionService: ConversionService) {}
+  constructor(
+    private readonly conversionRegisterUseCase: ConversionRegisterUseCase,
+  ) {}
 
   @OnEvent(postbackEventName)
-  handleCampaignCreatedEvent({ requestAdapter }: PostbackEvent): Promise<void> {
-    this.logger.debug('PostbackEvent')
-
-    return this.conversionService.handle(requestAdapter)
+  handlePostbackEvent({ requestAdapter }: PostbackEvent): Promise<void> {
+    return this.conversionRegisterUseCase.handle(requestAdapter)
   }
 }

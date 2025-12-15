@@ -29,6 +29,12 @@ export class ConversionBuilder {
     return this
   }
 
+  tid(tid: string): this {
+    this.fields.tid = tid
+
+    return this
+  }
+
   revenue(revenue: number): this {
     this.fields.revenue = revenue
 

@@ -11,7 +11,7 @@ export class ConversionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   public getList(): Promise<ConversionModel[]> {
-    return this.prisma.conversion.findMany()
+    return this.prisma.conversion.findMany({ orderBy: { createdAt: 'desc' } })
   }
 
   public async create(data: ConversionUncheckedCreateInput): Promise<string> {
@@ -20,10 +20,13 @@ export class ConversionRepository {
     return res.id
   }
 
-  public async getByClickId(clickId: string): Promise<ConversionModel | null> {
-    const list = await this.prisma.conversion.findMany({ where: { clickId } })
-
-    return list[0]
+  public getByClickIdAndTid(
+    clickId: string,
+    tid: string | undefined,
+  ): Promise<ConversionModel | null> {
+    return this.prisma.conversion.findFirst({
+      where: { clickId, tid },
+    })
   }
 
   public getById(id: string): Promise<ConversionModel | null> {

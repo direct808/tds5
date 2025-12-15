@@ -84,6 +84,7 @@ CREATE TABLE "conversion" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "originalStatus" TEXT,
     "clickId" CHAR(12) NOT NULL,
+    "tid" VARCHAR(100),
     "params" JSONB,
     "status" TEXT NOT NULL,
     "previousStatus" TEXT,
@@ -270,7 +271,7 @@ CREATE INDEX "click_extraParam1_idx" ON "click"("extraParam1");
 CREATE INDEX "click_extraParam2_idx" ON "click"("extraParam2");
 
 -- CreateIndex
-CREATE INDEX "conversion_clickId_idx" ON "conversion"("clickId");
+CREATE UNIQUE INDEX "conversion_clickId_tid_key" ON "conversion"("clickId", "tid");
 
 -- CreateIndex
 CREATE INDEX "offer_userId_idx" ON "offer"("userId");
