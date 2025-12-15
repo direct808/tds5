@@ -42,6 +42,7 @@ export class ConversionRegisterUseCase {
       clickId: click.id,
       originalStatus,
       tid,
+      revenue: requestAdapter.query('revenue'),
       params: requestAdapter.queryObject(),
     }
 

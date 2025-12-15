@@ -186,7 +186,10 @@ describe('Conversion (e2e)', () => {
 
     await usecase.handle(requestAdapter.query('status', 'lead'))
     await usecase.handle(
-      requestAdapter.query('status', 'sale').query('tid', 'trx-id'),
+      requestAdapter
+        .query('status', 'sale')
+        .query('tid', 'trx-id')
+        .query('revenue', '34.54'),
     )
 
     const conversions = await conversionRepository.getList()
@@ -199,12 +202,15 @@ describe('Conversion (e2e)', () => {
         status: 'sale',
         tid: 'trx-id',
         params: {
+          revenue: '34.54',
           status: 'sale',
           subid: click.id,
           tid: 'trx-id',
         },
       }),
     )
+
+    expect(conversions[0].revenue!.toString()).toBe('34.54')
 
     expect(conversions[1]).toEqual(
       expect.objectContaining({
