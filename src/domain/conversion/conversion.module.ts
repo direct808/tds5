@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { ConversionController } from './conversion.controller'
-import { ConversionService } from '@/domain/conversion/conversion.service'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
 import { ConversionTypeService } from '@/domain/conversion/conversion-type.service'
 import { ConversionListener } from '@/domain/conversion/listeners/conversion.listener'
@@ -10,7 +9,6 @@ import { ConversionTypeIterator } from '@/domain/conversion/conversion-type.iter
 @Module({
   controllers: [ConversionController],
   providers: [
-    ConversionService,
     ConversionTypeService,
     ConversionListener,
     ConversionRegisterUseCase,
