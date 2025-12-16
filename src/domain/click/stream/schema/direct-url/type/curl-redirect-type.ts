@@ -1,10 +1,10 @@
 import { URL } from 'url'
 import { Injectable } from '@nestjs/common'
-import { RedirectType, StreamResponse } from '@/domain/click/types'
+import type { RedirectType } from '@/domain/click/types'
 
 @Injectable()
 export class CurlRedirectType implements RedirectType {
-  async handle(url: string): Promise<StreamResponse> {
+  handle: RedirectType['handle'] = async (url) => {
     let content = await fetch(url).then((res) => res.text())
 
     content = this.setBase(content, this.prepareUrl(url))

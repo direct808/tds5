@@ -9,14 +9,14 @@ import {
   ToCampaignActionType,
 } from './type'
 import { MaybePromise } from '@/shared/types'
-import { StreamModel } from '@generated/prisma/models/Stream'
+import { StreamFull } from '@/domain/campaign/types'
 import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 @Injectable()
 export class ActionTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
-  handle(stream: StreamModel): MaybePromise<StreamResponse> {
+  handle(stream: StreamFull): MaybePromise<StreamResponse> {
     if (!stream.actionType) {
       throw new Error('No actionType')
     }

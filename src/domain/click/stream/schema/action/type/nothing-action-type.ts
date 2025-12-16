@@ -1,9 +1,9 @@
-import { ActionType, StreamResponse } from '@/domain/click/types'
+import type { ActionType } from '@/domain/click/types'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class NothingActionType implements ActionType {
-  handle(): StreamResponse {
+  handle: ActionType['handle'] = () => {
     return { content: '' }
   }
 }

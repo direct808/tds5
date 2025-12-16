@@ -15,7 +15,7 @@ export class IpFilter implements StreamFilter {
     private readonly ip: string | null | undefined,
   ) {}
 
-  handle(): boolean {
+  handle: StreamFilter['handle'] = () => {
     if (this.filterObj.values.length === 0) {
       return false
     }
