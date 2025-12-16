@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { RedirectType, StreamResponse } from '@/domain/click/types'
+import type { RedirectType } from '@/domain/click/types'
 
 @Injectable()
 export class JsRedirectType implements RedirectType {
-  handle(url: string): StreamResponse {
+  handle: RedirectType['handle'] = (url) => {
     return {
       content: `<html>
 <head>

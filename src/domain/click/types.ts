@@ -1,6 +1,6 @@
 import type { HttpStatus } from '@nestjs/common'
 import { MaybePromise } from '@/shared/types'
-import { StreamModel } from '@generated/prisma/models/Stream'
+import { StreamFull } from '@/domain/campaign/types'
 
 export type StreamResponse =
   | StreamContentResponse
@@ -26,9 +26,9 @@ export interface RedirectType {
 }
 
 export interface ActionType {
-  handle(stream: StreamModel): MaybePromise<StreamResponse>
+  handle(stream: StreamFull): MaybePromise<StreamResponse>
 }
 
 export interface ResponseHandler {
-  handle(clickResponse: StreamResponse): void
+  handle(streamResponse: StreamResponse): void
 }

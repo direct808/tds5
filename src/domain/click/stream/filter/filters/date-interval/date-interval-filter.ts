@@ -14,7 +14,7 @@ export interface DateIntervalFilterObject extends BaseFilterObject {
 export class DateIntervalFilter implements StreamFilter {
   constructor(private readonly filterObj: DateIntervalFilterObject) {}
 
-  public handle(): boolean {
+  handle: StreamFilter['handle'] = () => {
     const { from, to, timezone } = this.filterObj
     const now = DateTime.now().setZone(timezone)
 

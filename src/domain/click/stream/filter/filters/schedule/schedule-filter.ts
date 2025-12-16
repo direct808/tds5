@@ -22,7 +22,7 @@ type GetTimeResult = { fromTimeMinutes: number; toTimeMinutes: number }
 export class ScheduleFilter implements StreamFilter {
   constructor(private filterObj: ScheduleFilterObj) {}
 
-  public handle(): boolean {
+  handle: StreamFilter['handle'] = () => {
     const now = DateTime.now().setZone(this.filterObj.timezone)
     const currentWeekDay = now.weekday // 1 (Monday) - 7 (Sunday)
     const currentTimeMinutes = now.hour * 60 + now.minute

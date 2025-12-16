@@ -38,7 +38,7 @@ export class ClickDataTextFilter implements StreamFilter {
     private readonly key: keyof Pick<ClickData, ClickDataTextKeys>,
   ) {}
 
-  handle(): boolean {
+  handle: StreamFilter['handle'] = () => {
     const values = this.filterObj.values
 
     if (values.length === 0) {

@@ -54,11 +54,11 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should create a new conversion if not exists', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'click-1')
-      .query('status', 'sale')
-      .query('tid', 'tid-1')
-      .query('revenue', '100')
-      .query('foo', 'bar')
+      .setQuery('subid', 'click-1')
+      .setQuery('status', 'sale')
+      .setQuery('tid', 'tid-1')
+      .setQuery('revenue', '100')
+      .setQuery('foo', 'bar')
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
 
@@ -89,11 +89,11 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should update an existing conversion', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'click-1')
-      .query('status', 'sale')
-      .query('tid', 'tid-1')
-      .query('revenue', '100')
-      .query('foo', 'bar')
+      .setQuery('subid', 'click-1')
+      .setQuery('status', 'sale')
+      .setQuery('tid', 'tid-1')
+      .setQuery('revenue', '100')
+      .setQuery('foo', 'bar')
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
     conversionRepo.getByClickIdAndTid.mockResolvedValue({
@@ -127,9 +127,9 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should not create conversion if no provide subid', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      // .query('subid', 'click-1')
-      .query('status', 'sale')
-      .query('tid', 'tid-1')
+      // .setQuery('subid', 'click-1')
+      .setQuery('status', 'sale')
+      .setQuery('tid', 'tid-1')
 
     await useCase.handle(requestAdapter)
 
@@ -139,9 +139,9 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should not create conversion if no provide status', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'click-1')
-      // .query('status', 'sale')
-      .query('tid', 'tid-1')
+      .setQuery('subid', 'click-1')
+      // .setQuery('status', 'sale')
+      .setQuery('tid', 'tid-1')
 
     await useCase.handle(requestAdapter)
 
@@ -151,9 +151,9 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should not create conversion if tid length more then 50 chars', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'click-1')
-      .query('status', 'sale')
-      .query('tid', new Array(60).fill('1').join(''))
+      .setQuery('subid', 'click-1')
+      .setQuery('status', 'sale')
+      .setQuery('tid', new Array(60).fill('1').join(''))
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
 
@@ -165,9 +165,9 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should not create conversion if click not found', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'click-1')
-      .query('status', 'sale')
-      .query('tid', 'tid-1')
+      .setQuery('subid', 'click-1')
+      .setQuery('status', 'sale')
+      .setQuery('tid', 'tid-1')
 
     await useCase.handle(requestAdapter)
 
@@ -177,9 +177,9 @@ describe('ConversionRegisterUseCase', () => {
 
   it('should not create conversion if unknown status', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'click-1')
-      .query('status', 'hz-status')
-      .query('tid', 'tid-1')
+      .setQuery('subid', 'click-1')
+      .setQuery('status', 'hz-status')
+      .setQuery('tid', 'tid-1')
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
 

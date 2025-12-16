@@ -1,4 +1,4 @@
-import { ResponseHandler, StreamResponse } from '../types'
+import { ResponseHandler } from '../types'
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { ClickData } from '../click-data'
 import { ResponseAdapter } from '@/shared/request-adapter'
@@ -10,21 +10,21 @@ const cookieAge = 30 * 24 * 60 * 60 * 1000 // 30 days
 export class HttpResponseHandler implements ResponseHandler {
   constructor(private readonly clickContext: ClickContext) {}
 
-  public handle(clickResponse: StreamResponse): void {
+  public handle: ResponseHandler['handle'] = (streamResponse) => {
     const response = this.clickContext.getResponseAdapter()
     const clickData = this.clickContext.getClickData()
 
     this.setCookies(response, clickData)
 
-    if ('campaignCode' in clickResponse) {
+    if ('campaignCode' in streamResponse) {
       throw new Error('Action type to campaign not processed')
     }
 
-    response.status(clickResponse.status || HttpStatus.OK)
-    if ('url' in clickResponse) {
-      response.redirect(clickResponse.url)
+    response.status(streamResponse.status || HttpStatus.OK)
+    if ('url' in streamResponse) {
+      response.redirect(streamResponse.url)
     } else {
-      response.send(clickResponse.content)
+      response.send(streamResponse.content)
     }
   }
 

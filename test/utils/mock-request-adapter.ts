@@ -22,32 +22,31 @@ export class MockRequestAdapter implements RequestAdapter {
 
   private constructor(private readonly data: MockRequestAdapterData) {}
 
-  public query(name: string, value: string): this
-  public query(name: string): string | undefined
-  public query(name: string, value?: string): string | undefined | this {
-    if (!value) {
-      return this.data.query?.[name]
-    }
-    this.data.query![name] = value
-
-    return this
+  public query: RequestAdapter['query'] = (name) => {
+    return this.data.query?.[name]
   }
 
-  public queryObject(): object {
+  public queryObject: RequestAdapter['queryObject'] = () => {
     return this.data.query as object
   }
 
-  public cookie(name: string): string | undefined {
+  public cookie: RequestAdapter['cookie'] = (name) => {
     return this.data.cookies?.[name]
   }
 
-  public header(name: HeaderName): string | undefined {
+  public header: RequestAdapter['header'] = (name) => {
     return this.data.headers?.[name]
   }
 
   public setHeader(name: HeaderName, value: string): this {
     this.data.headers = this.data.headers || {}
     this.data.headers[name] = value
+
+    return this
+  }
+
+  public setQuery(name: string, value: string): this {
+    this.data.query![name] = value
 
     return this
   }

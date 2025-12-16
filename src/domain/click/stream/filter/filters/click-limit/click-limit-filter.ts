@@ -23,7 +23,7 @@ export class ClickLimitFilter implements StreamFilter {
     private readonly campaignId: string,
   ) {}
 
-  async handle(): Promise<boolean> {
+  handle: StreamFilter['handle'] = async () => {
     const [checkPerHour, checkPerDay, checkTotal] = await Promise.all([
       this.check('getCountPerHour', 'perHour'),
       this.check('getCountPerDay', 'perDay'),

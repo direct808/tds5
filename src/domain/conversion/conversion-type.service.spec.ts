@@ -20,7 +20,7 @@ describe('conversion-type.service.ts', () => {
   })
 
   it('Should return learning status', () => {
-    const requestProvider = MockRequestAdapter.create().query(
+    const requestProvider = MockRequestAdapter.create().setQuery(
       'sale_status',
       'hz-status',
     )

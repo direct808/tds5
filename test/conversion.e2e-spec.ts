@@ -50,8 +50,8 @@ describe('Conversion (e2e)', () => {
 
   it('Конверсия не должна создаться если передан несуществующий subid и передан статус', async () => {
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', 'hz')
-      .query('status', 'hz-staus')
+      .setQuery('subid', 'hz')
+      .setQuery('status', 'hz-staus')
 
     await usecase.handle(requestAdapter)
 
@@ -65,7 +65,10 @@ describe('Conversion (e2e)', () => {
       .id('sub-id')
       .save(prisma)
 
-    const requestAdapter = MockRequestAdapter.create().query('subid', click.id)
+    const requestAdapter = MockRequestAdapter.create().setQuery(
+      'subid',
+      click.id,
+    )
 
     await usecase.handle(requestAdapter)
 
@@ -80,8 +83,8 @@ describe('Conversion (e2e)', () => {
       .save(prisma)
 
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', click.id)
-      .query('status', 'hz-status')
+      .setQuery('subid', click.id)
+      .setQuery('status', 'hz-status')
 
     await usecase.handle(requestAdapter)
 
@@ -96,8 +99,8 @@ describe('Conversion (e2e)', () => {
       .save(prisma)
 
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', click.id)
-      .query('status', 'sale')
+      .setQuery('subid', click.id)
+      .setQuery('status', 'sale')
 
     await usecase.handle(requestAdapter)
 
@@ -123,9 +126,9 @@ describe('Conversion (e2e)', () => {
       .save(prisma)
 
     const requestAdapter = MockRequestAdapter.create()
-      .query('subid', click.id)
-      .query('status', 'hz-status')
-      .query('sale_status', 'hz-status')
+      .setQuery('subid', click.id)
+      .setQuery('status', 'hz-status')
+      .setQuery('sale_status', 'hz-status')
 
     await usecase.handle(requestAdapter)
 
@@ -152,10 +155,13 @@ describe('Conversion (e2e)', () => {
       .id('sub-id')
       .save(prisma)
 
-    const requestAdapter = MockRequestAdapter.create().query('subid', click.id)
+    const requestAdapter = MockRequestAdapter.create().setQuery(
+      'subid',
+      click.id,
+    )
 
-    await usecase.handle(requestAdapter.query('status', 'lead'))
-    await usecase.handle(requestAdapter.query('status', 'sale'))
+    await usecase.handle(requestAdapter.setQuery('status', 'lead'))
+    await usecase.handle(requestAdapter.setQuery('status', 'sale'))
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -179,14 +185,17 @@ describe('Conversion (e2e)', () => {
       .id('sub-id')
       .save(prisma)
 
-    const requestAdapter = MockRequestAdapter.create().query('subid', click.id)
+    const requestAdapter = MockRequestAdapter.create().setQuery(
+      'subid',
+      click.id,
+    )
 
-    await usecase.handle(requestAdapter.query('status', 'lead'))
+    await usecase.handle(requestAdapter.setQuery('status', 'lead'))
     await usecase.handle(
       requestAdapter
-        .query('status', 'sale')
-        .query('tid', 'trx-id')
-        .query('revenue', '34.54'),
+        .setQuery('status', 'sale')
+        .setQuery('tid', 'trx-id')
+        .setQuery('revenue', '34.54'),
     )
 
     const conversions = await conversionRepository.getList()

@@ -1,13 +1,13 @@
 import { sign } from 'jsonwebtoken'
 import { Injectable } from '@nestjs/common'
-import { RedirectType, StreamResponse } from '@/domain/click/types'
+import type { RedirectType } from '@/domain/click/types'
 import { AppConfig } from '@/infra/config/app-config.service'
 
 @Injectable()
 export class Meta2RedirectType implements RedirectType {
   constructor(private readonly configService: AppConfig) {}
 
-  handle(url: string): StreamResponse {
+  handle: RedirectType['handle'] = (url) => {
     const token = sign({ url }, this.configService.secret, {
       noTimestamp: true,
     })
