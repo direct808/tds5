@@ -38,7 +38,7 @@ export class ClickUniqueFilter implements StreamFilter {
     private readonly clickData: ClickDataUniqueFilter,
   ) {}
 
-  async handle(): Promise<boolean> {
+  handle: StreamFilter['handle'] = async () => {
     const { visitorId, campaignId } = this.clickData
 
     if (!visitorId) {

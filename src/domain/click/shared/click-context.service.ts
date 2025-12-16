@@ -22,7 +22,7 @@ export interface IClickContext {
 export class ClickContext implements IClickContext {
   constructor(private readonly cls: ClsService<ClickContextClsStore>) {}
 
-  getRequestAdapter(): RequestAdapter {
+  public getRequestAdapter: IClickContext['getRequestAdapter'] = () => {
     const adapter = this.cls.get('requestAdapter')
     if (!adapter) {
       throw new Error('No requestAdapter')
@@ -31,7 +31,7 @@ export class ClickContext implements IClickContext {
     return adapter
   }
 
-  setRequestAdapter(adapter: RequestAdapter): void {
+  setRequestAdapter: IClickContext['setRequestAdapter'] = (adapter): void => {
     this.cls.set('requestAdapter', adapter)
   }
 

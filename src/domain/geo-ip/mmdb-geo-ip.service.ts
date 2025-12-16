@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import * as fs from 'node:fs'
-import { GeoIpResult, GeoIpService } from './types'
+import { GeoIpService } from './types'
 import { CityResponse, Reader } from 'mmdb-lib'
 
 @Injectable()
@@ -12,7 +12,7 @@ export class MmdbGeoIpService implements GeoIpService {
     this.reader = new Reader<CityResponse>(db)
   }
 
-  public get(ip: string): GeoIpResult | undefined {
+  public get: GeoIpService['get'] = (ip) => {
     const result = this.reader.get(ip)
     if (!result) {
       return

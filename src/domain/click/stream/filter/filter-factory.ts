@@ -27,7 +27,7 @@ export class FilterFactory implements IStreamFilterFactory {
   ) {}
 
   // eslint-disable-next-line complexity,max-lines-per-function
-  create(filterObj: FilterObjectExtended): StreamFilter {
+  create: IStreamFilterFactory['create'] = (filterObj) => {
     const requestAdapter = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 

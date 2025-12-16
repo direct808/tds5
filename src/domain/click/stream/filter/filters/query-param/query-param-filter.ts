@@ -13,7 +13,7 @@ export class QueryParamFilter implements StreamFilter {
     private readonly request: RequestAdapter,
   ) {}
 
-  handle(): boolean {
+  handle: StreamFilter['handle'] = () => {
     const values = this.filterObj.values
     const name = this.filterObj.name
 
