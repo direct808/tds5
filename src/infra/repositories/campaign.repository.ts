@@ -20,8 +20,6 @@ import {
 export class CampaignRepository
   implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
 {
-  // private readonly repository = this.dataSource.getRepository(Campaign)
-
   constructor(private readonly prisma: PrismaService) {}
 
   public getByNameAndUserId({

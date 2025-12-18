@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { DomainUncheckedCreateInput } from '@generated/prisma/models/Domain'
+import {
+  DomainModel,
+  DomainUncheckedCreateInput,
+} from '@generated/prisma/models/Domain'
 
 @Injectable()
 export class DomainRepository {
@@ -8,5 +11,9 @@ export class DomainRepository {
 
   public async create(data: DomainUncheckedCreateInput): Promise<void> {
     await this.prisma.domain.create({ data })
+  }
+
+  public getListByUserId(userId: string): Promise<DomainModel[]> {
+    return this.prisma.domain.findMany({ where: { userId } })
   }
 }

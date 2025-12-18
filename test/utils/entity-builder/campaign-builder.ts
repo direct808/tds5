@@ -13,6 +13,7 @@ import {
 import { SourceModel } from '@generated/prisma/models/Source'
 import { UserModel } from '@generated/prisma/models/User'
 
+// todo убрать это, заменить на FullCampaign, выяснить почему в FullCampaign неи source
 export type CampaignFull = CampaignGetPayload<{
   include: {
     streams: {

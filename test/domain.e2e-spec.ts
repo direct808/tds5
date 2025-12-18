@@ -7,6 +7,7 @@ import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { createCampaignContent } from './utils/campaign-builder-facades/create-campaign-content'
 import { faker } from '@faker-js/faker'
+import { DomainBuilder } from './utils/entity-builder/domain-builder'
 
 describe('DomainController (e2e)', () => {
   let app: INestApplication
@@ -67,16 +68,27 @@ describe('DomainController (e2e)', () => {
       )
   })
 
-  it.skip('List source', async () => {
-    await SourceBuilder.create().name('Source 1').userId(userId).save(prisma)
+  it('List domain', async () => {
+    await DomainBuilder.create()
+      .name('test.com')
+      .userId(userId)
+      .intercept404(true)
+      .save(prisma)
 
     const { body } = await request(app.getHttpServer())
-      .get('/api/source')
+      .get('/api/domain')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
-
-    expect(Array.isArray(body)).toBe(true)
+    //
+    expect(body).toEqual(expect.any(Array))
     expect(body.length).toBe(1)
+    expect(body).toEqual([
+      expect.objectContaining({
+        name: 'test.com',
+        intercept404: true,
+        userId,
+      }),
+    ])
   })
 
   it.skip('Обновление source, при этом нельзя обновить id', async () => {
