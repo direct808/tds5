@@ -53,11 +53,12 @@ function checkValueForBetween(
     throw new BadRequestException(`Must be two values for field '${field}'`)
   }
 
-  if (value.some((val) => typeof val !== 'number')) {
+  const [val1, val2] = value
+
+  if (typeof val1 !== 'number' || typeof val2 !== 'number') {
     throw new BadRequestException(`Value for field '${field}' must be a number`)
   }
 
-  const [val1, val2] = value as number[]
   if (val1 > val2) {
     throw new BadRequestException(
       `First value must be greater than the second value`,

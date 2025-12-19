@@ -19,6 +19,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "noUncheckedIndexedAccess": true,
     "lib": ["ES2021"],
     "paths": {
       "@/*": ["./src/*"],
