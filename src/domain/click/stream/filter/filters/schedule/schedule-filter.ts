@@ -61,12 +61,22 @@ export class ScheduleFilter implements StreamFilter {
   }
 
   private getTime(formTime: string, toTime: string): GetTimeResult {
-    const [fromHour, fromMinute] = formTime.split(':').map(Number)
-    const [toHour, toMinute] = toTime.split(':').map(Number)
+    const [fromHour, fromMinute] = this.splitTime(formTime)
+    const [toHour, toMinute] = this.splitTime(toTime)
     const fromTimeMinutes = fromHour * 60 + fromMinute
     const toTimeMinutes = toHour * 60 + toMinute
 
     return { fromTimeMinutes, toTimeMinutes }
+  }
+
+  private splitTime(time: string): [number, number] {
+    const [hour, minute] = time.split(':')
+
+    if (!hour || !minute) {
+      throw new Error('No hour ot minute')
+    }
+
+    return [+hour, +minute]
   }
 
   private checkDayRange(
