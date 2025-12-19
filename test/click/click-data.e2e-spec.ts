@@ -92,12 +92,12 @@ describe('Click-data (e2e)', () => {
     expect(response.headers.location).toBe(redirectUrl)
 
     const clicks = await clickRepo.getByCampaignId(res.id)
-    const offer = res.streams[0].streamOffers![0].offer!
+    const offer = res.streams[0]!.streamOffers![0]!.offer!
 
     expect(clicks.length).toBe(1)
 
     expect(clicks[0]).toEqual({
-      id: clicks[0].id,
+      id: clicks[0]!.id,
       visitorId: existsVisitorId,
       adCampaignId: 'ad Campaign Id',
       affiliateNetworkId: offer.affiliateNetwork!.id,
@@ -108,7 +108,7 @@ describe('Click-data (e2e)', () => {
       region: 'Virginia',
       city: 'Ashburn',
       cost: Decimal('5.35'),
-      createdAt: clicks[0].createdAt,
+      createdAt: clicks[0]!.createdAt,
       creativeId: 'creative Id',
       destination: redirectUrl,
       deviceModel: null,
@@ -130,7 +130,7 @@ describe('Click-data (e2e)', () => {
       previousCampaignId: null,
       referer: 'Referer value',
       source: 'source value',
-      streamId: clicks[0].streamId,
+      streamId: clicks[0]!.streamId,
       subId1: 'sub_id_1 value',
       subId2: 'sub_id_2 value',
       sourceId: res.sourceId,

@@ -66,7 +66,7 @@ describe('Offer params (e2e)', () => {
       .request()
 
     const clicks = await clickRepo.getByCampaignId(campaign.id)
-    const clickId = clicks[0].id
+    const clickId = clicks[0]!.id
 
     // Assert
     expect(clicks).toHaveLength(1)
