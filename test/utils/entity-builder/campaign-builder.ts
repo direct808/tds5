@@ -117,6 +117,12 @@ export class CampaignBuilder {
     return this
   }
 
+  domainId(domainId: string): CampaignBuilder {
+    this.fields.domainId = domainId
+
+    return this
+  }
+
   public addStreamTypeDirectUrl(
     callback: (builder: StreamTypeDirectUrlBuilder) => void,
   ): CampaignBuilder {

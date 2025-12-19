@@ -24,7 +24,10 @@ export class ClickService {
     private readonly campaignCacheService: CampaignCacheService,
   ) {}
 
-  async handleClick(code: string): Promise<void> {
+  async handleClick(code?: string, domain?: string): Promise<void> {
+    if (!code) {
+      throw new Error('No code')
+    }
     await this.setupSubject.setupRequestSubject()
     const redirectData: RedirectData = { count: 0 }
     const streamResponse = await this.getStreamResponse(code, redirectData)

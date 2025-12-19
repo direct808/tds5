@@ -1,13 +1,13 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { createAuthUser } from './utils/helpers'
-import { SourceBuilder } from './utils/entity-builder/source-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { createCampaignContent } from './utils/campaign-builder-facades/create-campaign-content'
 import { faker } from '@faker-js/faker'
 import { DomainBuilder } from './utils/entity-builder/domain-builder'
+import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
 
 describe('DomainController (e2e)', () => {
   let app: INestApplication
@@ -79,7 +79,7 @@ describe('DomainController (e2e)', () => {
       .get('/api/domain')
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
-    //
+
     expect(body).toEqual(expect.any(Array))
     expect(body.length).toBe(1)
     expect(body).toEqual([
@@ -91,43 +91,65 @@ describe('DomainController (e2e)', () => {
     ])
   })
 
-  it.skip('Обновление source, при этом нельзя обновить id', async () => {
-    const source = await SourceBuilder.create()
-      .name('Source 1')
+  it('Update domain', async () => {
+    const campaign = await createCampaignContent({ userId, prisma })
+    const domain = await DomainBuilder.create()
+      .name('test.com')
       .userId(userId)
+      .intercept404(false)
       .save(prisma)
 
     await request(app.getHttpServer())
-      .patch('/api/source/' + source.id)
+      .patch('/api/domain/' + domain.id)
       .auth(accessToken, { type: 'bearer' })
       .send({
-        name: 'updated name',
         id: '00000000-0000-4000-8000-000000000022',
+        name: 'test2.com',
+        intercept404: true,
+        indexPageCampaignId: campaign.id,
       })
       .expect(200)
 
-    const sourceExists = await prisma.source.findFirstOrThrow({
-      where: { id: source.id },
+    const domainExists = await prisma.domain.findFirstOrThrow({
+      where: { id: domain.id },
     })
 
-    expect(sourceExists.name).toEqual('updated name')
+    expect(domainExists).toEqual(
+      expect.objectContaining({
+        id: domain.id,
+        name: 'test.com',
+        intercept404: true,
+        indexPageCampaignId: campaign.id,
+      }),
+    )
   })
 
-  it.skip('Delete source', async () => {
-    const source = await SourceBuilder.create()
-      .name('Source 1')
+  it('Delete domain', async () => {
+    const domain = await DomainBuilder.create()
+      .name('test.com')
       .userId(userId)
+      .intercept404(false)
+      .save(prisma)
+
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .domainId(domain.id)
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/source/' + source.id)
+      .delete('/api/domain/' + domain.id)
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const sourceExists = await prisma.source.findFirst({
-      where: { id: source.id },
+    const domainDB = await prisma.domain.findFirst({
+      where: { id: domain.id },
     })
 
-    expect(sourceExists).toBeNull()
+    const campaignDB = await prisma.campaign.findFirstOrThrow({
+      where: { id: campaign.id },
+    })
+
+    expect(domainDB).toBeNull()
+    expect(campaignDB.domainId).toBeNull()
   })
 })

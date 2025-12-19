@@ -16,4 +16,20 @@ export class DomainRepository {
   public getListByUserId(userId: string): Promise<DomainModel[]> {
     return this.prisma.domain.findMany({ where: { userId } })
   }
+
+  public getByIdAndUserId(
+    args: Pick<DomainModel, 'id' | 'userId'>,
+  ): Promise<DomainModel | null> {
+    return this.prisma.domain.findFirst({
+      where: { id: args.id, userId: args.userId },
+    })
+  }
+
+  public async update(id: string, data: Partial<DomainModel>): Promise<void> {
+    await this.prisma.domain.update({ where: { id }, data })
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.prisma.domain.delete({ where: { id } })
+  }
 }

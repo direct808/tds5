@@ -6,6 +6,6 @@ import { Request } from 'express'
 @Injectable()
 export class RequestAdapterFactory {
   create(request: Request): RequestAdapter {
-    return new ExpressRequestAdapter(request as unknown as Request)
+    return new ExpressRequestAdapter(request)
   }
 }
