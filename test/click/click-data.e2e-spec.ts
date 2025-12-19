@@ -3,7 +3,6 @@ import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
 import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
-import { FakeIpExpressRequestAdapter } from '../utils/fake-ip-express-request-adapter'
 import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { GEO_IP_PROVIDER } from '@/domain/geo-ip/types'
 import { FakeGeoIpService } from '../utils/fake-geo-Ip-service'
@@ -42,11 +41,6 @@ describe('Click-data (e2e)', () => {
     const geoIpService = app.get<FakeGeoIpService>(GEO_IP_PROVIDER)
     geoIpService.set({ country: 'US', region: 'Virginia', city: 'Ashburn' })
 
-    const factory = app.get(RequestAdapterFactory)
-    jest
-      .spyOn(factory, 'create')
-      .mockImplementation((req) => new FakeIpExpressRequestAdapter(req, ip))
-
     const res = await CampaignBuilder.create()
       .name('Test campaign 1')
       .code(code)
@@ -71,6 +65,7 @@ describe('Click-data (e2e)', () => {
 
     const response = await ClickRequestBuilder.create(app)
       .code(code)
+      .ip(ip)
       .addQueryParam('cost', '5.3496876')
       .addQueryParam('ad_campaign_id', 'ad Campaign Id')
       .addQueryParam('creative_id', 'creative Id')

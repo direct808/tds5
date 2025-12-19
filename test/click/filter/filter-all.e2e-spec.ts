@@ -6,7 +6,6 @@ import { ClickRequestBuilder } from '../../utils/click-builders/click-request-bu
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '@/domain/click/stream/filter/filters/click-data-text/click-data-text-filter'
-import { FakeIpExpressRequestAdapter } from '../../utils/fake-ip-express-request-adapter'
 import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
 import { PrismaService } from '@/infra/prisma/prisma.service'
@@ -135,14 +134,6 @@ describe('Filter all (e2e)', () => {
   })
 
   it('ip', async () => {
-    const factory = app.get(RequestAdapterFactory)
-
-    jest
-      .spyOn(factory, 'create')
-      .mockImplementation(
-        (req) => new FakeIpExpressRequestAdapter(req, '192.168.10.20'),
-      )
-
     await addStream(prisma, 'ip', userId, {
       type: 'ip',
       values: ['192.168.10.20'],
@@ -150,6 +141,7 @@ describe('Filter all (e2e)', () => {
 
     const { text } = await ClickRequestBuilder.create(app)
       .code(code1)
+      .ip('192.168.10.20')
       .waitRegister()
       .request()
 
@@ -157,20 +149,13 @@ describe('Filter all (e2e)', () => {
   })
 
   it('ipv6', async () => {
-    const factory = app.get(RequestAdapterFactory)
-
-    jest
-      .spyOn(factory, 'create')
-      .mockImplementation(
-        (req) => new FakeIpExpressRequestAdapter(req, '::7711'),
-      )
-
     await addStream(prisma, 'ipv6', userId, {
       type: 'ipv6',
     })
 
     const { text } = await ClickRequestBuilder.create(app)
       .code(code1)
+      .ip('::7711')
       .waitRegister()
       .request()
 

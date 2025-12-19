@@ -35,7 +35,7 @@ describe('Click (e2e)', () => {
   })
 
   it('No campaign', async () => {
-    return request(app.getHttpServer()).get('/gggggg').expect(404)
+    return ClickRequestBuilder.create(app).code('gggggg').request().expect(404)
   })
 
   it('No streams', async () => {
@@ -45,7 +45,7 @@ describe('Click (e2e)', () => {
       .userId(userId)
       .save(prisma)
 
-    return request(app.getHttpServer()).get('/abcdif').expect(500)
+    return ClickRequestBuilder.create(app).code('abcdif').request().expect(500)
   })
 
   it('No streamOffers', async () => {
@@ -58,7 +58,7 @@ describe('Click (e2e)', () => {
       })
       .save(prisma)
 
-    return request(app.getHttpServer()).get('/abcdif').expect(500)
+    return ClickRequestBuilder.create(app).code('abcdif').request().expect(500)
   })
 
   it('Should return 404 if campaign active = false', async () => {
@@ -75,7 +75,7 @@ describe('Click (e2e)', () => {
       })
       .save(prisma)
 
-    return request(app.getHttpServer()).get('/abcdif').expect(404)
+    return ClickRequestBuilder.create(app).code('abcdif').request().expect(404)
   })
 
   describe('Schema type direct url', () => {

@@ -12,6 +12,8 @@ import {
 } from '@generated/prisma/models/Campaign'
 import { SourceModel } from '@generated/prisma/models/Source'
 import { UserModel } from '@generated/prisma/models/User'
+import { DomainBuilder } from './domain-builder'
+import { DomainModel } from '@generated/prisma/models/Domain'
 
 // todo убрать это, заменить на FullCampaign, выяснить почему в FullCampaign неи source
 export type CampaignFull = CampaignGetPayload<{
@@ -26,6 +28,7 @@ export type CampaignFull = CampaignGetPayload<{
     }
     source: true
     user: true
+    domain: true
   }
 }>
 
@@ -37,6 +40,7 @@ export class CampaignBuilder {
 
   private sourceBuilder?: SourceBuilder
   private userBuilder?: UserBuilder
+  private domainBuilder?: DomainBuilder
 
   private constructor() {}
 
@@ -62,10 +66,16 @@ export class CampaignBuilder {
     const streams: StreamFull[] = []
     let source: SourceModel | null = null
     let user: UserModel | undefined
+    let domain: DomainModel | null = null
 
     if (this.userBuilder) {
       user = await this.userBuilder.save(prisma)
       this.fields.userId = user.id
+    }
+
+    if (this.domainBuilder) {
+      domain = await this.domainBuilder.save(prisma)
+      this.fields.domainId = domain.id
     }
 
     if (this.sourceBuilder) {
@@ -85,6 +95,7 @@ export class CampaignBuilder {
 
     campaign.streams = streams
     campaign.source = source
+    campaign.domain = domain
 
     if (user) {
       campaign.user = user
@@ -93,31 +104,31 @@ export class CampaignBuilder {
     return campaign
   }
 
-  name(value: string): CampaignBuilder {
+  name(value: string): this {
     this.fields.name = value
 
     return this
   }
 
-  code(value: string): CampaignBuilder {
+  code(value: string): this {
     this.fields.code = value
 
     return this
   }
 
-  active(active: boolean): CampaignBuilder {
+  active(active: boolean): this {
     this.fields.active = active
 
     return this
   }
 
-  userId(value: string): CampaignBuilder {
+  userId(value: string): this {
     this.fields.userId = value
 
     return this
   }
 
-  domainId(domainId: string): CampaignBuilder {
+  domainId(domainId: string): this {
     this.fields.domainId = domainId
 
     return this
@@ -125,7 +136,7 @@ export class CampaignBuilder {
 
   public addStreamTypeDirectUrl(
     callback: (builder: StreamTypeDirectUrlBuilder) => void,
-  ): CampaignBuilder {
+  ): this {
     const builder = new StreamTypeDirectUrlBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -135,7 +146,7 @@ export class CampaignBuilder {
 
   public addStreamTypeAction(
     callback: (builder: StreamTypeActionBuilder) => void,
-  ): CampaignBuilder {
+  ): this {
     const builder = new StreamTypeActionBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -145,7 +156,7 @@ export class CampaignBuilder {
 
   public addStreamTypeOffers(
     callback: (builder: StreamTypeOffersBuilder) => void,
-  ): CampaignBuilder {
+  ): this {
     const builder = new StreamTypeOffersBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -153,7 +164,7 @@ export class CampaignBuilder {
     return this
   }
 
-  createSource(callback: (builder: SourceBuilder) => void): CampaignBuilder {
+  createSource(callback: (builder: SourceBuilder) => void): this {
     const builder = SourceBuilder.create()
     this.sourceBuilder = builder
     callback(builder)
@@ -161,15 +172,23 @@ export class CampaignBuilder {
     return this
   }
 
-  sourceId(value: string): CampaignBuilder {
+  sourceId(value: string): this {
     this.fields.sourceId = value
 
     return this
   }
 
-  createUser(callback: (builder: UserBuilder) => void): CampaignBuilder {
+  createUser(callback: (builder: UserBuilder) => void): this {
     const builder = UserBuilder.create()
     this.userBuilder = builder
+    callback(builder)
+
+    return this
+  }
+
+  createDomain(callback: (builder: DomainBuilder) => void): this {
+    const builder = DomainBuilder.create()
+    this.domainBuilder = builder
     callback(builder)
 
     return this

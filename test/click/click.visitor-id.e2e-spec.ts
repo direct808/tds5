@@ -8,7 +8,7 @@ import { ClickRepository } from '@/infra/repositories/click.repository'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 
-describe('visitorId (e2e)', () => {
+describe('click.visitorId (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let clickRepo: ClickRepository
