@@ -216,7 +216,7 @@ describe('Conversion (e2e)', () => {
       }),
     )
 
-    expect(conversions[0].revenue!.toString()).toBe('34.54')
+    expect(conversions[0]!.revenue!.toString()).toBe('34.54')
 
     expect(conversions[1]).toEqual(
       expect.objectContaining({

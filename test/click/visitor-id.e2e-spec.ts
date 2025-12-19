@@ -49,7 +49,7 @@ describe('visitorId (e2e)', () => {
     expect(clicks).toHaveLength(1)
     expect(Array.isArray(cookies)).toBe(true)
     expect(cookies).not.toHaveLength(0)
-    expect(visitorId).toEqual(clicks[0].visitorId)
+    expect(visitorId).toEqual(clicks[0]!.visitorId)
   })
 
   it('Should return the same visitorId that was passed in the cookie', async () => {
@@ -77,7 +77,7 @@ describe('visitorId (e2e)', () => {
     expect(clicks).toHaveLength(1)
     expect(Array.isArray(cookies)).toBe(true)
     expect(cookies).not.toHaveLength(0)
-    expect(visitorId).toEqual(clicks[0].visitorId)
+    expect(visitorId).toEqual(clicks[0]!.visitorId)
     expect(visitorId).toEqual('abc123')
   })
 })
@@ -88,6 +88,6 @@ function getVisitorId(cookies: string[]): string | undefined {
       continue
     }
 
-    return coo.split('; ')[0].split('=')[1]
+    return coo.split('; ')[0]!.split('=')[1]
   }
 }

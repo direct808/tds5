@@ -214,7 +214,7 @@ describe('Click (e2e)', () => {
         })
         .save(prisma)
 
-      const lastCampaign = res.streams[0].actionCampaign!
+      const lastCampaign = res.streams[0]!.actionCampaign!
       const clickData: ClickData[] = []
 
       const registerClickService = jest
@@ -227,8 +227,8 @@ describe('Click (e2e)', () => {
         .request()
         .expect(302)
 
-      const firstClick = clickData[0]
-      const lastClick = clickData[1]
+      const firstClick = clickData[0]!
+      const lastClick = clickData[1]!
 
       // Assert
       expect(response.headers.location).toBe(redirectUrl)
