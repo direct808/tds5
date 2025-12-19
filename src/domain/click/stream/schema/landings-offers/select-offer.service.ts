@@ -9,7 +9,7 @@ export class SelectOfferService {
       throw new Error('No streamOffers')
     }
 
-    if (streamOffers.length === 1) {
+    if (streamOffers.length === 1 && streamOffers[0]) {
       return this.getOffer(streamOffers[0])
     }
 

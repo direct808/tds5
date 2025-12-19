@@ -81,8 +81,8 @@ export class GetReportUseCase {
 
   private processGroups(groupKeys: string[], qb: ReportQueryBuilder): void {
     for (const groupKey of groupKeys) {
-      if (!(groupKey in groups)) {
-        throw new Error('Unknown group key ' + groupKey)
+      if (!groups[groupKey]) {
+        throw new Error('Unknown group key ' + groups[groupKey])
       }
 
       const { sql: query, include } = groups[groupKey]
@@ -122,7 +122,7 @@ export class GetReportUseCase {
   } {
     const usedIdentifiers: string[] = []
     const identifierMap = new Proxy(this.reportRepository.getIdentifierMap(), {
-      get(target, key: string): string {
+      get(target, key: string): string | undefined {
         usedIdentifiers.push(key)
 
         return target[key]
