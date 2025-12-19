@@ -42,9 +42,9 @@ export class ClickModule implements NestModule {
     ]
 
     consumer
-      .apply(ClickMiddleware)
-      .forRoutes(...routes)
       .apply(ClsMiddleware)
+      .forRoutes(...routes)
+      .apply(ClickMiddleware)
       .forRoutes(...routes)
   }
 }
