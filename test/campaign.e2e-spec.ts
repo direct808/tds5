@@ -279,7 +279,7 @@ describe('CampaignController (e2e)', () => {
           active: true,
           streams: [
             {
-              id: campaign.streams[0].id,
+              id: campaign.streams[0]!.id,
               name: 'Test stream 1',
               schema: 'ACTION',
               actionType: 'NOTHING',
@@ -324,7 +324,7 @@ describe('CampaignController (e2e)', () => {
         )
         .save(prisma)
 
-      const streamId = campaign.streams[0].id
+      const streamId = campaign.streams[0]!.id
 
       const streamBeforeDelete = await prisma.stream.findFirst({
         where: { id: streamId },
@@ -401,7 +401,7 @@ describe('CampaignController (e2e)', () => {
             active: true,
             streams: [
               {
-                id: withId ? campaign.streams[0].id : undefined,
+                id: withId ? campaign.streams[0]!.id : undefined,
                 name: 'Test stream 1',
                 schema: 'ACTION',
                 actionType: StreamActionTypeEnum.TO_CAMPAIGN,
@@ -438,9 +438,9 @@ describe('CampaignController (e2e)', () => {
         )
         .save(prisma)
 
-      const streamId = campaign.streams[0].id
-      const streamOfferId = campaign.streams[0].streamOffers![0].id
-      const offerId = campaign.streams[0].streamOffers![0].offerId
+      const streamId = campaign.streams[0]!.id
+      const streamOfferId = campaign.streams[0]!.streamOffers[0]!.id
+      const offerId = campaign.streams[0]!.streamOffers![0]!.offerId
 
       const streamOfferBeforeDelete = await prisma.streamOffer.findFirst({
         where: { id: streamOfferId },
