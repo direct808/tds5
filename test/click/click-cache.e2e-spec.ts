@@ -39,7 +39,7 @@ describe('Click-cache (e2e)', () => {
     const authData = await createAuthUser(app)
     userId = authData.user.id
     accessToken = authData.accessToken
-    getFullByCode = jest.spyOn(campaignRepository, 'getFullByCode')
+    getFullByCode = jest.spyOn(campaignRepository, 'getFullBy')
   })
 
   it('Checks cache work', async () => {
@@ -55,7 +55,7 @@ describe('Click-cache (e2e)', () => {
       })
       .save(prisma)
 
-    const getFullByCode = jest.spyOn(campaignRepository, 'getFullByCode')
+    const getFullByCode = jest.spyOn(campaignRepository, 'getFullBy')
 
     // Act
     await ClickRequestBuilder.create(app).code(code).waitRegister().request()

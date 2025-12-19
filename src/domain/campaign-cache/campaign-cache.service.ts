@@ -2,12 +2,16 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { getCampaignAdditionalIds } from '@/domain/campaign-cache/helpers/get-campaign-additional-ids'
 import {
   affiliateNetworkCacheKey,
-  fullCampaignCacheKey,
+  fullCampaignCodeCacheKey,
+  fullCampaignDomainCacheKey,
   offerCacheKey,
   sourceCacheKey,
 } from './helpers/campaign-cache-keys'
 import { RedisProvider } from '@/infra/redis/redis.provider'
-import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import {
+  CampaignRepository,
+  GetFullByArgs,
+} from '@/infra/repositories/campaign.repository'
 import { FullCampaign } from '@/domain/campaign/types'
 
 const NOT_FOUND = 'N'
@@ -20,14 +24,14 @@ export class CampaignCacheService {
     private readonly campaignRepository: CampaignRepository,
   ) {}
 
-  public async getFullByCode(code: string): Promise<FullCampaign> {
-    return this.redisWrap(fullCampaignCacheKey(code), () =>
-      this.getCampaignFromDb(code),
+  public async getFull(args: GetFullByArgs): Promise<FullCampaign> {
+    return this.redisWrap(this.fullCampaignCacheKey(args), () =>
+      this.getCampaignFromDb(args),
     )
   }
 
-  private async getCampaignFromDb(code: string): Promise<FullCampaign> {
-    const campaign = await this.campaignRepository.getFullByCode(code)
+  private async getCampaignFromDb(args: GetFullByArgs): Promise<FullCampaign> {
+    const campaign = await this.campaignRepository.getFullBy(args)
 
     if (!campaign) {
       this.throwNotFound()
@@ -85,5 +89,17 @@ export class CampaignCacheService {
 
   private throwNotFound(): never {
     throw new NotFoundException('No campaign')
+  }
+
+  private fullCampaignCacheKey(args: GetFullByArgs): string {
+    if ('code' in args) {
+      return fullCampaignCodeCacheKey(args.code)
+    }
+
+    if ('domain' in args) {
+      return fullCampaignDomainCacheKey(args.domain)
+    }
+
+    throw new Error('Unhandled GetFullByArgs')
   }
 }

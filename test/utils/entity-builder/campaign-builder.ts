@@ -41,6 +41,7 @@ export class CampaignBuilder {
   private sourceBuilder?: SourceBuilder
   private userBuilder?: UserBuilder
   private domainBuilder?: DomainBuilder
+  private indexPageDomains: DomainBuilder[] = []
 
   private constructor() {}
 
@@ -48,7 +49,9 @@ export class CampaignBuilder {
     return new this()
   }
 
-  static createRandomActionContent(): CampaignBuilder {
+  static createRandomActionContent(
+    content = faker.commerce.productName(),
+  ): CampaignBuilder {
     const code = faker.string.alphanumeric(6)
 
     return CampaignBuilder.create()
@@ -58,7 +61,7 @@ export class CampaignBuilder {
         stream
           .name(faker.commerce.productName())
           .type(StreamActionTypeEnum.SHOW_TEXT)
-          .content(faker.commerce.productName()),
+          .content(content),
       )
   }
 
@@ -67,6 +70,7 @@ export class CampaignBuilder {
     let source: SourceModel | null = null
     let user: UserModel | undefined
     let domain: DomainModel | null = null
+    const indexPageDomains: DomainModel[] = []
 
     if (this.userBuilder) {
       user = await this.userBuilder.save(prisma)
@@ -91,6 +95,11 @@ export class CampaignBuilder {
     for (const builder of this.streamBuilders) {
       const stream = (await builder.save(prisma, campaign.id)) as StreamFull
       streams.push(stream)
+    }
+
+    for (const builder of this.indexPageDomains) {
+      const domain = await builder.indexPageCampaignId(campaign.id).save(prisma)
+      indexPageDomains.push(domain)
     }
 
     campaign.streams = streams
@@ -189,6 +198,14 @@ export class CampaignBuilder {
   createDomain(callback: (builder: DomainBuilder) => void): this {
     const builder = DomainBuilder.create()
     this.domainBuilder = builder
+    callback(builder)
+
+    return this
+  }
+
+  public addIndexPageDomain(callback: (builder: DomainBuilder) => void): this {
+    const builder = DomainBuilder.create()
+    this.indexPageDomains.push(builder)
     callback(builder)
 
     return this
