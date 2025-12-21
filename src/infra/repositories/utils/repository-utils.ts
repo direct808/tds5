@@ -1,8 +1,4 @@
-import { ConflictException, NotFoundException } from '@nestjs/common'
-
-interface ObjectLiteral {
-  [key: string]: unknown
-}
+import { BadRequestException, ConflictException } from '@nestjs/common'
 
 export type NameAndUserId = { name: string; userId: string }
 export type IdAndUserId = { id: string; userId: string }
@@ -11,16 +7,16 @@ type CheckUniqueNameForUpdateArgs = NameAndUserId & {
   id: string
 }
 
-export interface IGetEntityByNameAndUserId {
-  getByNameAndUserId(args: NameAndUserId): Promise<ObjectLiteral | null>
+export interface IGetEntityByNameAndUserId<T> {
+  getByNameAndUserId(args: NameAndUserId): Promise<T | null>
 }
 
-export interface IGetEntityByIdAndUserId {
-  getByIdAndUserId(args: IdAndUserId): Promise<ObjectLiteral | null>
+export interface IGetEntityByIdAndUserId<T> {
+  getByIdAndUserId(args: IdAndUserId): Promise<T | null>
 }
 
-export async function checkUniqueNameForCreate(
-  repository: IGetEntityByNameAndUserId,
+export async function checkUniqueNameForCreate<T>(
+  repository: IGetEntityByNameAndUserId<T>,
   args: NameAndUserId,
 ): Promise<void> {
   const entity = await repository.getByNameAndUserId(args)
@@ -30,8 +26,8 @@ export async function checkUniqueNameForCreate(
   }
 }
 
-export async function checkUniqueNameForUpdate(
-  repository: IGetEntityByNameAndUserId,
+export async function checkUniqueNameForUpdate<T extends { id: string }>(
+  repository: IGetEntityByNameAndUserId<T>,
   args: CheckUniqueNameForUpdateArgs,
 ): Promise<void> {
   const entity = await repository.getByNameAndUserId(args)
@@ -46,15 +42,15 @@ export async function checkUniqueNameForUpdate(
  * @param args
  * @param message
  */
-export async function ensureEntityExists(
-  repository: IGetEntityByIdAndUserId,
+export async function ensureEntityExists<T>(
+  repository: IGetEntityByIdAndUserId<T>,
   args: IdAndUserId,
   message?: string,
 ): Promise<void> {
   const entity = await repository.getByIdAndUserId(args)
 
   if (!entity) {
-    throw new NotFoundException(message)
+    throw new BadRequestException(message)
   }
 }
 

@@ -4,9 +4,10 @@ import {
   DomainModel,
   DomainUncheckedCreateInput,
 } from '@generated/prisma/models/Domain'
+import { IGetEntityByIdAndUserId } from '@/infra/repositories/utils/repository-utils'
 
 @Injectable()
-export class DomainRepository {
+export class DomainRepository implements IGetEntityByIdAndUserId<DomainModel> {
   constructor(private readonly prisma: PrismaService) {}
 
   public async create(data: DomainUncheckedCreateInput): Promise<void> {

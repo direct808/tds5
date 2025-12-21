@@ -20,6 +20,10 @@ export class CreateCampaignDto {
   @IsOptional()
   sourceId?: string
 
+  @IsUUID('4')
+  @IsOptional()
+  domainId?: string
+
   @IsBoolean()
   declare active: boolean
 

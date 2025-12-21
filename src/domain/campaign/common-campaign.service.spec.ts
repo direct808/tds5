@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CommonCampaignService } from './common-campaign.service'
 import { SourceRepository } from '@/infra/repositories/source.repository'
 import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
@@ -15,6 +16,10 @@ describe('CommonCampaignService', () => {
         CommonCampaignService,
         {
           provide: SourceRepository,
+          useValue: {},
+        },
+        {
+          provide: DomainRepository,
           useValue: {},
         },
       ],

@@ -40,6 +40,11 @@ export class UpdateCampaignService {
       args.sourceId,
     )
 
+    await this.commonCampaignService.ensureDomainExists(
+      args.userId,
+      args.domainId,
+    )
+
     if (args.name) {
       await checkUniqueNameForUpdate(this.repository, {
         ...args,
@@ -66,6 +71,7 @@ export class UpdateCampaignService {
     return {
       name: args.name,
       sourceId: args.sourceId,
+      domainId: args.domainId,
       active: args.active,
     }
   }

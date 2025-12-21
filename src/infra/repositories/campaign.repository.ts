@@ -21,7 +21,9 @@ export type GetFullByArgs = { code: string } | { domain: string }
 
 @Injectable()
 export class CampaignRepository
-  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+  implements
+    IGetEntityByNameAndUserId<CampaignModel>,
+    IGetEntityByIdAndUserId<CampaignModel>
 {
   constructor(private readonly prisma: PrismaService) {}
 

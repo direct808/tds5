@@ -39,6 +39,11 @@ export class CreateCampaignService {
       args.sourceId,
     )
 
+    await this.commonCampaignService.ensureDomainExists(
+      args.userId,
+      args.domainId,
+    )
+
     await checkUniqueNameForCreate(this.repository, args)
 
     const data = this.buildCreateData(args)
@@ -66,6 +71,7 @@ export class CreateCampaignService {
       code: this.makeCode(),
       sourceId: args.sourceId,
       active: args.active,
+      domainId: args.domainId,
       userId: args.userId,
     }
   }

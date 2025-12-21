@@ -32,6 +32,7 @@ describe('CreateCampaignService', () => {
   }
   const commonCampaignService = {
     ensureSourceExists: jest.fn(),
+    ensureDomainExists: jest.fn(),
   }
   const prisma = {} as PrismaClient
   const transaction = {} as Transaction

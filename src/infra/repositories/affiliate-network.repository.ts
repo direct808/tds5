@@ -9,14 +9,11 @@ import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork
 
 @Injectable()
 export class AffiliateNetworkRepository
-  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+  implements
+    IGetEntityByNameAndUserId<AffiliateNetworkModel>,
+    IGetEntityByIdAndUserId<AffiliateNetworkModel>
 {
-  // private readonly repository = this.dataSource.getRepository(AffiliateNetwork)
-
-  constructor(
-    // private readonly dataSource: DataSource,
-    private prisma: PrismaService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   public async create(
     args: Pick<AffiliateNetworkModel, 'name' | 'offerParams' | 'userId'>,
