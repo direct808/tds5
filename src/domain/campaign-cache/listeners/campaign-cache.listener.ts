@@ -14,13 +14,17 @@ import {
   campaignUpdateEventName,
 } from '@/domain/campaign/events/campaign-updated.event'
 import {
-  affiliateNetworkEventName,
+  affiliateNetworkUpdatedEventName,
   AffiliateNetworkUpdatedEvent,
 } from '@/domain/affiliate-network/events/affiliate-network-updated.event'
 import {
   CampaignCreatedEvent,
   campaignCreatedEventName,
 } from '@/domain/campaign/events/campaign-created.event'
+import {
+  DomainUpdatedEvent,
+  domainUpdateEventName,
+} from '@/domain/domain/events/domain-updated.event'
 
 @Injectable()
 export class CampaignCacheListener {
@@ -59,7 +63,7 @@ export class CampaignCacheListener {
     return this.clearCacheService.clearCacheByOfferId(offerId)
   }
 
-  @OnEvent(affiliateNetworkEventName)
+  @OnEvent(affiliateNetworkUpdatedEventName)
   handleAffiliateNetworkUpdatedEvent({
     affiliateNetworkId,
   }: AffiliateNetworkUpdatedEvent): Promise<void> {
@@ -68,5 +72,12 @@ export class CampaignCacheListener {
     return this.clearCacheService.clearCacheByAffiliateNetworkId(
       affiliateNetworkId,
     )
+  }
+
+  @OnEvent(domainUpdateEventName)
+  handleDomainUpdatedEvent({ name }: DomainUpdatedEvent): Promise<void> {
+    this.logger.debug('DomainUpdatedEvent: ' + name)
+
+    return this.clearCacheService.clearCacheByDomainName(name)
   }
 }

@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { DomainRepository } from '@/infra/repositories/domain.repository'
 import { DomainService } from '@/domain/domain/domain.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import {
+  DomainUpdatedEvent,
+  domainUpdateEventName,
+} from '@/domain/domain/events/domain-updated.event'
 
 type UpdateDomainArgs = {
   indexPageCampaignId?: string
@@ -12,6 +17,7 @@ export class UpdateDomainUseCase {
   constructor(
     private readonly domainRepository: DomainRepository,
     private readonly domainService: DomainService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async handle(
@@ -19,7 +25,10 @@ export class UpdateDomainUseCase {
     data: UpdateDomainArgs,
     userId: string,
   ): Promise<void> {
-    await this.domainService.getByIdAndUserIdOrNotFound(id, userId)
+    const domain = await this.domainService.getByIdAndUserIdOrNotFound(
+      id,
+      userId,
+    )
 
     await this.domainService.checkIndexPageCampaignIdExists(
       data.indexPageCampaignId,
@@ -27,5 +36,10 @@ export class UpdateDomainUseCase {
     )
 
     await this.domainRepository.update(id, data)
+
+    this.eventEmitter.emit(
+      domainUpdateEventName,
+      new DomainUpdatedEvent(domain.name),
+    )
   }
 }

@@ -56,4 +56,21 @@ describe('Click.domain (e2e)', () => {
 
     expect(response.text).toBe(content)
   })
+
+  it('Click by domain and code', async () => {
+    const domain = 'test.com'
+    const content = 'Stream content'
+    const campaign = await CampaignBuilder.createRandomActionContent(content)
+      .userId(userId)
+      .addIndexPageDomain((builder) => builder.name(domain).userId(userId))
+      .save(prisma)
+
+    const response = await ClickRequestBuilder.create(app)
+      .domain(domain)
+      .code(campaign.code)
+      .request()
+      .expect(200)
+
+    expect(response.text).toBe(content)
+  })
 })

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { DomainRepository } from '@/infra/repositories/domain.repository'
+import { DomainModel } from '@generated/prisma/models/Domain'
 
 @Injectable()
 export class DomainService {
@@ -32,11 +33,13 @@ export class DomainService {
   public async getByIdAndUserIdOrNotFound(
     id: string,
     userId: string,
-  ): Promise<void> {
+  ): Promise<DomainModel> {
     const domain = await this.domainRepository.getByIdAndUserId({ id, userId })
 
     if (!domain) {
       throw new NotFoundException()
     }
+
+    return domain
   }
 }

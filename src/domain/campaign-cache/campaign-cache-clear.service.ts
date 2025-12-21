@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import {
   affiliateNetworkCacheKey,
   fullCampaignCodeCacheKey,
+  fullCampaignDomainCacheKey,
   offerCacheKey,
   sourceCacheKey,
 } from './helpers/campaign-cache-keys'
@@ -13,6 +14,10 @@ export class CampaignCacheClearService {
 
   public async clearCacheByCampaignCode(code: string): Promise<void> {
     await this.cache.del(fullCampaignCodeCacheKey(code))
+  }
+
+  public async clearCacheByDomainName(name: string): Promise<void> {
+    await this.cache.del(fullCampaignDomainCacheKey(name))
   }
 
   public clearCacheBySourceId(sourceId: string): Promise<void> {
