@@ -50,8 +50,8 @@ describe('Click-cache (e2e)', () => {
 
     // Act
     const { code } = campaign
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await clickAndWaitRegister(app, code)
+    await clickAndWaitRegister(app, code)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(1)
@@ -64,8 +64,8 @@ describe('Click-cache (e2e)', () => {
 
     // Act
     const { code } = campaign
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await clickAndWaitRegister(app, code)
+    await clickAndWaitRegister(app, code)
 
     await request(app.getHttpServer())
       .put('/api/campaign/' + campaign.id)
@@ -73,10 +73,10 @@ describe('Click-cache (e2e)', () => {
       .send(campaign)
       .expect(200)
 
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await clickAndWaitRegister(app, code)
 
     // Assert
-    expect(getFullByCode).toBeCalledTimes(2)
+    expect(getFullByCode).toHaveBeenCalledTimes(2)
   })
 
   it('Checks reset cache if source updated', async () => {
@@ -92,8 +92,8 @@ describe('Click-cache (e2e)', () => {
 
     // Act
     const { code } = campaign
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await clickAndWaitRegister(app, code)
+    await clickAndWaitRegister(app, code)
 
     await request(app.getHttpServer())
       .patch('/api/source/' + source.id)
@@ -101,7 +101,7 @@ describe('Click-cache (e2e)', () => {
       .send({ name: 'updated name' })
       .expect(200)
 
-    await ClickRequestBuilder.create(app).code(code).waitRegister().request()
+    await clickAndWaitRegister(app, code)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -136,17 +136,8 @@ describe('Click-cache (e2e)', () => {
       .save(prisma)
 
     // Act
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(302)
-
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(302)
+    await clickAndWaitRegister(app, code).expect(302)
+    await clickAndWaitRegister(app, code).expect(302)
 
     await request(app.getHttpServer())
       .patch('/api/affiliate-network/' + affiliateNetwork.id)
@@ -154,11 +145,7 @@ describe('Click-cache (e2e)', () => {
       .send({ name: 'updated name' })
       .expect(200)
 
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(302)
+    await clickAndWaitRegister(app, code).expect(302)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -184,17 +171,8 @@ describe('Click-cache (e2e)', () => {
       .save(prisma)
 
     // Act
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(302)
-
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(302)
+    await clickAndWaitRegister(app, code).expect(302)
+    await clickAndWaitRegister(app, code).expect(302)
 
     await request(app.getHttpServer())
       .patch('/api/offer/' + offer.id)
@@ -202,11 +180,7 @@ describe('Click-cache (e2e)', () => {
       .send({ name: 'updated name' })
       .expect(200)
 
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(302)
+    await clickAndWaitRegister(app, code).expect(302)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
@@ -284,13 +258,16 @@ describe('Click-cache (e2e)', () => {
       })
       .expect(201)
 
-    await ClickRequestBuilder.create(app)
-      .code(code)
-      .waitRegister()
-      .request()
-      .expect(200)
+    await clickAndWaitRegister(app, code).expect(200)
 
     // Assert
     expect(getFullByCode).toBeCalledTimes(2)
   })
 })
+
+function clickAndWaitRegister(
+  app: INestApplication,
+  code: string,
+): ReturnType<ClickRequestBuilder['request']> {
+  return ClickRequestBuilder.create(app).code(code).waitRegister().request()
+}
