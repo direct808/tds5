@@ -1,6 +1,6 @@
 import {
   CampaignBuilder,
-  CampaignFull,
+  CampaignBuilderResult,
 } from '../entity-builder/campaign-builder'
 import { faker } from '@faker-js/faker'
 import { PrismaService } from '@/infra/prisma/prisma.service'
@@ -16,7 +16,7 @@ export function createCampaignContent({
   prisma,
   userId,
   content = faker.string.alphanumeric({ length: 6 }),
-}: CreateCampaignContentArgs): Promise<CampaignFull> {
+}: CreateCampaignContentArgs): Promise<CampaignBuilderResult> {
   return CampaignBuilder.create()
     .name(faker.company.name())
     .code(faker.string.alphanumeric({ length: 6 }))

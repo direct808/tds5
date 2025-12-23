@@ -15,9 +15,9 @@ import { UserModel } from '@generated/prisma/models/User'
 import { DomainBuilder } from './domain-builder'
 import { DomainModel } from '@generated/prisma/models/Domain'
 
-// todo убрать это, заменить на FullCampaign, выяснить почему в FullCampaign неи source
-export type CampaignFull = CampaignGetPayload<{
+export type CampaignBuilderResult = CampaignGetPayload<{
   include: {
+    indexPageDomains: true
     streams: {
       include: {
         streamOffers: {
@@ -65,32 +65,18 @@ export class CampaignBuilder {
       )
   }
 
-  public async save(prisma: PrismaClient): Promise<CampaignFull> {
+  public async save(prisma: PrismaClient): Promise<CampaignBuilderResult> {
     const streams: StreamFull[] = []
-    let source: SourceModel | null = null
-    let user: UserModel | undefined
-    let domain: DomainModel | null = null
     const indexPageDomains: DomainModel[] = []
 
-    if (this.userBuilder) {
-      user = await this.userBuilder.save(prisma)
-      this.fields.userId = user.id
-    }
-
-    if (this.domainBuilder) {
-      domain = await this.domainBuilder.save(prisma)
-      this.fields.domainId = domain.id
-    }
-
-    if (this.sourceBuilder) {
-      source = await this.sourceBuilder.save(prisma)
-      this.fields.sourceId = source.id
-    }
+    const user = await this.saveUser(prisma)
+    const domain = await this.saveDomain(prisma)
+    const source = await this.saveSource(prisma)
 
     const campaign = (await prisma.campaign.create({
       data: this.fields,
       include: { streams: true, source: true, user: true },
-    })) as CampaignFull
+    })) as CampaignBuilderResult
 
     for (const builder of this.streamBuilders) {
       const stream = (await builder.save(prisma, campaign.id)) as StreamFull
@@ -105,6 +91,7 @@ export class CampaignBuilder {
     campaign.streams = streams
     campaign.source = source
     campaign.domain = domain
+    campaign.indexPageDomains = indexPageDomains
 
     if (user) {
       campaign.user = user
@@ -209,5 +196,35 @@ export class CampaignBuilder {
     callback(builder)
 
     return this
+  }
+
+  private async saveUser(prisma: PrismaClient): Promise<UserModel | undefined> {
+    if (!this.userBuilder) {
+      return
+    }
+    const user = await this.userBuilder.save(prisma)
+    this.fields.userId = user.id
+
+    return user
+  }
+
+  private async saveDomain(prisma: PrismaClient): Promise<DomainModel | null> {
+    if (!this.domainBuilder) {
+      return null
+    }
+    const domain = await this.domainBuilder.save(prisma)
+    this.fields.domainId = domain.id
+
+    return domain
+  }
+
+  private async saveSource(prisma: PrismaClient): Promise<SourceModel | null> {
+    if (!this.sourceBuilder) {
+      return null
+    }
+    const source = await this.sourceBuilder.save(prisma)
+    this.fields.sourceId = source.id
+
+    return source
   }
 }

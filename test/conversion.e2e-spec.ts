@@ -3,7 +3,7 @@ import { createAuthUser } from './utils/helpers'
 import { createApp } from './utils/create-app'
 import {
   CampaignBuilder,
-  CampaignFull,
+  CampaignBuilderResult,
 } from './utils/entity-builder/campaign-builder'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
 import { flushRedisDb, truncateTables } from './utils/truncate-tables'
@@ -16,9 +16,9 @@ describe('Conversion (e2e)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let conversionRepository: ConversionRepository
-  let usecase: ConversionRegisterUseCase
+  let useCase: ConversionRegisterUseCase
   let userId: string
-  let campaign: CampaignFull
+  let campaign: CampaignBuilderResult
 
   afterEach(async () => {
     await app.close()
@@ -29,7 +29,7 @@ describe('Conversion (e2e)', () => {
     app = await createApp()
     prisma = app.get(PrismaService)
     conversionRepository = app.get(ConversionRepository)
-    usecase = app.get(ConversionRegisterUseCase)
+    useCase = app.get(ConversionRegisterUseCase)
 
     const authData = await createAuthUser(app)
     userId = authData.user.id
@@ -42,7 +42,7 @@ describe('Conversion (e2e)', () => {
   it('Конверсия не должна создаться если не передан subid', async () => {
     const requestAdapter = MockRequestAdapter.create()
 
-    await usecase.handle(requestAdapter)
+    await useCase.handle(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -53,7 +53,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('subid', 'hz')
       .setQuery('status', 'hz-staus')
 
-    await usecase.handle(requestAdapter)
+    await useCase.handle(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -70,7 +70,7 @@ describe('Conversion (e2e)', () => {
       click.id,
     )
 
-    await usecase.handle(requestAdapter)
+    await useCase.handle(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -86,7 +86,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('subid', click.id)
       .setQuery('status', 'hz-status')
 
-    await usecase.handle(requestAdapter)
+    await useCase.handle(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -102,7 +102,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('subid', click.id)
       .setQuery('status', 'sale')
 
-    await usecase.handle(requestAdapter)
+    await useCase.handle(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -130,7 +130,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('status', 'hz-status')
       .setQuery('sale_status', 'hz-status')
 
-    await usecase.handle(requestAdapter)
+    await useCase.handle(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -160,8 +160,8 @@ describe('Conversion (e2e)', () => {
       click.id,
     )
 
-    await usecase.handle(requestAdapter.setQuery('status', 'lead'))
-    await usecase.handle(requestAdapter.setQuery('status', 'sale'))
+    await useCase.handle(requestAdapter.setQuery('status', 'lead'))
+    await useCase.handle(requestAdapter.setQuery('status', 'sale'))
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -190,8 +190,8 @@ describe('Conversion (e2e)', () => {
       click.id,
     )
 
-    await usecase.handle(requestAdapter.setQuery('status', 'lead'))
-    await usecase.handle(
+    await useCase.handle(requestAdapter.setQuery('status', 'lead'))
+    await useCase.handle(
       requestAdapter
         .setQuery('status', 'sale')
         .setQuery('tid', 'trx-id')
