@@ -6,7 +6,6 @@ import { ClickRequestBuilder } from '../../utils/click-builders/click-request-bu
 import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '@/domain/click/stream/filter/filters/click-data-text/click-data-text-filter'
-import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 import { DateTime } from 'luxon'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum } from '@generated/prisma/enums'
