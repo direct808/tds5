@@ -81,8 +81,10 @@ describe('UpdateCampaignService', () => {
   it('should call ensureSourceExists', async () => {
     await service.update(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
-      args.userId,
-      args.sourceId,
+      expect.objectContaining({
+        userId: args.userId,
+        sourceId: args.sourceId,
+      }),
     )
   })
 

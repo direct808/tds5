@@ -34,13 +34,19 @@ describe('CommonCampaignService', () => {
   })
 
   it('should return early if sourceId is not provided', async () => {
-    const result = await service.ensureSourceExists('user-1', undefined)
+    const result = await service.ensureSourceExists({
+      userId: 'user-1',
+      sourceId: undefined,
+    })
     expect(result).toBeUndefined()
     expect(ensureEntityExists).not.toHaveBeenCalled()
   })
 
   it('should call ensureEntityExists with correct params', async () => {
-    await service.ensureSourceExists('user-1', 'source-123')
+    await service.ensureSourceExists({
+      userId: 'user-1',
+      sourceId: 'source-123',
+    })
 
     expect(ensureEntityExists).toHaveBeenCalledWith(
       sourceRepository,
