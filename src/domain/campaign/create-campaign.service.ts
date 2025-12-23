@@ -34,15 +34,8 @@ export class CreateCampaignService {
       })
     }
 
-    await this.commonCampaignService.ensureSourceExists(
-      args.userId,
-      args.sourceId,
-    )
-
-    await this.commonCampaignService.ensureDomainExists(
-      args.userId,
-      args.domainId,
-    )
+    await this.commonCampaignService.ensureSourceExists(args)
+    await this.commonCampaignService.ensureDomainExists(args)
 
     await checkUniqueNameForCreate(this.repository, args)
 

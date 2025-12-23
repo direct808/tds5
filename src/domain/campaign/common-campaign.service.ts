@@ -3,6 +3,16 @@ import { SourceRepository } from '@/infra/repositories/source.repository'
 import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 import { DomainRepository } from '@/infra/repositories/domain.repository'
 
+type EnsureSourceExistsArgs = {
+  userId: string
+  sourceId?: string
+}
+
+type EnsureDomainExistsArgs = {
+  userId: string
+  domainId?: string
+}
+
 @Injectable()
 export class CommonCampaignService {
   constructor(
@@ -10,10 +20,10 @@ export class CommonCampaignService {
     private readonly domainRepository: DomainRepository,
   ) {}
 
-  public async ensureSourceExists(
-    userId: string,
-    sourceId?: string,
-  ): Promise<void> {
+  public async ensureSourceExists({
+    userId,
+    sourceId,
+  }: EnsureSourceExistsArgs): Promise<void> {
     if (!sourceId) {
       return
     }
@@ -27,10 +37,10 @@ export class CommonCampaignService {
     )
   }
 
-  public async ensureDomainExists(
-    userId: string,
-    domainId?: string,
-  ): Promise<void> {
+  public async ensureDomainExists({
+    userId,
+    domainId,
+  }: EnsureDomainExistsArgs): Promise<void> {
     if (!domainId) {
       return
     }
