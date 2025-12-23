@@ -11,9 +11,8 @@ export class PrismaService
   constructor(readonly config: AppConfig) {
     const adapter = new PrismaPg({
       connectionString: config.dbUrl,
-      // log: console.log,
     })
-    super({ adapter })
+    super({ adapter /*log: ['query']*/ })
   }
 
   async onModuleInit(): Promise<void> {

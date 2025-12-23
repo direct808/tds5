@@ -2,22 +2,34 @@ import { Injectable } from '@nestjs/common'
 import {
   affiliateNetworkCacheKey,
   fullCampaignCodeCacheKey,
-  fullCampaignDomainCacheKey,
+  fullCampaignCodeCacheKeys,
+  fullCampaignDomainCacheKeys,
   offerCacheKey,
   sourceCacheKey,
 } from './helpers/campaign-cache-keys'
 import { RedisProvider } from '@/infra/redis/redis.provider'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 
 @Injectable()
 export class CampaignCacheClearService {
-  constructor(private readonly cache: RedisProvider) {}
+  constructor(
+    private readonly cache: RedisProvider,
+    private readonly campaignRepository: CampaignRepository,
+  ) {}
 
   public async clearCacheByCampaignCode(code: string): Promise<void> {
-    await this.cache.del(fullCampaignCodeCacheKey(code))
+    const keys = [fullCampaignCodeCacheKey(code)]
+    const domains = await this.campaignRepository.getIndexPageDomainNames([
+      code,
+    ])
+
+    keys.push(...fullCampaignDomainCacheKeys(domains))
+    await this.cache.del(...keys)
   }
 
-  public async clearCacheByDomainName(name: string): Promise<void> {
-    await this.cache.del(fullCampaignDomainCacheKey(name))
+  public async clearCacheByDomainNames(domains: string[]): Promise<void> {
+    const keys = fullCampaignDomainCacheKeys(domains)
+    await this.cache.del(...keys)
   }
 
   public clearCacheBySourceId(sourceId: string): Promise<void> {
@@ -36,9 +48,14 @@ export class CampaignCacheClearService {
 
   private async clearCacheById(key: string): Promise<void> {
     const campaignCodes = await this.cache.sMembers(key)
-    const keys: string[] = []
+    const keys = fullCampaignCodeCacheKeys(campaignCodes)
     keys.push(key)
-    campaignCodes.forEach((code) => keys.push(fullCampaignCodeCacheKey(code)))
+
+    const domains =
+      await this.campaignRepository.getIndexPageDomainNames(campaignCodes)
+
+    keys.push(...fullCampaignDomainCacheKeys(domains))
+
     await this.cache.del(...keys)
   }
 }

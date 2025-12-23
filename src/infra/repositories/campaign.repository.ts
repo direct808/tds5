@@ -95,4 +95,13 @@ export class CampaignRepository
       },
     })
   }
+
+  public async getIndexPageDomainNames(codes: string[]): Promise<string[]> {
+    const result = await this.prisma.domain.findMany({
+      select: { name: true },
+      where: { indexPageCampaign: { code: { in: codes } } },
+    })
+
+    return result.map(({ name }) => name)
+  }
 }

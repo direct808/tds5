@@ -78,6 +78,6 @@ export class CampaignCacheListener {
   handleDomainUpdatedEvent({ name }: DomainUpdatedEvent): Promise<void> {
     this.logger.debug('DomainUpdatedEvent: ' + name)
 
-    return this.clearCacheService.clearCacheByDomainName(name)
+    return this.clearCacheService.clearCacheByDomainNames([name])
   }
 }
