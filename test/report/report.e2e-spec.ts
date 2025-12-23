@@ -4,7 +4,7 @@ import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
 import {
   CampaignBuilder,
-  CampaignFull,
+  CampaignBuilderResult,
 } from '../utils/entity-builder/campaign-builder'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
 import { faker } from '@faker-js/faker'
@@ -21,7 +21,7 @@ describe('Report (e2e)', () => {
   let accessToken: string
   let userId: string
   let prisma: PrismaService
-  let campaign: CampaignFull
+  let campaign: CampaignBuilderResult
 
   afterEach(async () => {
     await app.close()

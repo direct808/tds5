@@ -38,6 +38,7 @@ export interface StreamDirectUrl extends StreamModel {
 
 export type FullCampaign = CampaignGetPayload<{
   include: {
+    domain: true
     streams: {
       include: {
         actionCampaign: true

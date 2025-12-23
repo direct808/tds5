@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
-  affiliateNetworkEventName,
+  affiliateNetworkUpdatedEventName,
   AffiliateNetworkUpdatedEvent,
 } from '@/domain/affiliate-network/events/affiliate-network-updated.event'
 import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
@@ -58,7 +58,7 @@ export class AffiliateNetworkService {
     await this.repository.update(args.id, args)
 
     this.eventEmitter.emit(
-      affiliateNetworkEventName,
+      affiliateNetworkUpdatedEventName,
       new AffiliateNetworkUpdatedEvent(args.id),
     )
   }

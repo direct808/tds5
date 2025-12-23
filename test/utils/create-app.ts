@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import { GEO_IP_PROVIDER } from '@/domain/geo-ip/types'
 import { FakeGeoIpService } from './fake-geo-Ip-service'
+import { NestExpressApplication } from '@nestjs/platform-express'
 
 export async function createApp(): Promise<INestApplication> {
   const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -13,7 +14,7 @@ export async function createApp(): Promise<INestApplication> {
     .useClass(FakeGeoIpService)
 
     .compile()
-  const app = moduleFixture.createNestApplication()
+  const app = moduleFixture.createNestApplication<NestExpressApplication>()
   configureApp(app)
   await app.init()
 

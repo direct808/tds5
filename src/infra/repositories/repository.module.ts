@@ -8,18 +8,19 @@ import { UserRepository } from '@/infra/repositories/user.repository'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
 import { ReportRepository } from '@/infra/repositories/report.repository'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 
 const repositories = [
   AffiliateNetworkRepository,
-  CampaignRepository,
-  ClickRepository,
-  OfferRepository,
-  SourceRepository,
-  UserRepository,
   StreamOfferRepository,
   ConversionRepository,
-  ConversionRepository,
+  CampaignRepository,
+  DomainRepository,
+  SourceRepository,
   ReportRepository,
+  ClickRepository,
+  OfferRepository,
+  UserRepository,
 ]
 
 @Module({

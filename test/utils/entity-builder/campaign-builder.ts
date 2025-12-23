@@ -12,9 +12,12 @@ import {
 } from '@generated/prisma/models/Campaign'
 import { SourceModel } from '@generated/prisma/models/Source'
 import { UserModel } from '@generated/prisma/models/User'
+import { DomainBuilder } from './domain-builder'
+import { DomainModel } from '@generated/prisma/models/Domain'
 
-export type CampaignFull = CampaignGetPayload<{
+export type CampaignBuilderResult = CampaignGetPayload<{
   include: {
+    indexPageDomains: true
     streams: {
       include: {
         streamOffers: {
@@ -25,6 +28,7 @@ export type CampaignFull = CampaignGetPayload<{
     }
     source: true
     user: true
+    domain: true
   }
 }>
 
@@ -36,6 +40,8 @@ export class CampaignBuilder {
 
   private sourceBuilder?: SourceBuilder
   private userBuilder?: UserBuilder
+  private domainBuilder?: DomainBuilder
+  private indexPageDomains: DomainBuilder[] = []
 
   private constructor() {}
 
@@ -43,7 +49,9 @@ export class CampaignBuilder {
     return new this()
   }
 
-  static createRandomActionContent(): CampaignBuilder {
+  static createRandomActionContent(
+    content = faker.commerce.productName(),
+  ): CampaignBuilder {
     const code = faker.string.alphanumeric(6)
 
     return CampaignBuilder.create()
@@ -53,37 +61,37 @@ export class CampaignBuilder {
         stream
           .name(faker.commerce.productName())
           .type(StreamActionTypeEnum.SHOW_TEXT)
-          .content(faker.commerce.productName()),
+          .content(content),
       )
   }
 
-  public async save(prisma: PrismaClient): Promise<CampaignFull> {
+  public async save(prisma: PrismaClient): Promise<CampaignBuilderResult> {
     const streams: StreamFull[] = []
-    let source: SourceModel | null = null
-    let user: UserModel | undefined
+    const indexPageDomains: DomainModel[] = []
 
-    if (this.userBuilder) {
-      user = await this.userBuilder.save(prisma)
-      this.fields.userId = user.id
-    }
-
-    if (this.sourceBuilder) {
-      source = await this.sourceBuilder.save(prisma)
-      this.fields.sourceId = source.id
-    }
+    const user = await this.saveUser(prisma)
+    const domain = await this.saveDomain(prisma)
+    const source = await this.saveSource(prisma)
 
     const campaign = (await prisma.campaign.create({
       data: this.fields,
       include: { streams: true, source: true, user: true },
-    })) as CampaignFull
+    })) as CampaignBuilderResult
 
     for (const builder of this.streamBuilders) {
       const stream = (await builder.save(prisma, campaign.id)) as StreamFull
       streams.push(stream)
     }
 
+    for (const builder of this.indexPageDomains) {
+      const domain = await builder.indexPageCampaignId(campaign.id).save(prisma)
+      indexPageDomains.push(domain)
+    }
+
     campaign.streams = streams
     campaign.source = source
+    campaign.domain = domain
+    campaign.indexPageDomains = indexPageDomains
 
     if (user) {
       campaign.user = user
@@ -92,33 +100,39 @@ export class CampaignBuilder {
     return campaign
   }
 
-  name(value: string): CampaignBuilder {
+  name(value: string): this {
     this.fields.name = value
 
     return this
   }
 
-  code(value: string): CampaignBuilder {
+  code(value: string): this {
     this.fields.code = value
 
     return this
   }
 
-  active(active: boolean): CampaignBuilder {
+  active(active: boolean): this {
     this.fields.active = active
 
     return this
   }
 
-  userId(value: string): CampaignBuilder {
+  userId(value: string): this {
     this.fields.userId = value
+
+    return this
+  }
+
+  domainId(domainId: string): this {
+    this.fields.domainId = domainId
 
     return this
   }
 
   public addStreamTypeDirectUrl(
     callback: (builder: StreamTypeDirectUrlBuilder) => void,
-  ): CampaignBuilder {
+  ): this {
     const builder = new StreamTypeDirectUrlBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -128,7 +142,7 @@ export class CampaignBuilder {
 
   public addStreamTypeAction(
     callback: (builder: StreamTypeActionBuilder) => void,
-  ): CampaignBuilder {
+  ): this {
     const builder = new StreamTypeActionBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -138,7 +152,7 @@ export class CampaignBuilder {
 
   public addStreamTypeOffers(
     callback: (builder: StreamTypeOffersBuilder) => void,
-  ): CampaignBuilder {
+  ): this {
     const builder = new StreamTypeOffersBuilder()
     this.streamBuilders.push(builder)
     callback(builder)
@@ -146,7 +160,7 @@ export class CampaignBuilder {
     return this
   }
 
-  createSource(callback: (builder: SourceBuilder) => void): CampaignBuilder {
+  createSource(callback: (builder: SourceBuilder) => void): this {
     const builder = SourceBuilder.create()
     this.sourceBuilder = builder
     callback(builder)
@@ -154,17 +168,63 @@ export class CampaignBuilder {
     return this
   }
 
-  sourceId(value: string): CampaignBuilder {
+  sourceId(value: string): this {
     this.fields.sourceId = value
 
     return this
   }
 
-  createUser(callback: (builder: UserBuilder) => void): CampaignBuilder {
+  createUser(callback: (builder: UserBuilder) => void): this {
     const builder = UserBuilder.create()
     this.userBuilder = builder
     callback(builder)
 
     return this
+  }
+
+  createDomain(callback: (builder: DomainBuilder) => void): this {
+    const builder = DomainBuilder.create()
+    this.domainBuilder = builder
+    callback(builder)
+
+    return this
+  }
+
+  public addIndexPageDomain(callback: (builder: DomainBuilder) => void): this {
+    const builder = DomainBuilder.create()
+    this.indexPageDomains.push(builder)
+    callback(builder)
+
+    return this
+  }
+
+  private async saveUser(prisma: PrismaClient): Promise<UserModel | undefined> {
+    if (!this.userBuilder) {
+      return
+    }
+    const user = await this.userBuilder.save(prisma)
+    this.fields.userId = user.id
+
+    return user
+  }
+
+  private async saveDomain(prisma: PrismaClient): Promise<DomainModel | null> {
+    if (!this.domainBuilder) {
+      return null
+    }
+    const domain = await this.domainBuilder.save(prisma)
+    this.fields.domainId = domain.id
+
+    return domain
+  }
+
+  private async saveSource(prisma: PrismaClient): Promise<SourceModel | null> {
+    if (!this.sourceBuilder) {
+      return null
+    }
+    const source = await this.sourceBuilder.save(prisma)
+    this.fields.sourceId = source.id
+
+    return source
   }
 }

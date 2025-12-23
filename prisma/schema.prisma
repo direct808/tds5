@@ -28,20 +28,38 @@ model AffiliateNetwork {
   @@map("affiliate_network")
 }
 
+model Domain {
+  id                  String     @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String
+  indexPageCampaign   Campaign?  @relation(name: "IndexPage", fields: [indexPageCampaignId], references: [id])
+  indexPageCampaignId String?    @db.Uuid
+  intercept404        Boolean    @default(false)
+  campaigns           Campaign[]
+  user                User       @relation(fields: [userId], references: [id])
+  userId              String     @db.Uuid
+
+  @@unique([name])
+  @@index([userId])
+  @@map("domain")
+}
+
 model Campaign {
-  id            String    @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String    @db.VarChar
-  code          String    @unique() @db.VarChar
-  sourceId      String?   @db.Uuid
-  active        Boolean
-  userId        String    @db.Uuid
-  createdAt     DateTime  @default(now()) @db.Timestamptz()
-  updatedAt     DateTime  @updatedAt @db.Timestamptz()
-  deletedAt     DateTime? @db.Timestamptz()
-  user          User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  source        Source?   @relation(fields: [sourceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  streams       Stream[]  @relation("StreamCampaign")
-  actionStreams Stream[]  @relation("StreamActionCampaign")
+  id               String    @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String    @db.VarChar
+  code             String    @unique() @db.VarChar
+  domainId         String?   @db.Uuid
+  domain           Domain?   @relation(fields: [domainId], references: [id])
+  indexPageDomains Domain[]  @relation("IndexPage")
+  sourceId         String?   @db.Uuid
+  active           Boolean
+  userId           String    @db.Uuid
+  createdAt        DateTime  @default(now()) @db.Timestamptz()
+  updatedAt        DateTime  @updatedAt @db.Timestamptz()
+  deletedAt        DateTime? @db.Timestamptz()
+  user             User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  source           Source?   @relation(fields: [sourceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  streams          Stream[]  @relation("StreamCampaign")
+  actionStreams    Stream[]  @relation("StreamActionCampaign")
 
   @@index([userId])
   @@map("campaign")
@@ -207,16 +225,17 @@ model StreamOffer {
 }
 
 model User {
-  id               String             @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email            String             @unique()
-  password         String
-  timeZone         String
-  createdAt        DateTime           @default(now()) @db.Timestamptz()
-  updatedAt        DateTime           @updatedAt @db.Timestamptz()
-  affiliateNetwork AffiliateNetwork[]
-  campaign         Campaign[]
-  offer            Offer[]
-  source           Source[]
+  id                String             @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email             String             @unique()
+  password          String
+  timeZone          String
+  createdAt         DateTime           @default(now()) @db.Timestamptz()
+  updatedAt         DateTime           @updatedAt @db.Timestamptz()
+  affiliateNetworks AffiliateNetwork[]
+  campaigns         Campaign[]
+  offers            Offer[]
+  sources           Source[]
+  domains           Domain[]
 
   @@map("user")
 }

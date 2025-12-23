@@ -28,4 +28,8 @@ export class ExpressRequestAdapter implements RequestAdapter {
   get ip(): string | undefined {
     return this._ip
   }
+
+  public domain: RequestAdapter['domain'] = () => {
+    return this.req.hostname
+  }
 }

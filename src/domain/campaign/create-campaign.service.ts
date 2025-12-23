@@ -34,10 +34,8 @@ export class CreateCampaignService {
       })
     }
 
-    await this.commonCampaignService.ensureSourceExists(
-      args.userId,
-      args.sourceId,
-    )
+    await this.commonCampaignService.ensureSourceExists(args)
+    await this.commonCampaignService.ensureDomainExists(args)
 
     await checkUniqueNameForCreate(this.repository, args)
 
@@ -66,6 +64,7 @@ export class CreateCampaignService {
       code: this.makeCode(),
       sourceId: args.sourceId,
       active: args.active,
+      domainId: args.domainId,
       userId: args.userId,
     }
   }

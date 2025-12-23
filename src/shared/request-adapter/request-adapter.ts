@@ -10,4 +10,6 @@ export interface RequestAdapter {
   cookie(name: string): string | undefined
 
   header(name: HeaderName): string | undefined
+
+  domain(): string | undefined
 }

@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import TestAgent from 'supertest/lib/agent'
 import request from 'supertest'
 import { FilterOperatorEnum, InputFilterData } from '@/domain/report/types'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 
 export class ReportRequestBuilder {
   private _groups: string[] | undefined
@@ -69,6 +70,6 @@ export class ReportRequestBuilder {
       query['sortOrder'] = this.sortOrder
     }
 
-    return req.get('/report').query(query)
+    return req.get(`/${GLOBAL_PREFIX}report`).query(query)
   }
 }

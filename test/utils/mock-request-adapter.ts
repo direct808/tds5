@@ -5,6 +5,7 @@ import {
 
 export type MockRequestAdapterData = {
   ip?: string
+  domain?: string
   headers?: Record<string, string | undefined>
   cookies?: Record<string, string | undefined>
   query?: Record<string, string | undefined>
@@ -36,6 +37,10 @@ export class MockRequestAdapter implements RequestAdapter {
 
   public header: RequestAdapter['header'] = (name) => {
     return this.data.headers?.[name]
+  }
+
+  public domain: RequestAdapter['domain'] = () => {
+    return this.data.domain
   }
 
   public setHeader(name: HeaderName, value: string): this {

@@ -1,4 +1,8 @@
-import { ConflictException, NotFoundException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
@@ -11,7 +15,7 @@ import {
 describe('repository-utils', () => {
   describe('checkUniqueNameForCreate', () => {
     it('should not throw when name is unique', async () => {
-      const mockRepository: IGetEntityByNameAndUserId = {
+      const mockRepository: IGetEntityByNameAndUserId<any> = {
         getByNameAndUserId: jest.fn().mockResolvedValue(null),
       }
 
@@ -25,7 +29,7 @@ describe('repository-utils', () => {
     })
 
     it('should throw ConflictException when name exists', async () => {
-      const mockRepository: IGetEntityByNameAndUserId = {
+      const mockRepository: IGetEntityByNameAndUserId<any> = {
         getByNameAndUserId: jest
           .fn()
           .mockResolvedValue({ id: '1', name: 'exists', userId: 'user1' }),
@@ -41,7 +45,7 @@ describe('repository-utils', () => {
 
   describe('checkUniqueNameForUpdate', () => {
     it('should not throw when name is unique', async () => {
-      const mockRepository: IGetEntityByNameAndUserId = {
+      const mockRepository: IGetEntityByNameAndUserId<any> = {
         getByNameAndUserId: jest.fn().mockResolvedValue(null),
       }
 
@@ -53,7 +57,7 @@ describe('repository-utils', () => {
     })
 
     it('should not throw when name exists but is the same entity', async () => {
-      const mockRepository: IGetEntityByNameAndUserId = {
+      const mockRepository: IGetEntityByNameAndUserId<any> = {
         getByNameAndUserId: jest
           .fn()
           .mockResolvedValue({ id: '1', name: 'exists', userId: 'user1' }),
@@ -67,7 +71,7 @@ describe('repository-utils', () => {
     })
 
     it('should throw ConflictException when name exists for different entity', async () => {
-      const mockRepository: IGetEntityByNameAndUserId = {
+      const mockRepository: IGetEntityByNameAndUserId<any> = {
         getByNameAndUserId: jest
           .fn()
           .mockResolvedValue({ id: '2', name: 'exists', userId: 'user1' }),
@@ -83,19 +87,19 @@ describe('repository-utils', () => {
 
   describe('checkEntityExists', () => {
     it('should throw NotFoundException when entity does not exist', async () => {
-      const mockRepository: IGetEntityByIdAndUserId = {
+      const mockRepository: IGetEntityByIdAndUserId<any> = {
         getByIdAndUserId: jest.fn().mockResolvedValue(null),
       }
 
       const args = { id: '1', userId: 'user1' }
 
       await expect(ensureEntityExists(mockRepository, args)).rejects.toThrow(
-        NotFoundException,
+        BadRequestException,
       )
     })
 
     it('should not throw when entity exists', async () => {
-      const mockRepository: IGetEntityByIdAndUserId = {
+      const mockRepository: IGetEntityByIdAndUserId<any> = {
         getByIdAndUserId: jest
           .fn()
           .mockResolvedValue({ id: '1', userId: 'user1' }),
@@ -109,7 +113,7 @@ describe('repository-utils', () => {
     })
 
     it('should throw NotFoundException when entity does not exist with message', async () => {
-      const mockRepository: IGetEntityByIdAndUserId = {
+      const mockRepository: IGetEntityByIdAndUserId<any> = {
         getByIdAndUserId: jest.fn().mockResolvedValue(null),
       }
 

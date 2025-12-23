@@ -9,7 +9,9 @@ import { SourceModel } from '@generated/prisma/models/Source'
 
 @Injectable()
 export class SourceRepository
-  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+  implements
+    IGetEntityByNameAndUserId<SourceModel>,
+    IGetEntityByIdAndUserId<SourceModel>
 {
   constructor(private readonly prisma: PrismaService) {}
 

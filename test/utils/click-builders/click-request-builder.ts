@@ -6,7 +6,9 @@ import { setTimeout } from 'timers'
 import { clickRegisteredEventName } from '@/domain/click/events/click-registered.event'
 
 export class ClickRequestBuilder {
-  private campaignCode: string | undefined
+  private campaignCode: string = ''
+  private _domain: string | undefined
+  private _ip: string | undefined
   private visitorId: string | undefined
   private readonly q = new URLSearchParams()
   private readonly headers: Record<string, string> = {}
@@ -20,6 +22,18 @@ export class ClickRequestBuilder {
 
   public code(code: string): this {
     this.campaignCode = code
+
+    return this
+  }
+
+  public domain(domain: string): this {
+    this._domain = domain
+
+    return this
+  }
+
+  public ip(ip: string): this {
+    this._ip = ip
 
     return this
   }
@@ -50,9 +64,6 @@ export class ClickRequestBuilder {
 
   public request(): ReturnType<TestAgent['get']> {
     const req = request(this.app.getHttpServer())
-    if (!this.campaignCode) {
-      throw new Error('Code not set')
-    }
 
     let url = '/' + this.campaignCode
     if (this.q.size > 0) {
@@ -63,6 +74,14 @@ export class ClickRequestBuilder {
 
     if (this.visitorId) {
       superTest = superTest.set('Cookie', ['visitorId=' + this.visitorId])
+    }
+
+    if (this._ip) {
+      superTest = superTest.set('x-forwarded-for', this._ip)
+    }
+
+    if (this._domain) {
+      superTest = superTest.set('Host', this._domain)
     }
 
     for (const [name, value] of Object.entries(this.headers)) {

@@ -4,9 +4,10 @@ import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import { configureApp } from '@/shared/configure-app'
 import { AppConfig } from '@/infra/config/app-config.service'
+import { NestExpressApplication } from '@nestjs/platform-express'
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create<NestExpressApplication>(AppModule)
   configureApp(app)
 
   const config = app.get(AppConfig)

@@ -35,10 +35,8 @@ export class UpdateCampaignService {
 
     const campaign = await this.getCampaign(args.id, args.userId)
 
-    await this.commonCampaignService.ensureSourceExists(
-      args.userId,
-      args.sourceId,
-    )
+    await this.commonCampaignService.ensureSourceExists(args)
+    await this.commonCampaignService.ensureDomainExists(args)
 
     if (args.name) {
       await checkUniqueNameForUpdate(this.repository, {
@@ -66,6 +64,7 @@ export class UpdateCampaignService {
     return {
       name: args.name,
       sourceId: args.sourceId,
+      domainId: args.domainId,
       active: args.active,
     }
   }

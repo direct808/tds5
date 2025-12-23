@@ -8,6 +8,7 @@ import { FullCampaign } from '@/domain/campaign/types'
 import {
   CampaignModel,
   CampaignUncheckedCreateInput,
+  CampaignWhereInput,
 } from '@generated/prisma/models/Campaign'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import {
@@ -16,12 +17,14 @@ import {
   Transaction,
 } from '@/infra/prisma/prisma-transaction'
 
+export type GetFullByArgs = { code: string } | { domain: string }
+
 @Injectable()
 export class CampaignRepository
-  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+  implements
+    IGetEntityByNameAndUserId<CampaignModel>,
+    IGetEntityByIdAndUserId<CampaignModel>
 {
-  // private readonly repository = this.dataSource.getRepository(Campaign)
-
   constructor(private readonly prisma: PrismaService) {}
 
   public getByNameAndUserId({
@@ -58,10 +61,23 @@ export class CampaignRepository
     })
   }
 
-  public getFullByCode(code: string): Promise<FullCampaign | null> {
+  public getFullBy(args: GetFullByArgs): Promise<FullCampaign | null> {
+    const where: CampaignWhereInput = { active: true }
+
+    if ('code' in args) {
+      where.code = args.code
+    }
+
+    if ('domain' in args) {
+      where.indexPageDomains = {
+        some: { name: args.domain },
+      }
+    }
+
     return this.prisma.campaign.findFirst({
-      where: { code, active: true },
+      where,
       include: {
+        domain: true,
         streams: {
           include: {
             streamOffers: {
@@ -78,5 +94,14 @@ export class CampaignRepository
         },
       },
     })
+  }
+
+  public async getIndexPageDomainNames(codes: string[]): Promise<string[]> {
+    const result = await this.prisma.domain.findMany({
+      select: { name: true },
+      where: { indexPageCampaign: { code: { in: codes } } },
+    })
+
+    return result.map(({ name }) => name)
   }
 }

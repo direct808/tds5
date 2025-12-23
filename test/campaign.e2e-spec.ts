@@ -8,6 +8,7 @@ import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum, StreamSchemaEnum } from '@generated/prisma/enums'
+import { DomainBuilder } from './utils/entity-builder/domain-builder'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -31,6 +32,10 @@ describe('CampaignController (e2e)', () => {
 
   describe('Create', () => {
     it('Should be create campaign and stream', async () => {
+      const domain = await DomainBuilder.create()
+        .name('test.com')
+        .userId(userId)
+        .save(prisma)
       const offer1 = await OfferBuilder.create()
         .name('Offer 1')
         .userId(userId)
@@ -49,6 +54,7 @@ describe('CampaignController (e2e)', () => {
         .send({
           name: 'Test campaign 1',
           active: true,
+          domainId: domain.id,
           streams: [
             {
               name: 'Test stream 1',
@@ -72,14 +78,45 @@ describe('CampaignController (e2e)', () => {
 
       const campaign = await prisma.campaign.findFirst({
         where: { name: 'Test campaign 1' },
+        select: {
+          name: true,
+          active: true,
+          domainId: true,
+          streams: {
+            select: {
+              name: true,
+              schema: true,
+              streamOffers: {
+                select: { offerId: true, percent: true, active: true },
+              },
+            },
+          },
+        },
       })
 
-      const stream = await prisma.stream.findFirst({
-        where: { name: 'Test stream 1' },
+      expect(campaign).toEqual({
+        name: 'Test campaign 1',
+        active: true,
+        domainId: domain.id,
+        streams: [
+          {
+            name: 'Test stream 1',
+            schema: 'LANDINGS_OFFERS',
+            streamOffers: [
+              {
+                offerId: offer1.id,
+                percent: 40,
+                active: true,
+              },
+              {
+                offerId: offer2.id,
+                percent: 60,
+                active: true,
+              },
+            ],
+          },
+        ],
       })
-
-      expect(campaign).not.toBeNull()
-      expect(stream).not.toBeNull()
     })
 
     it('Should not be created with a non-existent sourceId', async () => {
@@ -94,8 +131,24 @@ describe('CampaignController (e2e)', () => {
             { name: 'Stream 1', schema: 'ACTION', actionType: 'NOTHING' },
           ],
         })
-        .expect(404)
+        .expect(400)
         .expect(/Source not found/)
+    })
+
+    it('Should not be created with a non-existent domainId', async () => {
+      await request(app.getHttpServer())
+        .post('/api/campaign')
+        .auth(accessToken, { type: 'bearer' })
+        .send({
+          name: 'Test campaign',
+          active: true,
+          domainId: 'e86c9c8f-190e-411b-a468-4eec2fafae01',
+          streams: [
+            { name: 'Stream 1', schema: 'ACTION', actionType: 'NOTHING' },
+          ],
+        })
+        .expect(400)
+        .expect(/Domain not found/)
     })
 
     it('Should not be created with an existing name', async () => {
@@ -134,7 +187,7 @@ describe('CampaignController (e2e)', () => {
             },
           ],
         })
-        .expect(404)
+        .expect(400)
     })
 
     it('There must be an error in percentage amount', async () => {
@@ -229,6 +282,59 @@ describe('CampaignController (e2e)', () => {
   })
 
   describe('Update', () => {
+    it('Update campaign', async () => {
+      const domain = await DomainBuilder.create()
+        .name('test.com')
+        .userId(userId)
+        .save(prisma)
+
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('abcdi2')
+        .userId(userId)
+
+        .save(prisma)
+
+      await request(app.getHttpServer())
+        .put('/api/campaign/' + campaign.id)
+        .auth(accessToken, { type: 'bearer' })
+        .send({
+          name: 'Campaign 2',
+          active: false,
+          domainId: domain.id,
+          streams: [
+            {
+              name: 'Test stream 1',
+              schema: 'ACTION',
+              actionType: 'NOTHING',
+            },
+          ],
+        })
+        .expect(200)
+
+      const campaignDb = await prisma.campaign.findFirst({
+        select: {
+          name: true,
+          active: true,
+          domainId: true,
+          streams: { select: { name: true, schema: true, actionType: true } },
+        },
+      })
+
+      expect(campaignDb).toEqual({
+        name: 'Campaign 2',
+        active: false,
+        domainId: domain.id,
+        streams: [
+          {
+            name: 'Test stream 1',
+            schema: 'ACTION',
+            actionType: 'NOTHING',
+          },
+        ],
+      })
+    })
+
     it('Must be an error with the existing name', async () => {
       await CampaignBuilder.create()
         .name('Campaign 2')

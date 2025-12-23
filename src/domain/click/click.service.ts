@@ -8,7 +8,11 @@ import { SetupSubject } from './observers/setup-subject'
 import { ClickContext } from './shared/click-context.service'
 import { CampaignCacheService } from '@/domain/campaign-cache/campaign-cache.service'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
-import { StreamFull, StreamFullWithCampaign } from '@/domain/campaign/types'
+import {
+  FullCampaign,
+  StreamFull,
+  StreamFullWithCampaign,
+} from '@/domain/campaign/types'
 
 type RedirectData = { count: number }
 
@@ -24,21 +28,26 @@ export class ClickService {
     private readonly campaignCacheService: CampaignCacheService,
   ) {}
 
-  async handleClick(code: string): Promise<void> {
+  async handleClick(code?: string, domain?: string): Promise<void> {
     await this.setupSubject.setupRequestSubject()
     const redirectData: RedirectData = { count: 0 }
-    const streamResponse = await this.getStreamResponse(code, redirectData)
+    const streamResponse = await this.getStreamResponse(
+      redirectData,
+      code,
+      domain,
+    )
     this.responseHandlerFactory.handle(streamResponse)
   }
 
   public async getStreamResponse(
-    code: string,
     redirectData: RedirectData,
+    code?: string,
+    domain?: string,
   ): Promise<StreamResponse> {
     const clickData = this.clickContext.getClickData()
 
     this.checkIncrementRedirectCount(redirectData)
-    const campaign = await this.campaignCacheService.getFullByCode(code)
+    const campaign = await this.getCampaignByCodeOrDomain(code, domain)
 
     clickData.campaignId = campaign.id
     clickData.sourceId = campaign.sourceId
@@ -61,10 +70,25 @@ export class ClickService {
     if ('campaignCode' in streamResponse) {
       clickData.previousCampaignId = campaign.id
 
-      return this.getStreamResponse(streamResponse.campaignCode, redirectData)
+      return this.getStreamResponse(redirectData, streamResponse.campaignCode)
     }
 
     return streamResponse
+  }
+
+  private async getCampaignByCodeOrDomain(
+    code?: string,
+    domain?: string,
+  ): Promise<FullCampaign> {
+    if (code) {
+      return this.campaignCacheService.getFull({ code })
+    }
+
+    if (domain) {
+      return this.campaignCacheService.getFull({ domain })
+    }
+
+    throw new Error('Unable to get full stream')
   }
 
   private makeStreamWithCampaign(

@@ -9,7 +9,9 @@ import { OfferModel } from '@generated/prisma/models/Offer'
 
 @Injectable()
 export class OfferRepository
-  implements IGetEntityByNameAndUserId, IGetEntityByIdAndUserId
+  implements
+    IGetEntityByNameAndUserId<OfferModel>,
+    IGetEntityByIdAndUserId<OfferModel>
 {
   constructor(private readonly prisma: PrismaService) {}
 

@@ -1,5 +1,4 @@
-import { Module } from '@nestjs/common'
-import { ClickController } from './click.controller'
+import { Module, NestModule, RequestMethod } from '@nestjs/common'
 import { ClickService } from './click.service'
 import { SelectStreamService } from './stream/select-stream.service'
 import { JsonResponseHandler } from './response-handler/json-response-handler'
@@ -13,9 +12,10 @@ import { RequestAdapterModule } from '@/shared/request-adapter/request-adapter.m
 import { CampaignCacheModule } from '@/domain/campaign-cache/campaign-cache.module'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
 import { SchemaModule } from '@/domain/click/stream/schema/schema.module'
+import { ClickMiddleware } from '@/domain/click/click.middleware'
+import { ClsMiddleware } from 'nestjs-cls'
 
 @Module({
-  controllers: [ClickController],
   providers: [
     ClickService,
     SelectStreamService,
@@ -34,4 +34,17 @@ import { SchemaModule } from '@/domain/click/stream/schema/schema.module'
     RepositoryModule,
   ],
 })
-export class ClickModule {}
+export class ClickModule implements NestModule {
+  configure: NestModule['configure'] = (consumer) => {
+    const routes = [
+      { path: '/', method: RequestMethod.GET },
+      { path: ':code([a-zA-Z0-9]{6})', method: RequestMethod.GET },
+    ]
+
+    consumer
+      .apply(ClsMiddleware)
+      .forRoutes(...routes)
+      .apply(ClickMiddleware)
+      .forRoutes(...routes)
+  }
+}
