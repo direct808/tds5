@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common'
-import { CommonCampaignService } from './common-campaign.service'
-import { nanoid } from 'nanoid'
-import { CreateStreamService } from './stream/create-stream.service'
-import { CreateCampaignDto } from './dto/create-campaign.dto'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import { CreateCampaignDto } from '@/domain/campaign/dto/create-campaign.dto'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
+import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 import {
   CampaignCreatedEvent,
   campaignCreatedEventName,
-} from './events/campaign-created.event'
+} from '@/domain/campaign/events/campaign-created.event'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
-import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
+import { CreateStreamService } from '@/domain/campaign/stream/create-stream.service'
+import { CommonCampaignService } from '@/domain/campaign/common-campaign.service'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
-import { Transaction } from '@/infra/prisma/prisma-transaction'
 import { CampaignUncheckedCreateInput } from '@generated/prisma/models/Campaign'
+import { nanoid } from 'nanoid'
 
 @Injectable()
-export class CreateCampaignService {
+export class CreateCampaignUseCase {
   constructor(
     private readonly repository: CampaignRepository,
     private readonly createStreamService: CreateStreamService,
@@ -24,13 +24,13 @@ export class CreateCampaignService {
     private readonly tr: TransactionFactory,
   ) {}
 
-  public async create(
+  public async handle(
     args: CreateCampaignDto & { userId: string },
     tr: Transaction | null,
   ): Promise<void> {
     if (!tr) {
       return this.tr.create((tr) => {
-        return this.create(args, tr)
+        return this.handle(args, tr)
       })
     }
 

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonStreamService } from './common-stream.service'
+import { StreamService } from './stream.service'
 import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
@@ -31,7 +31,7 @@ describe('CreateStreamService', () => {
       providers: [
         CreateStreamService,
         {
-          provide: CommonStreamService,
+          provide: StreamService,
           useValue: commonService,
         },
         {

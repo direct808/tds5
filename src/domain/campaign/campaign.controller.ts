@@ -7,7 +7,7 @@ import {
   Put,
 } from '@nestjs/common'
 import { UserId } from '@/domain/auth/user-id.decorator'
-import { CreateCampaignService } from './create-campaign.service'
+import { CreateCampaignUseCase } from '@/domain/campaign/use-cases/create-campaign.use-case'
 import { UpdateCampaignService } from './update-campaign.service'
 import { CreateCampaignDto } from './dto/create-campaign.dto'
 import { UpdateCampaignDto } from './dto/update-campaign.dto'
@@ -16,7 +16,7 @@ import { GLOBAL_PREFIX } from '@/shared/constants'
 @Controller(GLOBAL_PREFIX + 'campaign')
 export class CampaignController {
   constructor(
-    private readonly createCampaignService: CreateCampaignService,
+    private readonly createCampaignUseCase: CreateCampaignUseCase,
     private readonly updateCampaignService: UpdateCampaignService,
   ) {}
 
@@ -25,7 +25,7 @@ export class CampaignController {
     @Body() args: CreateCampaignDto,
     @UserId() userId: string,
   ): Promise<void> {
-    return this.createCampaignService.create({ ...args, userId }, null)
+    return this.createCampaignUseCase.handle({ ...args, userId }, null)
   }
 
   @Put(':id')

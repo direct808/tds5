@@ -5,7 +5,7 @@ import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 import { StreamUncheckedCreateInput } from '@generated/prisma/models/Stream'
 
 @Injectable()
-export class CommonStreamService {
+export class StreamService {
   constructor(private readonly campaignRepository: CampaignRepository) {}
 
   public async ensureCampaignExists(

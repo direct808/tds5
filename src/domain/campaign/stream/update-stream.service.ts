@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { CommonStreamService } from './common-stream.service'
+import { StreamService } from './stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamService } from './create-stream.service'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
@@ -16,7 +16,7 @@ import { StreamSchemaEnum } from '@generated/prisma/enums'
 @Injectable()
 export class UpdateStreamService {
   constructor(
-    private readonly commonService: CommonStreamService,
+    private readonly commonService: StreamService,
     private readonly repository: StreamRepository,
     private readonly updateStreamOfferService: UpdateStreamOfferService,
     private readonly createStreamService: CreateStreamService,

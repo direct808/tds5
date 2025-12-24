@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonStreamService } from './common-stream.service'
+import { StreamService } from './stream.service'
 import { CreateStreamDto } from '../dto/create-stream.dto'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
@@ -12,7 +12,7 @@ import {
 jest.mock('@/infra/repositories/utils/repository-utils')
 
 describe('CommonStreamService', () => {
-  let service: CommonStreamService
+  let service: StreamService
 
   const repository = {
     update: jest.fn(),
@@ -21,7 +21,7 @@ describe('CommonStreamService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CommonStreamService,
+        StreamService,
 
         {
           provide: CampaignRepository,
@@ -30,7 +30,7 @@ describe('CommonStreamService', () => {
       ],
     }).compile()
 
-    service = module.get(CommonStreamService)
+    service = module.get(StreamService)
 
     jest.clearAllMocks()
   })
