@@ -56,6 +56,7 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics([
         'clicks',
         'conversions',
@@ -105,6 +106,7 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics([
         'revenue',
         'revenue_sale',
@@ -154,6 +156,7 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics([
         'revenue',
         'cost',
@@ -192,6 +195,7 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics([
         'clicks',
         'clicks_unique_global',
@@ -238,6 +242,7 @@ describe('Report (e2e)', () => {
     await builder.save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks', 'bots', 'bots_pct', 'proxies', 'empty_referer'])
       .request()
       .auth(accessToken, { type: 'bearer' })
@@ -271,6 +276,7 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics([
         'cr',
         'cr_sale',
@@ -319,6 +325,7 @@ describe('Report (e2e)', () => {
     await builder.save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics([
         'epc',
         'uepc',
@@ -426,6 +433,7 @@ describe('Report (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .groups([
         'id',
@@ -549,6 +557,7 @@ describe('Report (e2e)', () => {
 
     // Act
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .groups(['year'])
       .metrics(['clicks'])
       .sort('year', 'asc')
@@ -560,5 +569,28 @@ describe('Report (e2e)', () => {
 
     // Assert
     expect(result).toEqual([2023, 2025, 2027])
+  })
+
+  it('pagination', async () => {
+    // Arrange
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.createdAt(new Date('2027-06-07')))
+      .add((click) => click.createdAt(new Date('2023-06-07')))
+      .add((click) => click.createdAt(new Date('2025-06-07')))
+      .save(prisma)
+
+    // Act
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .groups(['year'])
+      .metrics(['clicks'])
+      .sort('year', 'asc')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // Assert
+    expect(body).toHaveLength(2)
   })
 })
