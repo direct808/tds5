@@ -17,7 +17,7 @@ import { GLOBAL_PREFIX } from '@/shared/constants'
 export class CampaignController {
   constructor(
     private readonly createCampaignUseCase: CreateCampaignUseCase,
-    private readonly updateCampaignService: UpdateCampaignUseCase,
+    private readonly updateCampaignUseCase: UpdateCampaignUseCase,
   ) {}
 
   @Post()
@@ -34,6 +34,6 @@ export class CampaignController {
     @UserId() userId: string,
     @Body() dto: UpdateCampaignDto,
   ): Promise<void> {
-    await this.updateCampaignService.handle({ ...dto, id, userId }, null)
+    await this.updateCampaignUseCase.handle({ ...dto, id, userId }, null)
   }
 }
