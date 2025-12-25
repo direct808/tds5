@@ -27,6 +27,8 @@ describe('CheckArgsService', () => {
 
   it('does nothing if sortField is empty', () => {
     const args = {
+      limit: 25,
+      offset: 0,
       sortField: undefined,
       groups: [],
       metrics: [],
@@ -40,6 +42,8 @@ describe('CheckArgsService', () => {
     mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
+      limit: 25,
+      offset: 0,
       sortField: 'group1',
       groups: ['group1'],
       metrics: [],
@@ -53,6 +57,8 @@ describe('CheckArgsService', () => {
     mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
+      limit: 25,
+      offset: 0,
       sortField: 'metric1',
       groups: [],
       metrics: ['metric1'],
@@ -66,6 +72,8 @@ describe('CheckArgsService', () => {
     mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
+      limit: 25,
+      offset: 0,
       sortField: 'unknown',
       groups: [],
       metrics: [],
@@ -80,6 +88,8 @@ describe('CheckArgsService', () => {
     mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
+      limit: 25,
+      offset: 0,
       sortField: 'metric1',
       groups: ['group2'],
       metrics: ['metric2'],

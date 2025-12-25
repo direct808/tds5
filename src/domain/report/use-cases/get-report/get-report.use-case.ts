@@ -9,21 +9,13 @@ import { groups } from '@/domain/report/groups'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely } from 'kysely'
 import { DB } from '@generated/kysely'
-import { Direction, InputFilterData } from '@/domain/report/types'
+import { Direction } from '@/domain/report/types'
 import { CheckArgsService } from '@/domain/report/use-cases/get-report/check-args.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
 import { UserRepository } from '@/infra/repositories/user.repository'
 import { UserModel } from '@generated/prisma/models/User'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
-
-export type GetReportArgs = {
-  metrics: string[]
-  groups: string[]
-  sortField?: string
-  sortOrder?: Direction
-  filters: InputFilterData[]
-}
 
 @Injectable()
 export class GetReportUseCase {
@@ -61,6 +53,7 @@ export class GetReportUseCase {
     this.metricProcessorService.process(qb, identifierMap, args.metrics)
 
     qb.includeConversionFields(usedIdentifiers)
+    qb.setPagination(args.offset, args.limit)
 
     // console.log(qb.sql())
 

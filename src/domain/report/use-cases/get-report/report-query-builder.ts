@@ -46,6 +46,10 @@ export class ReportQueryBuilder {
     this.qb = this.db.selectFrom('click')
   }
 
+  public setPagination(offset: number, limit: number): void {
+    this.qb = this.qb.offset(offset).limit(limit)
+  }
+
   public selectSourceName(): this {
     return this.selectNameFrom('source')
   }
@@ -79,7 +83,7 @@ export class ReportQueryBuilder {
   public includeConversionFields(fields: string[]): void {
     const conversionTypes = this.getConversionTypes()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sel: any[] = [] // todo исправить
+    const sel: any[] = [] // todo убрать any
     for (const key of conversionTypes) {
       if (fields.includes('conversions_' + key)) {
         const conv = this.db.fn

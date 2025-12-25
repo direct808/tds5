@@ -46,6 +46,7 @@ describe('Report Filter (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .groups(['isProxy'])
       .metrics(['bots_pct'])
       .addFilter('bots_pct', Op['>'], 40)
@@ -67,6 +68,7 @@ describe('Report Filter (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .groups(['isProxy'])
       .metrics(['clicks'])
       .addFilter('clicks', Op['='], 2)
@@ -94,6 +96,7 @@ describe('Report Filter (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .addFilter(field, Op['='], value)
       .request()
@@ -112,6 +115,7 @@ describe('Report Filter (e2e)', () => {
     await createClickBuilder().campaignId(campaign.id).save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .addFilter('campaignId', Op['='], campaignId)
       .request()
@@ -128,6 +132,7 @@ describe('Report Filter (e2e)', () => {
     await createClickBuilder().campaignId(campaignId).save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .addFilter('emptyReferer', Op['='], true)
       .request()
@@ -146,6 +151,7 @@ describe('Report Filter (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .addFilter('ip2', Op['='], '4.3')
       .request()
@@ -164,6 +170,7 @@ describe('Report Filter (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .addFilter('ip3', Op['='], '4.3.2')
       .request()
@@ -189,6 +196,7 @@ describe('Report Filter (e2e)', () => {
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
       .metrics(['clicks'])
       .addFilter(field, Op['='], value2)
       .request()

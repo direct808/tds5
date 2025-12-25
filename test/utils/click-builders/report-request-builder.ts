@@ -10,11 +10,20 @@ export class ReportRequestBuilder {
   private _filter: InputFilterData[] | undefined
   private sortField: string | undefined
   private sortOrder: 'asc' | 'desc' | undefined
+  private offset: number | undefined
+  private limit: number | undefined
 
   private constructor(private readonly app: INestApplication) {}
 
   public static create(app: INestApplication): ReportRequestBuilder {
     return new this(app)
+  }
+
+  public pagination(offset: number, limit: number): this {
+    this.offset = offset
+    this.limit = limit
+
+    return this
   }
 
   public groups(groups: string[]): this {
@@ -68,6 +77,14 @@ export class ReportRequestBuilder {
 
     if (this.sortOrder) {
       query['sortOrder'] = this.sortOrder
+    }
+
+    if (typeof this.offset === 'number') {
+      query['offset'] = String(this.offset)
+    }
+
+    if (typeof this.limit === 'number') {
+      query['limit'] = String(this.limit)
     }
 
     return req.get(`/${GLOBAL_PREFIX}report`).query(query)
