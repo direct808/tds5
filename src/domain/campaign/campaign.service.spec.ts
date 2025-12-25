@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonCampaignService } from './common-campaign.service'
+import { CampaignService } from './campaign.service'
 import { SourceRepository } from '@/infra/repositories/source.repository'
 import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 import { DomainRepository } from '@/infra/repositories/domain.repository'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
-describe('CommonCampaignService', () => {
-  let service: CommonCampaignService
+describe('CampaignService', () => {
+  let service: CampaignService
   let sourceRepository: SourceRepository
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CommonCampaignService,
+        CampaignService,
         {
           provide: SourceRepository,
           useValue: {},
@@ -25,7 +25,7 @@ describe('CommonCampaignService', () => {
       ],
     }).compile()
 
-    service = module.get<CommonCampaignService>(CommonCampaignService)
+    service = module.get<CampaignService>(CampaignService)
     sourceRepository = module.get<SourceRepository>(SourceRepository)
   })
 

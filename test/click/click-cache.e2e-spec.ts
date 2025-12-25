@@ -9,7 +9,7 @@ import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { faker } from '@faker-js/faker/.'
 import { OfferBuilder } from '../utils/entity-builder/offer-builder'
-import { CreateCampaignService } from '@/domain/campaign/create-campaign.service'
+import { CreateCampaignUseCase } from '@/domain/campaign/use-cases/create-campaign.use-case'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 import { DomainBuilder } from '../utils/entity-builder/domain-builder'
@@ -299,7 +299,7 @@ describe('Click-cache (e2e)', () => {
     await ClickRequestBuilder.create(app).code(code).request().expect(404)
     expect(getFullBy).toHaveBeenCalledTimes(1)
 
-    spyOn(app.get(CreateCampaignService), 'makeCode').mockReturnValue(code)
+    spyOn(app.get(CreateCampaignUseCase), 'makeCode').mockReturnValue(code)
 
     await request(app.getHttpServer())
       .post('/api/campaign')

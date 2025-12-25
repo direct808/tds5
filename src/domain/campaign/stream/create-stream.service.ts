@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { CommonStreamService } from './common-stream.service'
+import { StreamService } from './stream.service'
 import { StreamRepository } from './stream.repository'
 import { CreateStreamDto } from '../dto/create-stream.dto'
 import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
@@ -9,7 +9,7 @@ import { StreamSchemaEnum } from '@generated/prisma/enums'
 @Injectable()
 export class CreateStreamService {
   constructor(
-    private readonly commonService: CommonStreamService,
+    private readonly commonService: StreamService,
     private readonly repository: StreamRepository,
     private readonly createStreamOfferService: CreateStreamOfferService,
   ) {}

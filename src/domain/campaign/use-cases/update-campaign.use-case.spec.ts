@@ -1,10 +1,10 @@
+import { UpdateStreamService } from '../stream/update-stream.service'
 import { Test, TestingModule } from '@nestjs/testing'
-import { CreateCampaignService } from './create-campaign.service'
-import { CommonCampaignService } from './common-campaign.service'
-import { CreateStreamService } from './stream/create-stream.service'
+import { UpdateCampaignUseCase } from './update-campaign.use-case'
+import { CampaignService } from '../campaign.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
+import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
-import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 import { PrismaClient } from '@generated/prisma/client'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
@@ -12,6 +12,7 @@ import { Transaction } from '@/infra/prisma/prisma-transaction'
 jest.mock('@/infra/repositories/utils/repository-utils')
 
 const args = {
+  id: 'id-1',
   name: 'test',
   sourceId: 'source-123',
   active: true,
@@ -19,16 +20,17 @@ const args = {
   streams: [],
 }
 
-describe('CreateCampaignService', () => {
-  let service: CreateCampaignService
+describe('UpdateCampaignUseCase', () => {
+  let useCase: UpdateCampaignUseCase
   const transactionFactory = {
     create: jest.fn().mockImplementation((cb) => cb(prisma)),
   }
   const repository = {
-    create: jest.fn().mockResolvedValue({ id: 'campaign-1' }),
+    update: jest.fn(),
+    getByIdAndUserId: jest.fn().mockResolvedValue({}),
   }
-  const createStreamService = {
-    createStreams: jest.fn(),
+  const updateStreamService = {
+    updateStreams: jest.fn(),
   }
   const commonCampaignService = {
     ensureSourceExists: jest.fn(),
@@ -40,7 +42,7 @@ describe('CreateCampaignService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CreateCampaignService,
+        UpdateCampaignUseCase,
         EventEmitter2,
         {
           provide: TransactionFactory,
@@ -51,33 +53,33 @@ describe('CreateCampaignService', () => {
           useValue: repository,
         },
         {
-          provide: CreateStreamService,
-          useValue: createStreamService,
+          provide: UpdateStreamService,
+          useValue: updateStreamService,
         },
         {
-          provide: CommonCampaignService,
+          provide: CampaignService,
           useValue: commonCampaignService,
         },
       ],
     }).compile()
 
-    service = module.get(CreateCampaignService)
+    useCase = module.get(UpdateCampaignUseCase)
 
     jest.clearAllMocks()
   })
 
   it('should use transaction when manager is not provided', async () => {
-    await service.create(args, null)
+    await useCase.handle(args, null)
     expect(transactionFactory.create).toHaveBeenCalled()
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await service.create(args, transaction)
+    await useCase.handle(args, transaction)
     expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await service.create(args, transaction)
+    await useCase.handle(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: args.userId,
@@ -87,42 +89,45 @@ describe('CreateCampaignService', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await service.create(args, transaction)
-    expect(checkUniqueNameForCreate).toHaveBeenCalledWith(repository, args)
+    await useCase.handle(args, transaction)
+    expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
   })
 
-  it('should call repository.create with correct data', async () => {
-    await service.create(args, transaction)
-    expect(repository.create).toHaveBeenCalledWith(
+  it('should not call checkUniqueNameForCreate without name', async () => {
+    const { name, ...argsWithoutName } = args
+    await useCase.handle(argsWithoutName as any, transaction)
+    expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
+  })
+
+  it('should call repository.update with correct data', async () => {
+    await useCase.handle(args, transaction)
+    expect(repository.update).toHaveBeenCalledWith(
       prisma,
+      args.id,
       expect.objectContaining({
         name: args.name,
         sourceId: args.sourceId,
         active: args.active,
-        userId: args.userId,
       }),
     )
   })
 
-  it('should call createStreamService.createStreams with correct params', async () => {
-    await service.create(args, transaction)
-    expect(createStreamService.createStreams).toHaveBeenCalledWith(
+  it('should call updateStreams with correct params', async () => {
+    await useCase.handle(args, transaction)
+    expect(updateStreamService.updateStreams).toHaveBeenCalledWith(
       prisma,
-      'campaign-1',
+      args.id,
       args.userId,
       args.streams,
     )
   })
 
-  it('should call buildCreateData witch correct result', () => {
-    jest.spyOn(service as any, 'makeCode').mockReturnValue('code')
-    const data = service['buildCreateData'](args)
+  it('should call buildUpdateData witch correct result', () => {
+    const data = useCase['buildUpdateData'](args)
     expect(data).toEqual({
       name: args.name,
       sourceId: args.sourceId,
       active: args.active,
-      userId: args.userId,
-      code: 'code',
     })
   })
 })

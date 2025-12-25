@@ -14,7 +14,7 @@ type EnsureDomainExistsArgs = {
 }
 
 @Injectable()
-export class CommonCampaignService {
+export class CampaignService {
   constructor(
     private readonly sourceRepository: SourceRepository,
     private readonly domainRepository: DomainRepository,
