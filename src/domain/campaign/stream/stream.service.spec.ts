@@ -11,7 +11,7 @@ import {
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
-describe('CommonStreamService', () => {
+describe('StreamService', () => {
   let service: StreamService
 
   const repository = {

@@ -8,7 +8,7 @@ import {
 } from '@/domain/campaign/events/campaign-created.event'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { CreateStreamService } from '@/domain/campaign/stream/create-stream.service'
-import { CommonCampaignService } from '@/domain/campaign/common-campaign.service'
+import { CampaignService } from '@/domain/campaign/campaign.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { CampaignUncheckedCreateInput } from '@generated/prisma/models/Campaign'
@@ -19,7 +19,7 @@ export class CreateCampaignUseCase {
   constructor(
     private readonly repository: CampaignRepository,
     private readonly createStreamService: CreateStreamService,
-    private readonly commonCampaignService: CommonCampaignService,
+    private readonly commonCampaignService: CampaignService,
     private readonly eventEmitter: EventEmitter2,
     private readonly tr: TransactionFactory,
   ) {}

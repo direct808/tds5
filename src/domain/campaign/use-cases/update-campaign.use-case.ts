@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { UpdateStreamService } from './stream/update-stream.service'
-import { CommonCampaignService } from './common-campaign.service'
-import { UpdateCampaignDto } from './dto/update-campaign.dto'
+import { UpdateStreamService } from '../stream/update-stream.service'
+import { CampaignService } from '../campaign.service'
+import { UpdateCampaignDto } from '../dto/update-campaign.dto'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   CampaignUpdatedEvent,
@@ -14,22 +14,22 @@ import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
-export class UpdateCampaignService {
+export class UpdateCampaignUseCase {
   constructor(
     private readonly repository: CampaignRepository,
     private readonly updateStreamService: UpdateStreamService,
-    private readonly commonCampaignService: CommonCampaignService,
+    private readonly commonCampaignService: CampaignService,
     private readonly eventEmitter: EventEmitter2,
     private readonly trx: TransactionFactory,
   ) {}
 
-  public async update(
+  public async handle(
     args: UpdateCampaignDto & { userId: string; id: string },
     trx: Transaction | null,
   ): Promise<void> {
     if (!trx) {
       return this.trx.create((trx) => {
-        return this.update(args, trx)
+        return this.handle(args, trx)
       })
     }
 

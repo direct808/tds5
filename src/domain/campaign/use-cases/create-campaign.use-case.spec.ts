@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CommonCampaignService } from '../common-campaign.service'
+import { CampaignService } from '../campaign.service'
 import { CreateStreamService } from '../stream/create-stream.service'
 import { CreateCampaignUseCase } from '@/domain/campaign/use-cases/create-campaign.use-case'
 import { EventEmitter2 } from '@nestjs/event-emitter'
@@ -55,7 +55,7 @@ describe('CreateCampaignUseCase', () => {
           useValue: createStreamService,
         },
         {
-          provide: CommonCampaignService,
+          provide: CampaignService,
           useValue: commonCampaignService,
         },
       ],

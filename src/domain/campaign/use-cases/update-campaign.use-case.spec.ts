@@ -1,7 +1,7 @@
-import { UpdateStreamService } from './stream/update-stream.service'
+import { UpdateStreamService } from '../stream/update-stream.service'
 import { Test, TestingModule } from '@nestjs/testing'
-import { UpdateCampaignService } from './update-campaign.service'
-import { CommonCampaignService } from './common-campaign.service'
+import { UpdateCampaignUseCase } from './update-campaign.use-case'
+import { CampaignService } from '../campaign.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
@@ -20,14 +20,14 @@ const args = {
   streams: [],
 }
 
-describe('UpdateCampaignService', () => {
-  let service: UpdateCampaignService
+describe('UpdateCampaignUseCase', () => {
+  let useCase: UpdateCampaignUseCase
   const transactionFactory = {
     create: jest.fn().mockImplementation((cb) => cb(prisma)),
   }
   const repository = {
     update: jest.fn(),
-    getByIdAndUserId: jest.fn().mockReturnValue(Promise.resolve({})),
+    getByIdAndUserId: jest.fn().mockResolvedValue({}),
   }
   const updateStreamService = {
     updateStreams: jest.fn(),
@@ -42,7 +42,7 @@ describe('UpdateCampaignService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UpdateCampaignService,
+        UpdateCampaignUseCase,
         EventEmitter2,
         {
           provide: TransactionFactory,
@@ -57,29 +57,29 @@ describe('UpdateCampaignService', () => {
           useValue: updateStreamService,
         },
         {
-          provide: CommonCampaignService,
+          provide: CampaignService,
           useValue: commonCampaignService,
         },
       ],
     }).compile()
 
-    service = module.get(UpdateCampaignService)
+    useCase = module.get(UpdateCampaignUseCase)
 
     jest.clearAllMocks()
   })
 
   it('should use transaction when manager is not provided', async () => {
-    await service.update(args, null)
+    await useCase.handle(args, null)
     expect(transactionFactory.create).toHaveBeenCalled()
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await service.update(args, transaction)
+    await useCase.handle(args, transaction)
     expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await service.update(args, transaction)
+    await useCase.handle(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: args.userId,
@@ -89,18 +89,18 @@ describe('UpdateCampaignService', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await service.update(args, transaction)
+    await useCase.handle(args, transaction)
     expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
   })
 
   it('should not call checkUniqueNameForCreate without name', async () => {
     const { name, ...argsWithoutName } = args
-    await service.update(argsWithoutName as any, transaction)
+    await useCase.handle(argsWithoutName as any, transaction)
     expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
   })
 
   it('should call repository.update with correct data', async () => {
-    await service.update(args, transaction)
+    await useCase.handle(args, transaction)
     expect(repository.update).toHaveBeenCalledWith(
       prisma,
       args.id,
@@ -113,7 +113,7 @@ describe('UpdateCampaignService', () => {
   })
 
   it('should call updateStreams with correct params', async () => {
-    await service.update(args, transaction)
+    await useCase.handle(args, transaction)
     expect(updateStreamService.updateStreams).toHaveBeenCalledWith(
       prisma,
       args.id,
@@ -123,7 +123,7 @@ describe('UpdateCampaignService', () => {
   })
 
   it('should call buildUpdateData witch correct result', () => {
-    const data = service['buildUpdateData'](args)
+    const data = useCase['buildUpdateData'](args)
     expect(data).toEqual({
       name: args.name,
       sourceId: args.sourceId,
