@@ -593,4 +593,81 @@ describe('Report (e2e)', () => {
     // Assert
     expect(body).toHaveLength(2)
   })
+
+  it('Check if one operand is null result must be not null', async () => {
+    // sum(...) + sum(...) << null
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) =>
+        click.cost(1.33).addConv((c) => c.revenue(3.1233).status('sale')),
+      )
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .metrics(['roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toEqual([{ roi: '134.59' }])
+  })
+
+  it('summary', async () => {
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) =>
+        click
+          .cost(100)
+          .country('ch')
+          .addConv((c) => c.revenue(300).status('sale')),
+      )
+      .add((click) =>
+        click
+          .cost(44)
+          .country('ch')
+          .addConv((c) => c.revenue(55).status('sale')),
+      )
+      .add((click) =>
+        click
+          .cost(22)
+          .country('be')
+          .addConv((c) => c.revenue(77).status('sale')),
+      )
+      .add((click) =>
+        click
+          .cost(54)
+          .country('ge')
+          .addConv((c) => c.revenue(125).status('sale')),
+      )
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .groups(['country'])
+      .metrics(['revenue', 'cost', 'roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // console.log(body)
+
+    expect(body).toEqual({
+      summary: { revenue: '557.00', cost: '220.00', roi: '153.18' },
+      rows: [
+        {
+          cost: '22.00',
+          country: 'be',
+          revenue: '77.00',
+          roi: '250.00',
+        },
+        {
+          cost: '144.00',
+          country: 'ch',
+          revenue: '355.00',
+          roi: '146.53',
+        },
+      ],
+    })
+  })
 })

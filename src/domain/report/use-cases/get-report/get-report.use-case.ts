@@ -28,10 +28,7 @@ export class GetReportUseCase {
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async handle(
-    args: GetReportDto,
-    userEmail: string,
-  ): Promise<Record<string, string | number>> {
+  public async handle(args: GetReportDto, userEmail: string): Promise<any> {
     this.checkArgsService.checkArgs(args)
 
     const { usedIdentifiers, identifierMap } = this.getIdentifierMapProxy()
@@ -49,15 +46,21 @@ export class GetReportUseCase {
 
     this.filterProcessorService.process(qb, identifierMap, args.filter)
     this.processOrder(qb, args.sortField, args.sortOrder)
-    this.processGroups(args.groups, qb)
     this.metricProcessorService.process(qb, identifierMap, args.metrics)
 
     qb.includeConversionFields(usedIdentifiers)
+
+    const [summary] = await qb.execute()
+    // console.log(qb.sql())
+
     qb.setPagination(args.offset, args.limit)
+    this.processGroups(args.groups, qb)
+
+    const rows = await qb.execute()
 
     // console.log(qb.sql())
 
-    return qb.execute()
+    return { rows, summary }
   }
 
   private processOrder(

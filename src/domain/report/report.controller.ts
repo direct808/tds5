@@ -12,7 +12,7 @@ export class ReportController {
   getReport(
     @Query() args: GetReportDto,
     @CurrentUserEmail() userEmail: string,
-  ): Promise<Record<string, string | number>> {
+  ): Promise<any> {
     return this.getReportUseCase.handle(args, userEmail)
   }
 }

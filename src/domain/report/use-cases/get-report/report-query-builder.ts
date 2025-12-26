@@ -245,7 +245,7 @@ export class ReportQueryBuilder {
     return data.sql
   }
 
-  public execute(): Promise<Record<string, string | number>> {
+  public execute(): Promise<Record<string, string | number>[]> {
     return this.qb.execute()
   }
 }

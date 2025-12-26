@@ -16,7 +16,7 @@ export class ReportRepository {
   public getIdentifierMap(): IdentifierMap {
     return {
       clicks: 'count(*)::numeric(12,0)',
-      cost: 'sum(click.cost)::numeric(12,2)',
+      cost: 'coalesce(sum(click.cost), 0)::numeric(12,2)',
       clicks_unique_global:
         'count(*) FILTER (WHERE click."isUniqueGlobal")::numeric(12,0)',
       clicks_unique_campaign:
@@ -37,7 +37,8 @@ export class ReportRepository {
     for (const key of keys) {
       identifierMap[`conversions_${key}`] =
         `sum(c.conversions_${key})::numeric(12,0)`
-      identifierMap[`revenue_${key}`] = `sum(c.revenue_${key})::numeric(12,2)`
+      identifierMap[`revenue_${key}`] =
+        `coalesce(sum(c.revenue_${key}), 0)::numeric(12,2)`
     }
   }
 }
