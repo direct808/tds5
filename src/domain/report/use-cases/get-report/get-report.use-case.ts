@@ -50,7 +50,7 @@ export class GetReportUseCase {
 
     qb.includeConversionFields(usedIdentifiers)
 
-    const [summary] = await qb.execute()
+    const { total, summary } = await qb.executeSummary()
     // console.log(qb.sql())
 
     qb.setPagination(args.offset, args.limit)
@@ -60,7 +60,7 @@ export class GetReportUseCase {
 
     // console.log(qb.sql())
 
-    return { rows, summary }
+    return { rows, summary, total }
   }
 
   private processOrder(

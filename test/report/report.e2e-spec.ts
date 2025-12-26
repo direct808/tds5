@@ -653,6 +653,7 @@ describe('Report (e2e)', () => {
     // console.log(body)
 
     expect(body).toEqual({
+      total: '4',
       summary: { revenue: '557.00', cost: '220.00', roi: '153.18' },
       rows: [
         {

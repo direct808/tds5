@@ -248,4 +248,18 @@ export class ReportQueryBuilder {
   public execute(): Promise<Record<string, string | number>[]> {
     return this.qb.execute()
   }
+
+  public async executeSummary(): Promise<{
+    summary: Record<string, string | number>
+    total: string
+  }> {
+    const { total, ...summary } = await this.qb
+      .select(sql.raw('count(*) as total'))
+      .executeTakeFirst()
+
+    return {
+      summary,
+      total,
+    }
+  }
 }
