@@ -245,13 +245,13 @@ export class ReportQueryBuilder {
     return data.sql
   }
 
-  public execute(): Promise<Record<string, string | number>[]> {
+  public execute(): Promise<Record<string, string>[]> {
     return this.qb.execute()
   }
 
   public async executeSummary(): Promise<{
-    summary: Record<string, string | number>
-    total: string
+    summary: Record<string, string>
+    total: number
   }> {
     const { total, ...summary } = await this.qb
       .select(sql.raw('count(*) as total'))
@@ -259,7 +259,7 @@ export class ReportQueryBuilder {
 
     return {
       summary,
-      total,
+      total: Number(total),
     }
   }
 }

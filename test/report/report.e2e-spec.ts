@@ -71,7 +71,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         clicks: '2',
         conversions: '4',
@@ -120,7 +120,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         revenue: '18.67',
         revenue_sale: '4.22',
@@ -170,7 +170,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         cost: '6.03',
         revenue: '23.23',
@@ -209,7 +209,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         clicks: '6',
         clicks_unique_global: '3',
@@ -248,7 +248,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         clicks: '5',
         bots: '3',
@@ -289,7 +289,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         cr: '90.91',
         cr_deposit: '18.18',
@@ -350,7 +350,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         epc: '1.49',
         epc_confirmed: '1.03',
@@ -490,7 +490,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toEqual([
       {
         clicks: '1',
         id: click.id,
@@ -565,7 +565,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const result = body.map((item: any) => item.year)
+    const result = body.rows.map((item: any) => item.year)
 
     // Assert
     expect(result).toEqual([2023, 2025, 2027])
@@ -591,7 +591,8 @@ describe('Report (e2e)', () => {
       .expect(200)
 
     // Assert
-    expect(body).toHaveLength(2)
+    expect(body.rows).toHaveLength(2)
+    expect(body.total).toBe(3)
   })
 
   it('Check if one operand is null result must be not null', async () => {
@@ -610,7 +611,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ roi: '134.59' }])
+    expect(body.rows).toEqual([{ roi: '134.59' }])
   })
 
   it('summary', async () => {
@@ -653,7 +654,7 @@ describe('Report (e2e)', () => {
     // console.log(body)
 
     expect(body).toEqual({
-      total: '4',
+      total: 4,
       summary: { revenue: '557.00', cost: '220.00', roi: '153.18' },
       rows: [
         {
@@ -669,6 +670,24 @@ describe('Report (e2e)', () => {
           roi: '146.53',
         },
       ],
+    })
+  })
+
+  it('summary witch empty result', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .groups(['country'])
+      .metrics(['revenue', 'cost', 'roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // console.log(body)
+
+    expect(body).toEqual({
+      total: 0,
+      summary: { revenue: '0.00', cost: '0.00', roi: '0.00' },
+      rows: [],
     })
   })
 })

@@ -45,7 +45,6 @@ export class GetReportUseCase {
     qb.setConversionTypes(Object.keys(conversionTypes))
 
     this.filterProcessorService.process(qb, identifierMap, args.filter)
-    this.processOrder(qb, args.sortField, args.sortOrder)
     this.metricProcessorService.process(qb, identifierMap, args.metrics)
 
     qb.includeConversionFields(usedIdentifiers)
@@ -53,11 +52,11 @@ export class GetReportUseCase {
     const { total, summary } = await qb.executeSummary()
     // console.log(qb.sql())
 
+    this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
     this.processGroups(args.groups, qb)
 
-    const rows = await qb.execute()
-
+    const rows = total > 0 ? await qb.execute() : []
     // console.log(qb.sql())
 
     return { rows, summary, total }
