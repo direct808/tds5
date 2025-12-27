@@ -50,14 +50,12 @@ export class GetReportUseCase {
     qb.includeConversionFields(usedIdentifiers)
 
     const { total, summary } = await qb.executeSummary()
-    // console.log(qb.sql())
 
     this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
     this.processGroups(args.groups, qb)
 
     const rows = total > 0 ? await qb.execute() : []
-    // console.log(qb.sql())
 
     return { rows, summary, total }
   }

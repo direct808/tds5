@@ -595,6 +595,30 @@ describe('Report (e2e)', () => {
     expect(body.total).toBe(3)
   })
 
+  it('pagination asd', async () => {
+    // Arrange
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.country('gb'))
+      .add((click) => click.country('ch'))
+      .add((click) => click.country('be'))
+      .save(prisma)
+
+    // Act
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .groups(['year'])
+      .metrics(['clicks'])
+      .sort('year', 'asc')
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // Assert
+    expect(body.rows).toHaveLength(2)
+    expect(body.total).toBe(3)
+  })
+
   it('Check if one operand is null result must be not null', async () => {
     // sum(...) + sum(...) << null
     await createClicksBuilder()

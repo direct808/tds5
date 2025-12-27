@@ -246,6 +246,7 @@ export class ReportQueryBuilder {
   }
 
   public execute(): Promise<Record<string, string>[]> {
+    // console.log(qb.compile().sql)
     return this.qb.execute()
   }
 
@@ -253,9 +254,16 @@ export class ReportQueryBuilder {
     summary: Record<string, string>
     total: number
   }> {
-    const { total, ...summary } = await this.qb
-      .select(sql.raw('count(*) as total'))
-      .executeTakeFirst()
+    const qb = this.qb.select(sql.raw('count(*) as total'))
+    console.log(qb.compile().sql)
+
+    const result: Record<string, string> | undefined =
+      await qb.executeTakeFirst()
+
+    if (!result) {
+      throw new Error('No result')
+    }
+    const { total, ...summary } = result
 
     return {
       summary,
