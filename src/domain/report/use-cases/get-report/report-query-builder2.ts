@@ -213,9 +213,11 @@ export class ReportQueryBuilder2 {
       val = valueTransformer(value)
     }
 
+    const wrappedVal = typeof val === 'string' ? `'${val}'` : val
+
     return {
       sqlOperator,
-      preparedValue: val,
+      preparedValue: wrappedVal,
     }
   }
 
@@ -244,15 +246,16 @@ export class ReportQueryBuilder2 {
   }> {
     const asdf = this._selectMetric
       .map(
-        ({ alias, summary }) => `${summary}(${alias})::numeric(12,2) ${alias}`,
+        ({ alias, summary }) =>
+          `coalesce(${summary}(${alias})::numeric(12,2), 0) ${alias}`,
       )
       .join(', ')
 
     const query = `select count(*) as total, ${asdf} from (${this.buildClickQuery()}) summary`
-    // console.log(query)
+    console.log(query)
 
-    const result: Record<string, string>[] =
-      await this.prisma.$queryRawUnsafe(query)
+    const result =
+      await this.prisma.$queryRawUnsafe<Record<string, string>[]>(query)
 
     if (!result[0]) {
       throw new Error('No result')

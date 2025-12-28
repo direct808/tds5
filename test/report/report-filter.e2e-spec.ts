@@ -54,7 +54,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ isProxy: false, bots_pct: '50' }])
+    expect(body.rows).toStrictEqual([{ isProxy: false, bots_pct: '50' }])
   })
 
   it('identifier', async () => {
@@ -76,7 +76,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ isProxy: false, clicks: '2' }])
+    expect(body.rows).toStrictEqual([{ isProxy: false, clicks: '2' }])
   })
 
   it.each([
@@ -103,7 +103,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('campaignId', async () => {
@@ -122,7 +122,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('emptyReferer', async () => {
@@ -139,7 +139,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('ip2', async () => {
@@ -158,7 +158,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('ip3', async () => {
@@ -177,7 +177,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it.each([
@@ -203,6 +203,6 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 })

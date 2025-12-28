@@ -72,7 +72,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '2',
         conversions: '4',
@@ -121,7 +121,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         revenue: '18.67',
         revenue_sale: '4.22',
@@ -171,7 +171,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         cost: '6.03',
         revenue: '23.23',
@@ -210,7 +210,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '6',
         clicks_unique_global: '3',
@@ -249,7 +249,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '5',
         bots: '3',
@@ -290,7 +290,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         cr: '90.91',
         cr_deposit: '18.18',
@@ -351,7 +351,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         epc: '1.49',
         epc_confirmed: '1.03',
@@ -491,7 +491,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '1',
         id: click.id,
@@ -569,7 +569,7 @@ describe('Report (e2e)', () => {
     const result = body.rows.map((item: any) => item.year)
 
     // Assert
-    expect(result).toEqual([2023, 2025, 2027])
+    expect(result).toStrictEqual([2023, 2025, 2027])
   })
 
   it('pagination', async () => {
@@ -642,10 +642,10 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    console.log(body)
-    console.log(typeof body)
+    // console.log(body)
+
     // Assert
-    expect(body).toBe({
+    expect(body).toStrictEqual({
       rows: [
         { clicks: '1', country: 'ca', roi: '1600' },
         { clicks: '2', country: 'be', roi: '520' },
@@ -671,7 +671,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toEqual([{ roi: '134.59' }])
+    expect(body.rows).toStrictEqual([{ roi: '134.59' }])
   })
 
   it('summary', async () => {
@@ -713,7 +713,7 @@ describe('Report (e2e)', () => {
 
     console.log(body)
 
-    expect(body).toEqual({
+    expect(body).toStrictEqual({
       total: 3,
       summary: { revenue: '557', cost: '220', roi: '176' },
       rows: [
@@ -744,9 +744,9 @@ describe('Report (e2e)', () => {
 
     // console.log(body)
 
-    expect(body).toEqual({
+    expect(body).toStrictEqual({
       total: 0,
-      summary: { revenue: '0.00', cost: '0.00', roi: '0.00' },
+      summary: { revenue: '0', cost: '0', roi: '0' },
       rows: [],
     })
   })
