@@ -1,9 +1,17 @@
-export type Formula = { formula: string; decimals?: number }
+export type Formula = {
+  formula: string
+  summary: FormulaSummaryEnum
+  decimals?: number
+}
 export type FormulaRecord = Record<string, Formula>
 
 export enum Direction {
   asc = 'asc',
   desc = 'desc',
+}
+export enum FormulaSummaryEnum {
+  sum = 'sum',
+  avg = 'avg',
 }
 
 export enum FilterOperatorEnum {

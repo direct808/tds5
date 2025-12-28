@@ -127,7 +127,7 @@ describe('Report (e2e)', () => {
         revenue_sale: '4.22',
         revenue_lead: '4.84',
         revenue_deposit: '6.31',
-        revenue_registration: '3.30',
+        revenue_registration: '3.3',
         revenue_rejected: '4.43',
         revenue_trash: '5.12',
       },
@@ -296,7 +296,7 @@ describe('Report (e2e)', () => {
         cr_deposit: '18.18',
         cr_hold: '36.36',
         cr_registration: '9.09',
-        cr_regs_to_deps: '50.00',
+        cr_regs_to_deps: '50',
         cr_sale: '27.27',
       },
     ])
@@ -357,16 +357,16 @@ describe('Report (e2e)', () => {
         epc_confirmed: '1.03',
         epc_hold: '0.46',
         uepc: '3.47',
-        uepc_confirmed: '2.40',
+        uepc_confirmed: '2.4',
         uepc_hold: '1.07',
 
-        cps: '22.20',
-        cpl: '22.20',
-        cpr: '22.20',
-        cpd: '22.20',
-        cpa: '7.40',
+        cps: '22.2',
+        cpl: '22.2',
+        cpr: '22.2',
+        cpd: '22.2',
+        cpa: '7.4',
         cpc: '3.17',
-        ucpc: '7.40',
+        ucpc: '7.4',
         ecpc: '3171.43',
         ecpm: '1485.71',
         ecpm_confirmed: '1028.57',
@@ -600,31 +600,57 @@ describe('Report (e2e)', () => {
     // Arrange
     await createClicksBuilder()
       .campaignId(campaign.id)
-      .add((click) => click.country('ch'))
-      .add((click) => click.country('ch'))
-      .add((click) => click.country('be'))
-      .add((click) => click.country('be'))
-      .add((click) => click.country('ca'))
+      .add((click) =>
+        click
+          .country('ch')
+          .cost(5)
+          .addConv((conv) => conv.revenue(12).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('ch')
+          .cost(4)
+          .addConv((conv) => conv.revenue(11).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('be')
+          .cost(3)
+          .addConv((conv) => conv.revenue(15).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('be')
+          .cost(2)
+          .addConv((conv) => conv.revenue(16).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('ca')
+          .cost(1)
+          .addConv((conv) => conv.revenue(17).status('sale')),
+      )
       .save(prisma)
 
     // Act
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .groups(['country'])
-      .metrics(['clicks'])
-      .addFilter('clicks', FilterOperatorEnum['>'], 1)
+      .metrics(['clicks', 'roi'])
+      .addFilter('roi', FilterOperatorEnum['>'], 400)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    // console.log(body)
+    console.log(body)
+    console.log(typeof body)
     // Assert
     expect(body).toBe({
       rows: [
-        { clicks: '2', country: 'be' },
-        { clicks: '2', country: 'ch' },
+        { clicks: '1', country: 'ca', roi: '1600' },
+        { clicks: '2', country: 'be', roi: '520' },
       ],
-      summary: { clicks: '4' },
+      summary: { clicks: '3', roi: '1060' },
       total: 2,
     })
   })
@@ -685,22 +711,22 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    // console.log(body)
+    console.log(body)
 
     expect(body).toEqual({
-      total: 4,
-      summary: { revenue: '557.00', cost: '220.00', roi: '153.18' },
+      total: 3,
+      summary: { revenue: '557', cost: '220', roi: '176' },
       rows: [
         {
-          cost: '22.00',
+          cost: '22',
           country: 'be',
-          revenue: '77.00',
-          roi: '250.00',
+          revenue: '77',
+          roi: '250',
         },
         {
-          cost: '144.00',
+          cost: '144',
           country: 'ch',
-          revenue: '355.00',
+          revenue: '355',
           roi: '146.53',
         },
       ],

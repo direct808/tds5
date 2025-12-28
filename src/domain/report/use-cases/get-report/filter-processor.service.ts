@@ -5,7 +5,6 @@ import {
   FilterTypeEnum,
   InputFilterData,
 } from '@/domain/report/types'
-import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
 import { IdentifierMap } from '@/infra/repositories/report.repository'
 import { formulas } from '@/domain/report/formulas'
 import { FormulaParser } from '@/domain/report/use-cases/get-report/formula-parser'
@@ -17,11 +16,12 @@ import {
   getFieldTypeData,
 } from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
 import { checkFilterValue } from '@/domain/report/use-cases/get-report/utils/check-filter-value'
+import { ReportQueryBuilder2 } from '@/domain/report/use-cases/get-report/report-query-builder2'
 
 @Injectable()
 export class FilterProcessorService {
   public process(
-    qb: ReportQueryBuilder,
+    qb: ReportQueryBuilder2,
     identifierMap: IdentifierMap,
     filters: InputFilterData[],
   ): void {
@@ -31,7 +31,7 @@ export class FilterProcessorService {
   }
 
   private processItem(
-    qb: ReportQueryBuilder,
+    qb: ReportQueryBuilder2,
     identifierMap: IdentifierMap,
     inputFilterData: InputFilterData,
   ): void {
@@ -56,7 +56,7 @@ export class FilterProcessorService {
   }
 
   private processItemFormula(
-    qb: ReportQueryBuilder,
+    qb: ReportQueryBuilder2,
     identifierMap: IdentifierMap,
     fieldTypeData: FieldTypeFormula,
     inputFilterData: InputFilterData,
@@ -70,7 +70,7 @@ export class FilterProcessorService {
   }
 
   private processItemIdentifier(
-    qb: ReportQueryBuilder,
+    qb: ReportQueryBuilder2,
     { identifier }: FieldTypeIdentifier,
     inputFilterData: InputFilterData,
   ): void {
@@ -80,7 +80,7 @@ export class FilterProcessorService {
   }
 
   private processItemGroup(
-    qb: ReportQueryBuilder,
+    qb: ReportQueryBuilder2,
     fieldTypeData: FieldTypeGroup,
     inputFilterData: InputFilterData,
   ): void {
@@ -91,7 +91,7 @@ export class FilterProcessorService {
     }
     const q = sql ? sql : `"${field}"`
     this.checkFilterData(type, inputFilterData)
-    qb.where(q, operator, value)
+    qb.whereGroup(q, operator, value)
   }
 
   private checkFilterData(type: FilterTypeEnum, data: InputFilterData): void {

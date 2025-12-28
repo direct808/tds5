@@ -3,7 +3,7 @@ import { DB } from '@generated/kysely'
 import toSnakeCase from 'to-snake-case'
 import { FilterOperatorEnum } from '@/domain/report/types'
 
-export class ReportQueryBuilder {
+export class ReportQueryBuilder_old {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private qb: any
   private conversionTypes: string[] | null = null
@@ -38,7 +38,7 @@ export class ReportQueryBuilder {
     { sqlOperator: string; valueTransformer?: (value: string) => string }
   >
 
-  public static create(db: Kysely<DB>): ReportQueryBuilder {
+  public static create(db: Kysely<DB>): ReportQueryBuilder_old {
     return new this(db)
   }
 

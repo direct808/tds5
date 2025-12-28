@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { conversionTypes } from '@/domain/conversion/types'
-import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
+import { ReportQueryBuilder2 } from '@/domain/report/use-cases/get-report/report-query-builder2'
 import {
   IdentifierMap,
   ReportRepository,
@@ -16,6 +16,7 @@ import { FilterProcessorService } from '@/domain/report/use-cases/get-report/fil
 import { UserRepository } from '@/infra/repositories/user.repository'
 import { UserModel } from '@generated/prisma/models/User'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 @Injectable()
 export class GetReportUseCase {
@@ -26,6 +27,7 @@ export class GetReportUseCase {
     private readonly filterProcessorService: FilterProcessorService,
     private readonly metricProcessorService: MetricProcessService,
     private readonly userRepository: UserRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   public async handle(args: GetReportDto, userEmail: string): Promise<any> {
@@ -41,27 +43,31 @@ export class GetReportUseCase {
       Object.keys(conversionTypes),
     )
 
-    const qb = ReportQueryBuilder.create(this.db)
-    qb.setConversionTypes(Object.keys(conversionTypes))
+    const qb = ReportQueryBuilder2.create(
+      this.prisma,
+      Object.keys(conversionTypes),
+    )
 
     this.filterProcessorService.process(qb, identifierMap, args.filter)
     this.metricProcessorService.process(qb, identifierMap, args.metrics)
 
-    qb.includeConversionFields(usedIdentifiers)
+    // qb.includeConversionFields(usedIdentifiers)
+
+    this.processGroups(args.groups, qb)
 
     const { total, summary } = await qb.executeSummary()
 
     this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
-    this.processGroups(args.groups, qb)
 
     const rows = total > 0 ? await qb.execute() : []
+    // const rows = await qb.execute()
 
     return { rows, summary, total }
   }
 
   private processOrder(
-    qb: ReportQueryBuilder,
+    qb: ReportQueryBuilder2,
     sortField?: string,
     sortOrder: Direction = Direction.asc,
   ): void {
@@ -72,7 +78,7 @@ export class GetReportUseCase {
     qb.orderBy(sortField, sortOrder)
   }
 
-  private processGroups(groupKeys: string[], qb: ReportQueryBuilder): void {
+  private processGroups(groupKeys: string[], qb: ReportQueryBuilder2): void {
     for (const groupKey of groupKeys) {
       if (!groups[groupKey]) {
         throw new Error('Unknown group key ' + groups[groupKey])
@@ -81,29 +87,28 @@ export class GetReportUseCase {
       const { sql: query, include } = groups[groupKey]
 
       if (!query) {
-        qb.select(groupKey)
-        qb.groupByClickField(groupKey)
+        qb.selectGroup(`click."${groupKey}"`, groupKey)
         continue
       }
 
       switch (include) {
-        case 'affiliateNetwork':
-          qb.selectAffiliateNetworkName()
-          break
-        case 'offer':
-          qb.selectOfferName()
-          break
-        case 'stream':
-          qb.selectStreamName()
-          break
-        case 'campaign':
-          qb.selectCampaignName()
-          break
-        case 'source':
-          qb.selectSourceName()
-          break
+        // case 'affiliateNetwork':
+        //   qb.selectAffiliateNetworkName()
+        //   break
+        // case 'offer':
+        //   qb.selectOfferName()
+        //   break
+        // case 'stream':
+        //   qb.selectStreamName()
+        //   break
+        // case 'campaign':
+        //   qb.selectCampaignName()
+        //   break
+        // case 'source':
+        //   qb.selectSourceName()
+        //   break
         default:
-          qb.selectRaw(query, groupKey)
+          qb.selectGroup(query, groupKey)
           qb.groupBy(groupKey)
       }
     }
