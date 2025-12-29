@@ -1,5 +1,6 @@
 import { FormulaParser } from './formula-parser'
 import { BadRequestException } from '@nestjs/common'
+import { FormulaRecord, FormulaSummaryEnum } from '@/domain/report/types'
 
 describe('FormulaParser', () => {
   const identifierMap = {
@@ -7,9 +8,10 @@ describe('FormulaParser', () => {
     b: 'table.b',
   }
 
-  const allFormulas = {
+  const allFormulas: FormulaRecord = {
     sumAB: {
       formula: 'a + b',
+      summary: FormulaSummaryEnum.sum,
     },
   }
 
@@ -20,7 +22,7 @@ describe('FormulaParser', () => {
     expect(fn).toThrow(BadRequestException)
   })
 
-  it('parses simple binary expression', () => {
+  it('parse simple binary expression', () => {
     const parser = FormulaParser.create(
       '(a + -sumAB + 5) / 12',
       identifierMap,
@@ -28,7 +30,7 @@ describe('FormulaParser', () => {
     )
 
     expect(parser.build()).toBe(
-      '(((table.a + - (table.a + table.b)) + 5) / nullif(12, 0))',
+      'coalesce((((table.a + - (table.a + table.b)) + 5) / nullif(12, 0)) , 0)',
     )
   })
 

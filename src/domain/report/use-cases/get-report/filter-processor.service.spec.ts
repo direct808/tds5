@@ -1,13 +1,13 @@
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
-import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import { FilterOperatorEnum as Operators } from '@/domain/report/types'
 import { IdentifierMap } from '@/infra/repositories/report.repository'
 import { spyOn } from '../../../../../test/utils/helpers'
 
 describe('FilterProcessorService', () => {
   const having = jest.fn()
-  const where = jest.fn()
-  const qb = { having, where } as unknown as ReportQueryBuilder
+  const whereGroup = jest.fn()
+  const qb = { having, whereGroup } as unknown as PostgresRawReportQueryBuilder
   let service: FilterProcessorService
   const identifierMap = {} as IdentifierMap
 
@@ -65,14 +65,16 @@ describe('FilterProcessorService', () => {
       service.process(qb, identifierMap, [['country', Operators['='], 'us']])
 
       expect(checkFilterData).toHaveBeenCalledTimes(1)
-      expect(where).toHaveBeenCalledTimes(1)
+      expect(whereGroup).toHaveBeenCalledTimes(1)
     })
 
     it('disableFilter', () => {
       const fn = () =>
-        service.process(qb, identifierMap, [['source', Operators['='], 'us']])
+        service.process(qb, identifierMap, [
+          ['sourceName', Operators['='], 'us'],
+        ])
 
-      expect(fn).toThrow(`Filter disable for field 'source'`)
+      expect(fn).toThrow(`Filter disable for field 'sourceName'`)
     })
   })
 

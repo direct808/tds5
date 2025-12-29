@@ -1,12 +1,12 @@
 import { Test } from '@nestjs/testing'
 import { MetricProcessService } from './metric-process.service'
-import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 
 describe('MetricProcessService', () => {
   let service: MetricProcessService
   const qb = {
-    selectRaw: jest.fn(),
-  } as unknown as ReportQueryBuilder
+    selectMetric: jest.fn(),
+  } as unknown as PostgresRawReportQueryBuilder
   const identifierMap = {
     clicks: 't.clicks',
     conversions_deposit: 'conversions_deposit',
@@ -25,18 +25,19 @@ describe('MetricProcessService', () => {
   it('processItemFormula', () => {
     service.process(qb, identifierMap, ['cr_deposit'])
 
-    expect(qb.selectRaw).toHaveBeenCalledTimes(1)
-    expect(qb.selectRaw).toHaveBeenCalledWith(
-      'CAST(((conversions_deposit / nullif(t.clicks, 0)) * 100) AS DECIMAL(12,2))',
+    expect(qb.selectMetric).toHaveBeenCalledTimes(1)
+    expect(qb.selectMetric).toHaveBeenCalledWith(
+      'CAST(coalesce(((conversions_deposit / nullif(t.clicks, 0)) * 100) , 0) AS DECIMAL(12,2))',
       'cr_deposit',
+      'avg',
     )
   })
 
   it('processItemIdentifier', () => {
     service.process(qb, identifierMap, ['clicks'])
 
-    expect(qb.selectRaw).toHaveBeenCalledTimes(1)
-    expect(qb.selectRaw).toHaveBeenCalledWith('t.clicks', 'clicks')
+    expect(qb.selectMetric).toHaveBeenCalledTimes(1)
+    expect(qb.selectMetric).toHaveBeenCalledWith('t.clicks', 'clicks', 'sum')
   })
 
   it('Unknown metric if group', () => {

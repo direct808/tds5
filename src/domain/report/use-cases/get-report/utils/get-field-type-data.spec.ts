@@ -16,6 +16,7 @@ describe('getFieldTypeData', () => {
         decimals: 2,
         formula:
           '(revenue_sale + revenue_deposit + revenue_lead + revenue_registration) / clicks',
+        summary: 'avg',
       },
     })
   })
@@ -34,7 +35,10 @@ describe('getFieldTypeData', () => {
 
     expect(res).toEqual({
       type: FilterFieldTypeEnum.group,
-      group: { sql: `date_part('year', click."createdAt")`, type: 'number' },
+      group: {
+        sql: `date_part('year', click."createdAt" at time zone :timezone)`,
+        type: 'number',
+      },
     })
   })
 
