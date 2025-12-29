@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { ReportQueryBuilder2 } from '@/domain/report/use-cases/get-report/report-query-builder2'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import { IdentifierMap } from '@/infra/repositories/report.repository'
 import {
   FieldTypeFormula,
@@ -14,7 +14,7 @@ import { FormulaSummaryEnum } from '@/domain/report/types'
 @Injectable()
 export class MetricProcessService {
   public process(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     identifierMap: IdentifierMap,
     metrics: string[],
   ): void {
@@ -24,7 +24,7 @@ export class MetricProcessService {
   }
 
   private processItem(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     identifierMap: IdentifierMap,
     metric: string,
   ): void {
@@ -41,7 +41,7 @@ export class MetricProcessService {
   }
 
   private processItemFormula(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     identifierMap: IdentifierMap,
     metric: string,
     fieldTypeData: FieldTypeFormula,
@@ -53,7 +53,7 @@ export class MetricProcessService {
   }
 
   private processItemIdentifier(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     metric: string,
     { identifier }: FieldTypeIdentifier,
   ): void {

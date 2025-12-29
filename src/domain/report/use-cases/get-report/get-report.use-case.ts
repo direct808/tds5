@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { conversionTypes } from '@/domain/conversion/types'
-import { ReportQueryBuilder2 } from '@/domain/report/use-cases/get-report/report-query-builder2'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import {
   IdentifierMap,
   ReportRepository,
@@ -9,7 +9,7 @@ import { groups } from '@/domain/report/groups'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely } from 'kysely'
 import { DB } from '@generated/kysely'
-import { Direction } from '@/domain/report/types'
+import { Direction, ReportResponse } from '@/domain/report/types'
 import { CheckArgsService } from '@/domain/report/use-cases/get-report/check-args.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
@@ -30,21 +30,24 @@ export class GetReportUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
-  public async handle(args: GetReportDto, userEmail: string): Promise<any> {
+  public async handle(
+    args: GetReportDto,
+    userEmail: string,
+  ): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
     const { usedIdentifiers, identifierMap } = this.getIdentifierMapProxy()
 
     const { timeZone } = await this.getUserByEmail(userEmail)
-    await this.reportRepository.setTimezone(timeZone)
 
     this.reportRepository.addConversionsIdentifiers(
       identifierMap,
       Object.keys(conversionTypes),
     )
 
-    const qb = ReportQueryBuilder2.create(
+    const qb = new PostgresRawReportQueryBuilder(
       this.prisma,
+      timeZone,
       Object.keys(conversionTypes),
     )
 
@@ -67,7 +70,7 @@ export class GetReportUseCase {
   }
 
   private processOrder(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     sortField?: string,
     sortOrder: Direction = Direction.asc,
   ): void {
@@ -78,39 +81,23 @@ export class GetReportUseCase {
     qb.orderBy(sortField, sortOrder)
   }
 
-  private processGroups(groupKeys: string[], qb: ReportQueryBuilder2): void {
+  private processGroups(
+    groupKeys: string[],
+    qb: PostgresRawReportQueryBuilder,
+  ): void {
     for (const groupKey of groupKeys) {
       if (!groups[groupKey]) {
-        throw new Error('Unknown group key ' + groups[groupKey])
+        throw new Error('Unknown group key ' + groupKey)
       }
 
-      const { sql: query, include } = groups[groupKey]
+      const { sql: query, table } = groups[groupKey]
 
-      if (!query) {
-        qb.selectGroup(`click."${groupKey}"`, groupKey)
+      if (query) {
+        qb.selectGroupRaw(query, groupKey, table)
         continue
       }
 
-      switch (include) {
-        // case 'affiliateNetwork':
-        //   qb.selectAffiliateNetworkName()
-        //   break
-        // case 'offer':
-        //   qb.selectOfferName()
-        //   break
-        // case 'stream':
-        //   qb.selectStreamName()
-        //   break
-        // case 'campaign':
-        //   qb.selectCampaignName()
-        //   break
-        // case 'source':
-        //   qb.selectSourceName()
-        //   break
-        default:
-          qb.selectGroup(query, groupKey)
-          qb.groupBy(groupKey)
-      }
+      qb.selectGroup(groupKey, groupKey)
     }
   }
 

@@ -456,11 +456,11 @@ describe('Report (e2e)', () => {
         'day',
         'hour',
         'dayHour',
-        'source',
-        'campaign',
-        'stream',
-        'offer',
-        'affiliateNetwork',
+        'sourceName',
+        'campaignName',
+        'streamName',
+        'offerName',
+        'affiliateNetworkName',
         'destination',
         'emptyReferer',
         'referer',
@@ -513,11 +513,11 @@ describe('Report (e2e)', () => {
         day: '2015-10-20',
         hour: 21,
         dayHour: '2015-10-20 21:00',
-        source: source.name,
-        campaign: campaign.name,
-        offer: offer.name,
-        stream: campaign.streams[0]!.name,
-        affiliateNetwork: affiliateNetwork.name,
+        sourceName: source.name,
+        campaignName: campaign.name,
+        offerName: offer.name,
+        streamName: campaign.streams[0]!.name,
+        affiliateNetworkName: affiliateNetwork.name,
         destination: 'Destination',
         emptyReferer: false,
         referer: 'Referer',
@@ -711,7 +711,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    console.log(body)
+    // console.log(body)
 
     expect(body).toStrictEqual({
       total: 3,

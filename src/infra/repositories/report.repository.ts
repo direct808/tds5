@@ -1,17 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { InjectKysely } from 'nestjs-kysely'
-import { Kysely, sql } from 'kysely'
-import { DB } from '@generated/kysely'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 export type IdentifierMap = Record<string, string>
 
 @Injectable()
 export class ReportRepository {
-  constructor(@InjectKysely() private readonly db: Kysely<DB>) {}
-
-  public async setTimezone(timezone: string): Promise<void> {
-    await sql`SET TIME ZONE ${sql.lit(timezone)}`.execute(this.db)
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   public getIdentifierMap(): IdentifierMap {
     return {

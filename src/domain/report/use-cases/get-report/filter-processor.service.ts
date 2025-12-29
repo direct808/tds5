@@ -16,12 +16,12 @@ import {
   getFieldTypeData,
 } from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
 import { checkFilterValue } from '@/domain/report/use-cases/get-report/utils/check-filter-value'
-import { ReportQueryBuilder2 } from '@/domain/report/use-cases/get-report/report-query-builder2'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 
 @Injectable()
 export class FilterProcessorService {
   public process(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     identifierMap: IdentifierMap,
     filters: InputFilterData[],
   ): void {
@@ -31,7 +31,7 @@ export class FilterProcessorService {
   }
 
   private processItem(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     identifierMap: IdentifierMap,
     inputFilterData: InputFilterData,
   ): void {
@@ -56,7 +56,7 @@ export class FilterProcessorService {
   }
 
   private processItemFormula(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     identifierMap: IdentifierMap,
     fieldTypeData: FieldTypeFormula,
     inputFilterData: InputFilterData,
@@ -70,7 +70,7 @@ export class FilterProcessorService {
   }
 
   private processItemIdentifier(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     { identifier }: FieldTypeIdentifier,
     inputFilterData: InputFilterData,
   ): void {
@@ -80,7 +80,7 @@ export class FilterProcessorService {
   }
 
   private processItemGroup(
-    qb: ReportQueryBuilder2,
+    qb: PostgresRawReportQueryBuilder,
     fieldTypeData: FieldTypeGroup,
     inputFilterData: InputFilterData,
   ): void {

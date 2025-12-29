@@ -3,6 +3,7 @@ import { GetReportUseCase } from '@/domain/report/use-cases/get-report/get-repor
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { CurrentUserEmail } from '@/infra/auth/current-user-email.decorator'
 import { GLOBAL_PREFIX } from '@/shared/constants'
+import { ReportResponse } from '@/domain/report/types'
 
 @Controller(GLOBAL_PREFIX + 'report')
 export class ReportController {
@@ -12,7 +13,7 @@ export class ReportController {
   getReport(
     @Query() args: GetReportDto,
     @CurrentUserEmail() userEmail: string,
-  ): Promise<any> {
+  ): Promise<ReportResponse> {
     return this.getReportUseCase.handle(args, userEmail)
   }
 }
