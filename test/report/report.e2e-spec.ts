@@ -487,6 +487,7 @@ describe('Report (e2e)', () => {
         'isUniqueCampaign',
         'isUniqueStream',
       ])
+      .sort('sourceName', 'asc')
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)

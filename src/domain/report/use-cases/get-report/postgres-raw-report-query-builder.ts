@@ -69,7 +69,7 @@ export class PostgresRawReportQueryBuilder {
 
     if (this._orderBy) {
       const { field, order } = this._orderBy
-      query += ` order by ${field} ${order}`
+      query += ` order by "${field}" ${order}`
     }
 
     if (this._pagination) {
@@ -251,10 +251,6 @@ export class PostgresRawReportQueryBuilder {
 
   public orderBy(field: string, order: 'asc' | 'desc'): void {
     this._orderBy = { field, order }
-  }
-
-  public sql(): string {
-    return this.buildClickQuery()
   }
 
   public execute(): Promise<Record<string, string>[]> {
