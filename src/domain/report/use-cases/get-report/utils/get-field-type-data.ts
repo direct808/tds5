@@ -2,11 +2,11 @@ import { Group, groups } from '@/domain/report/groups'
 import { Formula } from '@/domain/report/types'
 import { formulas } from '@/domain/report/formulas'
 import { BadRequestException } from '@nestjs/common'
-import { IdentifierMap } from '@/infra/repositories/report.repository'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
 
 export enum FilterFieldTypeEnum {
   formula,
-  identifier,
+  clickMetric,
   group,
 }
 
@@ -15,9 +15,9 @@ export type FieldTypeFormula = {
   formulaData: Formula
 }
 
-export type FieldTypeIdentifier = {
-  type: FilterFieldTypeEnum.identifier
-  identifier: string
+export type FieldTypeClickMetric = {
+  type: FilterFieldTypeEnum.clickMetric
+  clickMetric: string
 }
 
 export type FieldTypeGroup = {
@@ -25,14 +25,14 @@ export type FieldTypeGroup = {
   group: Group
 }
 
-type FieldType = FieldTypeFormula | FieldTypeIdentifier | FieldTypeGroup
+type FieldType = FieldTypeFormula | FieldTypeClickMetric | FieldTypeGroup
 
 export function getFieldTypeData(
   field: string,
-  identifierMap: IdentifierMap,
+  clickMetricMap: ClickMetricMap,
 ): FieldType {
   const formulaObj = formulas[field]
-  const identifier = identifierMap[field]
+  const clickMetric = clickMetricMap[field]
   const group = groups[field]
 
   if (formulaObj) {
@@ -40,10 +40,10 @@ export function getFieldTypeData(
       type: FilterFieldTypeEnum.formula,
       formulaData: formulaObj,
     }
-  } else if (identifier) {
+  } else if (clickMetric) {
     return {
-      type: FilterFieldTypeEnum.identifier,
-      identifier,
+      type: FilterFieldTypeEnum.clickMetric,
+      clickMetric,
     }
   } else if (group) {
     return {

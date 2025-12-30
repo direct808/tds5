@@ -54,10 +54,10 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ isProxy: false, bots_pct: '50' }])
+    expect(body.rows).toStrictEqual([{ isProxy: false, bots_pct: '50' }])
   })
 
-  it('identifier', async () => {
+  it('clickMetric', async () => {
     await createClicksBuilder()
       .campaignId(campaignId)
       .add((click) => click.isBot(false).isProxy(true))
@@ -76,7 +76,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ isProxy: false, clicks: '2' }])
+    expect(body.rows).toStrictEqual([{ isProxy: false, clicks: '2' }])
   })
 
   it.each([
@@ -103,7 +103,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('campaignId', async () => {
@@ -122,7 +122,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('emptyReferer', async () => {
@@ -139,7 +139,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('ip2', async () => {
@@ -158,7 +158,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it('ip3', async () => {
@@ -177,7 +177,7 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
 
   it.each([
@@ -203,6 +203,24 @@ describe('Report Filter (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([{ clicks: '1' }])
+  })
+
+  it('between', async () => {
+    await createClickBuilder().country('ge').campaignId(campaignId).save(prisma)
+    await createClickBuilder().country('ge').campaignId(campaignId).save(prisma)
+    await createClickBuilder().country('ge').campaignId(campaignId).save(prisma)
+    await createClickBuilder().country('ch').campaignId(campaignId).save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .metrics(['clicks'])
+      .groups(['country'])
+      .addFilter('clicks', Op['between'], [2, 3])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([{ clicks: '3', country: 'ge' }])
   })
 })

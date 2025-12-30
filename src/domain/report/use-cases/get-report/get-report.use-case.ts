@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common'
 import { conversionTypes } from '@/domain/conversion/types'
-import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import {
-  IdentifierMap,
+  ClickMetricMap,
   ReportRepository,
 } from '@/infra/repositories/report.repository'
 import { groups } from '@/domain/report/groups'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely } from 'kysely'
 import { DB } from '@generated/kysely'
-import { Direction } from '@/domain/report/types'
+import { Direction, ReportResponse } from '@/domain/report/types'
 import { CheckArgsService } from '@/domain/report/use-cases/get-report/check-args.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
 import { UserRepository } from '@/infra/repositories/user.repository'
 import { UserModel } from '@generated/prisma/models/User'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
+import { postgresClickMetricMap } from '@/domain/report/use-cases/get-report/postgres-click-metric-map'
 
 @Injectable()
 export class GetReportUseCase {
@@ -26,42 +28,51 @@ export class GetReportUseCase {
     private readonly filterProcessorService: FilterProcessorService,
     private readonly metricProcessorService: MetricProcessService,
     private readonly userRepository: UserRepository,
+    private readonly prisma: PrismaService,
   ) {}
 
   public async handle(
     args: GetReportDto,
     userEmail: string,
-  ): Promise<Record<string, string | number>> {
+  ): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
-    const { usedIdentifiers, identifierMap } = this.getIdentifierMapProxy()
+    const { usedClickMetrics, clickMetricMap } = this.getClickMetricMapProxy()
 
     const { timeZone } = await this.getUserByEmail(userEmail)
-    await this.reportRepository.setTimezone(timeZone)
 
-    this.reportRepository.addConversionsIdentifiers(
-      identifierMap,
+    this.reportRepository.addConversionsClickMetrics(
+      clickMetricMap,
       Object.keys(conversionTypes),
     )
 
-    const qb = ReportQueryBuilder.create(this.db)
-    qb.setConversionTypes(Object.keys(conversionTypes))
+    const qb = new PostgresRawReportQueryBuilder(
+      this.prisma,
+      timeZone,
+      Object.keys(conversionTypes),
+      usedClickMetrics,
+    )
 
-    this.filterProcessorService.process(qb, identifierMap, args.filter)
-    this.processOrder(qb, args.sortField, args.sortOrder)
+    this.filterProcessorService.process(qb, clickMetricMap, args.filter)
+    this.metricProcessorService.process(qb, clickMetricMap, args.metrics)
+
+    // qb.includeConversionFields(usedClickMetrics)
+
     this.processGroups(args.groups, qb)
-    this.metricProcessorService.process(qb, identifierMap, args.metrics)
 
-    qb.includeConversionFields(usedIdentifiers)
+    const { total, summary } = await qb.executeSummary()
+
+    this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
 
-    // console.log(qb.sql())
+    const rows = total > 0 ? await qb.execute() : []
+    // const rows = await qb.execute()
 
-    return qb.execute()
+    return { rows, summary, total }
   }
 
   private processOrder(
-    qb: ReportQueryBuilder,
+    qb: PostgresRawReportQueryBuilder,
     sortField?: string,
     sortOrder: Direction = Direction.asc,
   ): void {
@@ -72,57 +83,40 @@ export class GetReportUseCase {
     qb.orderBy(sortField, sortOrder)
   }
 
-  private processGroups(groupKeys: string[], qb: ReportQueryBuilder): void {
+  private processGroups(
+    groupKeys: string[],
+    qb: PostgresRawReportQueryBuilder,
+  ): void {
     for (const groupKey of groupKeys) {
       if (!groups[groupKey]) {
-        throw new Error('Unknown group key ' + groups[groupKey])
+        throw new Error('Unknown group key ' + groupKey)
       }
 
-      const { sql: query, include } = groups[groupKey]
+      const { sql: query, table } = groups[groupKey]
 
-      if (!query) {
-        qb.select(groupKey)
-        qb.groupByClickField(groupKey)
+      if (query) {
+        qb.selectGroupRaw(query, groupKey, table)
         continue
       }
 
-      switch (include) {
-        case 'affiliateNetwork':
-          qb.selectAffiliateNetworkName()
-          break
-        case 'offer':
-          qb.selectOfferName()
-          break
-        case 'stream':
-          qb.selectStreamName()
-          break
-        case 'campaign':
-          qb.selectCampaignName()
-          break
-        case 'source':
-          qb.selectSourceName()
-          break
-        default:
-          qb.selectRaw(query, groupKey)
-          qb.groupBy(groupKey)
-      }
+      qb.selectGroup(groupKey, groupKey)
     }
   }
 
-  private getIdentifierMapProxy(): {
-    identifierMap: IdentifierMap
-    usedIdentifiers: string[]
+  private getClickMetricMapProxy(): {
+    clickMetricMap: ClickMetricMap
+    usedClickMetrics: string[]
   } {
-    const usedIdentifiers: string[] = []
-    const identifierMap = new Proxy(this.reportRepository.getIdentifierMap(), {
+    const usedClickMetrics: string[] = []
+    const clickMetricMap = new Proxy(postgresClickMetricMap, {
       get(target, key: string): string | undefined {
-        usedIdentifiers.push(key)
+        usedClickMetrics.push(key)
 
         return target[key]
       },
     })
 
-    return { identifierMap, usedIdentifiers }
+    return { clickMetricMap, usedClickMetrics }
   }
 
   private async getUserByEmail(email: string): Promise<UserModel> {

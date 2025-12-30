@@ -1,10 +1,10 @@
-import { FilterTypeEnum } from '@/domain/report/types'
+import { FilterTypeEnum, QueryTablesEnum } from '@/domain/report/types'
 
 export type Group = {
   type: FilterTypeEnum
   disableFilter?: true
   sql?: string
-  include?: 'source' | 'campaign' | 'stream' | 'offer' | 'affiliateNetwork'
+  table?: QueryTablesEnum
 }
 
 type Groups = Record<string, Group>
@@ -25,70 +25,70 @@ export const groups: Groups = {
 
   dateTime: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:MI:SS')`,
+    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM-DD HH24:MI:SS')`,
   },
   year: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('year', click."createdAt")`,
+    sql: `date_part('year', click."createdAt" at time zone :timezone)`,
   },
   month: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt", 'YYYY-MM')`,
+    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM')`,
   },
   week: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('week', click."createdAt")`,
+    sql: `date_part('week', click."createdAt" at time zone :timezone)`,
   },
   weekday: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('dow', click."createdAt")`,
+    sql: `date_part('dow', click."createdAt" at time zone :timezone)`,
   },
   day: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt", 'YYYY-MM-DD')`,
+    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM-DD')`,
   },
   hour: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('hour', click."createdAt")`,
+    sql: `date_part('hour', click."createdAt" at time zone :timezone)`,
   },
   dayHour: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt", 'YYYY-MM-DD HH24:00')`,
+    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM-DD HH24:00')`,
   },
 
-  source: {
+  sourceName: {
     type: FilterTypeEnum.string,
     disableFilter: true,
-    sql: `source.name`,
-    include: 'source',
+    sql: `"source".name`,
+    table: QueryTablesEnum.source,
   },
-  campaign: {
+  campaignName: {
     type: FilterTypeEnum.string,
     disableFilter: true,
     sql: `campaign.name`,
-    include: 'campaign',
+    table: QueryTablesEnum.campaign,
   },
-  stream: {
+  streamName: {
     type: FilterTypeEnum.string,
     disableFilter: true,
     sql: `stream.name`,
-    include: 'stream',
+    table: QueryTablesEnum.stream,
   },
-  offer: {
+  offerName: {
     type: FilterTypeEnum.string,
     disableFilter: true,
     sql: `offer.name`,
-    include: 'offer',
+    table: QueryTablesEnum.offer,
   },
-  affiliateNetwork: {
+  affiliateNetworkName: {
     type: FilterTypeEnum.string,
     disableFilter: true,
-    sql: `affiliateNetwork.name`,
-    include: 'affiliateNetwork',
+    sql: `"affiliateNetwork".name`,
+    table: QueryTablesEnum.affiliateNetwork,
   },
 
   isUniqueGlobal: { type: FilterTypeEnum.boolean },

@@ -15,6 +15,7 @@ import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-netwo
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ClickUncheckedCreateInput } from '@generated/prisma/models/Click'
 import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
+import { FilterOperatorEnum } from '@/domain/report/types'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -71,7 +72,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '2',
         conversions: '4',
@@ -120,13 +121,13 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         revenue: '18.67',
         revenue_sale: '4.22',
         revenue_lead: '4.84',
         revenue_deposit: '6.31',
-        revenue_registration: '3.30',
+        revenue_registration: '3.3',
         revenue_rejected: '4.43',
         revenue_trash: '5.12',
       },
@@ -170,7 +171,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         cost: '6.03',
         revenue: '23.23',
@@ -209,7 +210,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '6',
         clicks_unique_global: '3',
@@ -248,7 +249,7 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '5',
         bots: '3',
@@ -289,13 +290,13 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         cr: '90.91',
         cr_deposit: '18.18',
         cr_hold: '36.36',
         cr_registration: '9.09',
-        cr_regs_to_deps: '50.00',
+        cr_regs_to_deps: '50',
         cr_sale: '27.27',
       },
     ])
@@ -350,22 +351,22 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         epc: '1.49',
         epc_confirmed: '1.03',
         epc_hold: '0.46',
         uepc: '3.47',
-        uepc_confirmed: '2.40',
+        uepc_confirmed: '2.4',
         uepc_hold: '1.07',
 
-        cps: '22.20',
-        cpl: '22.20',
-        cpr: '22.20',
-        cpd: '22.20',
-        cpa: '7.40',
+        cps: '22.2',
+        cpl: '22.2',
+        cpr: '22.2',
+        cpd: '22.2',
+        cpa: '7.4',
         cpc: '3.17',
-        ucpc: '7.40',
+        ucpc: '7.4',
         ecpc: '3171.43',
         ecpm: '1485.71',
         ecpm_confirmed: '1028.57',
@@ -455,11 +456,11 @@ describe('Report (e2e)', () => {
         'day',
         'hour',
         'dayHour',
-        'source',
-        'campaign',
-        'stream',
-        'offer',
-        'affiliateNetwork',
+        'sourceName',
+        'campaignName',
+        'streamName',
+        'offerName',
+        'affiliateNetworkName',
         'destination',
         'emptyReferer',
         'referer',
@@ -486,11 +487,12 @@ describe('Report (e2e)', () => {
         'isUniqueCampaign',
         'isUniqueStream',
       ])
+      .sort('sourceName', 'asc')
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body).toEqual([
+    expect(body.rows).toStrictEqual([
       {
         clicks: '1',
         id: click.id,
@@ -512,11 +514,11 @@ describe('Report (e2e)', () => {
         day: '2015-10-20',
         hour: 21,
         dayHour: '2015-10-20 21:00',
-        source: source.name,
-        campaign: campaign.name,
-        offer: offer.name,
-        stream: campaign.streams[0]!.name,
-        affiliateNetwork: affiliateNetwork.name,
+        sourceName: source.name,
+        campaignName: campaign.name,
+        offerName: offer.name,
+        streamName: campaign.streams[0]!.name,
+        affiliateNetworkName: affiliateNetwork.name,
         destination: 'Destination',
         emptyReferer: false,
         referer: 'Referer',
@@ -565,10 +567,10 @@ describe('Report (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const result = body.map((item: any) => item.year)
+    const result = body.rows.map((item: any) => item.year)
 
     // Assert
-    expect(result).toEqual([2023, 2025, 2027])
+    expect(result).toStrictEqual([2023, 2025, 2027])
   })
 
   it('pagination', async () => {
@@ -591,6 +593,201 @@ describe('Report (e2e)', () => {
       .expect(200)
 
     // Assert
-    expect(body).toHaveLength(2)
+    expect(body.rows).toHaveLength(2)
+    expect(body.total).toBe(3)
+  })
+
+  it('Filter with summary', async () => {
+    // Arrange
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) =>
+        click
+          .country('ch')
+          .cost(5)
+          .addConv((conv) => conv.revenue(12).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('ch')
+          .cost(4)
+          .addConv((conv) => conv.revenue(11).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('be')
+          .cost(3)
+          .addConv((conv) => conv.revenue(15).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('be')
+          .cost(2)
+          .addConv((conv) => conv.revenue(16).status('sale')),
+      )
+      .add((click) =>
+        click
+          .country('ca')
+          .cost(1)
+          .addConv((conv) => conv.revenue(17).status('sale')),
+      )
+      .save(prisma)
+
+    // Act
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .groups(['country'])
+      .metrics(['clicks', 'roi'])
+      .addFilter('roi', FilterOperatorEnum['>'], 400)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // console.log(body)
+
+    // Assert
+    expect(body).toStrictEqual({
+      rows: [
+        { clicks: '1', country: 'ca', roi: '1600' },
+        { clicks: '2', country: 'be', roi: '520' },
+      ],
+      summary: { clicks: '3', roi: '1060' },
+      total: 2,
+    })
+  })
+
+  it('Check if one operand is null result must be not null', async () => {
+    // sum(...) + sum(...) << null
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) =>
+        click.cost(1.33).addConv((c) => c.revenue(3.1233).status('sale')),
+      )
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .metrics(['roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([{ roi: '134.59' }])
+  })
+
+  it('summary', async () => {
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) =>
+        click
+          .cost(100)
+          .country('ch')
+          .addConv((c) => c.revenue(300).status('sale')),
+      )
+      .add((click) =>
+        click
+          .cost(44)
+          .country('ch')
+          .addConv((c) => c.revenue(55).status('sale')),
+      )
+      .add((click) =>
+        click
+          .cost(22)
+          .country('be')
+          .addConv((c) => c.revenue(77).status('sale')),
+      )
+      .add((click) =>
+        click
+          .cost(54)
+          .country('ge')
+          .addConv((c) => c.revenue(125).status('sale')),
+      )
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .groups(['country'])
+      .metrics(['revenue', 'cost', 'roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // console.log(body)
+
+    expect(body).toStrictEqual({
+      total: 3,
+      summary: { revenue: '557', cost: '220', roi: '176' },
+      rows: [
+        {
+          cost: '22',
+          country: 'be',
+          revenue: '77',
+          roi: '250',
+        },
+        {
+          cost: '144',
+          country: 'ch',
+          revenue: '355',
+          roi: '146.53',
+        },
+      ],
+    })
+  })
+
+  it('summary witch empty result', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .groups(['country'])
+      .metrics(['revenue', 'cost', 'roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    // console.log(body)
+
+    expect(body).toStrictEqual({
+      total: 0,
+      summary: { revenue: '0', cost: '0', roi: '0' },
+      rows: [],
+    })
+  })
+
+  it('sql injection', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .metrics(['revenue', 'cost', 'roi'])
+      .addFilter('country', FilterOperatorEnum['='], `!@#$%^&*():"}';`)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toStrictEqual({
+      rows: [],
+      summary: {
+        cost: '0',
+        revenue: '0',
+        roi: '0',
+      },
+      total: 0,
+    })
+  })
+
+  it('zero value for formula if exists null operand', async () => {
+    await createClicksBuilder().campaignId(campaign.id).add().save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .metrics(['roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toStrictEqual({
+      rows: [{ roi: '0' }],
+      summary: {
+        roi: '0',
+      },
+      total: 1,
+    })
   })
 })

@@ -5,50 +5,50 @@ import {
   FilterTypeEnum,
   InputFilterData,
 } from '@/domain/report/types'
-import { ReportQueryBuilder } from '@/domain/report/use-cases/get-report/report-query-builder'
-import { IdentifierMap } from '@/infra/repositories/report.repository'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { formulas } from '@/domain/report/formulas'
 import { FormulaParser } from '@/domain/report/use-cases/get-report/formula-parser'
 import {
   FieldTypeFormula,
   FieldTypeGroup,
-  FieldTypeIdentifier,
+  FieldTypeClickMetric,
   FilterFieldTypeEnum,
   getFieldTypeData,
 } from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
 import { checkFilterValue } from '@/domain/report/use-cases/get-report/utils/check-filter-value'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 
 @Injectable()
 export class FilterProcessorService {
   public process(
-    qb: ReportQueryBuilder,
-    identifierMap: IdentifierMap,
+    qb: PostgresRawReportQueryBuilder,
+    clickMetricMap: ClickMetricMap,
     filters: InputFilterData[],
   ): void {
     for (const inputFilterData of filters) {
-      this.processItem(qb, identifierMap, inputFilterData)
+      this.processItem(qb, clickMetricMap, inputFilterData)
     }
   }
 
   private processItem(
-    qb: ReportQueryBuilder,
-    identifierMap: IdentifierMap,
+    qb: PostgresRawReportQueryBuilder,
+    clickMetricMap: ClickMetricMap,
     inputFilterData: InputFilterData,
   ): void {
     const [field] = inputFilterData
-    const fieldTypeData = getFieldTypeData(field, identifierMap)
+    const fieldTypeData = getFieldTypeData(field, clickMetricMap)
 
     switch (fieldTypeData.type) {
       case FilterFieldTypeEnum.formula:
         return this.processItemFormula(
           qb,
-          identifierMap,
+          clickMetricMap,
           fieldTypeData,
           inputFilterData,
         )
 
-      case FilterFieldTypeEnum.identifier:
-        return this.processItemIdentifier(qb, fieldTypeData, inputFilterData)
+      case FilterFieldTypeEnum.clickMetric:
+        return this.processItemClickMetric(qb, fieldTypeData, inputFilterData)
 
       case FilterFieldTypeEnum.group:
         return this.processItemGroup(qb, fieldTypeData, inputFilterData)
@@ -56,31 +56,31 @@ export class FilterProcessorService {
   }
 
   private processItemFormula(
-    qb: ReportQueryBuilder,
-    identifierMap: IdentifierMap,
+    qb: PostgresRawReportQueryBuilder,
+    clickMetricMap: ClickMetricMap,
     fieldTypeData: FieldTypeFormula,
     inputFilterData: InputFilterData,
   ): void {
     const [, operator, value] = inputFilterData
     const { formula } = fieldTypeData.formulaData
-    let query = FormulaParser.create(formula, identifierMap, formulas).build()
+    let query = FormulaParser.create(formula, clickMetricMap, formulas).build()
     query = `${query}`
     this.checkFilterData(FilterTypeEnum.number, inputFilterData)
     qb.having(query, operator, value)
   }
 
-  private processItemIdentifier(
-    qb: ReportQueryBuilder,
-    { identifier }: FieldTypeIdentifier,
+  private processItemClickMetric(
+    qb: PostgresRawReportQueryBuilder,
+    { clickMetric }: FieldTypeClickMetric,
     inputFilterData: InputFilterData,
   ): void {
     const [, operator, value] = inputFilterData
     this.checkFilterData(FilterTypeEnum.number, inputFilterData)
-    qb.having(identifier, operator, value)
+    qb.having(clickMetric, operator, value)
   }
 
   private processItemGroup(
-    qb: ReportQueryBuilder,
+    qb: PostgresRawReportQueryBuilder,
     fieldTypeData: FieldTypeGroup,
     inputFilterData: InputFilterData,
   ): void {
@@ -91,7 +91,7 @@ export class FilterProcessorService {
     }
     const q = sql ? sql : `"${field}"`
     this.checkFilterData(type, inputFilterData)
-    qb.where(q, operator, value)
+    qb.whereGroup(q, operator, value)
   }
 
   private checkFilterData(type: FilterTypeEnum, data: InputFilterData): void {
