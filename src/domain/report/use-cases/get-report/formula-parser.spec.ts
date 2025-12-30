@@ -30,7 +30,7 @@ describe('FormulaParser', () => {
     )
 
     expect(parser.build()).toBe(
-      'coalesce((((table.a + - (table.a + table.b)) + 5) / nullif(12, 0)) , 0)',
+      'coalesce((((table.a + - (table.a + table.b)) + 5) / nullif(12, 0)::decimal(12,2)), 0)',
     )
   })
 

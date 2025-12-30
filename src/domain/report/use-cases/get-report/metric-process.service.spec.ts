@@ -27,7 +27,7 @@ describe('MetricProcessService', () => {
 
     expect(qb.selectMetric).toHaveBeenCalledTimes(1)
     expect(qb.selectMetric).toHaveBeenCalledWith(
-      'CAST(coalesce(((conversions_deposit / nullif(t.clicks, 0)) * 100) , 0) AS DECIMAL(12,2))',
+      'cast(coalesce(((conversions_deposit / nullif(t.clicks, 0)::decimal(12,2)) * 100), 0) as numeric(12,2))',
       'cr_deposit',
       'avg',
     )
