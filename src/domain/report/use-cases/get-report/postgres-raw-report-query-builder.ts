@@ -195,7 +195,7 @@ export class PostgresRawReportQueryBuilder {
     value: unknown,
   ): this {
     if (operator === FilterOperatorEnum.between) {
-      return this.whereBetween(query, value)
+      throw new Error('No support between here')
     }
     const { sqlOperator, preparedValue } = this.getSqlOperatorAndValue(
       operator,
@@ -206,24 +206,12 @@ export class PostgresRawReportQueryBuilder {
     return this
   }
 
-  private whereBetween(query: string, value: unknown): this {
-    if (!Array.isArray(value)) {
-      throw new Error('Value must be an array')
-    }
-
-    this._where.push(`${query} >= ${value[0]}`)
-    this._where.push(`${query} <= ${value[1]}`)
-
-    return this
-  }
-
   private havingBetween(query: string, value: unknown): void {
     if (!Array.isArray(value)) {
       throw new Error('Value must be an array')
     }
 
-    this._having.push(`${query} >= ${value[0]}`)
-    this._having.push(`${query} <= ${value[1]}`)
+    this._having.push(`${query} between ${value[0]} and ${value[1]}`)
   }
 
   private getSqlOperatorAndValue(

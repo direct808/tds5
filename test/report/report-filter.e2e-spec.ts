@@ -205,4 +205,22 @@ describe('Report Filter (e2e)', () => {
 
     expect(body.rows).toStrictEqual([{ clicks: '1' }])
   })
+
+  it('between', async () => {
+    await createClickBuilder().country('ge').campaignId(campaignId).save(prisma)
+    await createClickBuilder().country('ge').campaignId(campaignId).save(prisma)
+    await createClickBuilder().country('ge').campaignId(campaignId).save(prisma)
+    await createClickBuilder().country('ch').campaignId(campaignId).save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .metrics(['clicks'])
+      .groups(['country'])
+      .addFilter('clicks', Op['between'], [2, 3])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([{ clicks: '3', country: 'ge' }])
+  })
 })
