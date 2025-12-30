@@ -240,8 +240,6 @@ export class PostgresRawReportQueryBuilder {
       val = valueTransformer(value)
     }
 
-    // const wrappedVal = typeof val === 'string' ? `'${val}'` : val
-
     return {
       sqlOperator,
       preparedValue: val,
