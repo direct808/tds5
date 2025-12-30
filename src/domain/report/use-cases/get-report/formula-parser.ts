@@ -47,7 +47,8 @@ export class FormulaParser {
   private processBinaryExpression(node: jsep.BinaryExpression): string {
     const sqlRight = this.astToSQL(node.right)
     const sqlLeft = this.astToSQL(node.left)
-    const right = node.operator === '/' ? `nullif(${sqlRight}, 0)` : sqlRight
+    const right =
+      node.operator === '/' ? `nullif(${sqlRight}, 0)::decimal(12,2)` : sqlRight
 
     return `(${sqlLeft} ${node.operator} ${right})`
   }

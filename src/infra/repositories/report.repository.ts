@@ -29,10 +29,8 @@ export class ReportRepository {
     keys: string[],
   ): void {
     for (const key of keys) {
-      identifierMap[`conversions_${key}`] =
-        `sum(c.conversions_${key})::numeric(12,0)`
-      identifierMap[`revenue_${key}`] =
-        `coalesce(sum(c.revenue_${key}), 0)::numeric(12,2)`
+      identifierMap[`conversions_${key}`] = `sum(c.conversions_${key})`
+      identifierMap[`revenue_${key}`] = `coalesce(sum(c.revenue_${key}), 0)`
     }
   }
 }
