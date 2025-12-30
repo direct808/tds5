@@ -771,4 +771,23 @@ describe('Report (e2e)', () => {
       total: 0,
     })
   })
+
+  it('zero value for formula if exists null operand', async () => {
+    await createClicksBuilder().campaignId(campaign.id).add().save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .metrics(['roi'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toStrictEqual({
+      rows: [{ roi: '0' }],
+      summary: {
+        roi: '0',
+      },
+      total: 1,
+    })
+  })
 })

@@ -24,7 +24,7 @@ export class FormulaParser {
     try {
       const ast = jsep(this.formula)
 
-      return this.astToSQL(ast)
+      return `coalesce(${this.astToSQL(ast)}, 0)`
     } catch (e) {
       throw new BadRequestException(e)
     }
