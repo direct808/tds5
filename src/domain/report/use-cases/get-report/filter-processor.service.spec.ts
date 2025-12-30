@@ -1,7 +1,7 @@
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
 import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import { FilterOperatorEnum as Operators } from '@/domain/report/types'
-import { IdentifierMap } from '@/infra/repositories/report.repository'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { spyOn } from '../../../../../test/utils/helpers'
 
 describe('FilterProcessorService', () => {
@@ -9,7 +9,7 @@ describe('FilterProcessorService', () => {
   const whereGroup = jest.fn()
   const qb = { having, whereGroup } as unknown as PostgresRawReportQueryBuilder
   let service: FilterProcessorService
-  const identifierMap = {} as IdentifierMap
+  const clickMetricMap = {} as ClickMetricMap
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -19,7 +19,7 @@ describe('FilterProcessorService', () => {
   it('ok', () => {
     const processItem = spyOn(service, 'processItem')
 
-    service.process(qb, identifierMap, [
+    service.process(qb, clickMetricMap, [
       ['year', Operators['='], 2],
       ['year', Operators['>'], 2],
     ])
@@ -29,30 +29,30 @@ describe('FilterProcessorService', () => {
 
   it('Unknown metric', () => {
     const fn = () =>
-      service.process(qb, identifierMap, [['Bad', Operators.in, 2]])
+      service.process(qb, clickMetricMap, [['Bad', Operators.in, 2]])
 
     expect(fn).toThrow("Unknown field: 'Bad'")
   })
 
   it('processItemFormula', () => {
-    const identifierMap = {
+    const clickMetricMap = {
       conversions_registration: 'conversions_registration',
       clicks_unique_global: 'clicks_unique_global',
-    } as IdentifierMap
+    } as ClickMetricMap
 
     const checkFilterData = spyOn(service, 'checkFilterData')
 
-    service.process(qb, identifierMap, [['ucr', Operators['='], 2]])
+    service.process(qb, clickMetricMap, [['ucr', Operators['='], 2]])
 
     expect(checkFilterData).toHaveBeenCalledTimes(1)
     expect(having).toHaveBeenCalledTimes(1)
   })
 
-  it('processItemIdentifier', () => {
-    const identifierMap = { ident: 'ident' } as IdentifierMap
+  it('processItemclickMetric', () => {
+    const clickMetricMap = { ident: 'ident' } as ClickMetricMap
     const checkFilterData = spyOn(service, 'checkFilterData')
 
-    service.process(qb, identifierMap, [['ident', Operators['='], 2]])
+    service.process(qb, clickMetricMap, [['ident', Operators['='], 2]])
 
     expect(checkFilterData).toHaveBeenCalledTimes(1)
     expect(having).toHaveBeenCalledTimes(1)
@@ -62,7 +62,7 @@ describe('FilterProcessorService', () => {
     it('ok', () => {
       const checkFilterData = spyOn(service, 'checkFilterData')
 
-      service.process(qb, identifierMap, [['country', Operators['='], 'us']])
+      service.process(qb, clickMetricMap, [['country', Operators['='], 'us']])
 
       expect(checkFilterData).toHaveBeenCalledTimes(1)
       expect(whereGroup).toHaveBeenCalledTimes(1)
@@ -70,7 +70,7 @@ describe('FilterProcessorService', () => {
 
     it('disableFilter', () => {
       const fn = () =>
-        service.process(qb, identifierMap, [
+        service.process(qb, clickMetricMap, [
           ['sourceName', Operators['='], 'us'],
         ])
 
@@ -81,14 +81,16 @@ describe('FilterProcessorService', () => {
   describe('checkOperator', () => {
     it('Unsupported operator', () => {
       const fn = () =>
-        service.process(qb, identifierMap, [['year', 'hz' as any, 2010]])
+        service.process(qb, clickMetricMap, [['year', 'hz' as any, 2010]])
 
       expect(fn).toThrow("Unsupported operator 'hz'")
     })
 
     it('Operator not support for type', () => {
       const fn = () =>
-        service.process(qb, identifierMap, [['year', Operators.contains, 2010]])
+        service.process(qb, clickMetricMap, [
+          ['year', Operators.contains, 2010],
+        ])
 
       expect(fn).toThrow("Operator not support for type 'number'")
     })

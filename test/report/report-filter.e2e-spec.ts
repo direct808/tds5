@@ -57,7 +57,7 @@ describe('Report Filter (e2e)', () => {
     expect(body.rows).toStrictEqual([{ isProxy: false, bots_pct: '50' }])
   })
 
-  it('identifier', async () => {
+  it('clickMetric', async () => {
     await createClicksBuilder()
       .campaignId(campaignId)
       .add((click) => click.isBot(false).isProxy(true))

@@ -1,21 +1,22 @@
 import jsep from 'jsep'
 import type { FormulaRecord } from '@/domain/report/types'
 import { BadRequestException } from '@nestjs/common'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
 
-type IdentifierMap = Record<string, string>
+type clickMetricMap = Record<string, string>
 
 export class FormulaParser {
   public static create(
     formula: string,
-    identifierMap: IdentifierMap,
+    clickMetricMap: clickMetricMap,
     allFormulas: FormulaRecord,
   ): FormulaParser {
-    return new this(formula, identifierMap, allFormulas)
+    return new this(formula, clickMetricMap, allFormulas)
   }
 
   private constructor(
     private readonly formula: string,
-    private readonly identifierMap: IdentifierMap,
+    private readonly clickMetricMap: ClickMetricMap,
     private readonly allFormulas: FormulaRecord,
   ) {}
 
@@ -23,7 +24,7 @@ export class FormulaParser {
     try {
       const ast = jsep(this.formula)
 
-      return `coalesce(${this.astToSQL(ast)} , 0)`
+      return this.astToSQL(ast)
     } catch (e) {
       throw new BadRequestException(e)
     }
@@ -36,7 +37,7 @@ export class FormulaParser {
       case 'UnaryExpression':
         return this.processUnaryExpression(node as jsep.UnaryExpression)
       case 'Identifier':
-        return this.replaceIdentifier(node as jsep.Identifier)
+        return this.replaceClickMetric(node as jsep.Identifier)
       case 'Literal':
         return this.processLiteral(node as jsep.Literal)
       default:
@@ -67,9 +68,9 @@ export class FormulaParser {
     return node.value.toString()
   }
 
-  private replaceIdentifier({ name }: jsep.Identifier): string {
-    if (this.identifierMap[name]) {
-      return this.identifierMap[name]
+  private replaceClickMetric({ name }: jsep.Identifier): string {
+    if (this.clickMetricMap[name]) {
+      return this.clickMetricMap[name]
     }
 
     if (this.allFormulas[name]) {
@@ -78,6 +79,6 @@ export class FormulaParser {
       return this.astToSQL(ast)
     }
 
-    throw new BadRequestException(`Unsupported identifier type: ${name}`)
+    throw new BadRequestException(`Unsupported clickMetric type: ${name}`)
   }
 }

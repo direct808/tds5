@@ -3,7 +3,7 @@ import { BadRequestException } from '@nestjs/common'
 import { FormulaRecord, FormulaSummaryEnum } from '@/domain/report/types'
 
 describe('FormulaParser', () => {
-  const identifierMap = {
+  const clickMetricMap = {
     a: 'table.a',
     b: 'table.b',
   }
@@ -17,7 +17,7 @@ describe('FormulaParser', () => {
 
   it('Syntax error', () => {
     const fn = () =>
-      FormulaParser.create('****', identifierMap, allFormulas).build()
+      FormulaParser.create('****', clickMetricMap, allFormulas).build()
 
     expect(fn).toThrow(BadRequestException)
   })
@@ -25,7 +25,7 @@ describe('FormulaParser', () => {
   it('parse simple binary expression', () => {
     const parser = FormulaParser.create(
       '(a + -sumAB + 5) / 12',
-      identifierMap,
+      clickMetricMap,
       allFormulas,
     )
 
@@ -36,15 +36,15 @@ describe('FormulaParser', () => {
 
   it('Unsupported node type', () => {
     const fn = () =>
-      FormulaParser.create('asd(5)', identifierMap, allFormulas).build()
+      FormulaParser.create('asd(5)', clickMetricMap, allFormulas).build()
 
     expect(fn).toThrow(`Unsupported node type: CallExpression`)
   })
 
-  it('Unsupported identifier type', () => {
+  it('Unsupported clickMetric type', () => {
     const fn = () =>
-      FormulaParser.create('hz', identifierMap, allFormulas).build()
+      FormulaParser.create('hz', clickMetricMap, allFormulas).build()
 
-    expect(fn).toThrow('Unsupported identifier type: hz')
+    expect(fn).toThrow('Unsupported clickMetric type: hz')
   })
 })

@@ -7,7 +7,7 @@ describe('MetricProcessService', () => {
   const qb = {
     selectMetric: jest.fn(),
   } as unknown as PostgresRawReportQueryBuilder
-  const identifierMap = {
+  const clickMetricMap = {
     clicks: 't.clicks',
     conversions_deposit: 'conversions_deposit',
   }
@@ -23,7 +23,7 @@ describe('MetricProcessService', () => {
   })
 
   it('processItemFormula', () => {
-    service.process(qb, identifierMap, ['cr_deposit'])
+    service.process(qb, clickMetricMap, ['cr_deposit'])
 
     expect(qb.selectMetric).toHaveBeenCalledTimes(1)
     expect(qb.selectMetric).toHaveBeenCalledWith(
@@ -33,15 +33,15 @@ describe('MetricProcessService', () => {
     )
   })
 
-  it('processItemIdentifier', () => {
-    service.process(qb, identifierMap, ['clicks'])
+  it('processItemClickMetric', () => {
+    service.process(qb, clickMetricMap, ['clicks'])
 
     expect(qb.selectMetric).toHaveBeenCalledTimes(1)
     expect(qb.selectMetric).toHaveBeenCalledWith('t.clicks', 'clicks', 'sum')
   })
 
   it('Unknown metric if group', () => {
-    const fn = () => service.process(qb, identifierMap, ['year'])
+    const fn = () => service.process(qb, clickMetricMap, ['year'])
 
     expect(fn).toThrow(`Unknown metric: 'year'`)
   })

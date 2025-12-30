@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { conversionTypes } from '@/domain/conversion/types'
 import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import {
-  IdentifierMap,
+  ClickMetricMap,
   ReportRepository,
 } from '@/infra/repositories/report.repository'
 import { groups } from '@/domain/report/groups'
@@ -17,6 +17,7 @@ import { UserRepository } from '@/infra/repositories/user.repository'
 import { UserModel } from '@generated/prisma/models/User'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import { postgresClickMetricMap } from '@/domain/report/use-cases/get-report/postgres-click-metric-map'
 
 @Injectable()
 export class GetReportUseCase {
@@ -36,12 +37,12 @@ export class GetReportUseCase {
   ): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
-    const { usedIdentifiers, identifierMap } = this.getIdentifierMapProxy()
+    const { usedClickMetrics, clickMetricMap } = this.getClickMetricMapProxy()
 
     const { timeZone } = await this.getUserByEmail(userEmail)
 
-    this.reportRepository.addConversionsIdentifiers(
-      identifierMap,
+    this.reportRepository.addConversionsClickMetrics(
+      clickMetricMap,
       Object.keys(conversionTypes),
     )
 
@@ -51,10 +52,10 @@ export class GetReportUseCase {
       Object.keys(conversionTypes),
     )
 
-    this.filterProcessorService.process(qb, identifierMap, args.filter)
-    this.metricProcessorService.process(qb, identifierMap, args.metrics)
+    this.filterProcessorService.process(qb, clickMetricMap, args.filter)
+    this.metricProcessorService.process(qb, clickMetricMap, args.metrics)
 
-    // qb.includeConversionFields(usedIdentifiers)
+    // qb.includeConversionFields(usedClickMetrics)
 
     this.processGroups(args.groups, qb)
 
@@ -101,20 +102,20 @@ export class GetReportUseCase {
     }
   }
 
-  private getIdentifierMapProxy(): {
-    identifierMap: IdentifierMap
-    usedIdentifiers: string[]
+  private getClickMetricMapProxy(): {
+    clickMetricMap: ClickMetricMap
+    usedClickMetrics: string[]
   } {
-    const usedIdentifiers: string[] = []
-    const identifierMap = new Proxy(this.reportRepository.getIdentifierMap(), {
+    const usedClickMetrics: string[] = []
+    const clickMetricMap = new Proxy(postgresClickMetricMap, {
       get(target, key: string): string | undefined {
-        usedIdentifiers.push(key)
+        usedClickMetrics.push(key)
 
         return target[key]
       },
     })
 
-    return { identifierMap, usedIdentifiers }
+    return { clickMetricMap, usedClickMetrics }
   }
 
   private async getUserByEmail(email: string): Promise<UserModel> {
