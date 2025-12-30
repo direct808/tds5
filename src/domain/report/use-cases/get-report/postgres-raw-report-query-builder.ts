@@ -269,14 +269,14 @@ export class PostgresRawReportQueryBuilder {
     summary: Record<string, string>
     total: number
   }> {
-    const asdf = this._selectMetric
+    const metrics = this._selectMetric
       .map(
         ({ alias, summary }) =>
           `coalesce(${summary}(${alias})::numeric(12,2), 0) ${alias}`,
       )
       .join(', ')
 
-    const query = `select count(*) as total, ${asdf} from (${this.buildClickQuery()}) summary`
+    const query = `select count(*) as total, ${metrics} from (${this.buildClickQuery()}) summary`
     // console.log(query)
 
     const result = await this.prisma.$queryRawUnsafe<Record<string, string>[]>(
