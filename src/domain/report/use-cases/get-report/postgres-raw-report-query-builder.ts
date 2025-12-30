@@ -18,7 +18,7 @@ export class PostgresRawReportQueryBuilder {
     alias: string
   }[] = []
 
-  private readonly _having: string[] = []
+  private readonly _having: string[] = ['count(*) > 0']
   private readonly _where: string[] = []
   private _groupBy: string[] = []
   private _orderBy: { field: string; order: 'asc' | 'desc' } | undefined
@@ -186,7 +186,9 @@ export class PostgresRawReportQueryBuilder {
       operator,
       value,
     )
-    this._having.push(`${query} ${sqlOperator} ${preparedValue}`)
+
+    const val = this.addValue(preparedValue)
+    this._having.push(`${query} ${sqlOperator} ${val}`)
   }
 
   public whereGroup(
@@ -201,7 +203,8 @@ export class PostgresRawReportQueryBuilder {
       operator,
       value,
     )
-    this._where.push(`${query} ${sqlOperator} ${preparedValue}`)
+    const val = this.addValue(preparedValue)
+    this._where.push(`${query} ${sqlOperator} ${val}`)
 
     return this
   }
@@ -211,7 +214,10 @@ export class PostgresRawReportQueryBuilder {
       throw new Error('Value must be an array')
     }
 
-    this._having.push(`${query} between ${value[0]} and ${value[1]}`)
+    const val1 = this.addValue(value[0])
+    const val2 = this.addValue(value[1])
+
+    this._having.push(`${query} between ${val1} and ${val2}`)
   }
 
   private getSqlOperatorAndValue(
@@ -234,11 +240,11 @@ export class PostgresRawReportQueryBuilder {
       val = valueTransformer(value)
     }
 
-    const wrappedVal = typeof val === 'string' ? `'${val}'` : val
+    // const wrappedVal = typeof val === 'string' ? `'${val}'` : val
 
     return {
       sqlOperator,
-      preparedValue: wrappedVal,
+      preparedValue: val,
     }
   }
 

@@ -751,4 +751,24 @@ describe('Report (e2e)', () => {
       rows: [],
     })
   })
+
+  it('sql injection', async () => {
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 2)
+      .metrics(['revenue', 'cost', 'roi'])
+      .addFilter('country', FilterOperatorEnum['='], `!@#$%^&*():"}';`)
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body).toStrictEqual({
+      rows: [],
+      summary: {
+        cost: '0',
+        revenue: '0',
+        roi: '0',
+      },
+      total: 0,
+    })
+  })
 })
