@@ -31,6 +31,7 @@ export class PostgresRawReportQueryBuilder {
     private readonly prisma: PrismaService,
     private readonly timeZone: string,
     private readonly conversionTypes: string[],
+    private readonly usedClickMetrics: string[],
   ) {}
 
   public setPagination(offset: number, limit: number): void {
@@ -126,13 +127,17 @@ export class PostgresRawReportQueryBuilder {
     const columns: string[] = []
 
     for (const key of this.conversionTypes) {
-      columns.push(
-        `count(*) filter (where status = '${key}') as conversions_${key}`,
-      )
+      if (this.usedClickMetrics.includes(`conversions_${key}`)) {
+        columns.push(
+          `count(*) filter (where status = '${key}') as conversions_${key}`,
+        )
+      }
 
-      columns.push(
-        `sum(revenue) filter (where status = '${key}') as revenue_${key}`,
-      )
+      if (this.usedClickMetrics.includes(`revenue_${key}`)) {
+        columns.push(
+          `sum(revenue) filter (where status = '${key}') as revenue_${key}`,
+        )
+      }
     }
 
     if (columns.length === 0) {

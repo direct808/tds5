@@ -50,6 +50,7 @@ export class GetReportUseCase {
       this.prisma,
       timeZone,
       Object.keys(conversionTypes),
+      usedClickMetrics,
     )
 
     this.filterProcessorService.process(qb, clickMetricMap, args.filter)
