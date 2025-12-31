@@ -4,6 +4,7 @@ import {
   StreamGetPayload,
   StreamUncheckedCreateInput,
 } from '@generated/prisma/models/Stream'
+import { InputJsonValue } from '@prisma/client/runtime/client'
 
 export type StreamFull = StreamGetPayload<{
   include: {
@@ -26,8 +27,7 @@ export abstract class StreamBuilder {
   }
 
   filters(filters: Filters): this {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.fields.filters = filters as any // todo исправить
+    this.fields.filters = filters as unknown as InputJsonValue
 
     return this
   }
