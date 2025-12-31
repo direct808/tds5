@@ -1,17 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { FilterService } from './filter/filter.service'
-
-interface StreamSimple {
-  id: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  filters: any // todo убери это
-}
+import { StreamModel } from '@generated/prisma/models/Stream'
+import { Filters } from '@/domain/click/stream/filter/types'
 
 @Injectable()
 export class SelectStreamService {
   constructor(private readonly streamFilterService: FilterService) {}
 
-  public async selectStream<T extends StreamSimple>(streams: T[]): Promise<T> {
+  public async selectStream<T extends StreamModel>(streams: T[]): Promise<T> {
     if (streams.length === 0) {
       throw new Error('No streams')
     }
@@ -25,8 +21,8 @@ export class SelectStreamService {
     throw new Error(`Can't select stream`)
   }
 
-  private async checkStreamFilters(stream: StreamSimple): Promise<boolean> {
-    const filters = stream.filters
+  private async checkStreamFilters(stream: StreamModel): Promise<boolean> {
+    const filters = stream.filters as unknown as Filters | undefined
     if (!filters || filters.items.length === 0) {
       return true
     }
