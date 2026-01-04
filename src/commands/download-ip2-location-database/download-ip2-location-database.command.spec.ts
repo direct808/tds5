@@ -24,7 +24,7 @@ describe('download-ip2-location-database.command.spec.ts', () => {
 
     let result = ''
 
-    spyOn(command, 'saveFile').mockImplementation(async (file: any) => {
+    spyOn(command, 'saveFile').mockImplementation(async (file) => {
       const buf = await file.buffer()
       result = buf.toString()
     })

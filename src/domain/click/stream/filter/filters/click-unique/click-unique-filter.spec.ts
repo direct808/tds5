@@ -44,7 +44,7 @@ describe('click-unique-filter.ts', () => {
         streamId: 'stream-id',
       },
       provider,
-      { visitorId: 'visitor-id' } as any,
+      { visitorId: 'visitor-id' },
     )
 
     // 2, 3. Act, Assert

@@ -9,7 +9,7 @@ describe('QueryStringObserver', () => {
   let observer: QueryStringObserver
 
   beforeEach(() => {
-    observer = new QueryStringObserver({} as any)
+    observer = new QueryStringObserver(MockClickContext.create())
   })
 
   it('should correctly map request query parameters into ClickData', () => {

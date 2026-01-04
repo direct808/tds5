@@ -66,7 +66,7 @@ describe('LandingsOffersService', () => {
       } as OfferFull
 
       const stream: StreamFullWithCampaign = {
-        streamOffers: [{} as any],
+        streamOffers: [{}],
         campaign,
       } as StreamFullWithCampaign
 
