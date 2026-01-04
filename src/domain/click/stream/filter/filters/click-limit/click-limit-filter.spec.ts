@@ -28,7 +28,11 @@ describe('ClickLimitFilter', () => {
     })
 
     it('Should called check 3 times', async () => {
-      const filter = new ClickLimitFilter({} as any, provider, '4')
+      const filter = new ClickLimitFilter(
+        { type: 'click-limit' },
+        provider,
+        '4',
+      )
 
       const check = spyOn(filter, 'check').mockReturnValue(true)
 
@@ -44,7 +48,11 @@ describe('ClickLimitFilter', () => {
 
   describe('check', () => {
     it('should return true if value is not set', async () => {
-      const filter = new ClickLimitFilter({} as any, provider, '4')
+      const filter = new ClickLimitFilter(
+        { type: 'click-limit' },
+        provider,
+        '4',
+      )
 
       const result = await filter['check']('getCountPerHour', 'perHour')
       expect(result).toBe(true)
@@ -70,8 +78,9 @@ describe('ClickLimitFilter', () => {
     it('should return false if count is equal to value', async () => {
       const filter = new ClickLimitFilter(
         {
+          type: 'click-limit',
           perHour: 100,
-        } as any,
+        },
         provider,
         '123',
       )
@@ -86,8 +95,9 @@ describe('ClickLimitFilter', () => {
     it('should return false if count is more than value', async () => {
       const filter = new ClickLimitFilter(
         {
+          type: 'click-limit',
           perHour: 100,
-        } as any,
+        },
         provider,
         '123',
       )

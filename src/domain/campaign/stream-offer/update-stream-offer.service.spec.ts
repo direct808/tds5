@@ -9,7 +9,7 @@ import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('@/infra/repositories/utils/repository-utils')
 
-describe('CommonStreamService', () => {
+describe('UpdateStreamOfferService', () => {
   let service: UpdateStreamOfferService
 
   const streamOfferRepository = {
