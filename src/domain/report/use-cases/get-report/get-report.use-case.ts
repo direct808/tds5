@@ -18,6 +18,7 @@ import { UserModel } from '@generated/prisma/models/User'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { postgresClickMetricMap } from '@/domain/report/use-cases/get-report/postgres-click-metric-map'
+import { RangeProcessService } from '@/domain/report/use-cases/get-report/range-process.service'
 
 @Injectable()
 export class GetReportUseCase {
@@ -27,6 +28,7 @@ export class GetReportUseCase {
     private readonly checkArgsService: CheckArgsService,
     private readonly filterProcessorService: FilterProcessorService,
     private readonly metricProcessorService: MetricProcessService,
+    private readonly rangeProcessService: RangeProcessService,
     private readonly userRepository: UserRepository,
     private readonly prisma: PrismaService,
   ) {}
@@ -55,6 +57,12 @@ export class GetReportUseCase {
 
     this.filterProcessorService.process(qb, clickMetricMap, args.filter)
     this.metricProcessorService.process(qb, clickMetricMap, args.metrics)
+    this.rangeProcessService.process(
+      qb,
+      args.rangeInterval,
+      args.rangeFrom ? new Date(args.rangeFrom) : undefined,
+      args.rangeTo ? new Date(args.rangeTo) : undefined,
+    )
 
     // qb.includeConversionFields(usedClickMetrics)
 
@@ -65,8 +73,8 @@ export class GetReportUseCase {
     this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
 
-    const rows = total > 0 ? await qb.execute() : []
-    // const rows = await qb.execute()
+    // const rows = total > 0 ? await qb.execute() : []
+    const rows = await qb.execute()
 
     return { rows, summary, total }
   }

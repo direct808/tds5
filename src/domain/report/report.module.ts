@@ -6,6 +6,7 @@ import { GetReportUseCase } from '@/domain/report/use-cases/get-report/get-repor
 import { CheckArgsService } from '@/domain/report/use-cases/get-report/check-args.service'
 import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
+import { RangeProcessService } from '@/domain/report/use-cases/get-report/range-process.service'
 
 @Module({
   controllers: [ReportController],
@@ -15,6 +16,7 @@ import { MetricProcessService } from '@/domain/report/use-cases/get-report/metri
     CheckArgsService,
     FilterProcessorService,
     MetricProcessService,
+    RangeProcessService,
   ],
   imports: [RepositoryModule],
 })

@@ -115,7 +115,7 @@ export enum ReportRangeEnum {
   'previous_month' = 'previous_month',
   '1_month_ago' = '1_month_ago',
   'first_day_of_this_year' = 'first_day_of_this_year',
-  'all_time' = 'all_time',
+  allTime = 'all_time',
   'custom_date_range' = 'custom_date_range',
   'custom_time_range' = 'custom_time_range',
 }

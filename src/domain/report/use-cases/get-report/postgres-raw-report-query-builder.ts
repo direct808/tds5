@@ -252,7 +252,7 @@ export class PostgresRawReportQueryBuilder {
 
   public execute(): Promise<Record<string, string>[]> {
     const query = this.buildClickQuery()
-    // console.log(query)
+    console.log(query)
 
     return this.prisma.$queryRawUnsafe(query, ...this.values)
   }
