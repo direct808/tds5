@@ -1,5 +1,5 @@
 import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
-import { FilterOperatorEnum, ReportRangeEnum } from '@/domain/report/types'
+import { ReportRangeEnum } from '@/domain/report/types'
 
 export class RangeProcessService {
   public process(
@@ -7,9 +7,10 @@ export class RangeProcessService {
     rangeInterval: ReportRangeEnum,
     from?: Date,
     to?: Date,
-  ) {
+  ): void {
     switch (rangeInterval) {
       case ReportRangeEnum.custom_date_range:
+      case ReportRangeEnum.custom_time_range:
         return this.processCustomDateRange(qb, from, to)
     }
   }
@@ -18,7 +19,7 @@ export class RangeProcessService {
     qb: PostgresRawReportQueryBuilder,
     from?: Date,
     to?: Date,
-  ) {
+  ): void {
     if (!from) {
       throw new Error('No from')
     }
@@ -26,7 +27,9 @@ export class RangeProcessService {
       throw new Error('No to')
     }
 
-    qb.whereGroup('"createdAt"', FilterOperatorEnum['>'], from)
-    qb.whereGroup('"createdAt"', FilterOperatorEnum['<='], to)
+    qb.whereBetween(`"createdAt" at time zone 'UTC' at time zone :timezone`, [
+      from,
+      to,
+    ])
   }
 }

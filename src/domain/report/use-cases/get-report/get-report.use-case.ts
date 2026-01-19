@@ -33,15 +33,10 @@ export class GetReportUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
-  public async handle(
-    args: GetReportDto,
-    userEmail: string,
-  ): Promise<ReportResponse> {
+  public async handle(args: GetReportDto): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
     const { usedClickMetrics, clickMetricMap } = this.getClickMetricMapProxy()
-
-    const { timeZone } = await this.getUserByEmail(userEmail)
 
     this.reportRepository.addConversionsClickMetrics(
       clickMetricMap,
@@ -50,7 +45,7 @@ export class GetReportUseCase {
 
     const qb = new PostgresRawReportQueryBuilder(
       this.prisma,
-      timeZone,
+      args.timezone,
       Object.keys(conversionTypes),
       usedClickMetrics,
     )

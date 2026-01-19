@@ -220,6 +220,13 @@ export class PostgresRawReportQueryBuilder {
     this._having.push(`${query} between ${val1} and ${val2}`)
   }
 
+  public whereBetween(query: string, value: unknown[]): void {
+    const val1 = this.addValue(value[0])
+    const val2 = this.addValue(value[1])
+
+    this._where.push(`${query} between ${val1} and ${val2}`)
+  }
+
   private getSqlOperatorAndValue(
     operator: FilterOperatorEnum,
     value: unknown,
@@ -253,6 +260,7 @@ export class PostgresRawReportQueryBuilder {
   public execute(): Promise<Record<string, string>[]> {
     const query = this.buildClickQuery()
     console.log(query)
+    console.log(this.values)
 
     return this.prisma.$queryRawUnsafe(query, ...this.values)
   }

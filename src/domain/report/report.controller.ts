@@ -10,10 +10,7 @@ export class ReportController {
   constructor(private readonly getReportUseCase: GetReportUseCase) {}
 
   @Get()
-  getReport(
-    @Query() args: GetReportDto,
-    @CurrentUserEmail() userEmail: string,
-  ): Promise<ReportResponse> {
-    return this.getReportUseCase.handle(args, userEmail)
+  getReport(@Query() args: GetReportDto): Promise<ReportResponse> {
+    return this.getReportUseCase.handle(args)
   }
 }

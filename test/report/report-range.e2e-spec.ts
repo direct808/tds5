@@ -43,13 +43,14 @@ describe('Report-range (e2e)', () => {
   it('Range', async () => {
     await createClicksBuilder()
       .campaignId(campaign.id)
-      .add((click) => click.createdAt(new Date('2025-02-14')))
-      .add((click) => click.createdAt(new Date('2025-02-15')))
+      .add((click) => click.createdAt(new Date('2025-02-13 21:00:00+00')))
+      .add((click) => click.createdAt(new Date('2025-02-15 21:00:00+00')))
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
-      .range(ReportRangeEnum.custom_date_range, '2025-02-15', '2025-01-15')
+      .timezone('+03:00')
+      .range(ReportRangeEnum.custom_date_range, '2025-02-14', '2025-02-15')
       .metrics(['clicks'])
       .request()
       .auth(accessToken, { type: 'bearer' })
