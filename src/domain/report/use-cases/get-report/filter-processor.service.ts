@@ -91,7 +91,7 @@ export class FilterProcessorService {
     }
     const q = sql ? sql : `"${field}"`
     this.checkFilterData(type, inputFilterData)
-    qb.whereGroup(q, operator, value)
+    qb.where(q, operator, value)
   }
 
   private checkFilterData(type: FilterTypeEnum, data: InputFilterData): void {

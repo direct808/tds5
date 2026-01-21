@@ -16,7 +16,7 @@ export class DateIntervalFilter implements StreamFilter {
 
   handle: StreamFilter['handle'] = () => {
     const { from, to, timezone } = this.filterObj
-    const now = DateTime.now().setZone(timezone)
+    const now = DateTime.now()
 
     const fromDate = DateTime.fromISO(from, { zone: timezone })
     const toDate = DateTime.fromISO(to, { zone: timezone })

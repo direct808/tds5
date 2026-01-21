@@ -55,8 +55,9 @@ export class GetReportUseCase {
     this.rangeProcessService.process(
       qb,
       args.rangeInterval,
-      args.rangeFrom ? new Date(args.rangeFrom) : undefined,
-      args.rangeTo ? new Date(args.rangeTo) : undefined,
+      args.timezone,
+      args.rangeFrom,
+      args.rangeTo,
     )
 
     // qb.includeConversionFields(usedClickMetrics)

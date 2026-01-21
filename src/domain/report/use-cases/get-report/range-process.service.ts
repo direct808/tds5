@@ -1,35 +1,52 @@
 import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
 import { ReportRangeEnum } from '@/domain/report/types'
+import { DateTime } from 'luxon'
+import { BadRequestException } from '@nestjs/common'
 
 export class RangeProcessService {
   public process(
     qb: PostgresRawReportQueryBuilder,
     rangeInterval: ReportRangeEnum,
-    from?: Date,
-    to?: Date,
+    timezone: string,
+    from?: string,
+    to?: string,
   ): void {
     switch (rangeInterval) {
       case ReportRangeEnum.custom_date_range:
       case ReportRangeEnum.custom_time_range:
-        return this.processCustomDateRange(qb, from, to)
+        return this.processCustomDateRange(qb, timezone, from, to)
     }
   }
 
   private processCustomDateRange(
     qb: PostgresRawReportQueryBuilder,
-    from?: Date,
-    to?: Date,
+    timezone: string,
+    fromStr?: string,
+    toStr?: string,
   ): void {
-    if (!from) {
+    if (!fromStr) {
       throw new Error('No from')
     }
-    if (!to) {
+    if (!toStr) {
       throw new Error('No to')
     }
 
-    qb.whereBetween(`"createdAt" at time zone 'UTC' at time zone :timezone`, [
-      from,
-      to,
-    ])
+    const from = DateTime.fromFormat(fromStr, 'yyyy-MM-dd', {
+      zone: timezone,
+    })
+    const to = DateTime.fromFormat(toStr, 'yyyy-MM-dd', {
+      zone: timezone,
+    }).plus({ days: 1 })
+
+    if (!from.isValid) {
+      throw new BadRequestException('Bad from format')
+    }
+
+    if (!to.isValid) {
+      throw new BadRequestException('Bad from to')
+    }
+
+    qb.whereRaw(`"createdAt"`, '>=', from.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<', to.toJSDate())
   }
 }

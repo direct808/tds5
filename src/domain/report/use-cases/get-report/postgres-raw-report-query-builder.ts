@@ -191,7 +191,7 @@ export class PostgresRawReportQueryBuilder {
     this._having.push(`${query} ${sqlOperator} ${val}`)
   }
 
-  public whereGroup(
+  public where(
     query: string,
     operator: FilterOperatorEnum,
     value: unknown,
@@ -205,6 +205,13 @@ export class PostgresRawReportQueryBuilder {
     )
     const val = this.addValue(preparedValue)
     this._where.push(`${query} ${sqlOperator} ${val}`)
+
+    return this
+  }
+
+  public whereRaw(query: string, operator: string, value: unknown): this {
+    const val = this.addValue(value)
+    this._where.push(`${query} ${operator} ${val}`)
 
     return this
   }

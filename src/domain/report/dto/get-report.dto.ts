@@ -64,11 +64,11 @@ export class GetReportDto {
 
   @IsDateString()
   @IsOptional()
-  declare rangeFrom: string
+  declare rangeFrom?: string
 
   @IsDateString()
   @IsOptional()
-  declare rangeTo: string
+  declare rangeTo?: string
 }
 
 function transformJson({ value }: TransformFnParams): object {

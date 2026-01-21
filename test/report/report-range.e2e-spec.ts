@@ -7,15 +7,9 @@ import {
   CampaignBuilderResult,
 } from '../utils/entity-builder/campaign-builder'
 import { createClicksBuilder } from '../utils/entity-builder/clicks-builder'
-import { faker } from '@faker-js/faker'
-import { createClickBuilder } from '../utils/entity-builder/click-builder'
-import { SourceBuilder } from '../utils/entity-builder/source-builder'
-import { OfferBuilder } from '../utils/entity-builder/offer-builder'
-import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-network-builder'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { ClickUncheckedCreateInput } from '@generated/prisma/models/Click'
 import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
-import { FilterOperatorEnum, ReportRangeEnum } from '@/domain/report/types'
+import { ReportRangeEnum } from '@/domain/report/types'
 
 describe('Report-range (e2e)', () => {
   let app: INestApplication
@@ -40,11 +34,13 @@ describe('Report-range (e2e)', () => {
       .save(prisma)
   })
 
-  it('Range', async () => {
+  it('Date range', async () => {
     await createClicksBuilder()
       .campaignId(campaign.id)
-      .add((click) => click.createdAt(new Date('2025-02-13 21:00:00+00')))
-      .add((click) => click.createdAt(new Date('2025-02-15 21:00:00+00')))
+      .add((click) => click.createdAt(new Date('2025-02-13 23:59:59+03')))
+      .add((click) => click.createdAt(new Date('2025-02-14 00:00:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2025-02-15 23:59:59+03'))) // inc
+      .add((click) => click.createdAt(new Date('2025-02-16 00:00:00+03')))
       .save(prisma)
 
     const { body } = await ReportRequestBuilder.create(app)
@@ -52,10 +48,14 @@ describe('Report-range (e2e)', () => {
       .timezone('+03:00')
       .range(ReportRangeEnum.custom_date_range, '2025-02-14', '2025-02-15')
       .metrics(['clicks'])
+      .groups(['dateTime'])
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    expect(body.rows).toStrictEqual([{ clicks: '1' }])
+    expect(body.rows).toStrictEqual([
+      { clicks: '1', dateTime: '2025-02-14 00:00:00' },
+      { clicks: '1', dateTime: '2025-02-15 23:59:59' },
+    ])
   })
 })
