@@ -146,4 +146,94 @@ describe('Report-range (e2e)', () => {
       { clicks: '1', dateTime: '2025-02-14 23:59:59' },
     ])
   })
+
+  it('CurrentWeek', async () => {
+    jest.useFakeTimers({
+      now: new Date('2026-01-15 10:00:00+03'),
+      doNotFake: ['nextTick', 'setImmediate'],
+    })
+
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.createdAt(new Date('2026-01-09 10:29:00+03')))
+      .add((click) => click.createdAt(new Date('2026-01-12 00:00:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2026-01-14 23:59:59+03'))) // inc
+      .add((click) => click.createdAt(new Date('2026-01-19 00:00:00+03')))
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .timezone('+03:00')
+      .range(ReportRangeEnum.currentWeek)
+      .metrics(['clicks'])
+      .groups(['dateTime'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([
+      { clicks: '1', dateTime: '2026-01-12 00:00:00' },
+      { clicks: '1', dateTime: '2026-01-14 23:59:59' },
+    ])
+  })
+
+  it('last7Days', async () => {
+    jest.useFakeTimers({
+      now: new Date('2026-01-15 10:00:00+03'),
+      doNotFake: ['nextTick', 'setImmediate'],
+    })
+
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.createdAt(new Date('2026-01-08 09:59:59+03')))
+      .add((click) => click.createdAt(new Date('2026-01-08 10:00:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2026-01-10 10:00:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2026-01-16 10:00:00+03')))
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .timezone('+03:00')
+      .range(ReportRangeEnum.last7Days)
+      .metrics(['clicks'])
+      .groups(['dateTime'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([
+      { clicks: '1', dateTime: '2026-01-08 10:00:00' },
+      { clicks: '1', dateTime: '2026-01-10 10:00:00' },
+    ])
+  })
+
+  it('currentMonth', async () => {
+    jest.useFakeTimers({
+      now: new Date('2026-02-15 10:00:00+03'),
+      doNotFake: ['nextTick', 'setImmediate'],
+    })
+
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.createdAt(new Date('2026-01-31 23:59:59+03')))
+      .add((click) => click.createdAt(new Date('2026-02-08 10:00:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2026-02-10 10:00:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2026-03-01 00:00:00+03')))
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .timezone('+03:00')
+      .range(ReportRangeEnum.currentMonth)
+      .metrics(['clicks'])
+      .groups(['dateTime'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([
+      { clicks: '1', dateTime: '2026-02-08 10:00:00' },
+      { clicks: '1', dateTime: '2026-02-10 10:00:00' },
+    ])
+  })
 })

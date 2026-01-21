@@ -16,11 +16,23 @@ export class RangeProcessService {
         return this.processToday(qb, timezone)
       case ReportRangeEnum.yesterday:
         return this.processYesterday(qb, timezone)
+
+      case ReportRangeEnum.currentWeek:
+        return this.processCurrentWeek(qb, timezone)
+
+      case ReportRangeEnum.last7Days:
+        return this.processLast7Days(qb)
+
+      case ReportRangeEnum.currentMonth:
+        return this.processCurrentMonth(qb, timezone)
+
       case ReportRangeEnum.customDateRange:
         return this.processCustomDateRange(qb, timezone, from, to)
       case ReportRangeEnum.customTimeRange:
         return this.processCustomTimeRange(qb, timezone, from, to)
     }
+
+    throw new BadRequestException('Unknown range interval')
   }
 
   private processToday(
@@ -44,6 +56,33 @@ export class RangeProcessService {
 
     qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
     qb.whereRaw(`"createdAt"`, '<', dt.plus({ days: 1 }).toJSDate())
+  }
+
+  private processCurrentWeek(
+    qb: PostgresRawReportQueryBuilder,
+    timezone: string,
+  ): void {
+    const dt = DateTime.now().setZone(timezone).setLocale('ru').startOf('week')
+
+    qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<', dt.plus({ week: 1 }).toJSDate())
+  }
+
+  private processLast7Days(qb: PostgresRawReportQueryBuilder): void {
+    const dt = DateTime.now()
+
+    qb.whereRaw(`"createdAt"`, '>=', dt.minus({ week: 1 }).toJSDate())
+    qb.whereRaw(`"createdAt"`, '<=', dt.toJSDate())
+  }
+
+  private processCurrentMonth(
+    qb: PostgresRawReportQueryBuilder,
+    timezone: string,
+  ): void {
+    const dt = DateTime.now().setZone(timezone).startOf('month')
+
+    qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<', dt.plus({ month: 1 }).toJSDate())
   }
 
   private processCustomDateRange(
