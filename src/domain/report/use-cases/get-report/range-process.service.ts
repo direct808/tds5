@@ -12,9 +12,10 @@ export class RangeProcessService {
     to?: string,
   ): void {
     switch (rangeInterval) {
-      case ReportRangeEnum.custom_date_range:
-      case ReportRangeEnum.custom_time_range:
+      case ReportRangeEnum.customDateRange:
         return this.processCustomDateRange(qb, timezone, from, to)
+      case ReportRangeEnum.customTimeRange:
+        return this.processCustomTimeRange(qb, timezone, from, to)
     }
   }
 
@@ -24,29 +25,61 @@ export class RangeProcessService {
     fromStr?: string,
     toStr?: string,
   ): void {
-    if (!fromStr) {
-      throw new Error('No from')
-    }
-    if (!toStr) {
-      throw new Error('No to')
-    }
+    const format = 'yyyy-MM-dd'
 
-    const from = DateTime.fromFormat(fromStr, 'yyyy-MM-dd', {
-      zone: timezone,
-    })
-    const to = DateTime.fromFormat(toStr, 'yyyy-MM-dd', {
-      zone: timezone,
-    }).plus({ days: 1 })
-
-    if (!from.isValid) {
-      throw new BadRequestException('Bad from format')
-    }
-
-    if (!to.isValid) {
-      throw new BadRequestException('Bad from to')
-    }
+    const { from, to } = this.getDateTime(format, timezone, fromStr, toStr)
 
     qb.whereRaw(`"createdAt"`, '>=', from.toJSDate())
-    qb.whereRaw(`"createdAt"`, '<', to.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<', to.plus({ days: 1 }).toJSDate())
+  }
+
+  private processCustomTimeRange(
+    qb: PostgresRawReportQueryBuilder,
+    timezone: string,
+    fromStr?: string,
+    toStr?: string,
+  ): void {
+    const format = 'yyyy-MM-dd HH:mm:ss'
+
+    const { from, to } = this.getDateTime(format, timezone, fromStr, toStr)
+
+    qb.whereRaw(`"createdAt"`, '>=', from.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<=', to.toJSDate())
+  }
+
+  private getDateTime(
+    format: string,
+    timezone: string,
+    fromStr?: string,
+    toStr?: string,
+  ): { from: DateTime; to: DateTime } {
+    this.ensureString(fromStr, 'from')
+    this.ensureString(toStr, 'to')
+
+    const from = this.strToDate(fromStr, format, timezone)
+    const to = this.strToDate(toStr, format, timezone)
+
+    return { from, to }
+  }
+
+  private strToDate(str: string, format: string, timezone: string): DateTime {
+    const date = DateTime.fromFormat(str, format, {
+      zone: timezone,
+    })
+
+    if (!date.isValid) {
+      throw new BadRequestException('Bad format ' + str)
+    }
+
+    return date
+  }
+
+  private ensureString(
+    value: string | undefined,
+    name: string,
+  ): asserts value is string {
+    if (!value) {
+      throw new Error(`Value for ${name} is empty`)
+    }
   }
 }

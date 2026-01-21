@@ -46,7 +46,7 @@ describe('Report-range (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .timezone('+03:00')
-      .range(ReportRangeEnum.custom_date_range, '2025-02-14', '2025-02-15')
+      .range(ReportRangeEnum.customDateRange, '2025-02-14', '2025-02-15')
       .metrics(['clicks'])
       .groups(['dateTime'])
       .request()
@@ -56,6 +56,35 @@ describe('Report-range (e2e)', () => {
     expect(body.rows).toStrictEqual([
       { clicks: '1', dateTime: '2025-02-14 00:00:00' },
       { clicks: '1', dateTime: '2025-02-15 23:59:59' },
+    ])
+  })
+
+  it('Time range', async () => {
+    await createClicksBuilder()
+      .campaignId(campaign.id)
+      .add((click) => click.createdAt(new Date('2025-02-14 10:29:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2025-02-14 10:30:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2025-02-14 10:31:00+03'))) // inc
+      .add((click) => click.createdAt(new Date('2025-02-14 10:32:00+03'))) // inc
+      .save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .timezone('+03:00')
+      .range(
+        ReportRangeEnum.customTimeRange,
+        '2025-02-14 10:30:00',
+        '2025-02-14 10:31:00',
+      )
+      .metrics(['clicks'])
+      .groups(['dateTime'])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([
+      { clicks: '1', dateTime: '2025-02-14 10:30:00' },
+      { clicks: '1', dateTime: '2025-02-14 10:31:00' },
     ])
   })
 })
