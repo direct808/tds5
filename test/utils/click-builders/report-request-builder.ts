@@ -34,7 +34,7 @@ export class ReportRequestBuilder {
     return this
   }
 
-  public range(interval: ReportRangeEnum, from: string, to: string): this {
+  public range(interval: ReportRangeEnum, from?: string, to?: string): this {
     this.rangeInterval = interval
     this.rangeFrom = from
     this.rangeTo = to

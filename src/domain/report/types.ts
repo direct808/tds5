@@ -108,7 +108,7 @@ export type OperationMap = Record<
 
 export enum ReportRangeEnum {
   today = 'today',
-  yestarday = 'yestarday',
+  yesterday = 'yesterday',
   lastMonday = 'last_monday',
   ago7Days = '7_days_ago',
   firstDayOfThisMonth = 'first_day_of_this_month',

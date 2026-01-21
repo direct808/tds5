@@ -12,11 +12,38 @@ export class RangeProcessService {
     to?: string,
   ): void {
     switch (rangeInterval) {
+      case ReportRangeEnum.today:
+        return this.processToday(qb, timezone)
+      case ReportRangeEnum.yesterday:
+        return this.processYesterday(qb, timezone)
       case ReportRangeEnum.customDateRange:
         return this.processCustomDateRange(qb, timezone, from, to)
       case ReportRangeEnum.customTimeRange:
         return this.processCustomTimeRange(qb, timezone, from, to)
     }
+  }
+
+  private processToday(
+    qb: PostgresRawReportQueryBuilder,
+    timezone: string,
+  ): void {
+    const dt = DateTime.now().setZone(timezone).startOf('day')
+
+    qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<', dt.plus({ days: 1 }).toJSDate())
+  }
+
+  private processYesterday(
+    qb: PostgresRawReportQueryBuilder,
+    timezone: string,
+  ): void {
+    const dt = DateTime.now()
+      .setZone(timezone)
+      .startOf('day')
+      .minus({ days: 1 })
+
+    qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
+    qb.whereRaw(`"createdAt"`, '<', dt.plus({ days: 1 }).toJSDate())
   }
 
   private processCustomDateRange(
