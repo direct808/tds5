@@ -36,7 +36,7 @@ describe('getFieldTypeData', () => {
     expect(res).toEqual({
       type: FilterFieldTypeEnum.group,
       group: {
-        sql: `date_part('year', click."createdAt" at time zone :timezone)`,
+        sql: `date_part('year', click."createdAt" at time zone 'UTC' at time zone :timezone)`,
         type: 'number',
       },
     })
