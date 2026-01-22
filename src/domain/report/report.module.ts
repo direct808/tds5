@@ -17,5 +17,6 @@ import { MetricProcessService } from '@/domain/report/use-cases/get-report/metri
     MetricProcessService,
   ],
   imports: [RepositoryModule],
+  exports: [GetReportUseCase],
 })
 export class ReportModule {}

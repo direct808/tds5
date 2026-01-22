@@ -19,6 +19,11 @@ import {
 
 export type GetFullByArgs = { code: string } | { domain: string }
 
+type ListArgs = {
+  limit: number
+  offset: number
+}
+
 @Injectable()
 export class CampaignRepository
   implements
@@ -103,5 +108,15 @@ export class CampaignRepository
     })
 
     return result.map(({ name }) => name)
+  }
+
+  public list(args: ListArgs, userId: string): Promise<CampaignModel[]> {
+    return this.prisma.campaign.findMany({
+      where: {
+        userId,
+      },
+      // take: args.limit,
+      // skip: args.offset,
+    })
   }
 }

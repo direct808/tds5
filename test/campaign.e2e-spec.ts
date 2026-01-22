@@ -583,4 +583,19 @@ describe('CampaignController (e2e)', () => {
       expect(streamOfferAfterDelete).toBeNull()
     })
   })
+
+  describe('List', () => {
+    it('list', async () => {
+      const campaign = await CampaignBuilder.createRandomActionContent()
+        .userId(userId)
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/campaign')
+        .auth(accessToken, { type: 'bearer' })
+      // .expect(200)
+
+      console.log(body)
+    })
+  })
 })
