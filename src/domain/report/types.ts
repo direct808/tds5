@@ -105,3 +105,17 @@ export type OperationMap = Record<
   FilterOperatorEnum,
   { sqlOperator: string; valueTransformer?: (value: string) => string }
 >
+
+export enum ReportRangeEnum {
+  today = 'today',
+  yesterday = 'yesterday',
+  currentWeek = 'current_week',
+  last7Days = 'last_7_days',
+  currentMonth = 'current_month',
+  previousMonth = 'previous_month',
+  last30Days = 'last_30_days',
+  currentYear = 'current_year',
+  allTime = 'all_time',
+  customDateRange = 'custom_date_range',
+  customTimeRange = 'custom_time_range',
+}

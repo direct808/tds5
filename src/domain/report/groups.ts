@@ -9,6 +9,8 @@ export type Group = {
 
 type Groups = Record<string, Group>
 
+const atTimeZone = "at time zone 'UTC' at time zone :timezone"
+
 export const groups: Groups = {
   country: { type: FilterTypeEnum.string },
   city: { type: FilterTypeEnum.string },
@@ -25,39 +27,39 @@ export const groups: Groups = {
 
   dateTime: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM-DD HH24:MI:SS')`,
+    sql: `to_char(click."createdAt" ${atTimeZone}, 'YYYY-MM-DD HH24:MI:SS')`,
   },
   year: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('year', click."createdAt" at time zone :timezone)`,
+    sql: `date_part('year', click."createdAt" ${atTimeZone})`,
   },
   month: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM')`,
+    sql: `to_char(click."createdAt" ${atTimeZone}, 'YYYY-MM')`,
   },
   week: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('week', click."createdAt" at time zone :timezone)`,
+    sql: `date_part('week', click."createdAt" ${atTimeZone})`,
   },
   weekday: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('dow', click."createdAt" at time zone :timezone)`,
+    sql: `date_part('dow', click."createdAt" ${atTimeZone})`,
   },
   day: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM-DD')`,
+    sql: `to_char(click."createdAt" ${atTimeZone}, 'YYYY-MM-DD')`,
   },
   hour: {
     type: FilterTypeEnum.number,
 
-    sql: `date_part('hour', click."createdAt" at time zone :timezone)`,
+    sql: `date_part('hour', click."createdAt" ${atTimeZone})`,
   },
   dayHour: {
     type: FilterTypeEnum.string,
-    sql: `to_char(click."createdAt" at time zone :timezone, 'YYYY-MM-DD HH24:00')`,
+    sql: `to_char(click."createdAt" ${atTimeZone}, 'YYYY-MM-DD HH24:00')`,
   },
 
   sourceName: {

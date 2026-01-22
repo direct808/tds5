@@ -228,7 +228,6 @@ model User {
   id                String             @id() @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email             String             @unique()
   password          String
-  timeZone          String
   createdAt         DateTime           @default(now()) @db.Timestamptz()
   updatedAt         DateTime           @updatedAt @db.Timestamptz()
   affiliateNetworks AffiliateNetwork[]

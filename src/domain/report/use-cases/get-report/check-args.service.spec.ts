@@ -3,6 +3,7 @@ import { CheckArgsService } from './check-args.service'
 import { BadRequestException } from '@nestjs/common'
 import { ReportService } from '@/domain/report/report.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
+import { ReportRangeEnum } from '@/domain/report/types'
 
 describe('CheckArgsService', () => {
   let service: CheckArgsService
@@ -30,6 +31,8 @@ describe('CheckArgsService', () => {
       limit: 25,
       offset: 0,
       sortField: undefined,
+      timezone: 'UTC',
+      rangeInterval: ReportRangeEnum.allTime,
       groups: [],
       metrics: [],
       filter: [],
@@ -45,6 +48,8 @@ describe('CheckArgsService', () => {
       limit: 25,
       offset: 0,
       sortField: 'group1',
+      timezone: 'UTC',
+      rangeInterval: ReportRangeEnum.allTime,
       groups: ['group1'],
       metrics: [],
       filter: [],
@@ -60,6 +65,8 @@ describe('CheckArgsService', () => {
       limit: 25,
       offset: 0,
       sortField: 'metric1',
+      timezone: 'UTC',
+      rangeInterval: ReportRangeEnum.allTime,
       groups: [],
       metrics: ['metric1'],
       filter: [],
@@ -75,6 +82,8 @@ describe('CheckArgsService', () => {
       limit: 25,
       offset: 0,
       sortField: 'unknown',
+      timezone: 'UTC',
+      rangeInterval: ReportRangeEnum.allTime,
       groups: [],
       metrics: [],
       filter: [],
@@ -91,6 +100,8 @@ describe('CheckArgsService', () => {
       limit: 25,
       offset: 0,
       sortField: 'metric1',
+      timezone: 'UTC',
+      rangeInterval: ReportRangeEnum.allTime,
       groups: ['group2'],
       metrics: ['metric2'],
       filter: [],

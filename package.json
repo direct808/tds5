@@ -26,6 +26,7 @@
     "prisma:format": "prisma format",
     "prisma:format-check": "cross-env DATABASE_URL=postgres://fake prisma format --check",
     "prisma:db:push": "prisma db push --accept-data-loss",
+    "prisma:migrate:dev": "prisma migrate dev --name --",
     "cicd:lint": "yarn run lint && yarn run prisma:format-check",
     "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov"
   },

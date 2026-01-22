@@ -1,7 +1,11 @@
 import { INestApplication } from '@nestjs/common'
 import TestAgent from 'supertest/lib/agent'
 import request from 'supertest'
-import { FilterOperatorEnum, InputFilterData } from '@/domain/report/types'
+import {
+  FilterOperatorEnum,
+  InputFilterData,
+  ReportRangeEnum,
+} from '@/domain/report/types'
 import { GLOBAL_PREFIX } from '@/shared/constants'
 
 export class ReportRequestBuilder {
@@ -12,6 +16,10 @@ export class ReportRequestBuilder {
   private sortOrder: 'asc' | 'desc' | undefined
   private offset: number | undefined
   private limit: number | undefined
+  private _timezone = 'UTC'
+  private rangeInterval = ReportRangeEnum.allTime
+  private rangeFrom: string | undefined
+  private rangeTo: string | undefined
 
   private constructor(private readonly app: INestApplication) {}
 
@@ -22,6 +30,20 @@ export class ReportRequestBuilder {
   public pagination(offset: number, limit: number): this {
     this.offset = offset
     this.limit = limit
+
+    return this
+  }
+
+  public range(interval: ReportRangeEnum, from?: string, to?: string): this {
+    this.rangeInterval = interval
+    this.rangeFrom = from
+    this.rangeTo = to
+
+    return this
+  }
+
+  public timezone(timezone: string): this {
+    this._timezone = timezone
 
     return this
   }
@@ -59,33 +81,19 @@ export class ReportRequestBuilder {
   public request(): ReturnType<TestAgent['get']> {
     const req = request(this.app.getHttpServer())
 
-    const query: Record<string, string[] | string> = {}
+    const query: Record<string, string[] | string | undefined> = {}
 
-    if (this._groups) {
-      query['groups[]'] = this._groups
-    }
-    if (this._metrics) {
-      query['metrics[]'] = this._metrics
-    }
-    if (this._filter) {
-      query['filter'] = JSON.stringify(this._filter)
-    }
-
-    if (this.sortField) {
-      query['sortField'] = this.sortField
-    }
-
-    if (this.sortOrder) {
-      query['sortOrder'] = this.sortOrder
-    }
-
-    if (typeof this.offset === 'number') {
-      query['offset'] = String(this.offset)
-    }
-
-    if (typeof this.limit === 'number') {
-      query['limit'] = String(this.limit)
-    }
+    query['groups[]'] = this._groups
+    query['metrics[]'] = this._metrics
+    query['filter'] = JSON.stringify(this._filter)
+    query['sortField'] = this.sortField
+    query['sortOrder'] = this.sortOrder
+    query['offset'] = String(this.offset)
+    query['limit'] = String(this.limit)
+    query['timezone'] = this._timezone
+    query['rangeInterval'] = this.rangeInterval
+    query['rangeFrom'] = this.rangeFrom
+    query['rangeTo'] = this.rangeTo
 
     return req.get(`/${GLOBAL_PREFIX}report`).query(query)
   }

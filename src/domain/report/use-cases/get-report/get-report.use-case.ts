@@ -18,6 +18,7 @@ import { UserModel } from '@generated/prisma/models/User'
 import { MetricProcessService } from '@/domain/report/use-cases/get-report/metric-process.service'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { postgresClickMetricMap } from '@/domain/report/use-cases/get-report/postgres-click-metric-map'
+import { RangeProcess } from '@/domain/report/use-cases/get-report/range.process'
 
 @Injectable()
 export class GetReportUseCase {
@@ -31,15 +32,10 @@ export class GetReportUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
-  public async handle(
-    args: GetReportDto,
-    userEmail: string,
-  ): Promise<ReportResponse> {
+  public async handle(args: GetReportDto): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
     const { usedClickMetrics, clickMetricMap } = this.getClickMetricMapProxy()
-
-    const { timeZone } = await this.getUserByEmail(userEmail)
 
     this.reportRepository.addConversionsClickMetrics(
       clickMetricMap,
@@ -48,7 +44,7 @@ export class GetReportUseCase {
 
     const qb = new PostgresRawReportQueryBuilder(
       this.prisma,
-      timeZone,
+      args.timezone,
       Object.keys(conversionTypes),
       usedClickMetrics,
     )
@@ -56,7 +52,13 @@ export class GetReportUseCase {
     this.filterProcessorService.process(qb, clickMetricMap, args.filter)
     this.metricProcessorService.process(qb, clickMetricMap, args.metrics)
 
-    // qb.includeConversionFields(usedClickMetrics)
+    const rangeProcess = new RangeProcess({
+      qb,
+      timezone: args.timezone,
+      rangeInterval: args.rangeInterval,
+    })
+
+    rangeProcess.process(args.rangeFrom, args.rangeTo)
 
     this.processGroups(args.groups, qb)
 

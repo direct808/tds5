@@ -6,8 +6,11 @@ import { spyOn } from '../../../../../test/utils/helpers'
 
 describe('FilterProcessorService', () => {
   const having = jest.fn()
-  const whereGroup = jest.fn()
-  const qb = { having, whereGroup } as unknown as PostgresRawReportQueryBuilder
+  const where = jest.fn()
+  const qb = { having, where } as Pick<
+    PostgresRawReportQueryBuilder,
+    'having' | 'where'
+  > as PostgresRawReportQueryBuilder
   let service: FilterProcessorService
   const clickMetricMap = {} as ClickMetricMap
 
@@ -65,7 +68,7 @@ describe('FilterProcessorService', () => {
       service.process(qb, clickMetricMap, [['country', Operators['='], 'us']])
 
       expect(checkFilterData).toHaveBeenCalledTimes(1)
-      expect(whereGroup).toHaveBeenCalledTimes(1)
+      expect(where).toHaveBeenCalledTimes(1)
     })
 
     it('disableFilter', () => {

@@ -2,15 +2,21 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsDateString,
   IsEnum,
   IsInt,
   IsOptional,
   IsPositive,
   IsString,
+  IsTimeZone,
   Max,
   Min,
 } from 'class-validator'
-import { Direction, InputFilterData } from '@/domain/report/types'
+import {
+  Direction,
+  InputFilterData,
+  ReportRangeEnum,
+} from '@/domain/report/types'
 import { Transform, TransformFnParams } from 'class-transformer'
 
 export class GetReportDto {
@@ -32,7 +38,7 @@ export class GetReportDto {
   @IsOptional()
   declare sortOrder?: Direction
 
-  @Transform(transformFilter)
+  @Transform(transformJson)
   @IsArray()
   @IsArray({ each: true })
   @ArrayMinSize(3, { each: true })
@@ -49,9 +55,23 @@ export class GetReportDto {
   @Transform(({ value }) => (value ? +value : value))
   @Max(1000)
   declare limit: number
+
+  @IsTimeZone()
+  declare timezone: string
+
+  @IsEnum(ReportRangeEnum)
+  declare rangeInterval: ReportRangeEnum
+
+  @IsDateString()
+  @IsOptional()
+  declare rangeFrom?: string
+
+  @IsDateString()
+  @IsOptional()
+  declare rangeTo?: string
 }
 
-function transformFilter({ value }: TransformFnParams): object {
+function transformJson({ value }: TransformFnParams): object {
   if (typeof value !== 'string') {
     return value
   }
