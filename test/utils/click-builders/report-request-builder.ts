@@ -81,49 +81,19 @@ export class ReportRequestBuilder {
   public request(): ReturnType<TestAgent['get']> {
     const req = request(this.app.getHttpServer())
 
-    const query: Record<string, string[] | string> = {}
+    const query: Record<string, string[] | string | undefined> = {}
 
-    if (this._groups) {
-      query['groups[]'] = this._groups
-    }
-    if (this._metrics) {
-      query['metrics[]'] = this._metrics
-    }
-    if (this._filter) {
-      query['filter'] = JSON.stringify(this._filter)
-    }
-
-    if (this.sortField) {
-      query['sortField'] = this.sortField
-    }
-
-    if (this.sortOrder) {
-      query['sortOrder'] = this.sortOrder
-    }
-
-    if (typeof this.offset === 'number') {
-      query['offset'] = String(this.offset)
-    }
-
-    if (typeof this.limit === 'number') {
-      query['limit'] = String(this.limit)
-    }
-
-    if (this._timezone) {
-      query['timezone'] = this._timezone
-    }
-
-    if (this.rangeInterval) {
-      query['rangeInterval'] = this.rangeInterval
-    }
-
-    if (this.rangeFrom) {
-      query['rangeFrom'] = this.rangeFrom
-    }
-
-    if (this.rangeTo) {
-      query['rangeTo'] = this.rangeTo
-    }
+    query['groups[]'] = this._groups
+    query['metrics[]'] = this._metrics
+    query['filter'] = JSON.stringify(this._filter)
+    query['sortField'] = this.sortField
+    query['sortOrder'] = this.sortOrder
+    query['offset'] = String(this.offset)
+    query['limit'] = String(this.limit)
+    query['timezone'] = this._timezone
+    query['rangeInterval'] = this.rangeInterval
+    query['rangeFrom'] = this.rangeFrom
+    query['rangeTo'] = this.rangeTo
 
     return req.get(`/${GLOBAL_PREFIX}report`).query(query)
   }
