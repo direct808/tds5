@@ -7,11 +7,7 @@ import {
 export class UserBuilder {
   private constructor(private readonly fields: UserUncheckedCreateInput) {}
 
-  static create(
-    fields = {
-      timeZone: 'Europe/Moscow',
-    } as UserUncheckedCreateInput,
-  ): UserBuilder {
+  static create(fields = {} as UserUncheckedCreateInput): UserBuilder {
     return new this(fields)
   }
 

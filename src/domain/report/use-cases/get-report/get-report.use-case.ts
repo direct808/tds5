@@ -67,8 +67,8 @@ export class GetReportUseCase {
     this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
 
-    // const rows = total > 0 ? await qb.execute() : []
-    const rows = await qb.execute()
+    const rows = total > 0 ? await qb.execute() : []
+    // const rows = await qb.execute()
 
     return { rows, summary, total }
   }
