@@ -125,8 +125,6 @@ export class ReportRequestBuilder {
       query['rangeTo'] = this.rangeTo
     }
 
-    // console.log(query)
-
     return req.get(`/${GLOBAL_PREFIX}report`).query(query)
   }
 }
