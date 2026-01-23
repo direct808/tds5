@@ -199,12 +199,22 @@ export class PostgresRawReportQueryBuilder {
     if (operator === FilterOperatorEnum.between) {
       throw new Error('No support between here')
     }
+    if (operator === FilterOperatorEnum.in) {
+      return this.whereAny(query, value)
+    }
     const { sqlOperator, preparedValue } = this.getSqlOperatorAndValue(
       operator,
       value,
     )
     const val = this.addValue(preparedValue)
     this._where.push(`${query} ${sqlOperator} ${val}`)
+
+    return this
+  }
+
+  private whereAny(query: string, value: unknown): this {
+    const val = this.addValue(value)
+    this._where.push(`${query} = Any (${val})`)
 
     return this
   }

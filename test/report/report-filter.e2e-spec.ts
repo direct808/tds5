@@ -223,4 +223,24 @@ describe('Report Filter (e2e)', () => {
 
     expect(body.rows).toStrictEqual([{ clicks: '3', country: 'ge' }])
   })
+
+  it('in', async () => {
+    const camp2 = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(prisma)
+
+    await createClickBuilder().campaignId(campaignId).save(prisma)
+    await createClickBuilder().campaignId(camp2.id).save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .metrics(['clicks'])
+      .groups(['campaignId'])
+      .addFilter('campaignId', Op['in'], [campaignId])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([{ campaignId: campaignId, clicks: '1' }])
+  })
 })
