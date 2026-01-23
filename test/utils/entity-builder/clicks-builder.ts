@@ -35,10 +35,10 @@ class ClicksBuilder {
     return this
   }
 
-  async save(ds: PrismaClient): Promise<ClickModel[]> {
+  async save(prisma: PrismaClient): Promise<ClickModel[]> {
     const result: ClickModel[] = []
     for (const builder of this.clicks) {
-      const click = await builder.save(ds)
+      const click = await builder.save(prisma)
       result.push(click)
     }
 

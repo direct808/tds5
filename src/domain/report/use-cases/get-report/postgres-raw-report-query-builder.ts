@@ -269,8 +269,8 @@ export class PostgresRawReportQueryBuilder {
 
   public execute(): Promise<Record<string, string>[]> {
     const query = this.buildClickQuery()
-    // console.log(query)
-    // console.log(this.values)
+    console.log(query)
+    console.log(this.values)
 
     return this.prisma.$queryRawUnsafe(query, ...this.values)
   }
@@ -287,7 +287,8 @@ export class PostgresRawReportQueryBuilder {
       .join(', ')
 
     const query = `select count(*) as total, ${metrics} from (${this.buildClickQuery()}) summary`
-    // console.log(query)
+    console.log(query)
+    console.log(this.values)
 
     const result = await this.prisma.$queryRawUnsafe<Record<string, string>[]>(
       query,

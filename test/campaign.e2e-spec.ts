@@ -9,6 +9,7 @@ import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum, StreamSchemaEnum } from '@generated/prisma/enums'
 import { DomainBuilder } from './utils/entity-builder/domain-builder'
+import { createClicksBuilder } from './utils/entity-builder/clicks-builder'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -586,16 +587,47 @@ describe('CampaignController (e2e)', () => {
 
   describe('List', () => {
     it('list', async () => {
-      const campaign = await CampaignBuilder.createRandomActionContent()
+      const campaign1 = await CampaignBuilder.createRandomActionContent()
         .userId(userId)
+        .save(prisma)
+      const campaign2 = await CampaignBuilder.createRandomActionContent()
+        .userId(userId)
+        .save(prisma)
+
+      await createClicksBuilder()
+        .campaignId(campaign1.id)
+        .add((click) => click.cost(5))
         .save(prisma)
 
       const { body } = await request(app.getHttpServer())
         .get('/api/campaign')
         .auth(accessToken, { type: 'bearer' })
-      // .expect(200)
+        .query({
+          'metrics[]': ['clicks'],
+          limit: 25,
+          timezone: '+03:00',
+          rangeInterval: 'today',
+        })
+        .expect(200)
 
-      console.log(body)
+      // console.log(body)
+
+      expect(body).toStrictEqual({
+        rows: [
+          {
+            id: campaign1.id,
+            name: expect.any(String),
+            clicks: '1',
+          },
+          {
+            id: campaign2.id,
+            name: expect.any(String),
+            clicks: '0',
+          },
+        ],
+        summary: { clicks: '1' },
+        total: 1,
+      })
     })
   })
 })

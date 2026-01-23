@@ -62,10 +62,16 @@ export class ListCampaignUseCase {
     } else {
       const rowsMap = new Map(rows.map((item) => [item.campaignId!, item]))
 
-      return campaigns.map((campaign) => ({
-        name: campaign.name,
-        ...rowsMap.get(campaign.id),
-      }))
+      return campaigns.map((campaign) => {
+        const campaignData = { id: campaign.id, name: campaign.name }
+        const row = rowsMap.get(campaign.id)
+        if (!row) {
+          return campaignData
+        }
+        const { campaignId, ...rowWithoutCampaignId } = row
+
+        return { ...campaignData, ...rowWithoutCampaignId }
+      })
     }
   }
 
