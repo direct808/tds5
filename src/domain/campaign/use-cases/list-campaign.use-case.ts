@@ -84,11 +84,14 @@ export class ListCampaignUseCase {
       ['campaignId', FilterOperatorEnum.in, campaignIds],
     ]
 
-    return this.getReportUseCase.handle({
-      ...args,
-      groups: ['campaignId'],
-      filter,
-    })
+    return this.getReportUseCase.handle(
+      {
+        ...args,
+        groups: ['campaignId'],
+        filter,
+      },
+      campaignIds,
+    )
   }
 
   private applyPagination(

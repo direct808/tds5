@@ -32,7 +32,10 @@ export class GetReportUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
-  public async handle(args: GetReportDto): Promise<ReportResponse> {
+  public async handle(
+    args: GetReportDto,
+    ids: unknown[] = [],
+  ): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
     const { usedClickMetrics, clickMetricMap } = this.getClickMetricMapProxy()
@@ -67,8 +70,8 @@ export class GetReportUseCase {
     this.processOrder(qb, args.sortField, args.sortOrder)
     qb.setPagination(args.offset, args.limit)
 
-    const rows = total > 0 ? await qb.execute() : []
-    // const rows = await qb.execute()
+    // const rows = total > 0 ? await qb.execute(ids) : []
+    const rows = await qb.execute(ids)
 
     return { rows, summary, total }
   }

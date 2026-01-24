@@ -42,13 +42,18 @@ export class PostgresRawReportQueryBuilder {
     return select.map(({ query, alias }) => `${query} "${alias}"`)
   }
 
-  private buildClickQuery(): string {
+  private buildClickQuery(ids: unknown[]): string {
     const selectGroups = this.buildSelect(this._selectGroup)
     const selectMetric = this.buildSelect(this._selectMetric)
 
     const select: string[] = [...selectGroups, ...selectMetric]
 
-    let query = `select ${select.join(', ')} from click`
+    const val = this.addValue(ids)
+
+    let query = `
+        select ${select.join(', ')} 
+        from unnest(${val}::uuid[]) as t(ids) 
+        left join click on t.ids = click."campaignId" `
     const conversionQuery = this.buildConversionQuery()
     if (conversionQuery) {
       query += ` left join (${conversionQuery}) c on c."clickId" = click.id`
@@ -267,8 +272,8 @@ export class PostgresRawReportQueryBuilder {
     this._orderBy = { field, order }
   }
 
-  public execute(): Promise<Record<string, string>[]> {
-    const query = this.buildClickQuery()
+  public execute(ids: unknown[]): Promise<Record<string, string>[]> {
+    const query = this.buildClickQuery(ids)
     console.log(query)
     console.log(this.values)
 
@@ -286,7 +291,7 @@ export class PostgresRawReportQueryBuilder {
       )
       .join(', ')
 
-    const query = `select count(*) as total, ${metrics} from (${this.buildClickQuery()}) summary`
+    const query = `select count(*) as total, ${metrics} from (${this.buildClickQuery([])}) summary`
     console.log(query)
     console.log(this.values)
 
