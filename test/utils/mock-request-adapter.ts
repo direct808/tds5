@@ -8,15 +8,14 @@ export type MockRequestAdapterData = {
   domain?: string
   headers?: Record<string, string | undefined>
   cookies?: Record<string, string | undefined>
-  query?: Record<string, string | undefined>
+  query: Record<string, string | undefined>
 }
 
 export class MockRequestAdapter implements RequestAdapter {
   public readonly ip = this.data.ip
 
   static create(data?: MockRequestAdapterData): MockRequestAdapter {
-    data = data || {}
-    data.query ??= {}
+    data = data || { query: {} }
 
     return new MockRequestAdapter(data)
   }
@@ -51,7 +50,7 @@ export class MockRequestAdapter implements RequestAdapter {
   }
 
   public setQuery(name: string, value: string): this {
-    this.data.query![name] = value
+    this.data.query[name] = value
 
     return this
   }

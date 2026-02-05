@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common'
 import { AffiliateNetworkController } from './affiliate-network.controller'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
+import { ListAffiliateNetworkUseCase } from '@/domain/affiliate-network/use-cases/list-affiliate-network.use-case'
+import { ReportModule } from '@/domain/report/report.module'
 
 @Module({
-  imports: [RepositoryModule],
+  imports: [RepositoryModule, ReportModule],
   controllers: [AffiliateNetworkController],
-  providers: [AffiliateNetworkService],
+  providers: [AffiliateNetworkService, ListAffiliateNetworkUseCase],
 })
 export class AffiliateNetworkModule {}

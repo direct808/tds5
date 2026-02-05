@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { formulas } from '@/domain/report/formulas'
 import { ReportRepository } from '@/infra/repositories/report.repository'
 import { groups } from '@/domain/report/groups'
-import { postgresClickMetricMap } from '@/domain/report/use-cases/get-report/postgres-click-metric-map'
+import { postgresClickMetricMap } from '@/domain/report/postgres-click-metric-map'
 
 @Injectable()
 export class ReportService {

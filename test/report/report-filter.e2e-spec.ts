@@ -8,7 +8,6 @@ import { ReportRequestBuilder } from '../utils/click-builders/report-request-bui
 import { createClickBuilder } from '../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { FilterOperatorEnum as Op } from '@/domain/report/types'
 
 describe('Report Filter (e2e)', () => {
   let app: INestApplication
@@ -49,7 +48,7 @@ describe('Report Filter (e2e)', () => {
       .pagination(0, 25)
       .groups(['isProxy'])
       .metrics(['bots_pct'])
-      .addFilter('bots_pct', Op['>'], 40)
+      .addFilter('bots_pct', '>', 40)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -71,7 +70,7 @@ describe('Report Filter (e2e)', () => {
       .pagination(0, 25)
       .groups(['isProxy'])
       .metrics(['clicks'])
-      .addFilter('clicks', Op['='], 2)
+      .addFilter('clicks', '=', 2)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -98,7 +97,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .metrics(['clicks'])
-      .addFilter(field, Op['='], value)
+      .addFilter(field, '=', value)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -117,7 +116,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .metrics(['clicks'])
-      .addFilter('campaignId', Op['='], campaignId)
+      .addFilter('campaignId', '=', campaignId)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -134,7 +133,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .metrics(['clicks'])
-      .addFilter('emptyReferer', Op['='], true)
+      .addFilter('emptyReferer', '=', true)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -153,7 +152,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .metrics(['clicks'])
-      .addFilter('ip2', Op['='], '4.3')
+      .addFilter('ip2', '=', '4.3')
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -172,7 +171,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .metrics(['clicks'])
-      .addFilter('ip3', Op['='], '4.3.2')
+      .addFilter('ip3', '=', '4.3.2')
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -198,7 +197,7 @@ describe('Report Filter (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 25)
       .metrics(['clicks'])
-      .addFilter(field, Op['='], value2)
+      .addFilter(field, '=', value2)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -216,11 +215,31 @@ describe('Report Filter (e2e)', () => {
       .pagination(0, 25)
       .metrics(['clicks'])
       .groups(['country'])
-      .addFilter('clicks', Op['between'], [2, 3])
+      .addFilter('clicks', 'between', [2, 3])
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     expect(body.rows).toStrictEqual([{ clicks: '3', country: 'ge' }])
+  })
+
+  it('in', async () => {
+    const camp2 = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(prisma)
+
+    await createClickBuilder().campaignId(campaignId).save(prisma)
+    await createClickBuilder().campaignId(camp2.id).save(prisma)
+
+    const { body } = await ReportRequestBuilder.create(app)
+      .pagination(0, 25)
+      .metrics(['clicks'])
+      .groups(['campaignId'])
+      .addFilter('campaignId', 'in', [campaignId])
+      .request()
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(body.rows).toStrictEqual([{ campaignId: campaignId, clicks: '1' }])
   })
 })

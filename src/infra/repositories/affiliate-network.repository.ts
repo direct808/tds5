@@ -56,4 +56,8 @@ export class AffiliateNetworkRepository
   public async delete(id: string): Promise<void> {
     await this.prisma.affiliateNetwork.delete({ where: { id } })
   }
+
+  public list(userId: string): Promise<AffiliateNetworkModel[]> {
+    return this.prisma.affiliateNetwork.findMany({ where: { userId } })
+  }
 }

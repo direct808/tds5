@@ -59,4 +59,8 @@ export class OfferRepository
       },
     })
   }
+
+  public list(userId: string): Promise<OfferModel[]> {
+    return this.prisma.offer.findMany({ where: { userId } })
+  }
 }

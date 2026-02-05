@@ -7,16 +7,16 @@ import {
 } from '@/domain/report/types'
 import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { formulas } from '@/domain/report/formulas'
-import { FormulaParser } from '@/domain/report/use-cases/get-report/formula-parser'
+import { FormulaParser } from '@/domain/report/services/formula-parser'
 import {
   FieldTypeFormula,
   FieldTypeGroup,
   FieldTypeClickMetric,
   FilterFieldTypeEnum,
   getFieldTypeData,
-} from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
-import { checkFilterValue } from '@/domain/report/use-cases/get-report/utils/check-filter-value'
-import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
+} from '@/domain/report/utils/get-field-type-data'
+import { checkFilterValue } from '@/domain/report/utils/check-filter-value'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/services/postgres-raw-report-query-builder'
 
 @Injectable()
 export class FilterProcessorService {

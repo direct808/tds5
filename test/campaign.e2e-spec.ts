@@ -3,12 +3,17 @@ import request from 'supertest'
 import { createAuthUser } from './utils/helpers'
 import { OfferBuilder } from './utils/entity-builder/offer-builder'
 import { faker } from '@faker-js/faker/.'
-import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
+import {
+  CampaignBuilder,
+  CampaignBuilderResult,
+} from './utils/entity-builder/campaign-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum, StreamSchemaEnum } from '@generated/prisma/enums'
 import { DomainBuilder } from './utils/entity-builder/domain-builder'
+import { createClicksBuilder } from './utils/entity-builder/clicks-builder'
+import { setTimeout } from 'timers/promises'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication

@@ -11,10 +11,12 @@ import { UpdateStreamOfferService } from './stream-offer/update-stream-offer.ser
 import { CommonStreamOfferService } from './stream-offer/common-stream-offer.service'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
 import { CreateCampaignUseCase } from '@/domain/campaign/use-cases/create-campaign.use-case'
+import { ReportModule } from '@/domain/report/report.module'
+import { ListCampaignUseCase } from '@/domain/campaign/use-cases/list-campaign.use-case'
 
 @Module({
   controllers: [CampaignController],
-  imports: [RepositoryModule],
+  imports: [RepositoryModule, ReportModule],
   providers: [
     CampaignService,
     CreateCampaignUseCase,
@@ -26,6 +28,7 @@ import { CreateCampaignUseCase } from '@/domain/campaign/use-cases/create-campai
     StreamRepository,
     UpdateStreamOfferService,
     CommonStreamOfferService,
+    ListCampaignUseCase,
   ],
 })
 export class CampaignModule {}

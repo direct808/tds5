@@ -104,4 +104,12 @@ export class CampaignRepository
 
     return result.map(({ name }) => name)
   }
+
+  public list(userId: string): Promise<CampaignModel[]> {
+    return this.prisma.campaign.findMany({
+      where: {
+        userId,
+      },
+    })
+  }
 }

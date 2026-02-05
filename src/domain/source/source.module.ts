@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common'
 import { SourceController } from './source.controller'
 import { SourceService } from './source.service'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
+import { ListSourceUseCase } from '@/domain/source/ues-cases/list-source.use-case'
+import { ReportModule } from '@/domain/report/report.module'
 
 @Module({
-  imports: [RepositoryModule],
+  imports: [RepositoryModule, ReportModule],
   controllers: [SourceController],
-  providers: [SourceService],
+  providers: [SourceService, ListSourceUseCase],
 })
 export class SourceModule {}

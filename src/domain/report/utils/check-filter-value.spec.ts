@@ -1,4 +1,4 @@
-import { checkFilterValue } from '@/domain/report/use-cases/get-report/utils/check-filter-value'
+import { checkFilterValue } from '@/domain/report/utils/check-filter-value'
 import {
   FilterOperatorEnum as Op,
   FilterTypeEnum as Type,

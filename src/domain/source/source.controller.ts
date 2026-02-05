@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { SourceService } from './source.service'
@@ -15,15 +16,24 @@ import { CreateSourceDto } from './dto/create-source.dto'
 import { UpdateSourceDto } from './dto/update-source.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
 import { SourceModel } from '@generated/prisma/models/Source'
+import { ListSourceUseCase } from '@/domain/source/ues-cases/list-source.use-case'
+import { ListSourceDto } from '@/domain/source/dto/list-source.dto'
+import { ReportResponse } from '@/domain/report/types'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')
 export class SourceController {
-  constructor(private readonly sourceService: SourceService) {}
+  constructor(
+    private readonly sourceService: SourceService,
+    private readonly listSourceUseCase: ListSourceUseCase,
+  ) {}
 
   @Get()
-  getSources(@UserId() userId: string): Promise<SourceModel[]> {
-    return this.sourceService.getList(userId)
+  listSources(
+    @Query() args: ListSourceDto,
+    @UserId() userId: string,
+  ): Promise<ReportResponse> {
+    return this.listSourceUseCase.execute(args, userId)
   }
 
   @Post()

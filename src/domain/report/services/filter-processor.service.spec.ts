@@ -1,8 +1,8 @@
-import { FilterProcessorService } from '@/domain/report/use-cases/get-report/filter-processor.service'
-import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
+import { FilterProcessorService } from '@/domain/report/services/filter-processor.service'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/services/postgres-raw-report-query-builder'
 import { FilterOperatorEnum as Operators } from '@/domain/report/types'
 import { ClickMetricMap } from '@/infra/repositories/report.repository'
-import { spyOn } from '../../../../../test/utils/helpers'
+import { spyOn } from '../../../../test/utils/helpers'
 
 describe('FilterProcessorService', () => {
   const having = jest.fn()
