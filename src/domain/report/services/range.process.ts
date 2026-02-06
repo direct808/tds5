@@ -1,5 +1,5 @@
-import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
-import { ReportRangeEnum } from '@/domain/report/types'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/services/postgres-raw-report-query-builder'
+import { FilterOperatorEnum, ReportRangeEnum } from '@/domain/report/types'
 import { DateTime } from 'luxon'
 import { BadRequestException } from '@nestjs/common'
 
@@ -8,6 +8,9 @@ type RangeArgs = {
   rangeInterval: ReportRangeEnum
   timezone: string
 }
+
+type WhereRawOne = [operator: FilterOperatorEnum, value: unknown]
+type WhereRaw = [first: WhereRawOne, second: WhereRawOne]
 
 export class RangeProcess {
   private readonly qb: PostgresRawReportQueryBuilder
@@ -53,8 +56,10 @@ export class RangeProcess {
   private processToday(): void {
     const dt = DateTime.now().setZone(this.timezone).startOf('day')
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', dt.plus({ days: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', dt.toJSDate()],
+      ['<', dt.plus({ days: 1 }).toJSDate()],
+    ])
   }
 
   private processYesterday(): void {
@@ -63,8 +68,10 @@ export class RangeProcess {
       .startOf('day')
       .minus({ days: 1 })
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', dt.plus({ days: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', dt.toJSDate()],
+      ['<', dt.plus({ days: 1 }).toJSDate()],
+    ])
   }
 
   private processCurrentWeek(): void {
@@ -73,22 +80,28 @@ export class RangeProcess {
       .setLocale('ru')
       .startOf('week')
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', dt.plus({ week: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', dt.toJSDate()],
+      ['<', dt.plus({ week: 1 }).toJSDate()],
+    ])
   }
 
   private processLast7Days(): void {
     const dt = DateTime.now()
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.minus({ week: 1 }).toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<=', dt.toJSDate())
+    this.whereRange([
+      ['>=', dt.minus({ week: 1 }).toJSDate()],
+      ['<=', dt.toJSDate()],
+    ])
   }
 
   private processCurrentMonth(): void {
     const dt = DateTime.now().setZone(this.timezone).startOf('month')
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', dt.plus({ month: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', dt.toJSDate()],
+      ['<', dt.plus({ month: 1 }).toJSDate()],
+    ])
   }
 
   private processPreviousMonth(): void {
@@ -97,22 +110,28 @@ export class RangeProcess {
       .startOf('month')
       .minus({ month: 1 })
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', dt.plus({ month: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', dt.toJSDate()],
+      ['<', dt.plus({ month: 1 }).toJSDate()],
+    ])
   }
 
   private processLast30Days(): void {
     const dt = DateTime.now()
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.minus({ day: 30 }).toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<=', dt.toJSDate())
+    this.whereRange([
+      ['>=', dt.minus({ day: 30 }).toJSDate()],
+      ['<=', dt.toJSDate()],
+    ])
   }
 
   private processCurrentYear(): void {
     const dt = DateTime.now().setZone(this.timezone).startOf('year')
 
-    this.qb.whereRaw(`"createdAt"`, '>=', dt.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', dt.plus({ year: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', dt.toJSDate()],
+      ['<', dt.plus({ year: 1 }).toJSDate()],
+    ])
   }
 
   private processCustomDateRange(fromStr?: string, toStr?: string): void {
@@ -120,8 +139,10 @@ export class RangeProcess {
 
     const { from, to } = this.getDateTime(format, fromStr, toStr)
 
-    this.qb.whereRaw(`"createdAt"`, '>=', from.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<', to.plus({ days: 1 }).toJSDate())
+    this.whereRange([
+      ['>=', from.toJSDate()],
+      ['<', to.plus({ days: 1 }).toJSDate()],
+    ])
   }
 
   private processCustomTimeRange(fromStr?: string, toStr?: string): void {
@@ -129,8 +150,16 @@ export class RangeProcess {
 
     const { from, to } = this.getDateTime(format, fromStr, toStr)
 
-    this.qb.whereRaw(`"createdAt"`, '>=', from.toJSDate())
-    this.qb.whereRaw(`"createdAt"`, '<=', to.toJSDate())
+    this.whereRange([
+      ['>=', from.toJSDate()],
+      ['<=', to.toJSDate()],
+    ])
+  }
+
+  private whereRange(params: WhereRaw): void {
+    const [[o1, v1], [o2, v2]] = params
+    this.qb.where(`"createdAt"`, o1, v1)
+    this.qb.where(`"createdAt"`, o2, v2)
   }
 
   private getDateTime(

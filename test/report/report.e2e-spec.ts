@@ -15,7 +15,6 @@ import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-netwo
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ClickUncheckedCreateInput } from '@generated/prisma/models/Click'
 import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
-import { FilterOperatorEnum } from '@/domain/report/types'
 
 describe('Report (e2e)', () => {
   let app: INestApplication
@@ -638,7 +637,7 @@ describe('Report (e2e)', () => {
       .pagination(0, 25)
       .groups(['country'])
       .metrics(['clicks', 'roi'])
-      .addFilter('roi', FilterOperatorEnum['>'], 400)
+      .addFilter('roi', '>', 400)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
@@ -756,7 +755,7 @@ describe('Report (e2e)', () => {
     const { body } = await ReportRequestBuilder.create(app)
       .pagination(0, 2)
       .metrics(['revenue', 'cost', 'roi'])
-      .addFilter('country', FilterOperatorEnum['='], `!@#$%^&*():"}';`)
+      .addFilter('country', '=', `!@#$%^&*():"}';`)
       .request()
       .auth(accessToken, { type: 'bearer' })
       .expect(200)

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CheckArgsService } from './check-args.service'
 import { BadRequestException } from '@nestjs/common'
-import { ReportService } from '@/domain/report/report.service'
+import { ReportService } from '@/domain/report/services/report.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { ReportRangeEnum } from '@/domain/report/types'
 

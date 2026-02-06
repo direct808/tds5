@@ -47,4 +47,8 @@ export class SourceRepository
       where: { id: args.id, userId: args.userId },
     })
   }
+
+  public list(userId: string): Promise<SourceModel[]> {
+    return this.prisma.source.findMany({ where: { userId } })
+  }
 }

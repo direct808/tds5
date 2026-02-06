@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { UserId } from '@/domain/auth/user-id.decorator'
@@ -14,16 +15,24 @@ import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UpdateOfferDto } from './dto/update-offer.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { OfferModel } from '@generated/prisma/models/Offer'
+import { ListOfferUseCase } from '@/domain/offer/use-cases/list-offer.use-case'
+import { ListOfferDto } from '@/domain/offer/dto/list-offer.dto'
+import { ReportResponse } from '@/domain/report/types'
 
 @ApiTags('Оферы')
 @Controller(GLOBAL_PREFIX + 'offer')
 export class OfferController {
-  constructor(private readonly offerService: OfferService) {}
+  constructor(
+    private readonly offerService: OfferService,
+    private readonly listOfferUseCase: ListOfferUseCase,
+  ) {}
 
   @Get()
-  getOffers(@UserId() userId: string): Promise<OfferModel[]> {
-    return this.offerService.getList(userId)
+  listOffers(
+    @Query() args: ListOfferDto,
+    @UserId() userId: string,
+  ): Promise<ReportResponse> {
+    return this.listOfferUseCase.execute(args, userId)
   }
 
   @Post()

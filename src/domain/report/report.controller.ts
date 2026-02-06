@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common'
-import { GetReportUseCase } from '@/domain/report/use-cases/get-report/get-report.use-case'
+import { GetReportUseCase } from '@/domain/report/use-cases/get-report.use-case'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
 import { ReportResponse } from '@/domain/report/types'
@@ -10,6 +10,6 @@ export class ReportController {
 
   @Get()
   getReport(@Query() args: GetReportDto): Promise<ReportResponse> {
-    return this.getReportUseCase.handle(args)
+    return this.getReportUseCase.execute(args)
   }
 }

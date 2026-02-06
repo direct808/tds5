@@ -42,7 +42,7 @@ describe('Conversion (e2e)', () => {
   it('Конверсия не должна создаться если не передан subid', async () => {
     const requestAdapter = MockRequestAdapter.create()
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -53,7 +53,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('subid', 'hz')
       .setQuery('status', 'hz-staus')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -70,7 +70,7 @@ describe('Conversion (e2e)', () => {
       click.id,
     )
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -86,7 +86,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('subid', click.id)
       .setQuery('status', 'hz-status')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(0)
@@ -102,7 +102,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('subid', click.id)
       .setQuery('status', 'sale')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -130,7 +130,7 @@ describe('Conversion (e2e)', () => {
       .setQuery('status', 'hz-status')
       .setQuery('sale_status', 'hz-status')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -160,8 +160,8 @@ describe('Conversion (e2e)', () => {
       click.id,
     )
 
-    await useCase.handle(requestAdapter.setQuery('status', 'lead'))
-    await useCase.handle(requestAdapter.setQuery('status', 'sale'))
+    await useCase.execute(requestAdapter.setQuery('status', 'lead'))
+    await useCase.execute(requestAdapter.setQuery('status', 'sale'))
 
     const conversions = await conversionRepository.getList()
     expect(conversions.length).toBe(1)
@@ -190,8 +190,8 @@ describe('Conversion (e2e)', () => {
       click.id,
     )
 
-    await useCase.handle(requestAdapter.setQuery('status', 'lead'))
-    await useCase.handle(
+    await useCase.execute(requestAdapter.setQuery('status', 'lead'))
+    await useCase.execute(
       requestAdapter
         .setQuery('status', 'sale')
         .setQuery('tid', 'trx-id')

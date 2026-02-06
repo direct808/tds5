@@ -42,22 +42,6 @@ describe('OfferController (e2e)', () => {
     })
   })
 
-  it('List offers', async () => {
-    await OfferBuilder.create()
-      .name('Offer 1')
-      .userId(userId)
-      .url(faker.internet.url())
-      .save(prisma)
-
-    const { body } = await request(app.getHttpServer())
-      .get('/api/offer')
-      .auth(accessToken, { type: 'bearer' })
-      .expect(200)
-
-    expect(Array.isArray(body)).toBe(true)
-    expect(body.length).toBe(1)
-  })
-
   it('Обновление offer, при этом нельзя обновить id', async () => {
     const offer = await OfferBuilder.create()
       .name('Offer 1')

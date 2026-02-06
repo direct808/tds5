@@ -23,13 +23,13 @@ export class UpdateCampaignUseCase {
     private readonly trx: TransactionFactory,
   ) {}
 
-  public async handle(
+  public async execute(
     args: UpdateCampaignDto & { userId: string; id: string },
     trx: Transaction | null,
   ): Promise<void> {
     if (!trx) {
       return this.trx.create((trx) => {
-        return this.handle(args, trx)
+        return this.execute(args, trx)
       })
     }
 

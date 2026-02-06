@@ -1,7 +1,7 @@
 import {
   FilterFieldTypeEnum,
   getFieldTypeData,
-} from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
+} from '@/domain/report/utils/get-field-type-data'
 import { BadRequestException } from '@nestjs/common'
 
 describe('getFieldTypeData', () => {

@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing'
 import { MetricProcessService } from './metric-process.service'
-import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/services/postgres-raw-report-query-builder'
 
 describe('MetricProcessService', () => {
   let service: MetricProcessService

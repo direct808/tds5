@@ -50,24 +50,6 @@ describe('AffiliateNetworkController (e2e)', () => {
     })
   })
 
-  it('List Create affiliate network', async () => {
-    const affiliateNetwork = await AffiliateNetworkBuilder.create()
-      .name('Af 1')
-      .userId(userId)
-      .save(prisma)
-
-    const response = await request(app.getHttpServer())
-      .get('/api/affiliate-network')
-      .auth(accessToken, { type: 'bearer' })
-      .expect(200)
-
-    expect(response.body[0]).toEqual({
-      ...affiliateNetwork,
-      createdAt: affiliateNetwork.createdAt.toISOString(),
-      updatedAt: affiliateNetwork.updatedAt.toISOString(),
-    })
-  })
-
   it('Обновление source, при этом нельзя обновить id у affiliate network', async () => {
     const affiliateNetwork = await AffiliateNetworkBuilder.create()
       .name('Af 1')

@@ -6,11 +6,7 @@ import {
 import { BadRequestException } from '@nestjs/common'
 import { isIPv4 } from 'node:net'
 
-const needArrayOperators = [
-  FilterOperatorEnum.in,
-  FilterOperatorEnum.not_in,
-  FilterOperatorEnum.between,
-]
+const needArrayOperators: FilterOperatorEnum[] = ['in', 'not_in', 'between']
 
 export function checkFilterValue(
   operator: FilterOperatorEnum,
@@ -45,7 +41,7 @@ function checkValueForBetween(
   value: unknown[],
   field: string,
 ): void {
-  if (operator !== FilterOperatorEnum.between) {
+  if (operator !== 'between') {
     return
   }
 

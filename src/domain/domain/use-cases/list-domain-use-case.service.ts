@@ -6,7 +6,7 @@ import { DomainModel } from '@generated/prisma/models/Domain'
 export class ListDomainUseCase {
   constructor(private readonly domainRepository: DomainRepository) {}
 
-  public handle(userId: string): Promise<DomainModel[]> {
+  public execute(userId: string): Promise<DomainModel[]> {
     return this.domainRepository.getListByUserId(userId)
   }
 }

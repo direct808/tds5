@@ -24,13 +24,13 @@ export class CreateCampaignUseCase {
     private readonly tr: TransactionFactory,
   ) {}
 
-  public async handle(
+  public async execute(
     args: CreateCampaignDto & { userId: string },
     tr: Transaction | null,
   ): Promise<void> {
     if (!tr) {
       return this.tr.create((tr) => {
-        return this.handle(args, tr)
+        return this.execute(args, tr)
       })
     }
 

@@ -9,7 +9,7 @@ export class DeleteDomainUseCase {
     private readonly domainService: DomainService,
   ) {}
 
-  public async handle(id: string, userId: string): Promise<void> {
+  public async execute(id: string, userId: string): Promise<void> {
     await this.domainService.getByIdAndUserIdOrNotFound(id, userId)
 
     await this.domainRepository.delete(id)

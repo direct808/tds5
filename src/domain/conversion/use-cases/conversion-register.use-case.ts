@@ -29,7 +29,7 @@ export class ConversionRegisterUseCase {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  async handle(requestAdapter: RequestAdapter): Promise<void> {
+  async execute(requestAdapter: RequestAdapter): Promise<void> {
     const d = await this.getData(requestAdapter)
     if (!d) {
       return

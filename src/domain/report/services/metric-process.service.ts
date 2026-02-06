@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { PostgresRawReportQueryBuilder } from '@/domain/report/use-cases/get-report/postgres-raw-report-query-builder'
+import { PostgresRawReportQueryBuilder } from '@/domain/report/services/postgres-raw-report-query-builder'
 import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import {
   FieldTypeFormula,
   FieldTypeClickMetric,
   FilterFieldTypeEnum,
   getFieldTypeData,
-} from '@/domain/report/use-cases/get-report/utils/get-field-type-data'
-import { FormulaParser } from '@/domain/report/use-cases/get-report/formula-parser'
+} from '@/domain/report/utils/get-field-type-data'
+import { FormulaParser } from '@/domain/report/services/formula-parser'
 import { formulas } from '@/domain/report/formulas'
 import { FormulaSummaryEnum } from '@/domain/report/types'
 

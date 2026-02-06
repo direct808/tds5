@@ -50,6 +50,24 @@ export class ClickBuilder {
     return this
   }
 
+  affiliateNetworkId(affiliateNetworkId: string): this {
+    this.fields.affiliateNetworkId = affiliateNetworkId
+
+    return this
+  }
+
+  offerId(offerId: string): this {
+    this.fields.offerId = offerId
+
+    return this
+  }
+
+  sourceId(sourceId: string): this {
+    this.fields.sourceId = sourceId
+
+    return this
+  }
+
   streamId(streamId: string): this {
     this.fields.streamId = streamId
 

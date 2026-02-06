@@ -32,12 +32,12 @@ export class DomainController {
     @Body() data: CreateDomainDto,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.createDomainUseCase.handle(data, userId)
+    await this.createDomainUseCase.execute(data, userId)
   }
 
   @Get()
   listDomain(@UserId() userId: string): Promise<DomainModel[]> {
-    return this.listDomainUseCase.handle(userId)
+    return this.listDomainUseCase.execute(userId)
   }
 
   @Patch(':id')
@@ -46,7 +46,7 @@ export class DomainController {
     @Body() data: UpdateDomainDto,
     @UserId() userId: string,
   ): Promise<void> {
-    return this.updateDomainUseCase.handle(id, data, userId)
+    return this.updateDomainUseCase.execute(id, data, userId)
   }
 
   @Delete(':id')
@@ -54,6 +54,6 @@ export class DomainController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
   ): Promise<void> {
-    return this.deleteDomainUseCase.handle(id, userId)
+    return this.deleteDomainUseCase.execute(id, userId)
   }
 }

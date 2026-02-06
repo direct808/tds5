@@ -22,21 +22,22 @@ export enum QueryTablesEnum {
   affiliateNetwork = 'affiliateNetwork',
 }
 
-export enum FilterOperatorEnum {
-  '=' = '=',
-  '<>' = '<>',
-  '>' = '>',
-  '<' = '<',
-  in = 'in',
-  not_in = 'not_in',
-  contains = 'contains',
-  not_contains = 'not_contains',
-  starts_with = 'starts_with',
-  ends_with = 'ends_with',
-  regex = 'regex',
-  not_regex = 'not_regex',
-  between = 'between',
-}
+export type FilterOperatorEnum =
+  | '='
+  | '<>'
+  | '>'
+  | '>='
+  | '<'
+  | '<='
+  | 'in'
+  | 'not_in'
+  | 'contains'
+  | 'not_contains'
+  | 'starts_with'
+  | 'ends_with'
+  | 'regex'
+  | 'not_regex'
+  | 'between'
 
 export const FILTER_TYPE_MAP: Record<FilterTypeEnum, string> = {
   number: 'number',
@@ -71,7 +72,9 @@ export const FilterOperators: Record<FilterOperatorEnum, FilterOperator> = {
     types: [FilterTypeEnum.string, FilterTypeEnum.number, FilterTypeEnum.ip],
   },
   '>': { sqlOperator: '>', types: [FilterTypeEnum.number] },
+  '>=': { sqlOperator: '>=', types: [FilterTypeEnum.number] },
   '<': { sqlOperator: '<', types: [FilterTypeEnum.number] },
+  '<=': { sqlOperator: '<=', types: [FilterTypeEnum.number] },
   in: { sqlOperator: 'in', types: [FilterTypeEnum.string] },
   not_in: { sqlOperator: 'not in', types: [FilterTypeEnum.string] },
   contains: { sqlOperator: 'ilike', types: [FilterTypeEnum.string] },
