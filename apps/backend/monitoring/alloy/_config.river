@@ -1,0 +1,20 @@
+discovery.docker "linux" {
+  host = "unix:///var/run/docker.sock"
+}
+
+loki.source.docker "default" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.linux.targets 
+  forward_to = [loki.write.local.receiver]
+    labels = {
+        job          = "docker",
+        container    = discovery.docker.linux.targets.__meta_docker_container_name,
+        container_id = discovery.docker.linux.targets.__meta_docker_container_id,
+    }
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

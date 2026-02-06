@@ -1,0 +1,27 @@
+import { Global, Module } from '@nestjs/common'
+import { KyselyModule } from 'nestjs-kysely'
+import { PostgresDialect } from 'kysely'
+import { Pool } from 'pg'
+import { AppConfig } from '../config/app-config.service'
+import { PrismaModule } from '../prisma/prisma.module'
+import { TransactionFactory } from './transaction-factory'
+
+@Global()
+@Module({
+  providers: [TransactionFactory],
+  exports: [TransactionFactory],
+  imports: [
+    PrismaModule,
+    KyselyModule.forRootAsync({
+      inject: [AppConfig],
+      useFactory(config: AppConfig) {
+        return {
+          dialect: new PostgresDialect({
+            pool: new Pool({ connectionString: config.dbUrl }),
+          }),
+        }
+      },
+    }),
+  ],
+})
+export class DatabaseModule {}
