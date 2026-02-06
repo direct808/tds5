@@ -17,7 +17,6 @@ import { UpdateAffiliateNetworkDto } from './dto/update-affiliate-network.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 import { ListAffiliateNetworkUseCase } from '@/domain/affiliate-network/use-cases/list-affiliate-network.use-case'
-import { ListCampaignDto } from '@/domain/campaign/dto/list-campaign.dto'
 import { ListAffiliateNetworkDto } from '@/domain/affiliate-network/dto/list-affiliate-network.dto'
 import { ReportResponse } from '@/domain/report/types'
 

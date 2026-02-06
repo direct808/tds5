@@ -39,22 +39,6 @@ export type FilterOperatorEnum =
   | 'not_regex'
   | 'between'
 
-// export enum FilterOperatorEnum {
-//   '=' = '=',
-//   '<>' = '<>',
-//   '>' = '>',
-//   '<' = '<',
-//   in = 'in',
-//   not_in = 'not_in',
-//   contains = 'contains',
-//   not_contains = 'not_contains',
-//   starts_with = 'starts_with',
-//   ends_with = 'ends_with',
-//   regex = 'regex',
-//   not_regex = 'not_regex',
-//   between = 'between',
-// }
-
 export const FILTER_TYPE_MAP: Record<FilterTypeEnum, string> = {
   number: 'number',
   boolean: 'boolean',

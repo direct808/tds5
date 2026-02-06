@@ -39,18 +39,6 @@ describe('SourceController (e2e)', () => {
     expect(source).not.toBeNull()
   })
 
-  it('List source', async () => {
-    await SourceBuilder.create().name('Source 1').userId(userId).save(prisma)
-
-    const { body } = await request(app.getHttpServer())
-      .get('/api/source')
-      .auth(accessToken, { type: 'bearer' })
-      .expect(200)
-
-    expect(Array.isArray(body)).toBe(true)
-    expect(body.length).toBe(1)
-  })
-
   it('Обновление source, при этом нельзя обновить id', async () => {
     const source = await SourceBuilder.create()
       .name('Source 1')

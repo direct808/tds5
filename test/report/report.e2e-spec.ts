@@ -15,7 +15,6 @@ import { AffiliateNetworkBuilder } from '../utils/entity-builder/affiliate-netwo
 import { PrismaService } from '@/infra/prisma/prisma.service'
 import { ClickUncheckedCreateInput } from '@generated/prisma/models/Click'
 import { ReportRequestBuilder } from '../utils/click-builders/report-request-builder'
-import { FilterOperatorEnum } from '@/domain/report/types'
 
 describe('Report (e2e)', () => {
   let app: INestApplication

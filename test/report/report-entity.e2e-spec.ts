@@ -60,7 +60,7 @@ describe('Report-entity (e2e)', () => {
       })
       .expect(200)
 
-    console.log(body)
+    // console.log(body)
 
     expect(body).toStrictEqual({
       rows: expect.arrayContaining([
@@ -168,7 +168,7 @@ describe('Report-entity (e2e)', () => {
       })
       .expect(200)
 
-    console.log(body)
+    // console.log(body)
 
     expect(body).toStrictEqual({
       rows: expect.arrayContaining([
@@ -222,7 +222,7 @@ describe('Report-entity (e2e)', () => {
       })
       .expect(200)
 
-    console.log(body)
+    // console.log(body)
 
     expect(body).toStrictEqual({
       rows: expect.arrayContaining([

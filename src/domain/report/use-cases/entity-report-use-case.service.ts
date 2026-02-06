@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { GetReportUseCase } from '@/domain/report/use-cases/get-report.use-case'
 import {
   InputFilterData,
   ReportRangeEnum,
@@ -26,7 +25,6 @@ type EntityItem = {
 @Injectable()
 export class EntityReportUseCase {
   constructor(
-    private readonly getReportUseCase: GetReportUseCase,
     private readonly composeReportService: ComposeReportService,
     private readonly reportBuilderService: ReportBuilderService,
   ) {}

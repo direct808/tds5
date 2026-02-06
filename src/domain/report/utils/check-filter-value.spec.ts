@@ -1,8 +1,5 @@
 import { checkFilterValue } from '@/domain/report/utils/check-filter-value'
-import {
-  FilterOperatorEnum as Op,
-  FilterTypeEnum as Type,
-} from '@/domain/report/types'
+import { FilterTypeEnum as Type } from '@/domain/report/types'
 import { BadRequestException } from '@nestjs/common'
 
 describe('checkFilterValue', () => {
@@ -28,7 +25,7 @@ describe('checkFilterValue', () => {
     [Type.boolean, 'asd', false],
     [Type.boolean, 1, false],
   ])(`Check scalar %s for %s`, (type, value, success) => {
-    const fn = () => checkFilterValue(Op['='], 'field', type, value)
+    const fn = () => checkFilterValue('=', 'field', type, value)
 
     if (success) {
       fn()
@@ -59,7 +56,7 @@ describe('checkFilterValue', () => {
     [Type.boolean, ['asd'], false],
     [Type.boolean, [1], false],
   ])(`Check array %s for %s`, (type, value, success) => {
-    const fn = () => checkFilterValue(Op.in, 'field', type, value)
+    const fn = () => checkFilterValue('in', 'field', type, value)
 
     if (success) {
       fn()
@@ -78,7 +75,7 @@ describe('checkFilterValue', () => {
     [Type.number, 'StrValue', false],
     [Type.number, [true], false],
   ])(`Check between %s for %s`, (type, value, success) => {
-    const fn = () => checkFilterValue(Op.between, 'field', type, value)
+    const fn = () => checkFilterValue('between', 'field', type, value)
 
     if (success) {
       fn()
@@ -88,7 +85,7 @@ describe('checkFilterValue', () => {
   })
 
   it('Error if unknown type', () => {
-    const fn = () => checkFilterValue(Op['='], 'field', 'hz' as Type, 1)
+    const fn = () => checkFilterValue('=', 'field', 'hz' as Type, 1)
     expect(() => fn()).toThrow("Unknown filter type '${filterType}'")
   })
 })

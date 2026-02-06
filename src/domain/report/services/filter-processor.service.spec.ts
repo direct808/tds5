@@ -1,6 +1,5 @@
 import { FilterProcessorService } from '@/domain/report/services/filter-processor.service'
 import { PostgresRawReportQueryBuilder } from '@/domain/report/services/postgres-raw-report-query-builder'
-import { FilterOperatorEnum as Operators } from '@/domain/report/types'
 import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { spyOn } from '../../../../test/utils/helpers'
 
@@ -23,16 +22,15 @@ describe('FilterProcessorService', () => {
     const processItem = spyOn(service, 'processItem')
 
     service.process(qb, clickMetricMap, [
-      ['year', Operators['='], 2],
-      ['year', Operators['>'], 2],
+      ['year', '=', 2],
+      ['year', '>', 2],
     ])
 
     expect(processItem).toHaveBeenCalledTimes(2)
   })
 
   it('Unknown metric', () => {
-    const fn = () =>
-      service.process(qb, clickMetricMap, [['Bad', Operators.in, 2]])
+    const fn = () => service.process(qb, clickMetricMap, [['Bad', 'in', 2]])
 
     expect(fn).toThrow("Unknown field: 'Bad'")
   })
@@ -45,7 +43,7 @@ describe('FilterProcessorService', () => {
 
     const checkFilterData = spyOn(service, 'checkFilterData')
 
-    service.process(qb, clickMetricMap, [['ucr', Operators['='], 2]])
+    service.process(qb, clickMetricMap, [['ucr', '=', 2]])
 
     expect(checkFilterData).toHaveBeenCalledTimes(1)
     expect(having).toHaveBeenCalledTimes(1)
@@ -55,7 +53,7 @@ describe('FilterProcessorService', () => {
     const clickMetricMap = { ident: 'ident' } as ClickMetricMap
     const checkFilterData = spyOn(service, 'checkFilterData')
 
-    service.process(qb, clickMetricMap, [['ident', Operators['='], 2]])
+    service.process(qb, clickMetricMap, [['ident', '=', 2]])
 
     expect(checkFilterData).toHaveBeenCalledTimes(1)
     expect(having).toHaveBeenCalledTimes(1)
@@ -65,7 +63,7 @@ describe('FilterProcessorService', () => {
     it('ok', () => {
       const checkFilterData = spyOn(service, 'checkFilterData')
 
-      service.process(qb, clickMetricMap, [['country', Operators['='], 'us']])
+      service.process(qb, clickMetricMap, [['country', '=', 'us']])
 
       expect(checkFilterData).toHaveBeenCalledTimes(1)
       expect(where).toHaveBeenCalledTimes(1)
@@ -73,9 +71,7 @@ describe('FilterProcessorService', () => {
 
     it('disableFilter', () => {
       const fn = () =>
-        service.process(qb, clickMetricMap, [
-          ['sourceName', Operators['='], 'us'],
-        ])
+        service.process(qb, clickMetricMap, [['sourceName', '=', 'us']])
 
       expect(fn).toThrow(`Filter disable for field 'sourceName'`)
     })
@@ -91,9 +87,7 @@ describe('FilterProcessorService', () => {
 
     it('Operator not support for type', () => {
       const fn = () =>
-        service.process(qb, clickMetricMap, [
-          ['year', Operators.contains, 2010],
-        ])
+        service.process(qb, clickMetricMap, [['year', 'contains', 2010]])
 
       expect(fn).toThrow("Operator not support for type 'number'")
     })
