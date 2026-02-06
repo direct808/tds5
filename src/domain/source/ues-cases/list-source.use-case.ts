@@ -17,6 +17,6 @@ export class ListSourceUseCase {
   ): Promise<ReportResponse> {
     const entities = await this.sourceRepository.list(userId)
 
-    return this.entityReportUseCase.handle(args, entities, 'sourceId')
+    return this.entityReportUseCase.execute(args, entities, 'sourceId')
   }
 }

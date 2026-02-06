@@ -11,12 +11,12 @@ export class ListCampaignUseCase {
     private readonly entityReportUseCase: EntityReportUseCase,
   ) {}
 
-  public async handle(
+  public async execute(
     args: ListCampaignDto,
     userId: string,
   ): Promise<ReportResponse> {
     const campaigns = await this.campaignRepository.list(userId)
 
-    return this.entityReportUseCase.handle(args, campaigns, 'campaignId')
+    return this.entityReportUseCase.execute(args, campaigns, 'campaignId')
   }
 }

@@ -69,17 +69,17 @@ describe('UpdateCampaignUseCase', () => {
   })
 
   it('should use transaction when manager is not provided', async () => {
-    await useCase.handle(args, null)
+    await useCase.execute(args, null)
     expect(transactionFactory.create).toHaveBeenCalled()
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: args.userId,
@@ -89,18 +89,18 @@ describe('UpdateCampaignUseCase', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
   })
 
   it('should not call checkUniqueNameForCreate without name', async () => {
     const { name, ...argsWithoutName } = args
-    await useCase.handle(argsWithoutName as any, transaction)
+    await useCase.execute(argsWithoutName as any, transaction)
     expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
   })
 
   it('should call repository.update with correct data', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(repository.update).toHaveBeenCalledWith(
       prisma,
       args.id,
@@ -113,7 +113,7 @@ describe('UpdateCampaignUseCase', () => {
   })
 
   it('should call updateStreams with correct params', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(updateStreamService.updateStreams).toHaveBeenCalledWith(
       prisma,
       args.id,

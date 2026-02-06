@@ -62,7 +62,7 @@ describe('ConversionRegisterUseCase', () => {
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.create).toHaveBeenCalledTimes(1)
     expect(conversionRepo.create).toHaveBeenCalledWith({
@@ -100,7 +100,7 @@ describe('ConversionRegisterUseCase', () => {
       id: 'id',
     } as ConversionModel)
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.update).toHaveBeenCalledTimes(1)
     expect(conversionRepo.update).toHaveBeenCalledWith('id', {
@@ -131,7 +131,7 @@ describe('ConversionRegisterUseCase', () => {
       .setQuery('status', 'sale')
       .setQuery('tid', 'tid-1')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.update).not.toHaveBeenCalled()
     expect(conversionRepo.create).not.toHaveBeenCalled()
@@ -143,7 +143,7 @@ describe('ConversionRegisterUseCase', () => {
       // .setQuery('status', 'sale')
       .setQuery('tid', 'tid-1')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.update).not.toHaveBeenCalled()
     expect(conversionRepo.create).not.toHaveBeenCalled()
@@ -157,7 +157,7 @@ describe('ConversionRegisterUseCase', () => {
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.update).not.toHaveBeenCalled()
     expect(conversionRepo.create).not.toHaveBeenCalled()
@@ -169,7 +169,7 @@ describe('ConversionRegisterUseCase', () => {
       .setQuery('status', 'sale')
       .setQuery('tid', 'tid-1')
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.update).not.toHaveBeenCalled()
     expect(conversionRepo.create).not.toHaveBeenCalled()
@@ -183,7 +183,7 @@ describe('ConversionRegisterUseCase', () => {
 
     clickRepo.getById.mockResolvedValue({ id: 'click-1' } as ClickModel)
 
-    await useCase.handle(requestAdapter)
+    await useCase.execute(requestAdapter)
 
     expect(conversionRepo.update).not.toHaveBeenCalled()
     expect(conversionRepo.create).not.toHaveBeenCalled()

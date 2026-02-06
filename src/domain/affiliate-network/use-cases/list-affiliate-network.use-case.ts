@@ -17,6 +17,10 @@ export class ListAffiliateNetworkUseCase {
   ): Promise<ReportResponse> {
     const entities = await this.afRepository.list(userId)
 
-    return this.entityReportUseCase.handle(args, entities, 'affiliateNetworkId')
+    return this.entityReportUseCase.execute(
+      args,
+      entities,
+      'affiliateNetworkId',
+    )
   }
 }

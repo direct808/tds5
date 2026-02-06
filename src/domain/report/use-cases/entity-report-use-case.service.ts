@@ -29,7 +29,7 @@ export class EntityReportUseCase {
     private readonly reportBuilderService: ReportBuilderService,
   ) {}
 
-  public async handle(
+  public async execute(
     args: HandleArgs,
     entityList: EntityItem[],
     entityIdName: string,

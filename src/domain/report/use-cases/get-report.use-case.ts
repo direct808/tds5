@@ -11,7 +11,7 @@ export class GetReportUseCase {
     private readonly reportComposeService: ReportBuilderService,
   ) {}
 
-  public async handle(args: GetReportDto): Promise<ReportResponse> {
+  public async execute(args: GetReportDto): Promise<ReportResponse> {
     this.checkArgsService.checkArgs(args)
 
     return this.reportComposeService.build(args)

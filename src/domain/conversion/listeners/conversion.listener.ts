@@ -14,6 +14,6 @@ export class ConversionListener {
 
   @OnEvent(postbackEventName)
   handlePostbackEvent({ requestAdapter }: PostbackEvent): Promise<void> {
-    return this.conversionRegisterUseCase.handle(requestAdapter)
+    return this.conversionRegisterUseCase.execute(requestAdapter)
   }
 }

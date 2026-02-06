@@ -15,7 +15,7 @@ export class CreateDomainUseCase {
     private readonly domainService: DomainService,
   ) {}
 
-  public async handle(data: AddDomainArgs, userId: string): Promise<void> {
+  public async execute(data: AddDomainArgs, userId: string): Promise<void> {
     await this.domainService.checkIndexPageCampaignIdExists(
       data.indexPageCampaignId,
       userId,

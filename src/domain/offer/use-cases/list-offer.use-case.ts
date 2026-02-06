@@ -17,6 +17,6 @@ export class ListOfferUseCase {
   ): Promise<ReportResponse> {
     const entities = await this.offerRepository.list(userId)
 
-    return this.entityReportUseCase.handle(args, entities, 'offerId')
+    return this.entityReportUseCase.execute(args, entities, 'offerId')
   }
 }

@@ -67,17 +67,17 @@ describe('CreateCampaignUseCase', () => {
   })
 
   it('should use transaction when manager is not provided', async () => {
-    await useCase.handle(args, null)
+    await useCase.execute(args, null)
     expect(transactionFactory.create).toHaveBeenCalled()
   })
 
   it('should not use transaction when manager is provided', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(transactionFactory.create).not.toHaveBeenCalled()
   })
 
   it('should call ensureSourceExists', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(commonCampaignService.ensureSourceExists).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: args.userId,
@@ -87,12 +87,12 @@ describe('CreateCampaignUseCase', () => {
   })
 
   it('should call checkUniqueNameForCreate', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(checkUniqueNameForCreate).toHaveBeenCalledWith(repository, args)
   })
 
   it('should call repository.create with correct data', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(repository.create).toHaveBeenCalledWith(
       prisma,
       expect.objectContaining({
@@ -105,7 +105,7 @@ describe('CreateCampaignUseCase', () => {
   })
 
   it('should call createStreamService.createStreams with correct params', async () => {
-    await useCase.handle(args, transaction)
+    await useCase.execute(args, transaction)
     expect(createStreamService.createStreams).toHaveBeenCalledWith(
       prisma,
       'campaign-1',

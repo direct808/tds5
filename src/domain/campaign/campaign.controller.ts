@@ -31,7 +31,7 @@ export class CampaignController {
     @Body() args: CreateCampaignDto,
     @UserId() userId: string,
   ): Promise<void> {
-    return this.createCampaignUseCase.handle({ ...args, userId }, null)
+    return this.createCampaignUseCase.execute({ ...args, userId }, null)
   }
 
   @Put(':id')
@@ -40,7 +40,7 @@ export class CampaignController {
     @UserId() userId: string,
     @Body() dto: UpdateCampaignDto,
   ): Promise<void> {
-    await this.updateCampaignUseCase.handle({ ...dto, id, userId }, null)
+    await this.updateCampaignUseCase.execute({ ...dto, id, userId }, null)
   }
 
   @Get()
@@ -48,6 +48,6 @@ export class CampaignController {
     @Query() args: ListCampaignDto,
     @UserId() userId: string,
   ): Promise<ReportResponse> {
-    return this.listCampaignUseCase.handle(args, userId)
+    return this.listCampaignUseCase.execute(args, userId)
   }
 }

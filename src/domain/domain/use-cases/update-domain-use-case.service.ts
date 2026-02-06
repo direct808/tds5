@@ -20,7 +20,7 @@ export class UpdateDomainUseCase {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  public async handle(
+  public async execute(
     id: string,
     data: UpdateDomainArgs,
     userId: string,

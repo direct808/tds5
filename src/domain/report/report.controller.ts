@@ -10,6 +10,6 @@ export class ReportController {
 
   @Get()
   getReport(@Query() args: GetReportDto): Promise<ReportResponse> {
-    return this.getReportUseCase.handle(args)
+    return this.getReportUseCase.execute(args)
   }
 }
