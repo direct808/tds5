@@ -49,7 +49,7 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/require-await': 'error',
-    'max-depth': ['error', 4],
+    'max-depth': ['warn', 3],
     complexity: ['warn', 10],
   },
   overrides: [
