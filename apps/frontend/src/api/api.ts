@@ -1,18 +1,32 @@
-import axios from "axios";
 import { auth } from '../auth/auth.ts';
+import { client } from '../shared/api/client.gen.ts';
+import { authControllerLogin } from '../shared/api';
 
-const api = axios.create({
-  baseURL: "http://localhost:3300",
+
+client.setConfig({
+  baseUrl: 'http://localhost:3300/',
+  auth: () => auth.getToken() || undefined,
+  // throwOnError: true
 });
 
-api.interceptors.request.use((config:any) => {
-  const token = auth.getToken();
+// client.interceptors.request.use((config) => {
+//   const token = auth.getToken();
+//
+//   if (token) {
+//     config.headers.set('Authorization', `Bearer ${token}`);
+//   }
+//
+//   return config;
+// });
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+const api = {
+  async login(email: string, password: string): Promise<string> {
+    const { data } = await authControllerLogin({ body: { email, password }, throwOnError: true });
+    // if (error) {
+    //   throw new Error(error.message);
+    // }
+    return data.accessToken;
+  },
+};
 
 export default api;

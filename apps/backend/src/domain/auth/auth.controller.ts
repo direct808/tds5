@@ -1,10 +1,18 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginRequest, SkipAuth } from './types'
-import { ApiTags } from '@nestjs/swagger'
+import {
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger'
 import { LoginDto } from './dto/login.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
-import { GLOBAL_PREFIX } from '../../shared/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
+import {
+  ErrorResponseDto,
+  LoginResponseDto,
+} from '@/domain/auth/dto/login-response.dto'
 
 @ApiTags('Аутентификация')
 @Controller(GLOBAL_PREFIX + 'auth')
@@ -13,11 +21,16 @@ export class AuthController {
 
   @SkipAuth()
   @UseGuards(LocalAuthGuard)
+  @ApiOkResponse({ type: LoginResponseDto })
+  @ApiUnauthorizedResponse({
+    description: 'Неверный логин или пароль',
+    type: ErrorResponseDto,
+  })
   @Post('login')
   login(
     @Body() loginDto: LoginDto,
     @Req() req: LoginRequest,
-  ): { accessToken: string } {
+  ): LoginResponseDto {
     return this.authService.sign(req.user)
   }
 }
