@@ -16,7 +16,7 @@ async function bootstrap(): Promise<void> {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('TDS 5')
-    .setDescription('Трекер веб-аналитики и отслеживания траффика')
+    .setDescription('Трекер веб-аналитики и отслеживания трафика')
     .setVersion('1.0')
     .build()
   const documentFactory: () => OpenAPIObject = () =>

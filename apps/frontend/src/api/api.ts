@@ -1,13 +1,12 @@
-import { auth } from '../auth/auth.ts';
-import { client } from '../shared/api/client.gen.ts';
-import { authControllerLogin } from '../shared/api';
-
+import { auth } from '../auth/auth.ts'
+import { client } from '../shared/api/client.gen.ts'
+import { authControllerLogin } from '../shared/api'
 
 client.setConfig({
   baseUrl: 'http://localhost:3300/',
   auth: () => auth.getToken() || undefined,
   // throwOnError: true
-});
+})
 
 // client.interceptors.request.use((config) => {
 //   const token = auth.getToken();
@@ -21,12 +20,15 @@ client.setConfig({
 
 const api = {
   async login(email: string, password: string): Promise<string> {
-    const { data } = await authControllerLogin({ body: { email, password }, throwOnError: true });
+    const { data } = await authControllerLogin({
+      body: { email, password },
+      throwOnError: true,
+    })
     // if (error) {
     //   throw new Error(error.message);
     // }
-    return data.accessToken;
+    return data.accessToken
   },
-};
+}
 
-export default api;
+export default api

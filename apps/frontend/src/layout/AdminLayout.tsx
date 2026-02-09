@@ -1,13 +1,22 @@
-import { Outlet, Link } from "react-router-dom";
-import { Box, Drawer, AppBar, Toolbar, Typography, CssBaseline, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { Outlet, Link } from 'react-router-dom'
+import {
+  Box,
+  Drawer,
+  AppBar,
+  Toolbar,
+  Typography,
+  CssBaseline,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from '@mui/material'
 
-
-const drawerWidth = 240;
-
+const drawerWidth = 240
 
 export default function AdminLayout() {
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <CssBaseline />
 
       {/* Header */}
@@ -22,7 +31,6 @@ export default function AdminLayout() {
         </Toolbar>
       </AppBar>
 
-
       {/* Sidebar */}
       <Drawer
         variant="permanent"
@@ -31,19 +39,18 @@ export default function AdminLayout() {
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
-            boxSizing: "border-box",
+            boxSizing: 'border-box',
           },
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
+        <Box sx={{ overflow: 'auto' }}>
           <List>
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/admin">
                 <ListItemText primary="Dashboard" />
               </ListItemButton>
             </ListItem>
-
 
             <ListItem disablePadding>
               <ListItemButton component={Link} to="/admin/offers">
@@ -54,25 +61,25 @@ export default function AdminLayout() {
         </Box>
       </Drawer>
 
-
       {/* Main area */}
-      <Box component="main" sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+      >
         {/*<Toolbar />*/}
-
 
         {/* Content */}
         <Box sx={{ flex: 1, p: 3 }}>
           <Outlet />
         </Box>
 
-
         {/* Footer */}
         <Box
           component="footer"
           sx={{
             p: 2,
-            textAlign: "center",
-            borderTop: "1px solid #ddd",
+            textAlign: 'center',
+            borderTop: '1px solid #ddd',
           }}
         >
           <Typography variant="body2">
@@ -81,5 +88,5 @@ export default function AdminLayout() {
         </Box>
       </Box>
     </Box>
-  );
+  )
 }
