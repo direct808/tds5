@@ -1,37 +1,38 @@
-import { Outlet, Link } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import {
+  AppBar,
   Box,
   Drawer,
-  AppBar,
-  Toolbar,
-  Typography,
-  CssBaseline,
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
+  Toolbar,
+  Typography,
 } from '@mui/material'
+import { AdfScanner, Dashboard } from '@mui/icons-material'
 
 const drawerWidth = 240
 
 export default function AdminLayout() {
-  return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <CssBaseline />
+  const menu = [
+    { title: 'Dashboard', icon: Dashboard, link: '/' },
+    { title: 'Offers', icon: AdfScanner, link: '/admin/offers' },
+  ]
 
-      {/* Header */}
+  return (
+    <Box sx={{ display: 'flex' }}>
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap component="div">
             TDS5
           </Typography>
         </Toolbar>
       </AppBar>
-
-      {/* Sidebar */}
       <Drawer
         variant="permanent"
         sx={{
@@ -46,46 +47,22 @@ export default function AdminLayout() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/admin">
-                <ListItemText primary="Dashboard" />
-              </ListItemButton>
-            </ListItem>
-
-            <ListItem disablePadding>
-              <ListItemButton component={Link} to="/admin/offers">
-                <ListItemText primary="offers" />
-              </ListItemButton>
-            </ListItem>
+            {menu.map(({ title, link, icon: Icon }) => (
+              <ListItem key={title} disablePadding>
+                <ListItemButton component={Link} to={link}>
+                  <ListItemIcon>
+                    <Icon />
+                  </ListItemIcon>
+                  <ListItemText primary={title} />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
         </Box>
       </Drawer>
-
-      {/* Main area */}
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
-      >
-        {/*<Toolbar />*/}
-
-        {/* Content */}
-        <Box sx={{ flex: 1, p: 3 }}>
-          <Outlet />
-        </Box>
-
-        {/* Footer */}
-        <Box
-          component="footer"
-          sx={{
-            p: 2,
-            textAlign: 'center',
-            borderTop: '1px solid #ddd',
-          }}
-        >
-          <Typography variant="body2">
-            © {new Date().getFullYear()} Admin Panel
-          </Typography>
-        </Box>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Toolbar />
+        <Outlet />
       </Box>
     </Box>
   )

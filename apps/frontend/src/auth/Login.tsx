@@ -1,4 +1,5 @@
-import { SubmitEventHandler, useState } from 'react'
+import type { SubmitEventHandler } from 'react'
+import { useState } from 'react'
 import {
   Alert,
   Box,

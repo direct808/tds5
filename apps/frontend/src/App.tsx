@@ -3,6 +3,7 @@ import AdminLayout from './layout/AdminLayout.tsx'
 import PrivateRoute from './auth/PrivateRoute.tsx'
 import Login from './auth/Login.tsx'
 import Dashboard from './pages/Dashboard.tsx'
+import Offers from './pages/Offers.tsx'
 
 export default function App() {
   return (
@@ -18,7 +19,7 @@ export default function App() {
         }
       >
         <Route path="" element={<Dashboard />} />
-        <Route path="offers" element={<h1>offers</h1>} />
+        <Route path="offers" element={<Offers />} />
       </Route>
     </Routes>
   )

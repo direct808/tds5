@@ -1,6 +1,10 @@
 import { auth } from '../auth/auth.ts'
 import { client } from '../shared/api/client.gen.ts'
-import { authControllerLogin } from '../shared/api'
+import {
+  authControllerLogin,
+  offerControllerListOffers,
+  type OfferControllerListOffersData,
+} from '../shared/api'
 
 client.setConfig({
   baseUrl: 'http://localhost:3300/',
@@ -8,15 +12,13 @@ client.setConfig({
   // throwOnError: true
 })
 
-// client.interceptors.request.use((config) => {
-//   const token = auth.getToken();
-//
-//   if (token) {
-//     config.headers.set('Authorization', `Bearer ${token}`);
-//   }
-//
-//   return config;
-// });
+client.interceptors.request.use((config) => {
+  const token = auth.getToken()
+  if (token) {
+    config.headers.set('Authorization', `Bearer ${token}`)
+  }
+  return config
+})
 
 const api = {
   async login(email: string, password: string): Promise<string> {
@@ -28,6 +30,19 @@ const api = {
     //   throw new Error(error.message);
     // }
     return data.accessToken
+  },
+  async offerList(
+    options: OfferControllerListOffersData['query'],
+  ): Promise<any> {
+    const { data } = await offerControllerListOffers({
+      query: options,
+
+      throwOnError: true,
+    })
+    // if (error) {
+    //   throw new Error(error.message);
+    // }
+    return data
   },
 }
 
