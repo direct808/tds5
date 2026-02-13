@@ -78,10 +78,10 @@ describe('OfferController (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const source = await prisma.offer.findFirst({
+    const source = await prisma.offer.findFirstOrThrow({
       where: { id: offer.id },
     })
 
-    expect(source).toBeNull()
+    expect(source.deletedAt).not.toBeNull()
   })
 })

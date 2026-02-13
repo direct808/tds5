@@ -7,11 +7,16 @@ import {
 import {
   IDeleteMany,
   IGetEntitiesByIdsAndUserId,
+  ISoftDeleteMany,
 } from './utils/repository-utils'
+import { prismaTransaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class DomainRepository
-  implements IGetEntitiesByIdsAndUserId<DomainModel>, IDeleteMany
+  implements
+    IGetEntitiesByIdsAndUserId<DomainModel>,
+    IDeleteMany,
+    ISoftDeleteMany
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -37,6 +42,18 @@ export class DomainRepository
   public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
     await this.prisma.domain.deleteMany({
       where: { id: { in: ids } },
+    })
+  }
+
+  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (
+    ids,
+    trx,
+  ) => {
+    const prisma = trx ? prismaTransaction(trx).get() : this.prisma
+
+    await prisma.domain.updateMany({
+      where: { id: { in: ids } },
+      data: { deletedAt: new Date() },
     })
   }
 }

@@ -3,6 +3,7 @@ import {
   IDeleteMany,
   IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
+  ISoftDeleteMany,
   NameAndUserId,
 } from './utils/repository-utils'
 import { FullCampaign } from '../../domain/campaign/types'
@@ -25,7 +26,8 @@ export class CampaignRepository
   implements
     IGetEntityByNameAndUserId<CampaignModel>,
     IGetEntitiesByIdsAndUserId<CampaignModel>,
-    IDeleteMany
+    IDeleteMany,
+    ISoftDeleteMany
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -117,6 +119,21 @@ export class CampaignRepository
   public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
     await this.prisma.campaign.deleteMany({
       where: { id: { in: ids } },
+    })
+  }
+
+  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {
+    await this.prisma.campaign.updateMany({
+      where: { id: { in: ids } },
+      data: { deletedAt: new Date() },
+    })
+  }
+
+  public async resetDomainIds(ids: string[], trx?: Transaction): Promise<void> {
+    const prisma = trx ? prismaTransaction(trx).get() : this.prisma
+    await prisma.campaign.updateMany({
+      where: { domainId: { in: ids } },
+      data: { domainId: null },
     })
   }
 }

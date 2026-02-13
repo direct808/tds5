@@ -3,6 +3,7 @@ import {
   IDeleteMany,
   IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
+  ISoftDeleteMany,
   NameAndUserId,
 } from './utils/repository-utils'
 import { PrismaService } from '../prisma/prisma.service'
@@ -13,7 +14,8 @@ export class OfferRepository
   implements
     IGetEntityByNameAndUserId<OfferModel>,
     IGetEntitiesByIdsAndUserId<OfferModel>,
-    IDeleteMany
+    IDeleteMany,
+    ISoftDeleteMany
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -53,5 +55,12 @@ export class OfferRepository
 
   public list(userId: string): Promise<OfferModel[]> {
     return this.prisma.offer.findMany({ where: { userId } })
+  }
+
+  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {
+    await this.prisma.offer.updateMany({
+      where: { id: { in: ids } },
+      data: { deletedAt: new Date() },
+    })
   }
 }

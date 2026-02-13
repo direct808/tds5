@@ -1,4 +1,5 @@
 import { BadRequestException, ConflictException } from '@nestjs/common'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 export type NameAndUserId = { name: string; userId: string }
 export type IdsAndUserId = { ids: string[]; userId: string }
@@ -17,6 +18,10 @@ export interface IGetEntitiesByIdsAndUserId<T> {
 
 export interface IDeleteMany {
   deleteMany(ids: string[]): Promise<void>
+}
+
+export interface ISoftDeleteMany {
+  softDeleteMany(ids: string[], trx?: Transaction): Promise<void>
 }
 
 export async function checkUniqueNameForCreate<T>(

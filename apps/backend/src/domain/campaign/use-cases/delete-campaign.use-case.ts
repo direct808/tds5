@@ -9,6 +9,6 @@ export class DeleteCampaignUseCase {
   public async execute(ids: string[], userId: string): Promise<void> {
     await ensureEntityExists(this.repository, { ids, userId })
 
-    await this.repository.deleteMany(ids)
+    await this.repository.softDeleteMany(ids)
   }
 }

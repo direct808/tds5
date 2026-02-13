@@ -3,6 +3,7 @@ import {
   IDeleteMany,
   IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
+  ISoftDeleteMany,
   NameAndUserId,
 } from './utils/repository-utils'
 import { PrismaService } from '../prisma/prisma.service'
@@ -13,7 +14,8 @@ export class AffiliateNetworkRepository
   implements
     IGetEntityByNameAndUserId<AffiliateNetworkModel>,
     IGetEntitiesByIdsAndUserId<AffiliateNetworkModel>,
-    IDeleteMany
+    IDeleteMany,
+    ISoftDeleteMany
 {
   constructor(private prisma: PrismaService) {}
 
@@ -57,6 +59,13 @@ export class AffiliateNetworkRepository
   public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
     await this.prisma.affiliateNetwork.deleteMany({
       where: { id: { in: ids } },
+    })
+  }
+
+  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {
+    await this.prisma.affiliateNetwork.updateMany({
+      where: { id: { in: ids } },
+      data: { deletedAt: new Date() },
     })
   }
 

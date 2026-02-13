@@ -73,7 +73,7 @@ export class AffiliateNetworkService {
   public async deleteMany(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
-    await this.repository.deleteMany(args.ids)
+    await this.repository.softDeleteMany(args.ids)
   }
 
   public async getByIdAndUserIdOrFail(

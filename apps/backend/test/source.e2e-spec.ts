@@ -73,10 +73,10 @@ describe('SourceController (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const sourceExists = await prisma.source.findFirst({
+    const sourceExists = await prisma.source.findFirstOrThrow({
       where: { id: source.id },
     })
 
-    expect(sourceExists).toBeNull()
+    expect(sourceExists.deletedAt).not.toBeNull()
   })
 })

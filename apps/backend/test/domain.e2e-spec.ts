@@ -142,7 +142,7 @@ describe('DomainController (e2e)', () => {
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const domainDB = await prisma.domain.findFirst({
+    const domainDB = await prisma.domain.findFirstOrThrow({
       where: { id: domain.id },
     })
 
@@ -150,7 +150,7 @@ describe('DomainController (e2e)', () => {
       where: { id: campaign.id },
     })
 
-    expect(domainDB).toBeNull()
+    expect(domainDB.deletedAt).not.toBeNull()
     expect(campaignDB.domainId).toBeNull()
   })
 })
