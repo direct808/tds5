@@ -3,6 +3,7 @@ import { Formula } from '../types'
 import { formulas } from '../formulas'
 import { BadRequestException } from '@nestjs/common'
 import { ClickMetricMap } from '../../../infra/repositories/report.repository'
+import { isNullable } from '@/shared/helpers'
 
 export enum FilterFieldTypeEnum {
   formula,
@@ -40,7 +41,7 @@ export function getFieldTypeData(
       type: FilterFieldTypeEnum.formula,
       formulaData: formulaObj,
     }
-  } else if (clickMetric) {
+  } else if (!isNullable(clickMetric)) {
     return {
       type: FilterFieldTypeEnum.clickMetric,
       clickMetric,

@@ -25,7 +25,7 @@ describe('AffiliateNetworkService', () => {
           useValue: {
             create: jest.fn(),
             update: jest.fn(),
-            deleteMany: jest.fn(),
+            softDeleteMany: jest.fn(),
             getListByUserId: jest.fn(),
             getByIdsAndUserId: jest.fn().mockReturnValue([{ id: 'ID 1' }]),
           },
@@ -106,7 +106,7 @@ describe('AffiliateNetworkService', () => {
       await service.deleteMany(args)
 
       expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
-      expect(repository.deleteMany).toHaveBeenCalledWith(args.ids)
+      expect(repository.softDeleteMany).toHaveBeenCalledWith(args.ids)
     })
   })
 })

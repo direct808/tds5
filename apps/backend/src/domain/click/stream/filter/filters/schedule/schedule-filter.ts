@@ -1,5 +1,6 @@
 import { BaseFilterObject, StreamFilter } from '../../types'
 import { DateTime } from 'luxon'
+import { isNullable } from '@/shared/helpers'
 
 interface Item {
   fromDay: number
@@ -69,7 +70,7 @@ export class ScheduleFilter implements StreamFilter {
   private splitTime(time: string): [number, number] {
     const [hour, minute] = time.split(':')
 
-    if (!hour || !minute) {
+    if (isNullable(hour) || isNullable(minute)) {
       throw new Error('No hour ot minute')
     }
 

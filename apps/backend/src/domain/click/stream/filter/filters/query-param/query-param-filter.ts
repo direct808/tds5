@@ -1,5 +1,6 @@
 import { BaseFilterObject, StreamFilter } from '../../types'
-import { RequestAdapter } from '../../../../../../shared/request-adapter'
+import { RequestAdapter } from '@/shared/request-adapter'
+import { isNullable } from '@/shared/helpers'
 
 export interface QueryParamFilterObject extends BaseFilterObject {
   type: 'query-param'
@@ -19,7 +20,7 @@ export class QueryParamFilter implements StreamFilter {
 
     const value = this.request.query(name)
 
-    if (!value || values.length === 0) {
+    if (isNullable(value) || values.length === 0) {
       return false
     }
 

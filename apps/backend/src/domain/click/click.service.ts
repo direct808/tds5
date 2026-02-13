@@ -13,6 +13,7 @@ import {
   StreamFull,
   StreamFullWithCampaign,
 } from '../campaign/types'
+import { isNullable } from '@/shared/helpers'
 
 type RedirectData = { count: number }
 
@@ -80,11 +81,11 @@ export class ClickService {
     code?: string,
     domain?: string,
   ): Promise<FullCampaign> {
-    if (code) {
+    if (!isNullable(code)) {
       return this.campaignCacheService.getFull({ code })
     }
 
-    if (domain) {
+    if (!isNullable(domain)) {
       return this.campaignCacheService.getFull({ domain })
     }
 

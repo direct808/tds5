@@ -7,12 +7,13 @@ import {
   offerCacheKey,
   sourceCacheKey,
 } from './helpers/campaign-cache-keys'
-import { RedisProvider } from '../../infra/redis/redis.provider'
+import { RedisProvider } from '@/infra/redis/redis.provider'
 import {
   CampaignRepository,
   GetFullByArgs,
-} from '../../infra/repositories/campaign.repository'
+} from '@/infra/repositories/campaign.repository'
 import { FullCampaign } from '../campaign/types'
+import { isNullable } from '@/shared/helpers'
 
 const NOT_FOUND = 'N'
 
@@ -55,7 +56,7 @@ export class CampaignCacheService {
       items.push({ key: affiliateNetworkCacheKey(id), value: campaign.code }),
     )
 
-    if (sourceId) {
+    if (!isNullable(sourceId)) {
       items.push({ key: sourceCacheKey(sourceId), value: campaign.code })
     }
 
@@ -69,7 +70,7 @@ export class CampaignCacheService {
       this.throwNotFound()
     }
 
-    if (cached) {
+    if (!isNullable(cached)) {
       this.logger.debug(`Get campaign from cache`)
 
       return JSON.parse(cached)

@@ -44,6 +44,6 @@ export class ClickDataTextFilter implements StreamFilter {
 
     const value = this.clickData[this.key]
 
-    return values.includes(value?.toString() || '')
+    return values.includes(value?.toString() ?? '')
   }
 }

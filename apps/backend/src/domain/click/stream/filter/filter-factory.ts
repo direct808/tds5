@@ -9,7 +9,8 @@ import { ClickDataTextFilter } from './filters/click-data-text/click-data-text-f
 import { ClickContext } from '../../shared/click-context.service'
 import { IpV6Filter } from './filters/ipv6/ipv6-filter'
 import { ClickUniqueFilter } from './filters/click-unique/click-unique-filter'
-import { ClickRepository } from '../../../../infra/repositories/click.repository'
+import { ClickRepository } from '@/infra/repositories/click.repository'
+import { isNullable } from '@/shared/helpers'
 
 export interface IStreamFilterFactory {
   create(filterObj: FilterObjectExtended): StreamFilter
@@ -27,7 +28,7 @@ export class FilterFactory implements IStreamFilterFactory {
     const requestAdapter = this.clickContext.getRequestAdapter()
     const clickData = this.clickContext.getClickData()
 
-    if (!clickData.campaignId) {
+    if (isNullable(clickData.campaignId)) {
       throw new Error('No campaignId')
     }
 

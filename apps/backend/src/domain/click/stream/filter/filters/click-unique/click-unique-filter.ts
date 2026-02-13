@@ -1,5 +1,6 @@
 import { BaseFilterObject, StreamFilter } from '../../types'
 import { ClickData } from '../../../../click-data'
+import { isNullable } from '@/shared/helpers'
 
 export enum ClickUniqueFor {
   allCampaigns = 'allCampaigns',
@@ -38,11 +39,11 @@ export class ClickUniqueFilter implements StreamFilter {
   handle: StreamFilter['handle'] = async () => {
     const { visitorId, campaignId } = this.clickData
 
-    if (!visitorId) {
+    if (isNullable(visitorId)) {
       throw new Error('No visitorId')
     }
 
-    if (!campaignId) {
+    if (isNullable(campaignId)) {
       throw new Error('No campaignId')
     }
 

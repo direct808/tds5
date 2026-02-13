@@ -3,6 +3,7 @@ import { UAParser } from 'ua-parser-js'
 import { ClickData } from '../../click-data'
 import { ClickObserver } from '../subject'
 import { ClickContext } from '../../shared/click-context.service'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class UserAgentObserver implements ClickObserver {
@@ -13,7 +14,7 @@ export class UserAgentObserver implements ClickObserver {
     const clickData = this.clickContext.getClickData()
 
     const userAgent = request.header('user-agent')
-    if (!userAgent) {
+    if (isNullable(userAgent)) {
       return
     }
     const parser = UAParser(userAgent)

@@ -14,6 +14,7 @@ import {
 } from 'class-validator'
 import { Direction, InputFilterData, ReportRangeEnum } from '../types'
 import { Transform, TransformFnParams } from 'class-transformer'
+import { isNullable } from '@/shared/helpers'
 
 export class GetReportDto {
   @IsArray()
@@ -43,12 +44,12 @@ export class GetReportDto {
 
   @Min(0)
   @IsInt()
-  @Transform(({ value }) => (value ? +value : value))
+  @Transform(({ value }) => (!isNullable(value) ? +value : value))
   offset: number = 0
 
   @IsPositive()
   @IsInt()
-  @Transform(({ value }) => (value ? +value : value))
+  @Transform(({ value }) => (!isNullable(value) ? +value : value))
   @Max(1000)
   declare limit: number
 

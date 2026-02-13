@@ -5,11 +5,12 @@ import {
   ConversionCreatedEvent,
   conversionCreatedEventName,
 } from '../events/conversion-created.event'
-import { ClickRepository } from '../../../infra/repositories/click.repository'
-import { ConversionRepository } from '../../../infra/repositories/conversion.repository'
+import { ClickRepository } from '@/infra/repositories/click.repository'
+import { ConversionRepository } from '@/infra/repositories/conversion.repository'
 import { ConversionTypeService } from '../conversion-type.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { ClickModel } from '@generated/prisma/models/Click'
+import { isNullable } from '@/shared/helpers'
 
 type GetDataResult = {
   clickId: string
@@ -69,11 +70,11 @@ export class ConversionRegisterUseCase {
     const originalStatus = requestAdapter.query('status')
     const tid = requestAdapter.query('tid')
 
-    if (!originalStatus || !clickId) {
+    if (isNullable(originalStatus) || isNullable(clickId)) {
       return
     }
 
-    if (tid && tid.length > 50) {
+    if (!isNullable(tid) && tid.length > 50) {
       this.logger.debug('tid too long')
 
       return
@@ -91,7 +92,7 @@ export class ConversionRegisterUseCase {
       requestAdapter,
     )
 
-    if (!type) {
+    if (isNullable(type)) {
       this.logger.warn('Unknown conversion type')
 
       return

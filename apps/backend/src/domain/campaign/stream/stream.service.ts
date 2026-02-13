@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CampaignRepository } from '../../../infra/repositories/campaign.repository'
-import { ensureEntityExists } from '../../../infra/repositories/utils/repository-utils'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 import { StreamUncheckedCreateInput } from '@generated/prisma/models/Stream'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class StreamService {
@@ -12,7 +13,7 @@ export class StreamService {
     userId: string,
     campaignId?: string,
   ): Promise<void> {
-    if (!campaignId) {
+    if (isNullable(campaignId)) {
       return
     }
     await ensureEntityExists(

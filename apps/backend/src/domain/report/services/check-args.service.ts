@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ReportService } from './report.service'
 import { GetReportDto } from '../dto/get-report.dto'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class CheckArgsService {
@@ -12,7 +13,7 @@ export class CheckArgsService {
   }
 
   private checkExistOrderField(sortField?: string): void {
-    if (!sortField) {
+    if (isNullable(sortField)) {
       return
     }
 
@@ -30,15 +31,15 @@ export class CheckArgsService {
   private checkContainOrderField(args: GetReportDto): void {
     const { sortField, groups, metrics } = args
 
-    if (!sortField) {
+    if (isNullable(sortField)) {
       return
     }
 
-    if (metrics && metrics.includes(sortField)) {
+    if (metrics.includes(sortField)) {
       return
     }
 
-    if (groups && groups.includes(sortField)) {
+    if (groups.includes(sortField)) {
       return
     }
 

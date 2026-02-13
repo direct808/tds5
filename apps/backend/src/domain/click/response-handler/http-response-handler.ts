@@ -20,7 +20,7 @@ export class HttpResponseHandler implements ResponseHandler {
       throw new Error('Action type to campaign not processed')
     }
 
-    response.status(streamResponse.status || HttpStatus.OK)
+    response.status(streamResponse.status ?? HttpStatus.OK)
     if ('url' in streamResponse) {
       response.redirect(streamResponse.url)
     } else {

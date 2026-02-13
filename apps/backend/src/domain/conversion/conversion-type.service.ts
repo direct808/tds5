@@ -11,7 +11,7 @@ export class ConversionTypeService {
     requestAdapter: RequestAdapter,
   ): string | undefined {
     return (
-      this.getExactMatch(originalStatus) ||
+      this.getExactMatch(originalStatus) ??
       this.getByLearningStatus(originalStatus, requestAdapter)
     )
   }

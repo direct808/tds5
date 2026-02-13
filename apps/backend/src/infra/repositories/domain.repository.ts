@@ -9,7 +9,6 @@ import {
   IGetEntitiesByIdsAndUserId,
   ISoftDeleteMany,
 } from './utils/repository-utils'
-import { prismaTransaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class DomainRepository

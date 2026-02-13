@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { OfferParams } from './offer-params.service'
 import { ClickData } from '../../../click-data'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
+import { isNullable } from '@/shared/helpers'
 
 type ConvertArgs = {
   campaign: CampaignModel
@@ -11,7 +12,7 @@ type ConvertArgs = {
 @Injectable()
 export class OfferParamDataMapper {
   public convert(args: ConvertArgs): OfferParams {
-    if (!args.clickData.id) {
+    if (isNullable(args.clickData.id)) {
       throw new Error('No click id')
     }
 

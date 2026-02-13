@@ -1,24 +1,16 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common'
-import { CampaignRepository } from '../../infra/repositories/campaign.repository'
-import { DomainRepository } from '../../infra/repositories/domain.repository'
-import { DomainModel } from '@generated/prisma/models/Domain'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class DomainService {
-  constructor(
-    private readonly campaignRepository: CampaignRepository,
-    private readonly domainRepository: DomainRepository,
-  ) {}
+  constructor(private readonly campaignRepository: CampaignRepository) {}
 
   public async checkIndexPageCampaignIdExists(
     indexPageCampaignId: string | undefined,
     userId: string,
   ): Promise<void> {
-    if (!indexPageCampaignId) {
+    if (isNullable(indexPageCampaignId)) {
       return
     }
     const [campaign] = await this.campaignRepository.getByIdsAndUserId({

@@ -8,7 +8,7 @@ import { AppRequest } from './types'
 export const UserId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<AppRequest>()
-    if (!request.user) {
+    if (typeof request.user !== 'object') {
       throw new UnauthorizedException('Не найден объект user')
     }
     if (!request.user.sub) {

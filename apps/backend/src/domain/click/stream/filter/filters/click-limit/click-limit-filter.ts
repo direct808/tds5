@@ -35,7 +35,7 @@ export class ClickLimitFilter implements StreamFilter {
     K extends keyof Pick<ClickLimitFilterObj, 'perHour' | 'perDay' | 'total'>,
   >(methodName: M, key: K): Promise<boolean> {
     const value = this.filterObj[key]
-    if (!value) {
+    if (value === undefined) {
       return true
     }
     const count = await this.provider[methodName](this.campaignId)

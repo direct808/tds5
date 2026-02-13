@@ -1,5 +1,4 @@
 import { BadRequestException, ConflictException } from '@nestjs/common'
-import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 export type NameAndUserId = { name: string; userId: string }
 export type IdsAndUserId = { ids: string[]; userId: string }

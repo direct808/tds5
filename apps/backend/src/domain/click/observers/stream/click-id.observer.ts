@@ -3,6 +3,7 @@ import { CLICK_ID_SIZE, IdGenerator, VISITOR_ID_SIZE } from '../id-generator'
 import { ClickObserver } from '../subject'
 import { ClickContext } from '../../shared/click-context.service'
 import { StreamModel } from '@generated/prisma/models/Stream'
+import { isNullable } from '@/shared/helpers'
 
 const SIZE = CLICK_ID_SIZE - VISITOR_ID_SIZE
 
@@ -16,7 +17,7 @@ export class ClickIdObserver implements ClickObserver<StreamModel> {
   public async handle(): Promise<void> {
     const clickData = this.clickContext.getClickData()
 
-    if (!clickData.visitorId) {
+    if (isNullable(clickData.visitorId)) {
       throw new Error('No visitorId')
     }
     const id = await this.generator.generate(SIZE)

@@ -1,7 +1,8 @@
 import jsep from 'jsep'
 import type { FormulaRecord } from '../types'
 import { BadRequestException } from '@nestjs/common'
-import { ClickMetricMap } from '../../../infra/repositories/report.repository'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
+import { isNullable } from '@/shared/helpers'
 
 type clickMetricMap = Record<string, string>
 
@@ -61,7 +62,7 @@ export class FormulaParser {
   }
 
   private processLiteral(node: jsep.Literal): string {
-    if (!node.value) {
+    if (isNullable(node.value)) {
       throw new Error('No value for literal')
     }
 
@@ -69,7 +70,7 @@ export class FormulaParser {
   }
 
   private replaceClickMetric({ name }: jsep.Identifier): string {
-    if (this.clickMetricMap[name]) {
+    if (!isNullable(this.clickMetricMap[name])) {
       return this.clickMetricMap[name]
     }
 
