@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common'
-import { DomainRepository } from '../../../infra/repositories/domain.repository'
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 import { DomainService } from '../domain.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   DomainUpdatedEvent,
   domainUpdateEventName,
 } from '../events/domain-updated.event'
+import { DomainModel } from '@generated/prisma/models/Domain'
 
 type UpdateDomainArgs = {
   indexPageCampaignId?: string
@@ -25,10 +26,7 @@ export class UpdateDomainUseCase {
     data: UpdateDomainArgs,
     userId: string,
   ): Promise<void> {
-    const domain = await this.domainService.getByIdAndUserIdOrNotFound(
-      id,
-      userId,
-    )
+    const domain = await this.getByIdAndUserIdOrNotFound(id, userId)
 
     await this.domainService.checkIndexPageCampaignIdExists(
       data.indexPageCampaignId,
@@ -41,5 +39,21 @@ export class UpdateDomainUseCase {
       domainUpdateEventName,
       new DomainUpdatedEvent(domain.name),
     )
+  }
+
+  public async getByIdAndUserIdOrNotFound(
+    id: string,
+    userId: string,
+  ): Promise<DomainModel> {
+    const [domain] = await this.domainRepository.getByIdsAndUserId({
+      ids: [id],
+      userId,
+    })
+
+    if (!domain) {
+      throw new NotFoundException()
+    }
+
+    return domain
   }
 }

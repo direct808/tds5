@@ -68,7 +68,8 @@ describe('SourceController (e2e)', () => {
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/source/' + source.id)
+      .delete('/api/source')
+      .send({ ids: [source.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 

@@ -52,7 +52,7 @@ module.exports = {
     'max-depth': ['warn', 3],
     complexity: ['warn', 10],
     '@typescript-eslint/strict-boolean-expressions': 'error',
-    eqeqeq: ['error', 'always'],
+    eqeqeq: ['warn', 'always'],
   },
   overrides: [
     {

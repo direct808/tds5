@@ -114,7 +114,9 @@ export class CampaignRepository
     })
   }
 
-  public deleteMany: IDeleteMany['deleteMany'] = (ids) => {
-    throw new Error('Implement me' + ids)
+  public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
+    await this.prisma.campaign.deleteMany({
+      where: { id: { in: ids } },
+    })
   }
 }

@@ -29,20 +29,4 @@ export class DomainService {
       throw new BadRequestException('indexPageCampaignId not found')
     }
   }
-
-  public async getByIdAndUserIdOrNotFound(
-    id: string,
-    userId: string,
-  ): Promise<DomainModel> {
-    const [domain] = await this.domainRepository.getByIdsAndUserId({
-      ids: [id],
-      userId,
-    })
-
-    if (!domain) {
-      throw new NotFoundException()
-    }
-
-    return domain
-  }
 }

@@ -1,5 +1,6 @@
 import { FullCampaign } from '../../campaign/types'
 import { OfferModel } from '@generated/prisma/models/Offer'
+import { isNullable } from '@/shared/helpers'
 
 type Args = {
   sourceId: string | null
@@ -13,7 +14,7 @@ export function getCampaignAdditionalIds(campaign: FullCampaign): Args {
   const affiliateNetworkIdIds: string[] = []
 
   for (const stream of campaign.streams) {
-    if (stream.streamOffers) {
+    if (!isNullable(stream.streamOffers)) {
       for (const streamOffer of stream.streamOffers) {
         addIds(streamOffer.offer, offerIds, affiliateNetworkIdIds)
       }
@@ -28,12 +29,12 @@ function addIds(
   offerIds: string[],
   affiliateNetworkIdIds: string[],
 ): void {
-  if (!offer) {
+  if (isNullable(offer)) {
     throw new Error('Offer not included')
   }
   offerIds.push(offer.id)
 
-  if (offer.affiliateNetworkId) {
+  if (!isNullable(offer.affiliateNetworkId)) {
     affiliateNetworkIdIds.push(offer.affiliateNetworkId)
   }
 }

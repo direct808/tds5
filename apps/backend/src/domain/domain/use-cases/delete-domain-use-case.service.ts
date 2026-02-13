@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { DomainRepository } from '../../../infra/repositories/domain.repository'
-import { DomainService } from '../domain.service'
+import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 
 @Injectable()
 export class DeleteDomainUseCase {
-  constructor(
-    private readonly domainRepository: DomainRepository,
-    private readonly domainService: DomainService,
-  ) {}
+  constructor(private readonly domainRepository: DomainRepository) {}
 
-  public async execute(id: string, userId: string): Promise<void> {
-    await this.domainService.getByIdAndUserIdOrNotFound(id, userId)
+  public async execute(ids: string[], userId: string): Promise<void> {
+    await ensureEntityExists(this.domainRepository, { ids, userId })
 
-    await this.domainRepository.deleteMany([id])
+    await this.domainRepository.deleteMany(ids)
   }
 }

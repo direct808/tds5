@@ -137,7 +137,8 @@ describe('DomainController (e2e)', () => {
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/domain/' + domain.id)
+      .delete('/api/domain')
+      .send({ ids: [domain.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 

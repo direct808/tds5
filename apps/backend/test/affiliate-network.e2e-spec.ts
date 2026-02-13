@@ -79,7 +79,8 @@ describe('AffiliateNetworkController (e2e)', () => {
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/affiliate-network/' + affiliateNetwork.id)
+      .delete('/api/affiliate-network')
+      .send({ ids: [affiliateNetwork.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
