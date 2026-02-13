@@ -27,7 +27,7 @@ describe('UpdateCampaignUseCase', () => {
   }
   const repository = {
     update: jest.fn(),
-    getByIdAndUserId: jest.fn().mockResolvedValue({}),
+    getByIdsAndUserId: jest.fn().mockResolvedValue([{}]),
   }
   const updateStreamService = {
     updateStreams: jest.fn(),

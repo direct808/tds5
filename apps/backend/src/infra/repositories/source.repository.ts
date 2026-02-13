@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import {
-  IGetEntityByIdAndUserId,
+  IDeleteMany,
+  IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
@@ -11,7 +12,8 @@ import { SourceModel } from '@generated/prisma/models/Source'
 export class SourceRepository
   implements
     IGetEntityByNameAndUserId<SourceModel>,
-    IGetEntityByIdAndUserId<SourceModel>
+    IGetEntitiesByIdsAndUserId<SourceModel>,
+    IDeleteMany
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -36,17 +38,18 @@ export class SourceRepository
     await this.prisma.source.update({ where: { id }, data })
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.prisma.source.delete({ where: { id } })
-  }
-
-  public getByIdAndUserId(
-    args: Pick<SourceModel, 'id' | 'userId'>,
-  ): Promise<SourceModel | null> {
-    return this.prisma.source.findFirst({
-      where: { id: args.id, userId: args.userId },
+  public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
+    await this.prisma.source.deleteMany({
+      where: { id: { in: ids } },
     })
   }
+
+  public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<SourceModel>['getByIdsAndUserId'] =
+    (args) => {
+      return this.prisma.source.findMany({
+        where: { id: { in: args.ids }, userId: args.userId },
+      })
+    }
 
   public list(userId: string): Promise<SourceModel[]> {
     return this.prisma.source.findMany({ where: { userId } })

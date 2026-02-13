@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { SourceRepository } from '../../infra/repositories/source.repository'
 import { ensureEntityExists } from '../../infra/repositories/utils/repository-utils'
 import { DomainRepository } from '../../infra/repositories/domain.repository'
+import { isNullable } from '@/shared/helpers'
 
 type EnsureSourceExistsArgs = {
   userId: string
@@ -24,14 +25,14 @@ export class CampaignService {
     userId,
     sourceId,
   }: EnsureSourceExistsArgs): Promise<void> {
-    if (!sourceId) {
+    if (isNullable(sourceId)) {
       return
     }
     await ensureEntityExists(
       this.sourceRepository,
       {
         userId,
-        id: sourceId,
+        ids: [sourceId],
       },
       'Source not found',
     )
@@ -41,14 +42,14 @@ export class CampaignService {
     userId,
     domainId,
   }: EnsureDomainExistsArgs): Promise<void> {
-    if (!domainId) {
+    if (isNullable(domainId)) {
       return
     }
     await ensureEntityExists(
       this.domainRepository,
       {
         userId,
-        id: domainId,
+        ids: [domainId],
       },
       'Domain not found',
     )

@@ -73,7 +73,8 @@ describe('OfferController (e2e)', () => {
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/offer/' + offer.id)
+      .delete('/api/offer')
+      .send({ ids: [offer.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 

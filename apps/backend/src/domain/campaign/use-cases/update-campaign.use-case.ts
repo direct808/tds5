@@ -73,8 +73,8 @@ export class UpdateCampaignUseCase {
     id: string,
     userId: string,
   ): Promise<CampaignModel> {
-    const campaign = await this.repository.getByIdAndUserId({
-      id,
+    const [campaign] = await this.repository.getByIdsAndUserId({
+      ids: [id],
       userId,
     })
 

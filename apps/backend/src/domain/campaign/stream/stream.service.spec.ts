@@ -46,7 +46,7 @@ describe('StreamService', () => {
       repository,
       {
         userId: 'user-id',
-        id: 'campaign-id',
+        ids: ['campaign-id'],
       },
       'actionCampaignId not found',
     )

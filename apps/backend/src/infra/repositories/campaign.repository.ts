@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import {
-  IGetEntityByIdAndUserId,
+  IDeleteMany,
+  IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
@@ -23,7 +24,8 @@ export type GetFullByArgs = { code: string } | { domain: string }
 export class CampaignRepository
   implements
     IGetEntityByNameAndUserId<CampaignModel>,
-    IGetEntityByIdAndUserId<CampaignModel>
+    IGetEntitiesByIdsAndUserId<CampaignModel>,
+    IDeleteMany
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -53,13 +55,12 @@ export class CampaignRepository
     await prismaTransaction(trx).get().campaign.update({ where: { id }, data })
   }
 
-  public getByIdAndUserId(
-    args: Pick<CampaignModel, 'id' | 'userId'>,
-  ): Promise<CampaignModel | null> {
-    return this.prisma.campaign.findFirst({
-      where: { id: args.id, userId: args.userId },
-    })
-  }
+  public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<CampaignModel>['getByIdsAndUserId'] =
+    (args) => {
+      return this.prisma.campaign.findMany({
+        where: { id: { in: args.ids }, userId: args.userId },
+      })
+    }
 
   public getFullBy(args: GetFullByArgs): Promise<FullCampaign | null> {
     const where: CampaignWhereInput = { active: true }
@@ -111,5 +112,9 @@ export class CampaignRepository
         userId,
       },
     })
+  }
+
+  public deleteMany: IDeleteMany['deleteMany'] = (ids) => {
+    throw new Error('Implement me' + ids)
   }
 }

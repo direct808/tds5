@@ -25,9 +25,9 @@ describe('AffiliateNetworkService', () => {
           useValue: {
             create: jest.fn(),
             update: jest.fn(),
-            delete: jest.fn(),
+            deleteMany: jest.fn(),
             getListByUserId: jest.fn(),
-            getByIdAndUserId: jest.fn().mockReturnValue({ id: 'ID 1' }),
+            getByIdsAndUserId: jest.fn().mockReturnValue([{ id: 'ID 1' }]),
           },
         },
       ],
@@ -60,7 +60,10 @@ describe('AffiliateNetworkService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
+        ids: ['1'],
+        userId: 'user123',
+      })
       expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
       expect(repository.update).toHaveBeenCalledWith('1', args)
     })
@@ -70,7 +73,10 @@ describe('AffiliateNetworkService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
+        ids: ['1'],
+        userId: 'user123',
+      })
       expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
       expect(repository.update).toHaveBeenCalledWith('1', args)
     })
@@ -95,12 +101,12 @@ describe('AffiliateNetworkService', () => {
 
   describe('delete', () => {
     it('should check existence and delete entity', async () => {
-      const args = { id: '1', userId: 'user123' }
+      const args = { ids: ['1'], userId: 'user123' }
 
-      await service.delete(args)
+      await service.deleteMany(args)
 
       expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
-      expect(repository.delete).toHaveBeenCalledWith(args.id)
+      expect(repository.deleteMany).toHaveBeenCalledWith(args.ids)
     })
   })
 })

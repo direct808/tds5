@@ -12,6 +12,6 @@ export class DeleteDomainUseCase {
   public async execute(id: string, userId: string): Promise<void> {
     await this.domainService.getByIdAndUserIdOrNotFound(id, userId)
 
-    await this.domainRepository.delete(id)
+    await this.domainRepository.deleteMany([id])
   }
 }

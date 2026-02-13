@@ -19,7 +19,7 @@ export class StreamService {
       this.campaignRepository,
       {
         userId,
-        id: campaignId,
+        ids: [campaignId],
       },
       'actionCampaignId not found',
     )

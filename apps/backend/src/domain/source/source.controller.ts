@@ -57,6 +57,6 @@ export class SourceController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.sourceService.delete({ id, userId })
+    await this.sourceService.deleteMany({ ids: [id], userId })
   }
 }

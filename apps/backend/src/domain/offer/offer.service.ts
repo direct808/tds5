@@ -12,6 +12,7 @@ import {
   ensureEntityExists,
 } from '../../infra/repositories/utils/repository-utils'
 import { OfferModel } from '@generated/prisma/models/Offer'
+import { isNullable } from '@/shared/helpers'
 
 type CreateArgs = {
   name: string
@@ -33,7 +34,7 @@ type EnsureNetworkExistsArgs = {
 }
 
 type DeleteArgs = {
-  id: string
+  ids: string[]
   userId: string
 }
 
@@ -46,7 +47,7 @@ export class OfferService {
   ) {}
 
   /**
-   * Создание партнерской сети
+   * Create offer
    * @param args
    */
   public async create(args: CreateArgs): Promise<void> {
@@ -58,13 +59,16 @@ export class OfferService {
   }
 
   /**
-   * Обновление партнерский сети
+   * Update offer
    * @param args
    */
   public async update(args: UpdatedArgs): Promise<void> {
-    await ensureEntityExists(this.repository, args)
+    await ensureEntityExists(this.repository, {
+      ids: [args.id],
+      userId: args.userId,
+    })
 
-    if (args.name) {
+    if (!isNullable(args.name)) {
       await checkUniqueNameForUpdate(this.repository, {
         ...args,
         name: args.name,
@@ -79,7 +83,7 @@ export class OfferService {
   }
 
   /**
-   * Список партнерских сетей
+   * List offer
    * @param userId
    */
   public async getList(userId: string): Promise<OfferModel[]> {
@@ -87,33 +91,31 @@ export class OfferService {
   }
 
   /**
-   * Удаление партнерской сети
+   * Delete offer
    * @param args
    */
   public async delete(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
-    await this.repository.delete(args.id)
+    await this.repository.deleteMany(args.ids)
   }
 
   /**
-   * Проверяет существование Affiliate Network для пользователя.
-   *
-   * Если `affiliateNetworkId` отсутствует — метод ничего не делает.
-   *
-   * @param args Данные для проверки сети.
+   * Check exists Affiliate Network for user.
+   * If `affiliateNetworkId` is missing, the method does nothing.
+   * @param args Data for verification
    */
   private async ensureNetworkExists(
     args: EnsureNetworkExistsArgs,
   ): Promise<void> {
-    if (!args.affiliateNetworkId) {
+    if (isNullable(args.affiliateNetworkId)) {
       return
     }
 
     await ensureEntityExists(
       this.networkRepository,
       {
-        id: args.affiliateNetworkId,
+        ids: [args.affiliateNetworkId],
         userId: args.userId,
       },
       'Affiliate Network not found',

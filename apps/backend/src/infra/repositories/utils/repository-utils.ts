@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException } from '@nestjs/common'
 
 export type NameAndUserId = { name: string; userId: string }
-export type IdAndUserId = { id: string; userId: string }
+export type IdsAndUserId = { ids: string[]; userId: string }
 
 type CheckUniqueNameForUpdateArgs = NameAndUserId & {
   id: string
@@ -11,8 +11,12 @@ export interface IGetEntityByNameAndUserId<T> {
   getByNameAndUserId(args: NameAndUserId): Promise<T | null>
 }
 
-export interface IGetEntityByIdAndUserId<T> {
-  getByIdAndUserId(args: IdAndUserId): Promise<T | null>
+export interface IGetEntitiesByIdsAndUserId<T> {
+  getByIdsAndUserId(args: IdsAndUserId): Promise<T[]>
+}
+
+export interface IDeleteMany {
+  deleteMany(ids: string[]): Promise<void>
 }
 
 export async function checkUniqueNameForCreate<T>(
@@ -43,13 +47,13 @@ export async function checkUniqueNameForUpdate<T extends { id: string }>(
  * @param message
  */
 export async function ensureEntityExists<T>(
-  repository: IGetEntityByIdAndUserId<T>,
-  args: IdAndUserId,
+  repository: IGetEntitiesByIdsAndUserId<T>,
+  args: IdsAndUserId,
   message?: string,
 ): Promise<void> {
-  const entity = await repository.getByIdAndUserId(args)
+  const entity = await repository.getByIdsAndUserId(args)
 
-  if (!entity) {
+  if (args.ids.length !== entity.length) {
     throw new BadRequestException(message)
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import {
-  IGetEntityByIdAndUserId,
+  IDeleteMany,
+  IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
   NameAndUserId,
 } from './utils/repository-utils'
@@ -11,7 +12,8 @@ import { OfferModel } from '@generated/prisma/models/Offer'
 export class OfferRepository
   implements
     IGetEntityByNameAndUserId<OfferModel>,
-    IGetEntityByIdAndUserId<OfferModel>
+    IGetEntitiesByIdsAndUserId<OfferModel>,
+    IDeleteMany
 {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -36,29 +38,18 @@ export class OfferRepository
     await this.prisma.offer.update({ where: { id }, data })
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.prisma.offer.delete({ where: { id } })
-  }
-
-  public getByIdAndUserId(
-    args: Pick<OfferModel, 'id' | 'userId'>,
-  ): Promise<OfferModel | null> {
-    return this.prisma.offer.findFirst({
-      where: { id: args.id, userId: args.userId },
+  public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
+    await this.prisma.offer.deleteMany({
+      where: { id: { in: ids } },
     })
   }
 
-  public getByIdsAndUserId(
-    ids: string[],
-    userId: string,
-  ): Promise<OfferModel[]> {
-    return this.prisma.offer.findMany({
-      where: {
-        id: { in: ids },
-        userId,
-      },
-    })
-  }
+  public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<OfferModel>['getByIdsAndUserId'] =
+    (args) => {
+      return this.prisma.offer.findMany({
+        where: { id: { in: args.ids }, userId: args.userId },
+      })
+    }
 
   public list(userId: string): Promise<OfferModel[]> {
     return this.prisma.offer.findMany({ where: { userId } })

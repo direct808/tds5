@@ -27,7 +27,7 @@ describe('OfferService', () => {
           useValue: {
             create: jest.fn(),
             update: jest.fn(),
-            delete: jest.fn(),
+            deleteMany: jest.fn(),
             getListByUserId: jest.fn(),
           },
         },
@@ -79,7 +79,10 @@ describe('OfferService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
+        ids: ['offer1'],
+        userId: 'user1',
+      })
       expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
       expect(service['ensureNetworkExists']).toHaveBeenCalledWith(args)
       expect(repository.update).toHaveBeenCalledWith(args.id, args)
@@ -96,7 +99,10 @@ describe('OfferService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
+        ids: ['offer1'],
+        userId: 'user1',
+      })
       expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
       expect(service['ensureNetworkExists']).toHaveBeenCalledWith(args)
       expect(repository.update).toHaveBeenCalledWith(args.id, args)
@@ -119,12 +125,12 @@ describe('OfferService', () => {
 
   describe('delete', () => {
     it('should delete an offer', async () => {
-      const args = { id: 'offer1', userId: 'user1' }
+      const args = { ids: ['offer1'], userId: 'user1' }
 
       await service.delete(args)
 
       expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
-      expect(repository.delete).toHaveBeenCalledWith(args.id)
+      expect(repository.deleteMany).toHaveBeenCalledWith(args.ids)
     })
   })
 
@@ -143,7 +149,7 @@ describe('OfferService', () => {
       expect(ensureEntityExists).toHaveBeenCalledWith(
         networkRepository,
         {
-          id: args.affiliateNetworkId,
+          ids: [args.affiliateNetworkId],
           userId: args.userId,
         },
         'Affiliate Network not found',

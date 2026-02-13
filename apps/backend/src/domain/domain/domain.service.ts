@@ -21,8 +21,8 @@ export class DomainService {
     if (!indexPageCampaignId) {
       return
     }
-    const campaign = await this.campaignRepository.getByIdAndUserId({
-      id: indexPageCampaignId,
+    const [campaign] = await this.campaignRepository.getByIdsAndUserId({
+      ids: [indexPageCampaignId],
       userId,
     })
     if (!campaign) {
@@ -34,7 +34,10 @@ export class DomainService {
     id: string,
     userId: string,
   ): Promise<DomainModel> {
-    const domain = await this.domainRepository.getByIdAndUserId({ id, userId })
+    const [domain] = await this.domainRepository.getByIdsAndUserId({
+      ids: [id],
+      userId,
+    })
 
     if (!domain) {
       throw new NotFoundException()

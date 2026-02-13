@@ -26,7 +26,7 @@ type UpdatedArgs = {
 }
 
 type DeleteArgs = {
-  id: string
+  ids: string[]
   userId: string
 }
 
@@ -46,9 +46,12 @@ export class AffiliateNetworkService {
   }
 
   public async update(args: UpdatedArgs): Promise<void> {
-    await ensureEntityExists(this.repository, args)
+    await ensureEntityExists(this.repository, {
+      ids: [args.id],
+      userId: args.userId,
+    })
 
-    if (args.name) {
+    if (args.name !== undefined) {
       await checkUniqueNameForUpdate(this.repository, {
         ...args,
         name: args.name,
@@ -67,17 +70,20 @@ export class AffiliateNetworkService {
     return this.repository.getListByUserId(userId)
   }
 
-  public async delete(args: DeleteArgs): Promise<void> {
+  public async deleteMany(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
-    await this.repository.delete(args.id)
+    await this.repository.deleteMany(args.ids)
   }
 
   public async getByIdAndUserIdOrFail(
     id: string,
     userId: string,
   ): Promise<AffiliateNetworkModel> {
-    const result = await this.repository.getByIdAndUserId({ id, userId })
+    const [result] = await this.repository.getByIdsAndUserId({
+      ids: [id],
+      userId,
+    })
 
     if (!result) {
       throw new Error('No result')

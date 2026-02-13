@@ -4,10 +4,15 @@ import {
   DomainModel,
   DomainUncheckedCreateInput,
 } from '@generated/prisma/models/Domain'
-import { IGetEntityByIdAndUserId } from './utils/repository-utils'
+import {
+  IDeleteMany,
+  IGetEntitiesByIdsAndUserId,
+} from './utils/repository-utils'
 
 @Injectable()
-export class DomainRepository implements IGetEntityByIdAndUserId<DomainModel> {
+export class DomainRepository
+  implements IGetEntitiesByIdsAndUserId<DomainModel>, IDeleteMany
+{
   constructor(private readonly prisma: PrismaService) {}
 
   public async create(data: DomainUncheckedCreateInput): Promise<void> {
@@ -18,19 +23,20 @@ export class DomainRepository implements IGetEntityByIdAndUserId<DomainModel> {
     return this.prisma.domain.findMany({ where: { userId } })
   }
 
-  public getByIdAndUserId(
-    args: Pick<DomainModel, 'id' | 'userId'>,
-  ): Promise<DomainModel | null> {
-    return this.prisma.domain.findFirst({
-      where: { id: args.id, userId: args.userId },
-    })
-  }
+  public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<DomainModel>['getByIdsAndUserId'] =
+    (args) => {
+      return this.prisma.domain.findMany({
+        where: { id: { in: args.ids }, userId: args.userId },
+      })
+    }
 
   public async update(id: string, data: Partial<DomainModel>): Promise<void> {
     await this.prisma.domain.update({ where: { id }, data })
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.prisma.domain.delete({ where: { id } })
+  public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
+    await this.prisma.domain.deleteMany({
+      where: { id: { in: ids } },
+    })
   }
 }

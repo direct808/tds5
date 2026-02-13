@@ -58,6 +58,6 @@ export class AffiliateNetworkController {
     @Param('id', ParseUUIDPipe) id: string,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.affiliateNetworkService.delete({ id, userId })
+    await this.affiliateNetworkService.deleteMany({ ids: [id], userId })
   }
 }
