@@ -13,19 +13,9 @@ export class DeleteDomainUseCase {
     private readonly tr: TransactionFactory,
   ) {}
 
-  public async execute(
-    ids: string[],
-    userId: string,
-    tr?: Transaction,
-  ): Promise<void> {
-    if (!tr) {
-      return this.tr.create((tr) => {
-        return this.execute(ids, userId, tr)
-      })
-    }
+  public async execute(ids: string[], userId: string): Promise<void> {
     await ensureEntityExists(this.domainRepository, { ids, userId })
-    await this.campaignRepository.resetDomainIds(ids, tr)
-    await this.domainRepository.softDeleteMany(ids, tr)
+    await this.domainRepository.softDeleteMany(ids)
     //todo resect campaign cache
   }
 }

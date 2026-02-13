@@ -45,13 +45,8 @@ export class DomainRepository
     })
   }
 
-  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (
-    ids,
-    trx,
-  ) => {
-    const prisma = trx ? prismaTransaction(trx).get() : this.prisma
-
-    await prisma.domain.updateMany({
+  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {
+    await this.prisma.domain.updateMany({
       where: { id: { in: ids } },
       data: { deletedAt: new Date() },
     })

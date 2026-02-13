@@ -18,7 +18,7 @@ import { GLOBAL_PREFIX } from '../../shared/constants'
 import { ListSourceUseCase } from './ues-cases/list-source.use-case'
 import { ListSourceDto } from './dto/list-source.dto'
 import { ReportResponse } from '../report/types'
-import { DeleteSourceDto } from '@/domain/source/ues-cases/delete-source.dto'
+import { DeleteSourceDto } from '@/domain/source/dto/delete-source.dto'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')

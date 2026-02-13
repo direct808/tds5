@@ -98,6 +98,7 @@ export class OfferService {
     await ensureEntityExists(this.repository, args)
 
     await this.repository.softDeleteMany(args.ids)
+    //todo resect campaign cache
   }
 
   /**

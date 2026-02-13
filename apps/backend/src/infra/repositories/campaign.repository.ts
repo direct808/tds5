@@ -128,12 +128,4 @@ export class CampaignRepository
       data: { deletedAt: new Date() },
     })
   }
-
-  public async resetDomainIds(ids: string[], trx?: Transaction): Promise<void> {
-    const prisma = trx ? prismaTransaction(trx).get() : this.prisma
-    await prisma.campaign.updateMany({
-      where: { domainId: { in: ids } },
-      data: { domainId: null },
-    })
-  }
 }

@@ -21,7 +21,7 @@ export interface IDeleteMany {
 }
 
 export interface ISoftDeleteMany {
-  softDeleteMany(ids: string[], trx?: Transaction): Promise<void>
+  softDeleteMany(ids: string[]): Promise<void>
 }
 
 export async function checkUniqueNameForCreate<T>(
