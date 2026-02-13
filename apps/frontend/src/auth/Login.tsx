@@ -4,7 +4,6 @@ import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   Container,
   Paper,
   TextField,
@@ -40,12 +39,12 @@ export default function LoginForm() {
     <Container maxWidth="xs">
       <Paper elevation={3} sx={{ p: 4, mt: 0 }}>
         <Typography variant="h5" align="center" gutterBottom>
-          Вход в систему
+          Login
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
           <TextField
-            label="Логин"
+            label="Login"
             fullWidth
             margin="normal"
             value={email}
@@ -53,7 +52,7 @@ export default function LoginForm() {
           />
 
           <TextField
-            label="Пароль"
+            label="Password"
             type="password"
             fullWidth
             margin="normal"
@@ -64,11 +63,10 @@ export default function LoginForm() {
           <Button
             type="submit"
             variant="contained"
-            disabled={isLoading}
             fullWidth
             sx={{ p: 1.5, mt: 2 }}
+            loading={isLoading}
           >
-            {isLoading && <CircularProgress sx={{ mr: 1, ml: -4 }} size={20} />}
             Login
           </Button>
 

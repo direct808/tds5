@@ -36,8 +36,8 @@ export class OfferRepository
     await this.prisma.offer.update({ where: { id }, data })
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.prisma.offer.delete({ where: { id } })
+  public async delete(ids: string[]): Promise<void> {
+    await this.prisma.offer.deleteMany({ where: { id: { in: ids } } })
   }
 
   public getByIdAndUserId(

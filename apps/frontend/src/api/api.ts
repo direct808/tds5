@@ -1,7 +1,12 @@
 import { auth } from '../auth/auth.ts'
 import { client } from '../shared/api/client.gen.ts'
+import qs from 'qs'
 import {
   authControllerLogin,
+  type ListOfferResponseDto,
+  offerControllerCreateOffer,
+  type OfferControllerCreateOfferData,
+  type OfferControllerCreateOfferResponses,
   offerControllerListOffers,
   type OfferControllerListOffersData,
 } from '../shared/api'
@@ -9,39 +14,45 @@ import {
 client.setConfig({
   baseUrl: 'http://localhost:3300/',
   auth: () => auth.getToken() || undefined,
-  // throwOnError: true
+  querySerializer: (params) =>
+    qs.stringify(params, {
+      arrayFormat: 'brackets',
+    }),
+  throwOnError: true,
 })
 
-client.interceptors.request.use((config) => {
+client.interceptors.request.use((request) => {
   const token = auth.getToken()
   if (token) {
-    config.headers.set('Authorization', `Bearer ${token}`)
+    request.headers.set('Authorization', `Bearer ${token}`)
   }
-  return config
+  return request
 })
 
 const api = {
   async login(email: string, password: string): Promise<string> {
-    const { data } = await authControllerLogin({
+    const { data } = await authControllerLogin<true>({
       body: { email, password },
-      throwOnError: true,
     })
-    // if (error) {
-    //   throw new Error(error.message);
-    // }
+
     return data.accessToken
   },
   async offerList(
     options: OfferControllerListOffersData['query'],
-  ): Promise<any> {
-    const { data } = await offerControllerListOffers({
+  ): Promise<ListOfferResponseDto> {
+    const { data } = await offerControllerListOffers<true>({
       query: options,
-
-      throwOnError: true,
     })
-    // if (error) {
-    //   throw new Error(error.message);
-    // }
+
+    return data
+  },
+  async offerCreate(
+    options: OfferControllerCreateOfferData['body'],
+  ): Promise<OfferControllerCreateOfferResponses[201]> {
+    const { data } = await offerControllerCreateOffer<true>({
+      body: options,
+    })
+
     return data
   },
 }

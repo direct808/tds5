@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { UserId } from '../auth/user-id.decorator'
 import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
@@ -17,7 +17,8 @@ import { UpdateOfferDto } from './dto/update-offer.dto'
 import { GLOBAL_PREFIX } from '../../shared/constants'
 import { ListOfferUseCase } from './use-cases/list-offer.use-case'
 import { ListOfferDto } from './dto/list-offer.dto'
-import { ReportResponse } from '../report/types'
+import { ListOfferResponseDto } from '@/domain/offer/dto/list-offer-response.dto'
+import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
 
 @ApiTags('Оферы')
 @Controller(GLOBAL_PREFIX + 'offer')
@@ -28,10 +29,11 @@ export class OfferController {
   ) {}
 
   @Get()
+  @ApiOkResponse({ type: ListOfferResponseDto })
   listOffers(
     @Query() args: ListOfferDto,
     @UserId() userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ListOfferResponseDto> {
     return this.listOfferUseCase.execute(args, userId)
   }
 
@@ -52,11 +54,11 @@ export class OfferController {
     await this.offerService.update({ ...dto, id, userId })
   }
 
-  @Delete(':id')
+  @Delete()
   async deleteOffer(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Body() { ids }: DeleteOfferDto,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.offerService.delete({ id, userId })
+    await this.offerService.delete({ ids, userId })
   }
 }

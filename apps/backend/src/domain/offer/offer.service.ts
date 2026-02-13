@@ -17,7 +17,7 @@ type CreateArgs = {
   name: string
   userId: string
   url: string
-  affiliateNetworkId: string
+  affiliateNetworkId?: string
 }
 
 type UpdatedArgs = {
@@ -33,7 +33,7 @@ type EnsureNetworkExistsArgs = {
 }
 
 type DeleteArgs = {
-  id: string
+  ids: string[]
   userId: string
 }
 
@@ -46,7 +46,7 @@ export class OfferService {
   ) {}
 
   /**
-   * Создание партнерской сети
+   * Создание оффера
    * @param args
    */
   public async create(args: CreateArgs): Promise<void> {
@@ -58,7 +58,7 @@ export class OfferService {
   }
 
   /**
-   * Обновление партнерский сети
+   * Обновление оффера
    * @param args
    */
   public async update(args: UpdatedArgs): Promise<void> {
@@ -79,7 +79,7 @@ export class OfferService {
   }
 
   /**
-   * Список партнерских сетей
+   * Список офферов
    * @param userId
    */
   public async getList(userId: string): Promise<OfferModel[]> {
@@ -87,13 +87,13 @@ export class OfferService {
   }
 
   /**
-   * Удаление партнерской сети
+   * Удаление офферов
    * @param args
    */
   public async delete(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
-    await this.repository.delete(args.id)
+    await this.repository.delete(args.ids)
   }
 
   /**
