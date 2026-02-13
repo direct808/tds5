@@ -26,5 +26,6 @@ export class DeleteDomainUseCase {
     await ensureEntityExists(this.domainRepository, { ids, userId })
     await this.campaignRepository.resetDomainIds(ids, tr)
     await this.domainRepository.softDeleteMany(ids, tr)
+    //todo resect campaign cache
   }
 }
