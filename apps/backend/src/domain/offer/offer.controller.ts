@@ -14,10 +14,11 @@ import { UserId } from '../auth/user-id.decorator'
 import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UpdateOfferDto } from './dto/update-offer.dto'
-import { GLOBAL_PREFIX } from '../../shared/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 import { ListOfferUseCase } from './use-cases/list-offer.use-case'
 import { ListOfferDto } from './dto/list-offer.dto'
-import { ReportResponse } from '../report/types'
+import { ListOfferResponseDto } from '@/domain/offer/dto/list-offer-response.dto'
+import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
 
 @ApiTags('Offers')
 @Controller(GLOBAL_PREFIX + 'offer')
