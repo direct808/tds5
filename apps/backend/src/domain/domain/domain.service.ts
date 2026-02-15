@@ -17,7 +17,8 @@ export class DomainService {
       ids: [indexPageCampaignId],
       userId,
     })
-    if (!campaign) {
+
+    if (campaign === undefined) {
       throw new BadRequestException('indexPageCampaignId not found')
     }
   }

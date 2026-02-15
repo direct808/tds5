@@ -10,7 +10,7 @@ export class SelectOfferService {
       throw new Error('No streamOffers')
     }
 
-    if (streamOffers.length === 1 && streamOffers[0]) {
+    if (streamOffers.length === 1 && streamOffers[0] !== undefined) {
       return this.getOffer(streamOffers[0])
     }
 

@@ -17,7 +17,7 @@ export class ActionTypeFactory {
   constructor(private readonly moduleRef: ModuleRef) {}
 
   handle(stream: StreamFull): MaybePromise<StreamResponse> {
-    if (!stream.actionType) {
+    if (stream.actionType === null) {
       throw new Error('No actionType')
     }
 

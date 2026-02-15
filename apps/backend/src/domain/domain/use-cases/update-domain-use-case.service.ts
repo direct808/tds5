@@ -50,7 +50,7 @@ export class UpdateDomainUseCase {
       userId,
     })
 
-    if (!domain) {
+    if (domain === undefined) {
       throw new NotFoundException()
     }
 

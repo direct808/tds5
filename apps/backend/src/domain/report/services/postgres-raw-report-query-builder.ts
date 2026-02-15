@@ -284,7 +284,7 @@ export class PostgresRawReportQueryBuilder {
       ...this.values.values(),
     )
 
-    if (!result[0]) {
+    if (result[0] === undefined) {
       throw new Error('No result')
     }
     const { total, ...summary } = result[0]

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { RequestAdapter } from '../../../shared/request-adapter'
+import { RequestAdapter } from '@/shared/request-adapter'
 import { ConversionUncheckedCreateInput } from '@generated/prisma/models/Conversion'
 import {
   ConversionCreatedEvent,
@@ -52,7 +52,7 @@ export class ConversionRegisterUseCase {
       tid,
     )
 
-    if (existsConversion) {
+    if (existsConversion !== null) {
       data.previousStatus = existsConversion.status
 
       await this.conversionRepository.update(existsConversion.id, data)

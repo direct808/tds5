@@ -7,7 +7,7 @@ export class ToCampaignActionType implements ActionType {
   constructor(private readonly clickContext: ClickContext) {}
 
   handle: ActionType['handle'] = ({ actionCampaign }) => {
-    if (!actionCampaign) {
+    if (actionCampaign === null) {
       throw new Error('No actionCampaign')
     }
 

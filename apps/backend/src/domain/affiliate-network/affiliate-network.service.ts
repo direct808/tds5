@@ -15,6 +15,7 @@ import {
   AffiliateNetworkSoftDeletedEvent,
   affiliateNetworkSoftDeletedName,
 } from '@/domain/affiliate-network/events/affiliate-network-soft-deleted.event'
+import { isNullable } from '@/shared/helpers'
 
 type CreateArgs = {
   name: string
@@ -94,7 +95,7 @@ export class AffiliateNetworkService {
       userId,
     })
 
-    if (!result) {
+    if (result === undefined) {
       throw new Error('No result')
     }
 
