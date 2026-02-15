@@ -41,6 +41,10 @@ import {
   DomainSoftDeletedEvent,
   domainSoftDeletedEventName,
 } from '@/domain/domain/events/domain-soft-deleted.event'
+import {
+  CampaignSoftDeletedEvent,
+  campaignSoftDeletedEventName,
+} from '@/domain/campaign/events/campaign-soft-deleted.event'
 
 @Injectable()
 export class CampaignCacheListener {
@@ -63,6 +67,15 @@ export class CampaignCacheListener {
     this.logger.debug('CampaignUpdatedEvent: ' + campaignCode)
 
     return this.clearCacheService.clearByCampaignCode(campaignCode)
+  }
+
+  @OnEvent(campaignSoftDeletedEventName)
+  handleCampaignSoftDeletedEvent({
+    campaignIds,
+  }: CampaignSoftDeletedEvent): Promise<void> {
+    this.logger.debug('CampaignSoftDeletedEvent: ' + campaignIds.join(','))
+
+    return this.clearCacheService.clearByCampaignIds(campaignIds)
   }
 
   @OnEvent(sourceUpdateEventName)

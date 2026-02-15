@@ -108,8 +108,6 @@ export class CampaignRepository
       where: { indexPageCampaign: { code: { in: codes } } },
     })
 
-    // todo учитывать deletedAt и active
-
     return result.map(({ name }) => name)
   }
 
@@ -119,6 +117,14 @@ export class CampaignRepository
         userId,
       },
     })
+  }
+
+  public async getCodesByIds(ids: string[]): Promise<string[]> {
+    const items = await this.prisma.campaign.findMany({
+      where: { id: { in: ids } },
+    })
+
+    return items.map(({ code }) => code)
   }
 
   public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {

@@ -29,6 +29,15 @@ export class CampaignCacheClearService {
     await this.cache.del(...keys)
   }
 
+  public async clearByCampaignIds(campaignIds: string[]): Promise<void> {
+    const codes = await this.campaignRepository.getCodesByIds(campaignIds)
+    const keys = fullCampaignCodeCacheKeys(codes)
+    const domains = await this.campaignRepository.getIndexPageDomainNames(codes)
+
+    keys.push(...fullCampaignDomainCacheKeys(domains))
+    await this.cache.del(...keys)
+  }
+
   public async clearByDomainNames(domains: string[]): Promise<void> {
     const keys = fullCampaignDomainCacheKeys(domains)
     await this.cache.del(...keys)

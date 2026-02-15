@@ -108,6 +108,46 @@ describe('Click-cache (e2e)', () => {
     expect(getFullBy).toHaveBeenCalledTimes(4)
   })
 
+  it('Checks reset cache if campaign deleted', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .addIndexPageDomain((builder) => builder.name(domainName).userId(userId))
+      .save(prisma)
+
+    // Act
+    const { code } = campaign
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).not.toBeNull()
+
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .waitRegister()
+      .request()
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+
+    await request(app.getHttpServer())
+      .delete('/api/campaign')
+      .auth(accessToken, { type: 'bearer' })
+      .send({ ids: [campaign.id] })
+      .expect(200)
+
+    await setTimeout(100)
+
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).toBeNull()
+    await ClickRequestBuilder.create(app).code(code).request().expect(404)
+    expect(getFullBy).toHaveBeenCalledTimes(3)
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .request()
+      .expect(404)
+    expect(getFullBy).toHaveBeenCalledTimes(4)
+  })
+
   it('Checks reset cache if source updated', async () => {
     const source = await SourceBuilder.create()
       .name('Source 1')
