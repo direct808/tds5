@@ -9,12 +9,14 @@ import {
 } from './helpers/campaign-cache-keys'
 import { RedisProvider } from '@/infra/redis/redis.provider'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 
 @Injectable()
 export class CampaignCacheClearService {
   constructor(
     private readonly cache: RedisProvider,
     private readonly campaignRepository: CampaignRepository,
+    private readonly domainRepository: DomainRepository,
   ) {}
 
   public async clearByCampaignCode(code: string): Promise<void> {
@@ -28,6 +30,12 @@ export class CampaignCacheClearService {
   }
 
   public async clearByDomainNames(domains: string[]): Promise<void> {
+    const keys = fullCampaignDomainCacheKeys(domains)
+    await this.cache.del(...keys)
+  }
+
+  public async clearByDomainIds(domainIds: string[]): Promise<void> {
+    const domains = await this.domainRepository.getNamesByIds(domainIds)
     const keys = fullCampaignDomainCacheKeys(domains)
     await this.cache.del(...keys)
   }

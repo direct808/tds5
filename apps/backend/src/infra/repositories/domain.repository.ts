@@ -27,6 +27,15 @@ export class DomainRepository
     return this.prisma.domain.findMany({ where: { userId } })
   }
 
+  public async getNamesByIds(ids: string[]): Promise<string[]> {
+    const items = await this.prisma.domain.findMany({
+      select: { name: true },
+      where: { id: { in: ids } },
+    })
+
+    return items.map((item) => item.name)
+  }
+
   public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<DomainModel>['getByIdsAndUserId'] =
     (args) => {
       return this.prisma.domain.findMany({

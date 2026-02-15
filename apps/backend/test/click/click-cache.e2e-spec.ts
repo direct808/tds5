@@ -415,6 +415,49 @@ describe('Click-cache (e2e)', () => {
     expect(getFullBy).toHaveBeenCalledTimes(2)
   })
 
+  it('Checks reset cache if domain deleted', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(prisma)
+
+    const domain = await DomainBuilder.create()
+      .name(domainName)
+      .indexPageCampaignId(campaign.id)
+      .userId(userId)
+      .save(prisma)
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .waitRegister()
+      .request()
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(
+      await cache.get(fullCampaignDomainCacheKey(domainName)),
+    ).not.toBeNull()
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .waitRegister()
+      .request()
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await request(app.getHttpServer())
+      .delete('/api/domain')
+      .auth(accessToken, { type: 'bearer' })
+      .send({ ids: [domain.id] })
+      .expect(200)
+
+    await setTimeout(100)
+
+    expect(await cache.get(fullCampaignDomainCacheKey(domainName))).toBeNull()
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .request()
+      .expect(404)
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+  })
+
   it('Checks cache for not exists campaign', async () => {
     await ClickRequestBuilder.create(app).code(code).request().expect(404)
     expect(getFullBy).toHaveBeenCalledTimes(1)
