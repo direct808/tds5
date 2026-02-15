@@ -7,11 +7,11 @@ import {
   CampaignUpdatedEvent,
   campaignUpdateEventName,
 } from '../events/campaign-updated.event'
-import { CampaignRepository } from '../../../infra/repositories/campaign.repository'
-import { checkUniqueNameForUpdate } from '../../../infra/repositories/utils/repository-utils'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
-import { TransactionFactory } from '../../../infra/database/transaction-factory'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
+import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class UpdateCampaignUseCase {
@@ -73,12 +73,12 @@ export class UpdateCampaignUseCase {
     id: string,
     userId: string,
   ): Promise<CampaignModel> {
-    const campaign = await this.repository.getByIdAndUserId({
-      id,
+    const [campaign] = await this.repository.getByIdsAndUserId({
+      ids: [id],
       userId,
     })
 
-    if (!campaign) {
+    if (campaign === undefined) {
       throw new NotFoundException('Campaign not found')
     }
 

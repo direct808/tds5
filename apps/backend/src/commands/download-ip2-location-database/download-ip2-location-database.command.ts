@@ -4,7 +4,8 @@ import unzipper, { File } from 'unzipper'
 import * as fs from 'node:fs'
 import { Inject } from '@nestjs/common'
 import { IP2LOCATION_URL } from './tokens'
-import { AppConfig } from '../../infra/config/app-config.service'
+import { AppConfig } from '@/infra/config/app-config.service'
+import { isNullable } from '@/shared/helpers'
 
 @Command({
   name: 'download-ip2-location-database',
@@ -27,7 +28,7 @@ export class DownloadIp2LocationDatabaseCommand extends CommandRunner {
   private async download(): Promise<ArrayBuffer> {
     const token = this.config.ip2LocationToken
 
-    if (!token) {
+    if (isNullable(token)) {
       throw new Error('No ip2LocationToken')
     }
 

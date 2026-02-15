@@ -17,6 +17,7 @@ import { DomainModel } from '@generated/prisma/models/Domain'
 import { UpdateDomainDto } from './dto/update-domain.dto'
 import { UpdateDomainUseCase } from './use-cases/update-domain-use-case.service'
 import { DeleteDomainUseCase } from './use-cases/delete-domain-use-case.service'
+import { DeleteDomainDto } from '@/domain/domain/dto/delete-domain.dto'
 
 @Controller(GLOBAL_PREFIX + 'domain')
 export class DomainController {
@@ -49,11 +50,11 @@ export class DomainController {
     return this.updateDomainUseCase.execute(id, data, userId)
   }
 
-  @Delete(':id')
+  @Delete()
   deleteDomain(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Body() { ids }: DeleteDomainDto,
     @UserId() userId: string,
   ): Promise<void> {
-    return this.deleteDomainUseCase.execute(id, userId)
+    return this.deleteDomainUseCase.execute(ids, userId)
   }
 }

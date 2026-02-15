@@ -17,6 +17,7 @@ import {
 } from '../utils/get-field-type-data'
 import { checkFilterValue } from '../utils/check-filter-value'
 import { PostgresRawReportQueryBuilder } from './postgres-raw-report-query-builder'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class FilterProcessorService {
@@ -89,7 +90,7 @@ export class FilterProcessorService {
     if (disableFilter) {
       throw new BadRequestException(`Filter disable for field '${field}'`)
     }
-    const q = sql ? sql : `"${field}"`
+    const q = !isNullable(sql) ? sql : `"${field}"`
     this.checkFilterData(type, inputFilterData)
     qb.where(q, operator, value)
   }
@@ -106,7 +107,7 @@ export class FilterProcessorService {
   ): void {
     const op = FilterOperators[operator]
 
-    if (!op) {
+    if (isNullable(op)) {
       throw new BadRequestException(`Unsupported operator '${operator}'`)
     }
 

@@ -24,6 +24,12 @@ export class StreamTypeActionBuilder extends StreamBuilder {
     return this
   }
 
+  actionCampaignId(actionCampaignId: string): this {
+    this.fields.actionCampaignId = actionCampaignId
+
+    return this
+  }
+
   createActionCampaign(callback: (builder: CampaignBuilder) => void): void {
     const builder = CampaignBuilder.create()
     this.actionCampaignBuilder = builder

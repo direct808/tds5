@@ -4,6 +4,7 @@ import { ResponseHandler, StreamResponse } from '../types'
 import { HttpResponseHandler } from './http-response-handler'
 import { JsonResponseHandler } from './json-response-handler'
 import { ClickContext } from '../shared/click-context.service'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class ResponseHandlerFactory {
@@ -18,7 +19,7 @@ export class ResponseHandlerFactory {
 
   private create(): ResponseHandler {
     const request = this.clickContext.getRequestAdapter()
-    if (request.query('json_response')) {
+    if (!isNullable(request.query('json_response'))) {
       return this.moduleRef.get(JsonResponseHandler)
     }
 

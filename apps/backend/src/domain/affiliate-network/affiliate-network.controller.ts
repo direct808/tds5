@@ -19,6 +19,7 @@ import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork
 import { ListAffiliateNetworkUseCase } from './use-cases/list-affiliate-network.use-case'
 import { ListAffiliateNetworkDto } from './dto/list-affiliate-network.dto'
 import { ReportResponse } from '../report/types'
+import { DeleteAffiliateNetworkDto } from '@/domain/affiliate-network/dto/delete-affiliate-network.dto'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')
@@ -53,11 +54,11 @@ export class AffiliateNetworkController {
     await this.affiliateNetworkService.update({ ...dto, id, userId })
   }
 
-  @Delete(':id')
+  @Delete()
   async deleteAffiliateNetwork(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Body() { ids }: DeleteAffiliateNetworkDto,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.affiliateNetworkService.delete({ id, userId })
+    await this.affiliateNetworkService.deleteMany({ ids, userId })
   }
 }

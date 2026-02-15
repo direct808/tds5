@@ -73,14 +73,15 @@ describe('OfferController (e2e)', () => {
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/offer/' + offer.id)
+      .delete('/api/offer')
+      .send({ ids: [offer.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const source = await prisma.offer.findFirst({
+    const source = await prisma.offer.findFirstOrThrow({
       where: { id: offer.id },
     })
 
-    expect(source).toBeNull()
+    expect(source.deletedAt).not.toBeNull()
   })
 })

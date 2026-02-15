@@ -16,6 +16,7 @@ import { Kysely } from 'kysely'
 import { GetReportDto } from '../dto/get-report.dto'
 import { groups } from '../groups'
 import { Direction, ReportResponse } from '../types'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class ReportBuilderService {
@@ -93,7 +94,7 @@ export class ReportBuilderService {
 
       const { sql: query, table } = groups[groupKey]
 
-      if (query) {
+      if (!isNullable(query)) {
         qb.selectGroupRaw(query, groupKey, table)
         continue
       }
@@ -107,7 +108,7 @@ export class ReportBuilderService {
     sortField?: string,
     sortOrder: Direction = Direction.asc,
   ): void {
-    if (!sortField) {
+    if (isNullable(sortField)) {
       return
     }
 

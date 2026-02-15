@@ -18,8 +18,9 @@ import { GLOBAL_PREFIX } from '../../shared/constants'
 import { ListOfferUseCase } from './use-cases/list-offer.use-case'
 import { ListOfferDto } from './dto/list-offer.dto'
 import { ReportResponse } from '../report/types'
+import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
 
-@ApiTags('Оферы')
+@ApiTags('Offers')
 @Controller(GLOBAL_PREFIX + 'offer')
 export class OfferController {
   constructor(
@@ -52,11 +53,11 @@ export class OfferController {
     await this.offerService.update({ ...dto, id, userId })
   }
 
-  @Delete(':id')
-  async deleteOffer(
-    @Param('id', ParseUUIDPipe) id: string,
+  @Delete()
+  async deleteOffers(
+    @Body() { ids }: DeleteOfferDto,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.offerService.delete({ id, userId })
+    await this.offerService.softDeleteMany({ ids, userId })
   }
 }

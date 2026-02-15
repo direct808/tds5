@@ -131,25 +131,16 @@ describe('DomainController (e2e)', () => {
       .intercept404(false)
       .save(prisma)
 
-    const campaign = await CampaignBuilder.createRandomActionContent()
-      .userId(userId)
-      .domainId(domain.id)
-      .save(prisma)
-
     await request(app.getHttpServer())
-      .delete('/api/domain/' + domain.id)
+      .delete('/api/domain')
+      .send({ ids: [domain.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const domainDB = await prisma.domain.findFirst({
+    const domainDB = await prisma.domain.findFirstOrThrow({
       where: { id: domain.id },
     })
 
-    const campaignDB = await prisma.campaign.findFirstOrThrow({
-      where: { id: campaign.id },
-    })
-
-    expect(domainDB).toBeNull()
-    expect(campaignDB.domainId).toBeNull()
+    expect(domainDB.deletedAt).not.toBeNull()
   })
 })

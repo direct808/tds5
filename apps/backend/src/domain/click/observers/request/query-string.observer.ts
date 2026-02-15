@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { ClickData } from '../../click-data'
 import { ClickObserver } from '../subject'
 import { ClickContext, IClickContext } from '../../shared/click-context.service'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class QueryStringObserver implements ClickObserver {
@@ -38,8 +39,8 @@ export class QueryStringObserver implements ClickObserver {
 
   private getCost(val: string | undefined): number | null {
     let costStr = val
-    costStr = costStr ? costStr.replace(',', '.') : costStr
-    const costRaw = costStr ? parseFloat(costStr) : null
+    costStr = !isNullable(costStr) ? costStr.replace(',', '.') : costStr
+    const costRaw = !isNullable(costStr) ? parseFloat(costStr) : null
 
     return Number.isNaN(costRaw) ? null : costRaw
   }

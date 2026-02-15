@@ -3,9 +3,10 @@ import {
   FormulaSummaryEnum,
   QueryTablesEnum,
 } from '../types'
-import { PrismaService } from '../../../infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { postgresOperationMap } from '../postgres-opertaion-map'
 import { ValueManager } from './value-manager'
+import { isNullable } from '@/shared/helpers'
 
 export class PostgresRawReportQueryBuilder {
   private readonly _selectMetric: {
@@ -51,7 +52,7 @@ export class PostgresRawReportQueryBuilder {
 
     let query = `select ${select.join(', ')} from click`
     const conversionQuery = this.buildConversionQuery()
-    if (conversionQuery) {
+    if (!isNullable(conversionQuery)) {
       query += ` left join (${conversionQuery}) c on c."clickId" = click.id`
     }
 
@@ -156,7 +157,7 @@ export class PostgresRawReportQueryBuilder {
   ): void {
     this._selectGroup.push({ query, alias })
     this._groupBy.push(`"${alias}"`)
-    if (table) {
+    if (!isNullable(table)) {
       this.tables.add(table)
     }
   }
@@ -231,7 +232,7 @@ export class PostgresRawReportQueryBuilder {
   ): { sqlOperator: string; preparedValue: unknown } {
     const operData = postgresOperationMap[operator]
 
-    if (!operData) {
+    if (isNullable(operData)) {
       throw new Error(`Unknown operator ${operator}`)
     }
 
@@ -283,7 +284,7 @@ export class PostgresRawReportQueryBuilder {
       ...this.values.values(),
     )
 
-    if (!result[0]) {
+    if (result[0] === undefined) {
       throw new Error('No result')
     }
     const { total, ...summary } = result[0]

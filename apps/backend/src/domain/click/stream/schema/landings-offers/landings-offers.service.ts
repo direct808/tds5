@@ -11,6 +11,7 @@ import {
 } from '../../../shared/click-context.service'
 import { OfferModel } from '@generated/prisma/models/Offer'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class LandingsOffersService {
@@ -24,8 +25,8 @@ export class LandingsOffersService {
   public handle(stream: StreamFullWithCampaign): StreamResponse {
     const clickData = this.clickContext.getClickData()
 
-    if (!stream.streamOffers || !stream.streamOffers.length) {
-      throw new Error('No streamOffers')
+    if (stream.streamOffers.length === 0) {
+      return { status: HttpStatus.NOT_FOUND, content: '' }
     }
 
     const offer = this.selectOfferService.select(stream.streamOffers)
@@ -33,7 +34,7 @@ export class LandingsOffersService {
     this.setClickData(clickData, offer)
 
     const url = this.buildOfferUrl(
-      offer.affiliateNetwork?.offerParams || undefined,
+      offer.affiliateNetwork?.offerParams ?? undefined,
       stream.campaign,
       offer.url,
       clickData,
@@ -56,7 +57,7 @@ export class LandingsOffersService {
     offerUrl: string,
     clickData: ClickData,
   ): string {
-    if (!offerParams) {
+    if (isNullable(offerParams)) {
       return offerUrl
     }
 

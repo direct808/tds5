@@ -1,9 +1,11 @@
+import { isNullable } from '@/shared/helpers'
+
 export class ValueManager {
   private readonly _values: Map<unknown, string> = new Map()
 
   public add(value: unknown): string {
     let result = this._values.get(value)
-    if (result) {
+    if (!isNullable(result)) {
       return result
     }
 

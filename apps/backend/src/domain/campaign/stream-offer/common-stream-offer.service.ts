@@ -69,7 +69,7 @@ export class CommonStreamOfferService {
   }
 
   /**
-   * Check if offer exists
+   * Check if offers exists
    * @param input
    * @param userId
    * @private
@@ -79,10 +79,10 @@ export class CommonStreamOfferService {
     userId: string,
   ): Promise<void> {
     const offerIds = arrayUnique(input.map((item) => item.offerId))
-    const offers = await this.offerRepository.getByIdsAndUserId(
-      offerIds,
+    const offers = await this.offerRepository.getByIdsAndUserId({
+      ids: offerIds,
       userId,
-    )
+    })
 
     if (offers.length !== offerIds.length) {
       throw new NotFoundException('Some offers not found')

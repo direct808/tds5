@@ -8,9 +8,14 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
-import { SourceRepository } from '../../infra/repositories/source.repository'
+} from '@/infra/repositories/utils/repository-utils'
+import { SourceRepository } from '@/infra/repositories/source.repository'
 import { SourceModel } from '@generated/prisma/models/Source'
+import { isNullable } from '@/shared/helpers'
+import {
+  SourceSoftDeletedEvent,
+  sourceSoftDeletedEventName,
+} from '@/domain/source/events/source-soft-deleted.event'
 
 type CreateArgs = {
   name: string
@@ -24,7 +29,7 @@ type UpdatedArgs = {
 }
 
 type DeleteArgs = {
-  id: string
+  ids: string[]
   userId: string
 }
 
@@ -42,9 +47,12 @@ export class SourceService {
   }
 
   public async update(args: UpdatedArgs): Promise<void> {
-    await ensureEntityExists(this.repository, args)
+    await ensureEntityExists(this.repository, {
+      ids: [args.id],
+      userId: args.userId,
+    })
 
-    if (args.name) {
+    if (!isNullable(args.name)) {
       await checkUniqueNameForUpdate(this.repository, {
         ...args,
         name: args.name,
@@ -63,9 +71,14 @@ export class SourceService {
     return this.repository.getListByUserId(userId)
   }
 
-  public async delete(args: DeleteArgs): Promise<void> {
+  public async deleteMany(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
-    await this.repository.delete(args.id)
+    await this.repository.softDeleteMany(args.ids)
+
+    this.eventEmitter.emit(
+      sourceSoftDeletedEventName,
+      new SourceSoftDeletedEvent(args.ids),
+    )
   }
 }

@@ -7,7 +7,7 @@ export type JwrPayload = {
   email: string
 }
 
-export type AppRequest = Request & { user: JwrPayload }
+export type AppRequest = Omit<Request, 'user'> & { user: JwrPayload }
 export type LoginRequest = Request & { user: LoginUser }
 export type LoginUser = Pick<UserModel, 'id' | 'email'>
 

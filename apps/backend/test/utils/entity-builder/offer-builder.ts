@@ -36,6 +36,12 @@ export class OfferBuilder {
     return this
   }
 
+  deletedAt(deletedAt: Date): this {
+    this.fields.deletedAt = deletedAt
+
+    return this
+  }
+
   async save(prisma: PrismaClient): Promise<OfferFull> {
     let affiliateNetwork: AffiliateNetworkModel | null = null
 

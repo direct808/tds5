@@ -3,6 +3,7 @@ import { ClickData } from '../../click-data'
 import { ClickObserver } from '../subject'
 import { ClickContext } from '../../shared/click-context.service'
 import { GEO_IP_PROVIDER, GeoIpService } from '../../../geo-ip/types'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class GeoIpObserver implements ClickObserver {
@@ -18,13 +19,13 @@ export class GeoIpObserver implements ClickObserver {
 
     const ip = request.ip
 
-    if (!ip) {
+    if (isNullable(ip)) {
       return
     }
 
     const geoIpData = this.geoIpService.get(ip) as ClickData
 
-    if (!geoIpData) {
+    if (isNullable(geoIpData)) {
       return
     }
 

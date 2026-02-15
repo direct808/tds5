@@ -3,7 +3,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   ConversionCreatedEvent,
   conversionCreatedEventName,
-} from '../../src/domain/conversion/events/conversion-created.event'
+} from '@/domain/conversion/events/conversion-created.event'
 
 export async function waitConversionRegistered(
   app: INestApplication,

@@ -1,5 +1,6 @@
 import { BaseFilterObject, StreamFilter } from '../../types'
 import { isV6 } from 'range_check'
+import { isNullable } from '@/shared/helpers'
 
 export interface IpV6FilterObject extends BaseFilterObject {
   type: 'ipv6'
@@ -9,7 +10,7 @@ export class IpV6Filter implements StreamFilter {
   constructor(private readonly ip: string | null | undefined) {}
 
   handle: StreamFilter['handle'] = () => {
-    if (!this.ip) {
+    if (isNullable(this.ip)) {
       return false
     }
 
