@@ -37,6 +37,12 @@ export class DomainBuilder {
     return this
   }
 
+  deletedAt(deletedAt: Date): this {
+    this.fields.deletedAt = deletedAt
+
+    return this
+  }
+
   save({ domain }: PrismaClient): Promise<DomainModel> {
     return domain.create({ data: this.fields })
   }

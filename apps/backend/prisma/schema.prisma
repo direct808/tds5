@@ -25,6 +25,7 @@ model AffiliateNetwork {
   offer       Offer[]
 
   @@index([userId])
+  @@index([deletedAt])
   @@map("affiliate_network")
 }
 
@@ -43,6 +44,7 @@ model Domain {
 
   @@unique([name])
   @@index([userId])
+  @@index([deletedAt])
   @@map("domain")
 }
 
@@ -65,6 +67,7 @@ model Campaign {
   actionStreams    Stream[]  @relation("StreamActionCampaign")
 
   @@index([userId])
+  @@index([deletedAt])
   @@map("campaign")
 }
 
@@ -178,6 +181,7 @@ model Offer {
   streamOffers       StreamOffer[]
 
   @@index([userId])
+  @@index([deletedAt])
   @@map("offer")
 }
 
@@ -192,6 +196,7 @@ model Source {
   user      User       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([userId])
+  @@index([deletedAt])
   @@map("source")
 }
 
@@ -206,11 +211,13 @@ model Stream {
   actionCampaignId String?                 @db.Uuid
   actionContent    String?
   filters          Json?
+  deletedAt        DateTime?               @db.Timestamptz()
   actionCampaign   Campaign?               @relation("StreamActionCampaign", fields: [actionCampaignId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   campaign         Campaign                @relation("StreamCampaign", fields: [campaignId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   streamOffers     StreamOffer[]
 
   @@index([campaignId])
+  @@index([deletedAt])
   @@map("stream")
 }
 

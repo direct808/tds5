@@ -32,6 +32,12 @@ export class AffiliateNetworkBuilder {
     return this
   }
 
+  deletedAt(deletedAt: Date): this {
+    this.fields.deletedAt = deletedAt
+
+    return this
+  }
+
   save(prisma: PrismaClient): Promise<AffiliateNetworkModel> {
     return prisma.affiliateNetwork.create({
       data: this.fields as AffiliateNetworkUncheckedCreateInput,

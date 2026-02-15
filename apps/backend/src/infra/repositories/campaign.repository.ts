@@ -6,7 +6,7 @@ import {
   ISoftDeleteMany,
   NameAndUserId,
 } from './utils/repository-utils'
-import { FullCampaign } from '../../domain/campaign/types'
+import { FullCampaign } from '@/domain/campaign/types'
 import {
   CampaignModel,
   CampaignUncheckedCreateInput,
@@ -65,7 +65,7 @@ export class CampaignRepository
     }
 
   public getFullBy(args: GetFullByArgs): Promise<FullCampaign | null> {
-    const where: CampaignWhereInput = { active: true }
+    const where: CampaignWhereInput = { active: true, deletedAt: null }
 
     if ('code' in args) {
       where.code = args.code
@@ -73,26 +73,29 @@ export class CampaignRepository
 
     if ('domain' in args) {
       where.indexPageDomains = {
-        some: { name: args.domain },
+        some: { name: args.domain, deletedAt: null },
       }
     }
 
     return this.prisma.campaign.findFirst({
       where,
       include: {
-        domain: true,
+        domain: { where: { deletedAt: null } },
+        source: { where: { deletedAt: null } },
         streams: {
+          where: { deletedAt: null },
           include: {
             streamOffers: {
+              where: { offer: { deletedAt: null } },
               include: {
                 offer: {
                   include: {
-                    affiliateNetwork: true,
+                    affiliateNetwork: { where: { deletedAt: null } },
                   },
                 },
               },
             },
-            actionCampaign: true,
+            actionCampaign: { where: { deletedAt: null } },
           },
         },
       },
