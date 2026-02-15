@@ -20,7 +20,7 @@ import { ListOfferDto } from './dto/list-offer.dto'
 import { ReportResponse } from '../report/types'
 import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
 
-@ApiTags('Оферы')
+@ApiTags('Offers')
 @Controller(GLOBAL_PREFIX + 'offer')
 export class OfferController {
   constructor(
@@ -54,10 +54,10 @@ export class OfferController {
   }
 
   @Delete()
-  async deleteOffer(
+  async deleteOffers(
     @Body() { ids }: DeleteOfferDto,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.offerService.delete({ ids, userId })
+    await this.offerService.softDeleteMany({ ids, userId })
   }
 }

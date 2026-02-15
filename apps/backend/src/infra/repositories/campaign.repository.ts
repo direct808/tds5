@@ -108,6 +108,8 @@ export class CampaignRepository
       where: { indexPageCampaign: { code: { in: codes } } },
     })
 
+    // todo учитывать deletedAt и active
+
     return result.map(({ name }) => name)
   }
 

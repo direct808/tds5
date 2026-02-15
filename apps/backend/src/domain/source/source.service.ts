@@ -8,10 +8,14 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
-import { SourceRepository } from '../../infra/repositories/source.repository'
+} from '@/infra/repositories/utils/repository-utils'
+import { SourceRepository } from '@/infra/repositories/source.repository'
 import { SourceModel } from '@generated/prisma/models/Source'
 import { isNullable } from '@/shared/helpers'
+import {
+  SourceSoftDeletedEvent,
+  sourceSoftDeletedEventName,
+} from '@/domain/source/events/source-soft-deleted.event'
 
 type CreateArgs = {
   name: string
@@ -71,6 +75,10 @@ export class SourceService {
     await ensureEntityExists(this.repository, args)
 
     await this.repository.softDeleteMany(args.ids)
-    // todo resect campaign cache
+
+    this.eventEmitter.emit(
+      sourceSoftDeletedEventName,
+      new SourceSoftDeletedEvent(args.ids),
+    )
   }
 }

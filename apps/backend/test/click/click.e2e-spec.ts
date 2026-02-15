@@ -57,7 +57,7 @@ describe('Click (e2e)', () => {
       })
       .save(prisma)
 
-    return ClickRequestBuilder.create(app).code('abcdif').request().expect(500)
+    return ClickRequestBuilder.create(app).code('abcdif').request().expect(404)
   })
 
   it('Should return 404 if campaign active = false', async () => {

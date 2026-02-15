@@ -25,8 +25,8 @@ export class LandingsOffersService {
   public handle(stream: StreamFullWithCampaign): StreamResponse {
     const clickData = this.clickContext.getClickData()
 
-    if (!Array.isArray(stream.streamOffers) || !stream.streamOffers.length) {
-      throw new Error('No streamOffers')
+    if (stream.streamOffers.length === 0) {
+      return { status: HttpStatus.NOT_FOUND, content: '' }
     }
 
     const offer = this.selectOfferService.select(stream.streamOffers)

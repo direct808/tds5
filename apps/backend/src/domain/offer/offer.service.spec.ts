@@ -127,7 +127,7 @@ describe('OfferService', () => {
     it('should delete an offer', async () => {
       const args = { ids: ['offer1'], userId: 'user1' }
 
-      await service.delete(args)
+      await service.softDeleteMany(args)
 
       expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
       expect(repository.softDeleteMany).toHaveBeenCalledWith(args.ids)

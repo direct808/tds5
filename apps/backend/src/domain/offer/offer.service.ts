@@ -10,9 +10,13 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
+} from '@/infra/repositories/utils/repository-utils'
 import { OfferModel } from '@generated/prisma/models/Offer'
 import { isNullable } from '@/shared/helpers'
+import {
+  OfferSoftDeletedEvent,
+  offerSoftDeletedEventName,
+} from '@/domain/offer/events/offer-soft-deleted.event'
 
 type CreateArgs = {
   name: string
@@ -94,11 +98,15 @@ export class OfferService {
    * Delete offer
    * @param args
    */
-  public async delete(args: DeleteArgs): Promise<void> {
+  public async softDeleteMany(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
     await this.repository.softDeleteMany(args.ids)
-    //todo resect campaign cache
+
+    this.eventEmitter.emit(
+      offerSoftDeletedEventName,
+      new OfferSoftDeletedEvent(args.ids),
+    )
   }
 
   /**

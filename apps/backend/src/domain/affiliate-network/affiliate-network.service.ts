@@ -9,8 +9,12 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
+} from '@/infra/repositories/utils/repository-utils'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
+import {
+  AffiliateNetworkSoftDeletedEvent,
+  affiliateNetworkSoftDeletedName,
+} from '@/domain/affiliate-network/events/affiliate-network-soft-deleted.event'
 
 type CreateArgs = {
   name: string
@@ -74,7 +78,11 @@ export class AffiliateNetworkService {
     await ensureEntityExists(this.repository, args)
 
     await this.repository.softDeleteMany(args.ids)
-    //todo resect campaign cache
+
+    this.eventEmitter.emit(
+      affiliateNetworkSoftDeletedName,
+      new AffiliateNetworkSoftDeletedEvent(args.ids),
+    )
   }
 
   public async getByIdAndUserIdOrFail(
