@@ -4,7 +4,7 @@ import {
   affiliateNetworkUpdatedEventName,
   AffiliateNetworkUpdatedEvent,
 } from './events/affiliate-network-updated.event'
-import { AffiliateNetworkRepository } from '../../infra/repositories/affiliate-network.repository'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
@@ -15,7 +15,6 @@ import {
   AffiliateNetworkSoftDeletedEvent,
   affiliateNetworkSoftDeletedName,
 } from '@/domain/affiliate-network/events/affiliate-network-soft-deleted.event'
-import { isNullable } from '@/shared/helpers'
 
 type CreateArgs = {
   name: string
