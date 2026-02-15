@@ -9,3 +9,7 @@ export function ensureDefined<T>(value: T | undefined): T {
 
   return value
 }
+
+export function isNullable(arg: unknown): arg is null | undefined {
+  return arg === undefined || arg === null
+}

@@ -25,6 +25,12 @@ export class SourceBuilder {
     return this
   }
 
+  deletedAt(deletedAt: Date): this {
+    this.fields.deletedAt = deletedAt
+
+    return this
+  }
+
   save(prisma: PrismaClient): Promise<SourceModel> {
     return prisma.source.create({ data: this.fields })
   }

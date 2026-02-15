@@ -50,7 +50,7 @@ describe('CampaignService', () => {
 
     expect(ensureEntityExists).toHaveBeenCalledWith(
       sourceRepository,
-      { userId: 'user-1', id: 'source-123' },
+      { userId: 'user-1', ids: ['source-123'] },
       'Source not found',
     )
   })

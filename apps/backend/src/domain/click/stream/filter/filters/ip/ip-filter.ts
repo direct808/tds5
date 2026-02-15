@@ -1,5 +1,6 @@
 import { BaseFilterObject, StreamFilter } from '../../types'
 import { isIP } from 'class-validator'
+import { isNullable } from '@/shared/helpers'
 
 export interface IpFilterObject extends BaseFilterObject {
   type: 'ip'
@@ -17,7 +18,7 @@ export class IpFilter implements StreamFilter {
       return false
     }
 
-    if (!this.ip) {
+    if (isNullable(this.ip)) {
       return false
     }
 
@@ -49,12 +50,10 @@ export class IpFilter implements StreamFilter {
     return ip.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet), 0)
   }
 
-  private splitRange(range: string): [string, string] | false {
+  private splitRange(range: string): [string, string] | undefined {
     const res = range.split('-').map((item) => item.trim())
     if (res.length === 2) {
       return res as [string, string]
     }
-
-    return false
   }
 }

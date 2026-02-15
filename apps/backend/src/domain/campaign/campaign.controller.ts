@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -17,6 +18,8 @@ import { GLOBAL_PREFIX } from '../../shared/constants'
 import { ReportResponse } from '../report/types'
 import { ListCampaignDto } from './dto/list-campaign.dto'
 import { ListCampaignUseCase } from './use-cases/list-campaign.use-case'
+import { DeleteCampaignDto } from '@/domain/campaign/dto/delete-campaign.dto'
+import { DeleteCampaignUseCase } from '@/domain/campaign/use-cases/delete-campaign.use-case'
 
 @Controller(GLOBAL_PREFIX + 'campaign')
 export class CampaignController {
@@ -24,6 +27,7 @@ export class CampaignController {
     private readonly createCampaignUseCase: CreateCampaignUseCase,
     private readonly updateCampaignUseCase: UpdateCampaignUseCase,
     private readonly listCampaignUseCase: ListCampaignUseCase,
+    private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
   ) {}
 
   @Post()
@@ -49,5 +53,13 @@ export class CampaignController {
     @UserId() userId: string,
   ): Promise<ReportResponse> {
     return this.listCampaignUseCase.execute(args, userId)
+  }
+
+  @Delete()
+  async deleteCampaign(
+    @Body() { ids }: DeleteCampaignDto,
+    @UserId() userId: string,
+  ): Promise<void> {
+    await this.deleteCampaignUseCase.execute(ids, userId)
   }
 }

@@ -79,14 +79,15 @@ describe('AffiliateNetworkController (e2e)', () => {
       .save(prisma)
 
     await request(app.getHttpServer())
-      .delete('/api/affiliate-network/' + affiliateNetwork.id)
+      .delete('/api/affiliate-network')
+      .send({ ids: [affiliateNetwork.id] })
       .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
-    const deletedSource = await prisma.affiliateNetwork.findFirst({
+    const deletedSource = await prisma.affiliateNetwork.findFirstOrThrow({
       where: { id: affiliateNetwork.id },
     })
 
-    expect(deletedSource).toBeNull()
+    expect(deletedSource.deletedAt).not.toBeNull()
   })
 })

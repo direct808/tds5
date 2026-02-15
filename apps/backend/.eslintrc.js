@@ -51,6 +51,8 @@ module.exports = {
     '@typescript-eslint/require-await': 'error',
     'max-depth': ['warn', 3],
     complexity: ['warn', 10],
+    '@typescript-eslint/strict-boolean-expressions': 'warn',
+    eqeqeq: ['warn', 'always'],
   },
   overrides: [
     {

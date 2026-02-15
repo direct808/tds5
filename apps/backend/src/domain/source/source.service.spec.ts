@@ -25,7 +25,7 @@ describe('SourceService', () => {
           useValue: {
             create: jest.fn(),
             update: jest.fn(),
-            delete: jest.fn(),
+            softDeleteMany: jest.fn(),
             getListByUserId: jest.fn(),
           },
         },
@@ -55,7 +55,10 @@ describe('SourceService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
+        ids: ['123'],
+        userId: 'Userid',
+      })
       expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
       expect(repository.update).toHaveBeenCalledWith('123', args)
     })
@@ -65,7 +68,10 @@ describe('SourceService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
+      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
+        ids: ['123'],
+        userId: 'Userid',
+      })
       expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
       expect(repository.update).toHaveBeenCalledWith('123', args)
     })
@@ -86,12 +92,12 @@ describe('SourceService', () => {
 
   describe('delete', () => {
     it('should ensure entity exists and call delete', async () => {
-      const args = { id: 'del123', userId: 'Userid' }
+      const args = { ids: ['del123'], userId: 'Userid' }
 
-      await service.delete(args)
+      await service.deleteMany(args)
 
       expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
-      expect(repository.delete).toHaveBeenCalledWith(args.id)
+      expect(repository.softDeleteMany).toHaveBeenCalledWith(args.ids)
     })
   })
 })

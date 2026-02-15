@@ -42,12 +42,17 @@ describe('LandingsOffersService', () => {
   })
 
   describe('handle', () => {
-    it('should throw error if streamOffers is empty', () => {
+    it('should be not found if streamOffers is empty', () => {
       const stream: StreamFullWithCampaign = {
         streamOffers: [] as StreamOfferFull[],
       } as StreamFullWithCampaign
 
-      expect(() => service.handle(stream)).toThrow('No streamOffers')
+      const result = service.handle(stream)
+
+      expect(result).toStrictEqual({
+        status: HttpStatus.NOT_FOUND,
+        content: '',
+      })
     })
 
     it('should select offer and build redirect url', () => {

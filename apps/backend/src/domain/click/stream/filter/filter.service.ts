@@ -56,7 +56,7 @@ export class FilterService {
   }
 
   private processExclude(result: boolean, exclude?: boolean): boolean {
-    return exclude ? !result : result
+    return Boolean(exclude) ? !result : result
   }
 
   private handle(filter: FilterObjectExtended): MaybePromise<boolean> {

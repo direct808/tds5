@@ -6,9 +6,12 @@ import { faker } from '@faker-js/faker/.'
 import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
-import { PrismaService } from '../src/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum, StreamSchemaEnum } from '@generated/prisma/enums'
 import { DomainBuilder } from './utils/entity-builder/domain-builder'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { SourceBuilder } from './utils/entity-builder/source-builder'
+import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-network-builder'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -581,6 +584,130 @@ describe('CampaignController (e2e)', () => {
 
       expect(streamOfferBeforeDelete).not.toBeNull()
       expect(streamOfferAfterDelete).toBeNull()
+    })
+  })
+
+  describe('getFullBy', () => {
+    it('code', async () => {
+      const date = new Date()
+      const deletedSource = await SourceBuilder.create()
+        .name('Source')
+        .userId(userId)
+        .deletedAt(date)
+        .save(prisma)
+
+      const deletedOffer = await OfferBuilder.create()
+        .name('Offer')
+        .url('url')
+        .userId(userId)
+        .deletedAt(date)
+        .save(prisma)
+
+      const deletedAffiliateNetwork = await AffiliateNetworkBuilder.create()
+        .name('Offer')
+        .userId(userId)
+        .deletedAt(date)
+        .save(prisma)
+
+      const deletedDomain = await DomainBuilder.create()
+        .name('Offer')
+        .userId(userId)
+        .deletedAt(date)
+        .save(prisma)
+
+      const deletedCampaign = await CampaignBuilder.create()
+        .name('Deleted campaign')
+        .code('del_camp')
+        .userId(userId)
+        .deletedAt(date)
+        .save(prisma)
+
+      const created = await CampaignBuilder.create()
+        .name('Campaign')
+        .code('abcdif')
+        .userId(userId)
+        .sourceId(deletedSource.id)
+        .domainId(deletedDomain.id)
+        .addStreamTypeOffers((stream) =>
+          stream
+            .name('Stream 1')
+            .addOffer((streamOffer) =>
+              streamOffer.percent(100).offerId(deletedOffer.id),
+            ),
+        )
+        .addStreamTypeOffers((stream) =>
+          stream
+            .name('Stream 2')
+            .addOffer((streamOffer) =>
+              streamOffer
+                .percent(100)
+                .createOffer((offer) =>
+                  offer
+                    .name('Offer')
+                    .url('url')
+                    .userId(userId)
+                    .affiliateNetworkId(deletedAffiliateNetwork.id),
+                ),
+            ),
+        )
+        .addStreamTypeAction((stream) =>
+          stream.name('Stream 3').actionCampaignId(deletedCampaign.id),
+        )
+        .addStreamTypeAction((stream) =>
+          stream.name('Deleted stream').deletedAt(date),
+        )
+        .save(prisma)
+
+      const campaignRepository = app.get(CampaignRepository)
+      const campaign = await campaignRepository.getFullBy({
+        code: created.code,
+      })
+      const campaign2 = await campaignRepository.getFullBy({ code: 'del_camp' })
+      if (!campaign) {
+        throw new Error('Campaign not found')
+      }
+      // console.log(inspect(campaign, false, 5))
+
+      expect(campaign2).toBeNull()
+      expect(campaign.source).toBeNull()
+      expect(campaign.domain).toBeNull()
+      expect(
+        campaign.streams.find((stream) => stream.name === 'Stream 1')!
+          .streamOffers.length,
+      ).toBe(0)
+      expect(
+        campaign.streams.find((stream) => stream.name === 'Stream 2')!
+          .streamOffers[0]!.offer.affiliateNetwork,
+      ).toBeNull()
+      expect(
+        campaign.streams.find((stream) => stream.name === 'Stream 3')!
+          .actionCampaign,
+      ).toBeNull()
+      expect(
+        campaign.streams.find((stream) => stream.name === 'Deleted stream'),
+      ).toBeUndefined()
+    })
+
+    it('domain', async () => {
+      const date = new Date()
+      const domainName = 'domainName'
+
+      await CampaignBuilder.create()
+        .name('Campaign')
+        .code('abcdif')
+        .userId(userId)
+        .addIndexPageDomain((domain) =>
+          domain.deletedAt(date).userId(userId).name(domainName),
+        )
+
+        .save(prisma)
+
+      const campaignRepository = app.get(CampaignRepository)
+      const campaign = await campaignRepository.getFullBy({
+        domain: domainName,
+      })
+
+      expect(campaign).toBeNull()
     })
   })
 })

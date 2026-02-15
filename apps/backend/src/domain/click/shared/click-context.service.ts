@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import {
-  RequestAdapter,
-  ResponseAdapter,
-} from '../../../shared/request-adapter'
+import { RequestAdapter, ResponseAdapter } from '@/shared/request-adapter'
 import { ClsService, ClsStore } from 'nestjs-cls'
 import { ClickData } from '../click-data'
 
@@ -27,7 +24,7 @@ export class ClickContext implements IClickContext {
 
   public getRequestAdapter: IClickContext['getRequestAdapter'] = () => {
     const adapter = this.cls.get('requestAdapter')
-    if (!adapter) {
+    if (adapter === undefined) {
       throw new Error('No requestAdapter')
     }
 
@@ -44,7 +41,7 @@ export class ClickContext implements IClickContext {
 
   getClickData(): ClickData {
     const clickData = this.cls.get('clickData')
-    if (!clickData) {
+    if (clickData === undefined) {
       throw new Error('No clickData')
     }
 
@@ -57,7 +54,7 @@ export class ClickContext implements IClickContext {
 
   getResponseAdapter(): ResponseAdapter {
     const responseAdapter = this.cls.get('responseAdapter')
-    if (!responseAdapter) {
+    if (responseAdapter === undefined) {
       throw new Error('No responseAdapter')
     }
 

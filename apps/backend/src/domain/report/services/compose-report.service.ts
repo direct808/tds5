@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ensureDefined } from '../../../shared/helpers'
+import { ensureDefined, isNullable } from '@/shared/helpers'
 import { ReportResponse } from '../types'
 
 type EntityItem = {
@@ -86,7 +86,7 @@ export class ComposeReportService {
     { sortField, sortOrder }: Args,
     rows: Record<string, string>[],
   ): Record<string, string>[] {
-    if (!sortField) {
+    if (isNullable(sortField)) {
       return rows
     }
 

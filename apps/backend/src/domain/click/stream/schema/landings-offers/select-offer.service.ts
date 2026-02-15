@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import * as weighted from 'weighted'
-import { OfferFull, StreamOfferFull } from '../../../../campaign/types'
+import { OfferFull, StreamOfferFull } from '@/domain/campaign/types'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class SelectOfferService {
@@ -9,7 +10,7 @@ export class SelectOfferService {
       throw new Error('No streamOffers')
     }
 
-    if (streamOffers.length === 1 && streamOffers[0]) {
+    if (streamOffers.length === 1 && streamOffers[0] !== undefined) {
       return this.getOffer(streamOffers[0])
     }
 
@@ -22,7 +23,7 @@ export class SelectOfferService {
   }
 
   private getOffer(streamOffers: StreamOfferFull): OfferFull {
-    if (!streamOffers.offer) {
+    if (isNullable(streamOffers.offer)) {
       throw new Error('No offer in streamOffers')
     }
 

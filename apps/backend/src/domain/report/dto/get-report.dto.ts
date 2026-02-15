@@ -14,6 +14,7 @@ import {
 } from 'class-validator'
 import { Direction, InputFilterData, ReportRangeEnum } from '../types'
 import { Transform, TransformFnParams } from 'class-transformer'
+import { isNullable } from '@/shared/helpers'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class GetReportDto {
@@ -49,13 +50,13 @@ export class GetReportDto {
 
   @Min(0)
   @IsInt()
-  @Transform(({ value }) => (value ? +value : value))
+  @Transform(({ value }) => (!isNullable(value) ? +value : value))
   @ApiPropertyOptional()
   offset: number = 0
 
   @IsPositive()
   @IsInt()
-  @Transform(({ value }) => (value ? +value : value))
+  @Transform(({ value }) => (!isNullable(value) ? +value : value))
   @Max(1000)
   @ApiPropertyOptional()
   declare limit: number

@@ -2,6 +2,7 @@ import { PostgresRawReportQueryBuilder } from './postgres-raw-report-query-build
 import { FilterOperatorEnum, ReportRangeEnum } from '../types'
 import { DateTime } from 'luxon'
 import { BadRequestException } from '@nestjs/common'
+import { isNullable } from '@/shared/helpers'
 
 type RangeArgs = {
   qb: PostgresRawReportQueryBuilder
@@ -192,8 +193,8 @@ export class RangeProcess {
     value: string | undefined,
     name: string,
   ): asserts value is string {
-    if (!value) {
-      throw new Error(`Value for ${name} is empty`)
+    if (isNullable(value)) {
+      throw new Error(`Value for ${name} is not string`)
     }
   }
 }

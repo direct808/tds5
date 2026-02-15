@@ -8,7 +8,7 @@ import {
   checkUniqueNameForUpdate,
   ensureEntityExists,
   getIdsForDelete,
-  IGetEntityByIdAndUserId,
+  IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
 } from './repository-utils'
 
@@ -87,11 +87,11 @@ describe('repository-utils', () => {
 
   describe('checkEntityExists', () => {
     it('should throw NotFoundException when entity does not exist', async () => {
-      const mockRepository: IGetEntityByIdAndUserId<any> = {
-        getByIdAndUserId: jest.fn().mockResolvedValue(null),
+      const mockRepository: IGetEntitiesByIdsAndUserId<any> = {
+        getByIdsAndUserId: jest.fn().mockResolvedValue([]),
       }
 
-      const args = { id: '1', userId: 'user1' }
+      const args = { ids: ['1'], userId: 'user1' }
 
       await expect(ensureEntityExists(mockRepository, args)).rejects.toThrow(
         BadRequestException,
@@ -99,13 +99,13 @@ describe('repository-utils', () => {
     })
 
     it('should not throw when entity exists', async () => {
-      const mockRepository: IGetEntityByIdAndUserId<any> = {
-        getByIdAndUserId: jest
+      const mockRepository: IGetEntitiesByIdsAndUserId<any> = {
+        getByIdsAndUserId: jest
           .fn()
-          .mockResolvedValue({ id: '1', userId: 'user1' }),
+          .mockResolvedValue([{ id: '1', userId: 'user1' }]),
       }
 
-      const args = { id: '1', userId: 'user1' }
+      const args = { ids: ['1'], userId: 'user1' }
 
       await expect(
         ensureEntityExists(mockRepository, args),
@@ -113,11 +113,11 @@ describe('repository-utils', () => {
     })
 
     it('should throw NotFoundException when entity does not exist with message', async () => {
-      const mockRepository: IGetEntityByIdAndUserId<any> = {
-        getByIdAndUserId: jest.fn().mockResolvedValue(null),
+      const mockRepository: IGetEntitiesByIdsAndUserId<any> = {
+        getByIdsAndUserId: jest.fn().mockResolvedValue([]),
       }
 
-      const args = { id: '1', userId: 'user1' }
+      const args = { ids: ['1'], userId: 'user1' }
 
       await expect(
         ensureEntityExists(mockRepository, args, 'Error message'),

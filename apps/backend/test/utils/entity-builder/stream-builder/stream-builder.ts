@@ -32,6 +32,12 @@ export abstract class StreamBuilder {
     return this
   }
 
+  deletedAt(deletedAt: Date): this {
+    this.fields.deletedAt = deletedAt
+
+    return this
+  }
+
   async save(prisma: PrismaClient, campaignId: string): Promise<StreamFull> {
     const res = await prisma.stream.create({
       data: { ...this.fields, campaignId: campaignId },

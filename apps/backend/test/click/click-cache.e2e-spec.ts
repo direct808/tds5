@@ -108,6 +108,46 @@ describe('Click-cache (e2e)', () => {
     expect(getFullBy).toHaveBeenCalledTimes(4)
   })
 
+  it('Checks reset cache if campaign deleted', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .addIndexPageDomain((builder) => builder.name(domainName).userId(userId))
+      .save(prisma)
+
+    // Act
+    const { code } = campaign
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).not.toBeNull()
+
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .waitRegister()
+      .request()
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+
+    await request(app.getHttpServer())
+      .delete('/api/campaign')
+      .auth(accessToken, { type: 'bearer' })
+      .send({ ids: [campaign.id] })
+      .expect(200)
+
+    await setTimeout(100)
+
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).toBeNull()
+    await ClickRequestBuilder.create(app).code(code).request().expect(404)
+    expect(getFullBy).toHaveBeenCalledTimes(3)
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .request()
+      .expect(404)
+    expect(getFullBy).toHaveBeenCalledTimes(4)
+  })
+
   it('Checks reset cache if source updated', async () => {
     const source = await SourceBuilder.create()
       .name('Source 1')
@@ -133,6 +173,42 @@ describe('Click-cache (e2e)', () => {
       .patch('/api/source/' + source.id)
       .auth(accessToken, { type: 'bearer' })
       .send({ name: 'updated name' })
+      .expect(200)
+
+    await setTimeout(100)
+
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).toBeNull()
+    expect(await cache.sMembers(sourceCacheKey(source.id))).toHaveLength(0)
+
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+  })
+
+  it('Checks reset cache if source deleted', async () => {
+    const source = await SourceBuilder.create()
+      .name('Source 1')
+      .userId(userId)
+      .save(prisma)
+
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .sourceId(source.id)
+      .save(prisma)
+
+    // Act
+    const { code } = campaign
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).not.toBeNull()
+    expect(await cache.sMembers(sourceCacheKey(source.id))).toHaveLength(1)
+
+    await clickAndWaitRegister(app, code)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await request(app.getHttpServer())
+      .delete('/api/source')
+      .send({ ids: [source.id] })
+      .auth(accessToken, { type: 'bearer' })
       .expect(200)
 
     await setTimeout(100)
@@ -201,6 +277,63 @@ describe('Click-cache (e2e)', () => {
     expect(getFullBy).toHaveBeenCalledTimes(2)
   })
 
+  it('Checks reset cache if affiliateNetwork deleted', async () => {
+    const affiliateNetwork = await AffiliateNetworkBuilder.create()
+      .name('Network 1')
+      .userId(userId)
+      .save(prisma)
+
+    await CampaignBuilder.create()
+      .name('Test campaign 1')
+      .code(code)
+      .userId(userId)
+      .addStreamTypeOffers((stream) => {
+        stream
+          .name('Stream 1')
+          .addOffer((offer) =>
+            offer
+              .percent(100)
+              .createOffer((offer) =>
+                offer
+                  .name('offer')
+                  .url(faker.internet.url())
+                  .userId(userId)
+                  .affiliateNetworkId(affiliateNetwork.id),
+              ),
+          )
+      })
+      .save(prisma)
+
+    // Act
+    await clickAndWaitRegister(app, code).expect(302)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).not.toBeNull()
+    expect(
+      await cache.sMembers(affiliateNetworkCacheKey(affiliateNetwork.id)),
+    ).toHaveLength(1)
+
+    await clickAndWaitRegister(app, code).expect(302)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await request(app.getHttpServer())
+      .delete('/api/affiliate-network')
+      .send({ ids: [affiliateNetwork.id] })
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    await setTimeout(100)
+
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).toBeNull()
+    expect(
+      await cache.sMembers(affiliateNetworkCacheKey(affiliateNetwork.id)),
+    ).toHaveLength(0)
+
+    await clickAndWaitRegister(app, code).expect(302)
+
+    // Assert
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+  })
+
   it('Checks reset cache if offer updated', async () => {
     const offer = await OfferBuilder.create()
       .name('Offer 1')
@@ -238,6 +371,46 @@ describe('Click-cache (e2e)', () => {
     expect(await cache.sMembers(offerCacheKey(offer.id))).toHaveLength(0)
 
     await clickAndWaitRegister(app, code).expect(302)
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+  })
+
+  it('Checks reset cache if offer deleted', async () => {
+    const offer = await OfferBuilder.create()
+      .name('Offer 1')
+      .userId(userId)
+      .url(faker.internet.url())
+      .save(prisma)
+
+    await CampaignBuilder.create()
+      .name('Test campaign 1')
+      .code(code)
+      .userId(userId)
+      .addStreamTypeOffers((stream) => {
+        stream
+          .name('Stream 1')
+          .addOffer((builder) => builder.percent(100).offerId(offer.id))
+      })
+      .save(prisma)
+
+    await clickAndWaitRegister(app, code).expect(302)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).not.toBeNull()
+    expect(await cache.sMembers(offerCacheKey(offer.id))).toHaveLength(1)
+
+    await clickAndWaitRegister(app, code).expect(302)
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await request(app.getHttpServer())
+      .delete('/api/offer')
+      .send({ ids: [offer.id] })
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    await setTimeout(100)
+    expect(await cache.get(fullCampaignCodeCacheKey(code))).toBeNull()
+    expect(await cache.sMembers(offerCacheKey(offer.id))).toHaveLength(0)
+
+    await clickAndWaitRegister(app, code).expect(404)
     expect(getFullBy).toHaveBeenCalledTimes(2)
   })
 
@@ -279,6 +452,49 @@ describe('Click-cache (e2e)', () => {
       .domain(domainName)
       .waitRegister()
       .request()
+    expect(getFullBy).toHaveBeenCalledTimes(2)
+  })
+
+  it('Checks reset cache if domain deleted', async () => {
+    const campaign = await CampaignBuilder.createRandomActionContent()
+      .userId(userId)
+      .save(prisma)
+
+    const domain = await DomainBuilder.create()
+      .name(domainName)
+      .indexPageCampaignId(campaign.id)
+      .userId(userId)
+      .save(prisma)
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .waitRegister()
+      .request()
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+    expect(
+      await cache.get(fullCampaignDomainCacheKey(domainName)),
+    ).not.toBeNull()
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .waitRegister()
+      .request()
+    expect(getFullBy).toHaveBeenCalledTimes(1)
+
+    await request(app.getHttpServer())
+      .delete('/api/domain')
+      .auth(accessToken, { type: 'bearer' })
+      .send({ ids: [domain.id] })
+      .expect(200)
+
+    await setTimeout(100)
+
+    expect(await cache.get(fullCampaignDomainCacheKey(domainName))).toBeNull()
+
+    await ClickRequestBuilder.create(app)
+      .domain(domainName)
+      .request()
+      .expect(404)
     expect(getFullBy).toHaveBeenCalledTimes(2)
   })
 

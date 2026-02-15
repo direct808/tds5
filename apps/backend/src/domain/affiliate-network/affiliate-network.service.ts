@@ -4,13 +4,17 @@ import {
   affiliateNetworkUpdatedEventName,
   AffiliateNetworkUpdatedEvent,
 } from './events/affiliate-network-updated.event'
-import { AffiliateNetworkRepository } from '../../infra/repositories/affiliate-network.repository'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
+} from '@/infra/repositories/utils/repository-utils'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
+import {
+  AffiliateNetworkSoftDeletedEvent,
+  affiliateNetworkSoftDeletedName,
+} from '@/domain/affiliate-network/events/affiliate-network-soft-deleted.event'
 
 type CreateArgs = {
   name: string
@@ -26,7 +30,7 @@ type UpdatedArgs = {
 }
 
 type DeleteArgs = {
-  id: string
+  ids: string[]
   userId: string
 }
 
@@ -46,9 +50,12 @@ export class AffiliateNetworkService {
   }
 
   public async update(args: UpdatedArgs): Promise<void> {
-    await ensureEntityExists(this.repository, args)
+    await ensureEntityExists(this.repository, {
+      ids: [args.id],
+      userId: args.userId,
+    })
 
-    if (args.name) {
+    if (args.name !== undefined) {
       await checkUniqueNameForUpdate(this.repository, {
         ...args,
         name: args.name,
@@ -67,19 +74,27 @@ export class AffiliateNetworkService {
     return this.repository.getListByUserId(userId)
   }
 
-  public async delete(args: DeleteArgs): Promise<void> {
+  public async deleteMany(args: DeleteArgs): Promise<void> {
     await ensureEntityExists(this.repository, args)
 
-    await this.repository.delete(args.id)
+    await this.repository.softDeleteMany(args.ids)
+
+    this.eventEmitter.emit(
+      affiliateNetworkSoftDeletedName,
+      new AffiliateNetworkSoftDeletedEvent(args.ids),
+    )
   }
 
   public async getByIdAndUserIdOrFail(
     id: string,
     userId: string,
   ): Promise<AffiliateNetworkModel> {
-    const result = await this.repository.getByIdAndUserId({ id, userId })
+    const [result] = await this.repository.getByIdsAndUserId({
+      ids: [id],
+      userId,
+    })
 
-    if (!result) {
+    if (result === undefined) {
       throw new Error('No result')
     }
 

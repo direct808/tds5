@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import {
-  IGetEntityByIdAndUserId,
+  IDeleteMany,
+  IGetEntitiesByIdsAndUserId,
   IGetEntityByNameAndUserId,
+  ISoftDeleteMany,
   NameAndUserId,
 } from './utils/repository-utils'
 import { PrismaService } from '../prisma/prisma.service'
@@ -11,7 +13,9 @@ import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork
 export class AffiliateNetworkRepository
   implements
     IGetEntityByNameAndUserId<AffiliateNetworkModel>,
-    IGetEntityByIdAndUserId<AffiliateNetworkModel>
+    IGetEntitiesByIdsAndUserId<AffiliateNetworkModel>,
+    IDeleteMany,
+    ISoftDeleteMany
 {
   constructor(private prisma: PrismaService) {}
 
@@ -34,13 +38,12 @@ export class AffiliateNetworkRepository
     })
   }
 
-  public getByIdAndUserId(
-    args: Pick<AffiliateNetworkModel, 'id' | 'userId'>,
-  ): Promise<AffiliateNetworkModel | null> {
-    return this.prisma.affiliateNetwork.findFirst({
-      where: { id: args.id, userId: args.userId },
-    })
-  }
+  public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<AffiliateNetworkModel>['getByIdsAndUserId'] =
+    (args) => {
+      return this.prisma.affiliateNetwork.findMany({
+        where: { id: { in: args.ids }, userId: args.userId },
+      })
+    }
 
   public getListByUserId(userId: string): Promise<AffiliateNetworkModel[]> {
     return this.prisma.affiliateNetwork.findMany({ where: { userId } })
@@ -53,8 +56,17 @@ export class AffiliateNetworkRepository
     await this.prisma.affiliateNetwork.update({ data, where: { id } })
   }
 
-  public async delete(id: string): Promise<void> {
-    await this.prisma.affiliateNetwork.delete({ where: { id } })
+  public deleteMany: IDeleteMany['deleteMany'] = async (ids) => {
+    await this.prisma.affiliateNetwork.deleteMany({
+      where: { id: { in: ids } },
+    })
+  }
+
+  public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {
+    await this.prisma.affiliateNetwork.updateMany({
+      where: { id: { in: ids } },
+      data: { deletedAt: new Date() },
+    })
   }
 
   public list(userId: string): Promise<AffiliateNetworkModel[]> {

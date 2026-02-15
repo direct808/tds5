@@ -18,6 +18,7 @@ import { GLOBAL_PREFIX } from '../../shared/constants'
 import { ListSourceUseCase } from './ues-cases/list-source.use-case'
 import { ListSourceDto } from './dto/list-source.dto'
 import { ReportResponse } from '../report/types'
+import { DeleteSourceDto } from '@/domain/source/dto/delete-source.dto'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')
@@ -52,11 +53,11 @@ export class SourceController {
     await this.sourceService.update({ ...dto, id, userId })
   }
 
-  @Delete(':id')
+  @Delete()
   async deleteSource(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Body() { ids }: DeleteSourceDto,
     @UserId() userId: string,
   ): Promise<void> {
-    await this.sourceService.delete({ id, userId })
+    await this.sourceService.deleteMany({ ids, userId })
   }
 }

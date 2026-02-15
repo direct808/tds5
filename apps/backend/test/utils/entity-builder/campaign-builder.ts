@@ -18,6 +18,9 @@ import { DomainModel } from '@generated/prisma/models/Domain'
 export type CampaignBuilderResult = CampaignGetPayload<{
   include: {
     indexPageDomains: true
+    source: true
+    user: true
+    domain: true
     streams: {
       include: {
         streamOffers: {
@@ -26,9 +29,6 @@ export type CampaignBuilderResult = CampaignGetPayload<{
         actionCampaign: true
       }
     }
-    source: true
-    user: true
-    domain: true
   }
 }>
 
@@ -170,6 +170,12 @@ export class CampaignBuilder {
 
   sourceId(value: string): this {
     this.fields.sourceId = value
+
+    return this
+  }
+
+  deletedAt(deletedAt: Date): this {
+    this.fields.deletedAt = deletedAt
 
     return this
   }
