@@ -81,7 +81,7 @@ export class ConversionRegisterUseCase {
     }
 
     const click = await this.clickRepository.getById(clickId)
-    if (!click) {
+    if (isNullable(click)) {
       this.logger.debug(`Unknown clickId ${clickId}`)
 
       return
