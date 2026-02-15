@@ -34,7 +34,7 @@ export class CampaignCacheService {
   private async getCampaignFromDb(args: GetFullByArgs): Promise<FullCampaign> {
     const campaign = await this.campaignRepository.getFullBy(args)
 
-    if (campaign === null) {
+    if (isNullable(campaign)) {
       this.throwNotFound()
     }
     await this.setAdditionalCache(campaign)

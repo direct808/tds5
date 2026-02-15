@@ -52,7 +52,7 @@ export class ConversionRegisterUseCase {
       tid,
     )
 
-    if (existsConversion !== null) {
+    if (!isNullable(existsConversion)) {
       data.previousStatus = existsConversion.status
 
       await this.conversionRepository.update(existsConversion.id, data)
