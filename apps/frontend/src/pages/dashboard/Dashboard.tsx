@@ -1,4 +1,4 @@
-import { auth } from '../auth/auth.ts'
+import { authService } from '../../services/authService.ts'
 import { useNavigate } from 'react-router-dom'
 import { Typography } from '@mui/material'
 
@@ -18,7 +18,7 @@ export default function Dashboard() {
       Dashboard
       <button
         onClick={() => {
-          auth.logout()
+          authService.logout()
           navigate('/login')
         }}
       >

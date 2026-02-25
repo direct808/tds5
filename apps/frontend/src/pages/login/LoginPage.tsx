@@ -9,9 +9,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { auth } from './auth.ts'
+import { authService } from '../../services/authService.ts'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/api.ts'
+import { authApi } from '../../services/api/authApi.ts'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('admin@admin.ru')
@@ -25,10 +25,10 @@ export default function LoginForm() {
     setIsLoading(true)
     setError('')
 
-    await api
+    await authApi
       .login(email, password)
       .then((accessToken) => {
-        auth.setToken(accessToken)
+        authService.setToken(accessToken)
         navigate('/admin')
       })
       .catch((e) => setError(e.message))
@@ -37,7 +37,7 @@ export default function LoginForm() {
 
   return (
     <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ p: 4, mt: 0 }}>
+      <Paper elevation={3} sx={{ p: 4, mt: 10 }}>
         <Typography variant="h5" align="center" gutterBottom>
           Login
         </Typography>

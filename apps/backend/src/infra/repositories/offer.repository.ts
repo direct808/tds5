@@ -50,7 +50,7 @@ export class OfferRepository
     args: Pick<OfferModel, 'id' | 'userId'>,
   ): Promise<OfferModel | null> {
     return this.prisma.offer.findFirst({
-      where: { id: args.id, userId: args.userId },
+      where: { id: args.id, userId: args.userId, deletedAt: null },
     })
   }
 
@@ -62,7 +62,7 @@ export class OfferRepository
     }
 
   public list(userId: string): Promise<OfferModel[]> {
-    return this.prisma.offer.findMany({ where: { userId } })
+    return this.prisma.offer.findMany({ where: { userId, deletedAt: null } })
   }
 
   public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {

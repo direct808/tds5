@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateAffiliateNetworkDto {
   @ApiProperty()
@@ -7,9 +7,8 @@ export class CreateAffiliateNetworkDto {
   @IsNotEmpty()
   declare name: string
 
-  @ApiProperty()
+  @ApiPropertyOptional({ type: 'string' })
   @IsString()
   @IsOptional()
-  @IsNotEmpty()
   declare offerParams: string | null
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ReportResponse } from '../../report/types'
 import { EntityReportUseCase } from '../../report/use-cases/entity-report-use-case.service'
-import { OfferRepository } from '../../../infra/repositories/offer.repository'
+import { OfferRepository } from '@/infra/repositories/offer.repository'
 import { ListOfferDto } from '../dto/list-offer.dto'
 
 @Injectable()

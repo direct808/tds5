@@ -8,18 +8,25 @@
     "build": "tsc -b && vite build",
     "lint": "eslint . --fix",
     "preview": "vite preview",
-    "api:gen": "npx @hey-api/openapi-ts -i ../backend/swagger.json -o src/shared/api"
+    "api:gen": "npx @hey-api/openapi-ts -i ../backend/swagger.json -o src/shared/api/generated",
+    "api:gen:zod": "npx @hey-api/openapi-ts -i ../backend/swagger.json -o src/shared/api/generated2 -p zod"
   },
   "dependencies": {
+    "@fontsource/roboto": "^5.2.9",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
     "@mui/x-data-grid": "^8.27.0",
+    "@tanstack/react-query": "^5.90.21",
     "axios": "^1.13.4",
+    "i18next": "^25.8.11",
     "qs": "^6.14.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",
-    "react-router-dom": "^7.13.0"
+    "react-router-dom": "^7.13.0",
+    "zod": "^4.3.6",
+    "zod-i18n-map": "^2.27.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",

@@ -11,16 +11,11 @@ import {
   Toolbar,
   Typography,
 } from '@mui/material'
-import { AdfScanner, Dashboard } from '@mui/icons-material'
+import { appMenu } from '../services/appMenu.ts'
 
 const drawerWidth = 240
 
 export default function AdminLayout() {
-  const menu = [
-    { title: 'Dashboard', icon: Dashboard, link: '/' },
-    { title: 'Offers', icon: AdfScanner, link: '/admin/offers' },
-  ]
-
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar
@@ -47,7 +42,7 @@ export default function AdminLayout() {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {menu.map(({ title, link, icon: Icon }) => (
+            {appMenu.map(({ title, link, icon: Icon }) => (
               <ListItem key={title} disablePadding>
                 <ListItemButton component={Link} to={link}>
                   <ListItemIcon>

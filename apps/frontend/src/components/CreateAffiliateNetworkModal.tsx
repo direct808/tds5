@@ -9,16 +9,20 @@ import {
   Alert,
 } from '@mui/material'
 import { type SubmitHandler, useForm } from 'react-hook-form'
-import api from '../api/api.ts'
-import type { CreateOfferDto } from '../shared/api'
+import type { CreateAffiliateNetworkDto } from '../shared/api/generated'
+import { affiliateNetworkApi } from '../services/api/affiliateNetworkApi.ts'
 
-export default function CreateOfferDialog({ onSave }: { onSave: () => void }) {
+export default function CreateAffiliateNetworkModal({
+  onSave,
+}: {
+  onSave: () => void
+}) {
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateOfferDto>()
+  } = useForm<CreateAffiliateNetworkDto>()
   const [isLoading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [error, setError] = useState<string | false>(false)
@@ -30,12 +34,12 @@ export default function CreateOfferDialog({ onSave }: { onSave: () => void }) {
   }
   const handleClose = () => setOpen(false)
 
-  const handleSave: SubmitHandler<CreateOfferDto> = (data) => {
+  const handleSave: SubmitHandler<CreateAffiliateNetworkDto> = (data) => {
     setLoading(true)
     setError(false)
 
-    api
-      .offerCreate(data)
+    affiliateNetworkApi
+      .create(data)
       .then((data) => {
         console.log(data)
         onSave()
@@ -65,13 +69,10 @@ export default function CreateOfferDialog({ onSave }: { onSave: () => void }) {
             helperText={errors.name?.type}
           />
           <TextField
-            autoFocus
             fullWidth
             margin="dense"
-            label="Url"
-            {...register('url', { required: true })}
-            error={!!errors.url}
-            helperText={errors.url?.type}
+            label="Offer params"
+            {...register('offerParams', { required: false })}
           />
           {error && (
             <Alert sx={{ mt: 2 }} severity="error">

@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { UserId } from '../auth/user-id.decorator'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
@@ -18,8 +18,8 @@ import { GLOBAL_PREFIX } from '../../shared/constants'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 import { ListAffiliateNetworkUseCase } from './use-cases/list-affiliate-network.use-case'
 import { ListAffiliateNetworkDto } from './dto/list-affiliate-network.dto'
-import { ReportResponse } from '../report/types'
 import { DeleteAffiliateNetworkDto } from '@/domain/affiliate-network/dto/delete-affiliate-network.dto'
+import { ListAffiliateNetworkResponseDto } from '@/domain/affiliate-network/dto/list-affiliate-network-response.dto'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')
@@ -30,10 +30,11 @@ export class AffiliateNetworkController {
   ) {}
 
   @Get()
+  @ApiOkResponse({ type: ListAffiliateNetworkResponseDto })
   listAffiliateNetworks(
     @Query() args: ListAffiliateNetworkDto,
     @UserId() userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ListAffiliateNetworkResponseDto> {
     return this.listAffiliateNetworkUseCase.execute(args, userId)
   }
 
