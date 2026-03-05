@@ -18,4 +18,4 @@ RUN yarn install --prod
 COPY --from=builder /app/dist ./dist
 #COPY geo-ip.mmdb ./
 
-CMD [ "yarn", "run", "start:prod" ]
+CMD [ "yarn", "run", "cicd:start" ]
