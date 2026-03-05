@@ -5,7 +5,7 @@ COPY package.json yarn.lock ./
 RUN yarn
 COPY . .
 
-ARG DATABASE_URL
+ENV DATABASE_URL=postgres://fake
 
 RUN yarn run cicd:build
 
