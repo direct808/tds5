@@ -21,7 +21,10 @@ services:
       - 6389:6379
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        DATABASE_URL: ${DATABASE_URL}
     image: tds5
     env_file:
       - .env

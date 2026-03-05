@@ -5,11 +5,11 @@ COPY package.json yarn.lock ./
 RUN yarn
 COPY . .
 
+ARG DATABASE_URL
+
 RUN yarn run cicd:build
 
 FROM node:24-alpine
-
-ARG DATABASE_URL
 
 WORKDIR /app
 COPY package.json yarn.lock ./
