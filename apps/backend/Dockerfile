@@ -3,7 +3,7 @@ FROM node:22-alpine as builder
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn
-COPY ../.. .
+COPY . .
 
 RUN yarn run build
 
@@ -14,6 +14,6 @@ COPY package.json yarn.lock ./
 RUN yarn install --prod
 
 COPY --from=builder /app/dist ./dist
-COPY geo-ip.mmdb ./
+#COPY geo-ip.mmdb ./
 
 CMD [ "yarn", "run", "start:prod" ]
