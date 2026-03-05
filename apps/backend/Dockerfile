@@ -17,6 +17,7 @@ RUN yarn install --prod
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 #COPY geo-ip.mmdb ./
 
 CMD [ "yarn", "run", "cicd:start" ]
