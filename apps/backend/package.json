@@ -29,7 +29,8 @@
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev --name --",
     "cicd:lint": "yarn run lint && yarn run prisma:format-check",
-    "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov"
+    "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov",
+    "cicd:build": "yarn run prisma:generate && yarn run build"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

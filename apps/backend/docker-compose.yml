@@ -21,6 +21,7 @@ services:
       - 6389:6379
 
   app:
+    build: .
     image: tds5
     env_file:
       - .env
