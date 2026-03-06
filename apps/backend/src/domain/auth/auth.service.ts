@@ -12,8 +12,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<LoginUser | null> {
-    const user = await this.userRepository.getByEmail(email)
+  async validateUser(login: string, pass: string): Promise<LoginUser | null> {
+    const user = await this.userRepository.getByLogin(login)
     if (isNullable(user)) {
       return null
     }
@@ -31,7 +31,7 @@ export class AuthService {
   }
 
   sign(user: LoginUser): { accessToken: string } {
-    const payload = { email: user.email, sub: user.id }
+    const payload = { login: user.login, sub: user.id }
 
     return {
       accessToken: this.jwtService.sign(payload),

@@ -10,7 +10,7 @@ const PASSWORD_1234 =
 describe('AuthService', () => {
   let authService: AuthService
   const userRepository = {
-    getByEmail: jest.fn(),
+    getByLogin: jest.fn(),
   }
   const jwtService = {
     sign: jest.fn(),
@@ -34,23 +34,23 @@ describe('AuthService', () => {
     it('should return user without password if password matches', async () => {
       const user = {
         id: '1',
-        email: 'test@example.com',
+        login: 'test@example.com',
         password: PASSWORD_1234,
         name: 'Test User',
       }
 
-      userRepository.getByEmail.mockResolvedValue(user)
+      userRepository.getByLogin.mockResolvedValue(user)
 
       const result = await authService.validateUser('test@example.com', '1234')
       expect(result).toEqual({
         id: '1',
-        email: 'test@example.com',
+        login: 'test@example.com',
         name: 'Test User',
       })
     })
 
     it('should return null if user not found', async () => {
-      userRepository.getByEmail.mockResolvedValue(null)
+      userRepository.getByLogin.mockResolvedValue(null)
 
       const result = await authService.validateUser(
         'notfound@example.com',
@@ -63,11 +63,11 @@ describe('AuthService', () => {
     it('should return null if password does not match', async () => {
       const user = {
         id: '1',
-        email: 'test@example.com',
+        login: 'test@example.com',
         password: 'wrong',
       }
 
-      userRepository.getByEmail.mockResolvedValue(user)
+      userRepository.getByLogin.mockResolvedValue(user)
 
       const result = await authService.validateUser('test@example.com', '1234')
       expect(result).toBeNull()
@@ -78,7 +78,7 @@ describe('AuthService', () => {
     it('should return access token', () => {
       const user: LoginUser = {
         id: '1',
-        email: 'test@example.com',
+        login: 'test@example.com',
       }
 
       jwtService.sign.mockReturnValue('mocked-jwt')
@@ -87,7 +87,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual({ accessToken: 'mocked-jwt' })
       expect(jwtService.sign).toHaveBeenCalledWith({
-        email: user.email,
+        login: user.login,
         sub: user.id,
       })
     })
