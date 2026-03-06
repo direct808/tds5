@@ -21,7 +21,7 @@ describe('AuthController (e2e)', () => {
       await createAuthUser(app)
       const response = await request(app.getHttpServer())
         .post('/api/auth/login')
-        .send({ email: 'admin@gmail.com', password: '1234' })
+        .send({ login: 'admin', password: '1234' })
         .expect(201)
 
       expect(response.body).toHaveProperty('accessToken')
@@ -30,14 +30,14 @@ describe('AuthController (e2e)', () => {
     it('should return 401 for invalid credentials', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/login')
-        .send({ email: 'admin@gmail.com', password: 'invalid' })
+        .send({ login: 'admin', password: 'invalid' })
         .expect(401)
     })
 
     it('should return 401 if user not found', async () => {
       await request(app.getHttpServer())
         .post('/api/auth/login')
-        .send({ email: 'notfound@example.com', password: '1234' })
+        .send({ login: 'notfound', password: '1234' })
         .expect(401)
     })
   })

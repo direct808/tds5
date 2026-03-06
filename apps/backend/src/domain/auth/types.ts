@@ -4,12 +4,12 @@ import { UserModel } from '@generated/prisma/models/User'
 
 export type JwrPayload = {
   sub: string
-  email: string
+  login: string
 }
 
 export type AppRequest = Omit<Request, 'user'> & { user: JwrPayload }
 export type LoginRequest = Request & { user: LoginUser }
-export type LoginUser = Pick<UserModel, 'id' | 'email'>
+export type LoginUser = Pick<UserModel, 'id' | 'login'>
 
 export const SKIP_AUTH = 'SKIP_AUTH'
 export const SkipAuth: () => CustomDecorator = () =>

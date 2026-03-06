@@ -11,8 +11,8 @@ export class UserBuilder {
     return new this(fields)
   }
 
-  email(email: string): UserBuilder {
-    this.fields.email = email
+  login(login: string): UserBuilder {
+    this.fields.login = login
 
     return this
   }
