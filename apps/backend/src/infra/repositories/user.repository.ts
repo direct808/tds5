@@ -14,7 +14,7 @@ export class UserRepository {
     return this.prisma.user.count()
   }
 
-  public async create(
+  public create(
     data: Pick<UserModel, 'login' | 'password'>,
   ): Promise<UserModel> {
     return this.prisma.user.create({ data })
