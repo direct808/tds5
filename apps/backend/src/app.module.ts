@@ -8,7 +8,7 @@ import { CampaignModule } from './domain/campaign/campaign.module'
 import { ClickModule } from './domain/click/click.module'
 import { ClsModule } from 'nestjs-cls'
 import { GeoIpModule } from './domain/geo-ip/geo-ip.module'
-import { PrometheusModule } from '@willsoto/nestjs-prometheus'
+import { MetricsModule } from '@/infra/metrics/metrics.module'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { AppConfigModule } from './infra/config/app-config.module'
 import { DatabaseModule } from './infra/database/database.module'
@@ -37,9 +37,7 @@ import { DomainModule } from './domain/domain/domain.module'
       global: true,
       middleware: { mount: true },
     }),
-    PrometheusModule.register({
-      path: '/metrics',
-    }),
+    MetricsModule,
   ],
   providers: [
     {

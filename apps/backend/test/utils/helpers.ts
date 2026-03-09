@@ -18,18 +18,19 @@ async function authUser(
 }
 
 export async function createAuthUser(app: INestApplication): Promise<{
-  user: UserModel
+  user: { id: string }
   accessToken: string
 }> {
   const login = 'admin'
-  const salt = await bcrypt.genSalt(1)
-  const pass = await bcrypt.hash('1234', salt)
-  const user = await UserBuilder.create()
-    .login(login)
-    .password(pass)
-    .save(app.get(PrismaService))
+  const password = '1234'
+  const {
+    body: { accessToken },
+  } = await request(app.getHttpServer())
+    .post('/api/auth/first-user')
+    .send({ login, password, confirmPassword: password })
+    .expect(201)
 
-  const accessToken = await authUser(app, { login, password: '1234' })
+  const user = await app.get(PrismaService).user.findFirstOrThrow()
 
   return { user, accessToken }
 }

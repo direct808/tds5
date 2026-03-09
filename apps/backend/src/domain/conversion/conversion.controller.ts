@@ -1,10 +1,10 @@
 import { Controller, Get, Req } from '@nestjs/common'
-import { SkipAuth } from '../auth/types'
 import { Request } from 'express'
-import { ExpressRequestAdapter } from '../../shared/request-adapter'
+import { ExpressRequestAdapter } from '@/shared/request-adapter'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { PostbackEvent, postbackEventName } from './events/postback.event'
-import { postbackKey } from '../../infra/config/app-config.service'
+import { postbackKey } from '@/infra/config/app-config.service'
+import { SkipAuth } from '@/domain/auth/decorators/skip-auth.decorator'
 
 @Controller(postbackKey())
 export class ConversionController {
