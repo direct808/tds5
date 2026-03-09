@@ -1,22 +1,33 @@
 import { ExecutionContext, Injectable } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
+import { AuthGuard, IAuthGuard } from '@nestjs/passport'
 import { Reflector } from '@nestjs/core'
-import { SKIP_AUTH } from '../types'
-import { Observable } from 'rxjs'
+import { AuthService } from '@/domain/auth/auth.service'
+import { ensurePromise } from '@/shared/ensure-promise'
+import { SKIP_AUTH } from '@/domain/auth/decorators/skip-auth.decorator'
+import { SKIP_CHECK_ADMIN_CREATED } from '@/domain/auth/decorators/skip-check-admin-created.decorator'
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(
+    private reflector: Reflector,
+    private authService: AuthService,
+  ) {
     super()
   }
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const skipAuth = this.reflector.getAllAndOverride<boolean>(SKIP_AUTH, [
-      context.getHandler(),
-      context.getClass(),
-    ])
+  canActivate: IAuthGuard['canActivate'] = async (context) => {
+    const skipCheckAdminCreated = this.checkDecorator(
+      context,
+      SKIP_CHECK_ADMIN_CREATED,
+    )
+
+    if (skipCheckAdminCreated) {
+      return true
+    }
+
+    await this.authService.checkIfAdminCreated()
+
+    const skipAuth = this.checkDecorator(context, SKIP_AUTH)
 
     if (skipAuth) {
       return true
@@ -28,6 +39,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true
     }
 
-    return super.canActivate(context)
+    return ensurePromise(super.canActivate(context))
+  }
+
+  private checkDecorator(
+    context: ExecutionContext,
+    decorator: string,
+  ): boolean {
+    return this.reflector.getAllAndOverride<boolean>(decorator, [
+      context.getHandler(),
+      context.getClass(),
+    ])
   }
 }

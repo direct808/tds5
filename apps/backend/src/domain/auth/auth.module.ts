@@ -6,8 +6,9 @@ import { APP_GUARD } from '@nestjs/core'
 import { LocalStrategy } from './strategies/local.strategy'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
-import { AppConfig } from '../../infra/config/app-config.service'
-import { RepositoryModule } from '../../infra/repositories/repository.module'
+import { AppConfig } from '@/infra/config/app-config.service'
+import { RepositoryModule } from '@/infra/repositories/repository.module'
+import { CreateFirstUserUseCase } from '@/domain/auth/use-cases/create-first-user.use-case'
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RepositoryModule } from '../../infra/repositories/repository.module'
   ],
   controllers: [AuthController],
   providers: [
+    CreateFirstUserUseCase,
     AuthService,
     LocalStrategy,
     JwtStrategy,
