@@ -10,7 +10,7 @@ export class MmdbGeoIpService implements GeoIpService {
     // this.reader = new Reader<CityResponse>(db)
   }
 
-  public get: GeoIpService['get'] = (ip) => {
+  public get: GeoIpService['get'] = () => {
     // const result = this.reader.get(ip)
     // if (!result) {
     return undefined
