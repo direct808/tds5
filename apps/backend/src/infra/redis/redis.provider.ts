@@ -32,4 +32,8 @@ export class RedisProvider {
     items.forEach(({ key, value }) => pipeline.sadd(key, value))
     await pipeline.exec()
   }
+
+  public async ping(): Promise<void> {
+    await this.redis.ping()
+  }
 }
