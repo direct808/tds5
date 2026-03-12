@@ -17,10 +17,12 @@ import { AppExceptionFilter } from './shared/app-exception.filter'
 import { ConversionModule } from './domain/conversion/conversion.module'
 import { ReportModule } from './domain/report/report.module'
 import { DomainModule } from './domain/domain/domain.module'
+import { HealthModule } from './domain/health/health.module'
 
 @Module({
   imports: [
     ReportModule,
+    HealthModule,
     AppConfigModule,
     DatabaseModule,
     DomainModule,
