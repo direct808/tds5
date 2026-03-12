@@ -28,8 +28,11 @@
     "prisma:db:push": "prisma db push --accept-data-loss",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev --name --",
+    "prisma:migrate": "prisma migrate deploy",
     "cicd:lint": "yarn run lint && yarn run prisma:format-check",
-    "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov"
+    "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov",
+    "cicd:build": "yarn run prisma:generate && yarn run build",
+    "cicd:start": "yarn run prisma:migrate && yarn run start:prod"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
