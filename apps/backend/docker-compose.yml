@@ -1,3 +1,4 @@
+name: tds5
 services:
   db:
     image: postgres:17.4-alpine
@@ -26,8 +27,7 @@ services:
     env_file:
       - .env
     environment:
-      - DB_HOST=db
-      - DB_PORT=5432
+      - DATABASE_URL=postgres://postgres:1234@db:5432/postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     ports:
