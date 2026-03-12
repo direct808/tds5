@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import * as fs from 'node:fs'
 import { GeoIpService } from './types'
-import { CityResponse, Reader } from 'mmdb-lib'
 
 @Injectable()
 export class MmdbGeoIpService implements GeoIpService {
