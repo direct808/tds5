@@ -5,6 +5,19 @@ import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 
 @Injectable()
 export class ReportColumnService {
+  public getColumns(
+    fixedColumns: string[],
+    defaults: Set<string>,
+  ): ColumnResponseDto[] {
+    const fixed: ColumnResponseDto[] = fixedColumns.map((column) => ({
+      column,
+      name: column,
+      default: defaults.has(column),
+    }))
+
+    return [...fixed, ...this.getMetricsNames(defaults)]
+  }
+
   public getMetricsNames(defaults: Set<string>): ColumnResponseDto[] {
     this.validateDefaults(defaults)
 

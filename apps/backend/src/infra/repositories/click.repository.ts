@@ -32,11 +32,7 @@ export class ClickRepository
   }
 
   public async getCountByVisitorId(visitorId: string): Promise<number> {
-    const { count } = await this.db
-      .selectFrom('click')
-      .select(({ fn }) => [fn.count('click.id').as('count')])
-      .where('visitorId', '=', visitorId)
-      .executeTakeFirstOrThrow()
+    const { count } = await this.buildCountByVisitorIdQuery(visitorId).executeTakeFirstOrThrow()
 
     return Number(count)
   }
@@ -45,14 +41,18 @@ export class ClickRepository
     visitorId: string,
     campaignId: string,
   ): Promise<number> {
-    const { count } = await this.db
-      .selectFrom('click')
-      .select(({ fn }) => [fn.count('click.id').as('count')])
-      .where('visitorId', '=', visitorId)
+    const { count } = await this.buildCountByVisitorIdQuery(visitorId)
       .where('campaignId', '=', campaignId)
       .executeTakeFirstOrThrow()
 
     return Number(count)
+  }
+
+  private buildCountByVisitorIdQuery(visitorId: string) {
+    return this.db
+      .selectFrom('click')
+      .select(({ fn }) => [fn.count('click.id').as('count')])
+      .where('visitorId', '=', visitorId)
   }
 
   public async getCountByVisitorIdStreamId(

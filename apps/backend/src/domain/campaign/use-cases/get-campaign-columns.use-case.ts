@@ -17,15 +17,6 @@ export class GetCampaignColumnsUseCase {
   constructor(private readonly reportColumnService: ReportColumnService) {}
 
   public execute(): ColumnResponseDto[] {
-    const fixed: ColumnResponseDto[] = FIXED_COLUMNS.map((column) => ({
-      column,
-      name: column,
-      default: DEFAULTS.has(column),
-    }))
-
-    const metrics: ColumnResponseDto[] =
-      this.reportColumnService.getMetricsNames(DEFAULTS)
-
-    return [...fixed, ...metrics]
+    return this.reportColumnService.getColumns(FIXED_COLUMNS, DEFAULTS)
   }
 }

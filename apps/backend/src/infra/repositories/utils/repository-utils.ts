@@ -62,6 +62,29 @@ export async function ensureEntityExists<T>(
   }
 }
 
+export async function validateBeforeUpdate<
+  T extends { id: string; userId: string; name?: string },
+>(
+  repository: IGetEntitiesByIdsAndUserId<unknown> &
+    IGetEntityByNameAndUserId<{ id: string }>,
+  args: T,
+): Promise<void> {
+  await ensureEntityExists(repository, { ids: [args.id], userId: args.userId })
+
+  if (args.name != null) {
+    await checkUniqueNameForUpdate(repository, { ...args, name: args.name })
+  }
+}
+
+export async function softDeleteManyWithCheck(
+  repository: IGetEntitiesByIdsAndUserId<unknown> & ISoftDeleteMany,
+  args: IdsAndUserId,
+): Promise<void> {
+  await ensureEntityExists(repository, args)
+
+  await repository.softDeleteMany(args.ids)
+}
+
 /**
  * Return ids for delete
  * @param exists
