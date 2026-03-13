@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { RequestAdapter } from '../../shared/request-adapter'
+import { RequestAdapter } from '@/shared/request-adapter'
 import { ConversionTypeIterator } from './conversion-type.iterator'
 
 @Injectable()

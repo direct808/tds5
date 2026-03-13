@@ -1,16 +1,16 @@
 import { ConversionRegisterUseCase } from './conversion-register.use-case'
-import { ClickRepository } from '../../../infra/repositories/click.repository'
-import { ConversionRepository } from '../../../infra/repositories/conversion.repository'
-import { ConversionTypeService } from '../conversion-type.service'
+import { ClickRepository } from '@/infra/repositories/click.repository'
+import { ConversionRepository } from '@/infra/repositories/conversion.repository'
+import { ConversionTypeService } from '@/domain/conversion/conversion-type.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Test, TestingModule } from '@nestjs/testing'
 import {
   ConversionCreatedEvent,
   conversionCreatedEventName,
-} from '../events/conversion-created.event'
+} from '@/domain/conversion/events/conversion-created.event'
 import { MockRequestAdapter } from '../../../../test/utils/mock-request-adapter'
 import { ClickModel } from '@generated/prisma/models/Click'
-import { ConversionTypeIterator } from '../conversion-type.iterator'
+import { ConversionTypeIterator } from '@/domain/conversion/conversion-type.iterator'
 import { ConversionModel } from '@generated/prisma/models/Conversion'
 
 describe('ConversionRegisterUseCase', () => {

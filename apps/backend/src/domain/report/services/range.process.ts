@@ -1,5 +1,5 @@
 import { PostgresRawReportQueryBuilder } from './postgres-raw-report-query-builder'
-import { FilterOperatorEnum, ReportRangeEnum } from '../types'
+import { FilterOperatorEnum, ReportRangeEnum } from '@/domain/report/types'
 import { DateTime } from 'luxon'
 import { BadRequestException } from '@nestjs/common'
 import { isNullable } from '@/shared/helpers'

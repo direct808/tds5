@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { CLICK_ID_SIZE, IdGenerator, VISITOR_ID_SIZE } from '../id-generator'
-import { ClickObserver } from '../subject'
-import { ClickContext } from '../../shared/click-context.service'
+import {
+  CLICK_ID_SIZE,
+  IdGenerator,
+  VISITOR_ID_SIZE,
+} from '@/domain/click/observers/id-generator'
+import { ClickObserver } from '@/domain/click/observers/subject'
+import { ClickContext } from '@/domain/click/shared/click-context.service'
 import { StreamModel } from '@generated/prisma/models/Stream'
 import { isNullable } from '@/shared/helpers'
 

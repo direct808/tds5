@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { SourceRepository } from '../../infra/repositories/source.repository'
-import { ensureEntityExists } from '../../infra/repositories/utils/repository-utils'
-import { DomainRepository } from '../../infra/repositories/domain.repository'
+import { SourceRepository } from '@/infra/repositories/source.repository'
+import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 import { isNullable } from '@/shared/helpers'
 
 type EnsureSourceExistsArgs = {

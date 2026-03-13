@@ -3,9 +3,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import { CreateStreamOfferDto } from '../dto/create-stream-offer.dto'
-import { arrayUnique } from '../../../shared/helpers'
-import { OfferRepository } from '../../../infra/repositories/offer.repository'
+import { CreateStreamOfferDto } from '@/domain/campaign/dto/create-stream-offer.dto'
+import { arrayUnique } from '@/shared/helpers'
+import { OfferRepository } from '@/infra/repositories/offer.repository'
 
 type BuldCreateDataResult = {
   streamId: string

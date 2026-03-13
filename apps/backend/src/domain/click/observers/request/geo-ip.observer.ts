@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ClickData } from '../../click-data'
-import { ClickObserver } from '../subject'
-import { ClickContext } from '../../shared/click-context.service'
-import { GEO_IP_PROVIDER, GeoIpService } from '../../../geo-ip/types'
+import { ClickData } from '@/domain/click/click-data'
+import { ClickObserver } from '@/domain/click/observers/subject'
+import { ClickContext } from '@/domain/click/shared/click-context.service'
+import { GEO_IP_PROVIDER, GeoIpService } from '@/domain/geo-ip/types'
 import { isNullable } from '@/shared/helpers'
 
 @Injectable()

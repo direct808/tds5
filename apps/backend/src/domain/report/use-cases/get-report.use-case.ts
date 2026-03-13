@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ReportResponse } from '../types'
-import { CheckArgsService } from '../services/check-args.service'
-import { GetReportDto } from '../dto/get-report.dto'
-import { ReportBuilderService } from '../services/report-builder.service'
+import { ReportResponse } from '@/domain/report/types'
+import { CheckArgsService } from '@/domain/report/services/check-args.service'
+import { GetReportDto } from '@/domain/report/dto/get-report.dto'
+import { ReportBuilderService } from '@/domain/report/services/report-builder.service'
 
 @Injectable()
 export class GetReportUseCase {

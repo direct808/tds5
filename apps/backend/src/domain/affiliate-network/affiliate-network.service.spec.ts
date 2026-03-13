@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { AffiliateNetworkRepository } from '../../infra/repositories/affiliate-network.repository'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
+} from '@/infra/repositories/utils/repository-utils'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
 jest.mock('../../infra/repositories/utils/repository-utils')

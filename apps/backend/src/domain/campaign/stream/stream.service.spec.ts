@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { StreamService } from './stream.service'
-import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CampaignRepository } from '../../../infra/repositories/campaign.repository'
-import { ensureEntityExists } from '../../../infra/repositories/utils/repository-utils'
+import { CreateStreamDto } from '@/domain/campaign/dto/create-stream.dto'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
 import {
   StreamActionTypeEnum,
   StreamRedirectTypeEnum,

@@ -1,7 +1,7 @@
 import { FilterLogic, FilterObjectExtended, Filters } from './types'
 import { Inject, Injectable } from '@nestjs/common'
 import { IStreamFilterFactory, FilterFactory } from './filter-factory'
-import { MaybePromise } from '../../../../shared/types'
+import { MaybePromise } from '@/shared/types'
 
 @Injectable()
 export class FilterService {

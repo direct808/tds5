@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common'
-import { conversionTypes } from '../../conversion/types'
+import { conversionTypes } from '@/domain/conversion/types'
 import { PostgresRawReportQueryBuilder } from './postgres-raw-report-query-builder'
 import { RangeProcess } from './range.process'
 import {
   ClickMetricMap,
   ReportRepository,
-} from '../../../infra/repositories/report.repository'
-import { postgresClickMetricMap } from '../postgres-click-metric-map'
+} from '@/infra/repositories/report.repository'
+import { METRICS } from '@/domain/report/metrics'
 import { InjectKysely } from 'nestjs-kysely'
 import { DB } from '@generated/kysely'
 import { FilterProcessorService } from './filter-processor.service'
 import { MetricProcessService } from './metric-process.service'
-import { PrismaService } from '../../../infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { Kysely } from 'kysely'
-import { GetReportDto } from '../dto/get-report.dto'
-import { groups } from '../groups'
-import { Direction, ReportResponse } from '../types'
+import { GetReportDto } from '@/domain/report/dto/get-report.dto'
+import { groups } from '@/domain/report/groups'
+import { Direction, ReportResponse } from '@/domain/report/types'
 import { isNullable } from '@/shared/helpers'
 
 @Injectable()
@@ -72,11 +72,11 @@ export class ReportBuilderService {
     usedClickMetrics: string[]
   } {
     const usedClickMetrics: string[] = []
-    const clickMetricMap = new Proxy(postgresClickMetricMap, {
+    const clickMetricMap = new Proxy(METRICS, {
       get(target, key: string): string | undefined {
         usedClickMetrics.push(key)
 
-        return target[key]
+        return target[key as keyof typeof target]
       },
     })
 

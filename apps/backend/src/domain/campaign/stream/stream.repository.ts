@@ -7,7 +7,7 @@ import {
 import {
   prismaTransaction,
   Transaction,
-} from '../../../infra/prisma/prisma-transaction'
+} from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class StreamRepository {

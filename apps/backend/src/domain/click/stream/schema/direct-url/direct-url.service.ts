@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { RedirectTypeFactory } from './redirect-type-factory'
-import { StreamDirectUrl } from '../../../../campaign/types'
-import { MaybePromise } from '../../../../../shared/types'
-import { StreamResponse } from '../../../types'
+import { StreamDirectUrl } from '@/domain/campaign/types'
+import { MaybePromise } from '@/shared/types'
+import { StreamResponse } from '@/domain/click/types'
 
 @Injectable()
 export class DirectUrlService {

@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { DomainRepository } from '@/infra/repositories/domain.repository'
-import { DomainService } from '../domain.service'
+import { DomainService } from '@/domain/domain/domain.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   DomainUpdatedEvent,
   domainUpdateEventName,
-} from '../events/domain-updated.event'
+} from '@/domain/domain/events/domain-updated.event'
 import { DomainModel } from '@generated/prisma/models/Domain'
 
 type UpdateDomainArgs = {

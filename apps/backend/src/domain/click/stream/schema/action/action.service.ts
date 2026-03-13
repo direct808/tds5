@@ -1,8 +1,8 @@
 import { ActionTypeFactory } from './action-type-factory'
-import { StreamResponse } from '../../../types'
+import { StreamResponse } from '@/domain/click/types'
 import { Injectable } from '@nestjs/common'
-import { MaybePromise } from '../../../../../shared/types'
-import { StreamFull } from '../../../../campaign/types'
+import { MaybePromise } from '@/shared/types'
+import { StreamFull } from '@/domain/campaign/types'
 
 @Injectable()
 export class ActionService {

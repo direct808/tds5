@@ -1,6 +1,6 @@
 import { FilterProcessorService } from './filter-processor.service'
 import { PostgresRawReportQueryBuilder } from './postgres-raw-report-query-builder'
-import { ClickMetricMap } from '../../../infra/repositories/report.repository'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { spyOn } from '../../../../test/utils/helpers'
 
 describe('FilterProcessorService', () => {

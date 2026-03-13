@@ -1,4 +1,8 @@
-import { FILTER_TYPE_MAP, FilterOperatorEnum, FilterTypeEnum } from '../types'
+import {
+  FILTER_TYPE_MAP,
+  FilterOperatorEnum,
+  FilterTypeEnum,
+} from '@/domain/report/types'
 import { BadRequestException } from '@nestjs/common'
 import { isIPv4 } from 'node:net'
 

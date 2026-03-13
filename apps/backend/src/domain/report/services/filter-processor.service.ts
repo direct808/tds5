@@ -4,9 +4,9 @@ import {
   FilterOperators,
   FilterTypeEnum,
   InputFilterData,
-} from '../types'
-import { ClickMetricMap } from '../../../infra/repositories/report.repository'
-import { formulas } from '../formulas'
+} from '@/domain/report/types'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
+import { FORMULAS } from '@/domain/report/formulas'
 import { FormulaParser } from './formula-parser'
 import {
   FieldTypeFormula,
@@ -14,8 +14,8 @@ import {
   FieldTypeClickMetric,
   FilterFieldTypeEnum,
   getFieldTypeData,
-} from '../utils/get-field-type-data'
-import { checkFilterValue } from '../utils/check-filter-value'
+} from '@/domain/report/utils/get-field-type-data'
+import { checkFilterValue } from '@/domain/report/utils/check-filter-value'
 import { PostgresRawReportQueryBuilder } from './postgres-raw-report-query-builder'
 import { isNullable } from '@/shared/helpers'
 
@@ -64,7 +64,7 @@ export class FilterProcessorService {
   ): void {
     const [, operator, value] = inputFilterData
     const { formula } = fieldTypeData.formulaData
-    let query = FormulaParser.create(formula, clickMetricMap, formulas).build()
+    let query = FormulaParser.create(formula, clickMetricMap, FORMULAS).build()
     query = `${query}`
     this.checkFilterData(FilterTypeEnum.number, inputFilterData)
     qb.having(query, operator, value)

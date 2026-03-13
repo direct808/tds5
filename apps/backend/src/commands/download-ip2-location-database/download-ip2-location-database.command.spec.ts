@@ -4,7 +4,7 @@ import express from 'express'
 import archiver from 'archiver'
 import stream from 'stream'
 import { setTimeout } from 'timers/promises'
-import { AppConfig } from '../../infra/config/app-config.service'
+import { AppConfig } from '@/infra/config/app-config.service'
 import http from 'http'
 
 describe('download-ip2-location-database.command.spec.ts', () => {
