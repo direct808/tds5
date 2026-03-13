@@ -1,4 +1,7 @@
-import { BaseFilterObject, StreamFilter } from '../../types'
+import {
+  BaseFilterObject,
+  StreamFilter,
+} from '@/domain/click/stream/filter/types'
 import { RequestAdapter } from '@/shared/request-adapter'
 import { isNullable } from '@/shared/helpers'
 

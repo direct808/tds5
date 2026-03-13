@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { UAParser } from 'ua-parser-js'
-import { ClickData } from '../../click-data'
-import { ClickObserver } from '../subject'
-import { ClickContext } from '../../shared/click-context.service'
+import { ClickData } from '@/domain/click/click-data'
+import { ClickObserver } from '@/domain/click/observers/subject'
+import { ClickContext } from '@/domain/click/shared/click-context.service'
 import { isNullable } from '@/shared/helpers'
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ClickLimitProvider } from '../../domain/click/stream/filter/filters/click-limit/click-limit-filter'
-import { ClickUniqueProvider } from '../../domain/click/stream/filter/filters/click-unique/click-unique-filter'
+import { ClickLimitProvider } from '@/domain/click/stream/filter/filters/click-limit/click-limit-filter'
+import { ClickUniqueProvider } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { InjectKysely } from 'nestjs-kysely'
 import { Kysely, sql } from 'kysely'
 import { DB } from '@generated/kysely'
@@ -8,7 +8,7 @@ import {
   ClickModel,
   ClickUncheckedCreateInput,
 } from '@generated/prisma/models/Click'
-import { PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 @Injectable()
 export class ClickRepository

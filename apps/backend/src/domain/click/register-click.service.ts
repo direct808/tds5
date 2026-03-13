@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ClickData } from './click-data'
-import { ClickRepository } from '../../infra/repositories/click.repository'
+import { ClickRepository } from '@/infra/repositories/click.repository'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   ClickRegisteredEvent,

@@ -1,6 +1,6 @@
 import type { HttpStatus } from '@nestjs/common'
-import { MaybePromise } from '../../shared/types'
-import { StreamFull } from '../campaign/types'
+import { MaybePromise } from '@/shared/types'
+import { StreamFull } from '@/domain/campaign/types'
 
 export type StreamResponse =
   | StreamContentResponse

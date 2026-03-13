@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ListCampaignDto } from '../dto/list-campaign.dto'
-import { ReportResponse } from '../../report/types'
-import { CampaignRepository } from '../../../infra/repositories/campaign.repository'
-import { EntityReportUseCase } from '../../report/use-cases/entity-report-use-case.service'
+import { ListCampaignDto } from '@/domain/campaign/dto/list-campaign.dto'
+import { ReportResponse } from '@/domain/report/types'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { EntityReportUseCase } from '@/domain/report/use-cases/entity-report-use-case.service'
 
 @Injectable()
 export class ListCampaignUseCase {

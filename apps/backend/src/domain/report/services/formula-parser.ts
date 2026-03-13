@@ -1,5 +1,5 @@
 import jsep from 'jsep'
-import type { FormulaRecord } from '../types'
+import type { FormulaRecord } from '@/domain/report/types'
 import { BadRequestException } from '@nestjs/common'
 import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { isNullable } from '@/shared/helpers'

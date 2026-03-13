@@ -1,7 +1,7 @@
 import { sign } from 'jsonwebtoken'
 import { Injectable } from '@nestjs/common'
-import type { RedirectType } from '../../../../types'
-import { AppConfig } from '../../../../../../infra/config/app-config.service'
+import type { RedirectType } from '@/domain/click/types'
+import { AppConfig } from '@/infra/config/app-config.service'
 
 @Injectable()
 export class Meta2RedirectType implements RedirectType {

@@ -1,5 +1,5 @@
 import { checkFilterValue } from './check-filter-value'
-import { FilterTypeEnum as Type } from '../types'
+import { FilterTypeEnum as Type } from '@/domain/report/types'
 import { BadRequestException } from '@nestjs/common'
 
 describe('checkFilterValue', () => {

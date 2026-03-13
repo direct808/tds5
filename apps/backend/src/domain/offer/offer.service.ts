@@ -4,8 +4,8 @@ import {
   OfferUpdatedEvent,
   offerUpdateEventName,
 } from './events/offer-updated.event'
-import { OfferRepository } from '../../infra/repositories/offer.repository'
-import { AffiliateNetworkRepository } from '../../infra/repositories/affiliate-network.repository'
+import { OfferRepository } from '@/infra/repositories/offer.repository'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,

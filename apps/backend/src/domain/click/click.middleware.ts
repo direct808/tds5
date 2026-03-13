@@ -2,7 +2,7 @@ import { Injectable, NestMiddleware } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { ClickService } from './click.service'
 import { ClickContext } from './shared/click-context.service'
-import { RequestAdapterFactory } from '../../shared/request-adapter/request-adapter-factory'
+import { RequestAdapterFactory } from '@/shared/request-adapter/request-adapter-factory'
 
 @Injectable()
 export class ClickMiddleware implements NestMiddleware {

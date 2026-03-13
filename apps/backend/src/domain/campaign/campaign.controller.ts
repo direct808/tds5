@@ -9,13 +9,16 @@ import {
   Put,
   Query,
 } from '@nestjs/common'
-import { UserId } from '../auth/user-id.decorator'
+import { ApiResponse } from '@nestjs/swagger'
+import { UserId } from '@/domain/auth/user-id.decorator'
 import { CreateCampaignUseCase } from './use-cases/create-campaign.use-case'
 import { UpdateCampaignUseCase } from './use-cases/update-campaign.use-case'
+import { GetCampaignColumnsUseCase } from './use-cases/get-campaign-columns.use-case'
 import { CreateCampaignDto } from './dto/create-campaign.dto'
 import { UpdateCampaignDto } from './dto/update-campaign.dto'
-import { GLOBAL_PREFIX } from '../../shared/constants'
-import { ReportResponse } from '../report/types'
+import { GLOBAL_PREFIX } from '@/shared/constants'
+import { ReportResponse } from '@/domain/report/types'
+import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { ListCampaignDto } from './dto/list-campaign.dto'
 import { ListCampaignUseCase } from './use-cases/list-campaign.use-case'
 import { DeleteCampaignDto } from '@/domain/campaign/dto/delete-campaign.dto'
@@ -28,6 +31,7 @@ export class CampaignController {
     private readonly updateCampaignUseCase: UpdateCampaignUseCase,
     private readonly listCampaignUseCase: ListCampaignUseCase,
     private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
+    private readonly getCampaignColumnsUseCase: GetCampaignColumnsUseCase,
   ) {}
 
   @Post()
@@ -61,5 +65,11 @@ export class CampaignController {
     @UserId() userId: string,
   ): Promise<void> {
     await this.deleteCampaignUseCase.execute(ids, userId)
+  }
+
+  @Get('columns')
+  @ApiResponse({ type: ColumnResponseDto, isArray: true })
+  getColumns(): ColumnResponseDto[] {
+    return this.getCampaignColumnsUseCase.execute()
   }
 }

@@ -8,10 +8,10 @@ import {
   Patch,
   Post,
 } from '@nestjs/common'
-import { GLOBAL_PREFIX } from '../../shared/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 import { CreateDomainDto } from './dto/create-domain.dto'
 import { CreateDomainUseCase } from './use-cases/create-domain-use-case.service'
-import { UserId } from '../auth/user-id.decorator'
+import { UserId } from '@/domain/auth/user-id.decorator'
 import { ListDomainUseCase } from './use-cases/list-domain-use-case.service'
 import { DomainModel } from '@generated/prisma/models/Domain'
 import { UpdateDomainDto } from './dto/update-domain.dto'

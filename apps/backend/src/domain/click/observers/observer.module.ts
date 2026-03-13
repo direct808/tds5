@@ -8,8 +8,8 @@ import { LanguageParserObserver } from './request/language-parser.observer'
 import { VisitorIdObserver } from './request/visitor-id.observer'
 import { UserAgentObserver } from './request/user-agent.observer'
 import { IdGenerator } from './id-generator'
-import { ClickSharedModule } from '../shared/click-shared.module'
-import { GeoIpModule } from '../../geo-ip/geo-ip.module'
+import { ClickSharedModule } from '@/domain/click/shared/click-shared.module'
+import { GeoIpModule } from '@/domain/geo-ip/geo-ip.module'
 import { GeoIpObserver } from './request/geo-ip.observer'
 
 @Module({

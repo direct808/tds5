@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CheckArgsService } from './check-args.service'
 import { BadRequestException } from '@nestjs/common'
 import { ReportService } from './report.service'
-import { GetReportDto } from '../dto/get-report.dto'
-import { ReportRangeEnum } from '../types'
+import { GetReportDto } from '@/domain/report/dto/get-report.dto'
+import { ReportRangeEnum } from '@/domain/report/types'
 
 describe('CheckArgsService', () => {
   let service: CheckArgsService

@@ -8,7 +8,7 @@ import {
   OfferFull,
   StreamFullWithCampaign,
   StreamOfferFull,
-} from '../../../../campaign/types'
+} from '@/domain/campaign/types'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
 
 describe('LandingsOffersService', () => {

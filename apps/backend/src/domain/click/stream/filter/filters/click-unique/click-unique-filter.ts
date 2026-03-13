@@ -1,5 +1,8 @@
-import { BaseFilterObject, StreamFilter } from '../../types'
-import { ClickData } from '../../../../click-data'
+import {
+  BaseFilterObject,
+  StreamFilter,
+} from '@/domain/click/stream/filter/types'
+import { ClickData } from '@/domain/click/click-data'
 import { isNullable } from '@/shared/helpers'
 
 export enum ClickUniqueFor {

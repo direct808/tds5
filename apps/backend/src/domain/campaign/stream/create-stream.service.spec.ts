@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { StreamService } from './stream.service'
 import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
-import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
-import { CreateStreamDto } from '../dto/create-stream.dto'
+import { CreateStreamOfferService } from '@/domain/campaign/stream-offer/create-stream-offer.service'
+import { CreateStreamDto } from '@/domain/campaign/dto/create-stream.dto'
 import { PrismaClient, StreamSchemaEnum } from '@generated/prisma/client'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 describe('CreateStreamService', () => {
   let service: CreateStreamService

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { CreateStreamOfferDto } from '../dto/create-stream-offer.dto'
-import { StreamOfferRepository } from '../../../infra/repositories/stream-offer.repository'
+import { CreateStreamOfferDto } from '@/domain/campaign/dto/create-stream-offer.dto'
+import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { CommonStreamOfferService } from './common-stream-offer.service'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class CreateStreamOfferService {

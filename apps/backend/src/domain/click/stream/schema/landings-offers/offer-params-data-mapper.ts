@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { OfferParams } from './offer-params.service'
-import { ClickData } from '../../../click-data'
+import { ClickData } from '@/domain/click/click-data'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
 import { isNullable } from '@/shared/helpers'
 

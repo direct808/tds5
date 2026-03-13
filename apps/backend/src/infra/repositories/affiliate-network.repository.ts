@@ -6,7 +6,7 @@ import {
   ISoftDeleteMany,
   NameAndUserId,
 } from './utils/repository-utils'
-import { PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
 @Injectable()

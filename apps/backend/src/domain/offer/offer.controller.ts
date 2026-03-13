@@ -9,15 +9,17 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
-import { UserId } from '../auth/user-id.decorator'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import { UserId } from '@/domain/auth/user-id.decorator'
 import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
 import { UpdateOfferDto } from './dto/update-offer.dto'
-import { GLOBAL_PREFIX } from '../../shared/constants'
+import { GLOBAL_PREFIX } from '@/shared/constants'
 import { ListOfferUseCase } from './use-cases/list-offer.use-case'
+import { GetOfferColumnsUseCase } from './use-cases/get-offer-columns.use-case'
 import { ListOfferDto } from './dto/list-offer.dto'
-import { ReportResponse } from '../report/types'
+import { ReportResponse } from '@/domain/report/types'
+import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
 
 @ApiTags('Offers')
@@ -26,6 +28,7 @@ export class OfferController {
   constructor(
     private readonly offerService: OfferService,
     private readonly listOfferUseCase: ListOfferUseCase,
+    private readonly getOfferColumnsUseCase: GetOfferColumnsUseCase,
   ) {}
 
   @Get()
@@ -59,5 +62,11 @@ export class OfferController {
     @UserId() userId: string,
   ): Promise<void> {
     await this.offerService.softDeleteMany({ ids, userId })
+  }
+
+  @Get('columns')
+  @ApiResponse({ type: ColumnResponseDto, isArray: true })
+  getColumns(): ColumnResponseDto[] {
+    return this.getOfferColumnsUseCase.execute()
   }
 }

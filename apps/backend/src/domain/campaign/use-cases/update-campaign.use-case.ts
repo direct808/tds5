@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { UpdateStreamService } from '../stream/update-stream.service'
-import { CampaignService } from '../campaign.service'
-import { UpdateCampaignDto } from '../dto/update-campaign.dto'
+import { UpdateStreamService } from '@/domain/campaign/stream/update-stream.service'
+import { CampaignService } from '@/domain/campaign/campaign.service'
+import { UpdateCampaignDto } from '@/domain/campaign/dto/update-campaign.dto'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import {
   CampaignUpdatedEvent,
   campaignUpdateEventName,
-} from '../events/campaign-updated.event'
+} from '@/domain/campaign/events/campaign-updated.event'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { checkUniqueNameForUpdate } from '@/infra/repositories/utils/repository-utils'
 import { CampaignModel } from '@generated/prisma/models/Campaign'

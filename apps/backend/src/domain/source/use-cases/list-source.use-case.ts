@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ReportResponse } from '../../report/types'
-import { EntityReportUseCase } from '../../report/use-cases/entity-report-use-case.service'
-import { SourceRepository } from '../../../infra/repositories/source.repository'
-import { ListSourceDto } from '../dto/list-source.dto'
+import { ReportResponse } from '@/domain/report/types'
+import { EntityReportUseCase } from '@/domain/report/use-cases/entity-report-use-case.service'
+import { SourceRepository } from '@/infra/repositories/source.repository'
+import { ListSourceDto } from '@/domain/source/dto/list-source.dto'
 
 @Injectable()
 export class ListSourceUseCase {

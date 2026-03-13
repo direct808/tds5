@@ -1,5 +1,5 @@
 import { OfferParamDataMapper } from './offer-params-data-mapper'
-import { ClickData } from '../../../click-data'
+import { ClickData } from '@/domain/click/click-data'
 import { OfferParams } from './offer-params.service'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
 

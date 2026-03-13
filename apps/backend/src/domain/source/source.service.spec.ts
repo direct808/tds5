@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { SourceService } from './source.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { SourceRepository } from '../../infra/repositories/source.repository'
+import { SourceRepository } from '@/infra/repositories/source.repository'
 import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
-} from '../../infra/repositories/utils/repository-utils'
+} from '@/infra/repositories/utils/repository-utils'
 import { SourceModel } from '@generated/prisma/models/Source'
 
 jest.mock('../../infra/repositories/utils/repository-utils')

@@ -12,7 +12,11 @@ import {
   Max,
   Min,
 } from 'class-validator'
-import { Direction, InputFilterData, ReportRangeEnum } from '../types'
+import {
+  Direction,
+  InputFilterData,
+  ReportRangeEnum,
+} from '@/domain/report/types'
 import { Transform, TransformFnParams } from 'class-transformer'
 import { isNullable } from '@/shared/helpers'
 

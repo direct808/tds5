@@ -1,7 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ClickData } from '../../click-data'
-import { ClickObserver } from '../subject'
-import { ClickContext, IClickContext } from '../../shared/click-context.service'
+import { ClickData } from '@/domain/click/click-data'
+import { ClickObserver } from '@/domain/click/observers/subject'
+import {
+  ClickContext,
+  IClickContext,
+} from '@/domain/click/shared/click-context.service'
 import { isNullable } from '@/shared/helpers'
 
 @Injectable()

@@ -1,3 +1,3 @@
-import { ListEntityDto } from '../../report/dto/list-entity.dto'
+import { ListEntityDto } from '@/domain/report/dto/list-entity.dto'
 
 export class ListAffiliateNetworkDto extends ListEntityDto {}

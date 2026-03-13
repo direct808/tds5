@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { DomainRepository } from '../../../infra/repositories/domain.repository'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 import { DomainModel } from '@generated/prisma/models/Domain'
 
 @Injectable()

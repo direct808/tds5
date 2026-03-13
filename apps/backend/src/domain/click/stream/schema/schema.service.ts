@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { StreamResponse } from '../../types'
+import { StreamResponse } from '@/domain/click/types'
 import { DirectUrlService } from './direct-url/direct-url.service'
 import { ActionService } from './action/action.service'
 import { LandingsOffersService } from './landings-offers/landings-offers.service'
 import {
   StreamDirectUrl,
   StreamFullWithCampaign,
-} from '../../../campaign/types'
+} from '@/domain/campaign/types'
 import { StreamSchemaEnum } from '@generated/prisma/enums'
 
 @Injectable()

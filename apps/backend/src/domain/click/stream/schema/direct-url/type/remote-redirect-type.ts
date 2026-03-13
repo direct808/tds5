@@ -1,6 +1,6 @@
 import { isURL } from 'class-validator'
 import { HttpStatus, Injectable } from '@nestjs/common'
-import { RedirectType } from '../../../../types'
+import { RedirectType } from '@/domain/click/types'
 
 @Injectable()
 export class RemoteRedirectType implements RedirectType {

@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon'
-import { BaseFilterObject, StreamFilter } from '../../types'
+import {
+  BaseFilterObject,
+  StreamFilter,
+} from '@/domain/click/stream/filter/types'
 
 export interface DateIntervalFilterObject extends BaseFilterObject {
   type: 'date-interval'

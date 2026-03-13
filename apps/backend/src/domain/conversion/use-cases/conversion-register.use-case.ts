@@ -4,10 +4,10 @@ import { ConversionUncheckedCreateInput } from '@generated/prisma/models/Convers
 import {
   ConversionCreatedEvent,
   conversionCreatedEventName,
-} from '../events/conversion-created.event'
+} from '@/domain/conversion/events/conversion-created.event'
 import { ClickRepository } from '@/infra/repositories/click.repository'
 import { ConversionRepository } from '@/infra/repositories/conversion.repository'
-import { ConversionTypeService } from '../conversion-type.service'
+import { ConversionTypeService } from '@/domain/conversion/conversion-type.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { ClickModel } from '@generated/prisma/models/Click'
 import { isNullable } from '@/shared/helpers'

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ensureDefined, isNullable } from '@/shared/helpers'
-import { ReportResponse } from '../types'
+import { ReportResponse } from '@/domain/report/types'
 
 type EntityItem = {
   id: string

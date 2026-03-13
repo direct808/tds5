@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { ReportService } from './report.service'
-import { GetReportDto } from '../dto/get-report.dto'
+import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { isNullable } from '@/shared/helpers'
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CheckArgsService {
       return
     }
 
-    if (this.reportService.getAllMetricsFieldNames().includes(sortField)) {
+    if (this.reportService.getAllMetricsFieldCodes().includes(sortField)) {
       return
     }
 

@@ -5,7 +5,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'no-relative-import-paths'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
@@ -51,6 +51,10 @@ module.exports = {
     '@typescript-eslint/require-await': 'error',
     'max-depth': ['warn', 3],
     complexity: ['warn', 10],
+    'no-relative-import-paths/no-relative-import-paths': [
+      'warn',
+      { allowSameFolder: true, rootDir: 'src', prefix: '@' },
+    ],
     '@typescript-eslint/strict-boolean-expressions': 'warn',
     eqeqeq: ['warn', 'always'],
   },

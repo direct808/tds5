@@ -2,9 +2,9 @@ import {
   FilterOperatorEnum,
   FormulaSummaryEnum,
   QueryTablesEnum,
-} from '../types'
+} from '@/domain/report/types'
 import { PrismaService } from '@/infra/prisma/prisma.service'
-import { postgresOperationMap } from '../postgres-opertaion-map'
+import { postgresOperationMap } from '@/domain/report/postgres-opertaion-map'
 import { ValueManager } from './value-manager'
 import { isNullable } from '@/shared/helpers'
 

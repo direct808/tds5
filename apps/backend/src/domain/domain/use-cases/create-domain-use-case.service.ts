@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { DomainRepository } from '../../../infra/repositories/domain.repository'
-import { DomainService } from '../domain.service'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
+import { DomainService } from '@/domain/domain/domain.service'
 
 type AddDomainArgs = {
   name: string

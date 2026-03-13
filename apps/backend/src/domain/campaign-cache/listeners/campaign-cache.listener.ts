@@ -3,28 +3,28 @@ import { OnEvent } from '@nestjs/event-emitter'
 import {
   SourceUpdatedEvent,
   sourceUpdateEventName,
-} from '../../source/events/source-updated.event'
-import { CampaignCacheClearService } from '../campaign-cache-clear.service'
+} from '@/domain/source/events/source-updated.event'
+import { CampaignCacheClearService } from '@/domain/campaign-cache/campaign-cache-clear.service'
 import {
   OfferUpdatedEvent,
   offerUpdateEventName,
-} from '../../offer/events/offer-updated.event'
+} from '@/domain/offer/events/offer-updated.event'
 import {
   CampaignUpdatedEvent,
   campaignUpdateEventName,
-} from '../../campaign/events/campaign-updated.event'
+} from '@/domain/campaign/events/campaign-updated.event'
 import {
   affiliateNetworkUpdatedEventName,
   AffiliateNetworkUpdatedEvent,
-} from '../../affiliate-network/events/affiliate-network-updated.event'
+} from '@/domain/affiliate-network/events/affiliate-network-updated.event'
 import {
   CampaignCreatedEvent,
   campaignCreatedEventName,
-} from '../../campaign/events/campaign-created.event'
+} from '@/domain/campaign/events/campaign-created.event'
 import {
   DomainUpdatedEvent,
   domainUpdateEventName,
-} from '../../domain/events/domain-updated.event'
+} from '@/domain/domain/events/domain-updated.event'
 import {
   SourceSoftDeletedEvent,
   sourceSoftDeletedEventName,
