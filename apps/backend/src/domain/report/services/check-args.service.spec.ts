@@ -10,7 +10,7 @@ describe('CheckArgsService', () => {
 
   const mockReportService = {
     getAllGroupFieldNames: jest.fn(),
-    getAllMetricsFieldNames: jest.fn(),
+    getAllMetricsFieldCodes: jest.fn(),
   }
 
   beforeEach(async () => {
@@ -42,7 +42,7 @@ describe('CheckArgsService', () => {
 
   it('passes if sortField exists in group fields', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
@@ -59,7 +59,7 @@ describe('CheckArgsService', () => {
 
   it('passes if sortField exists in metric fields', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
@@ -76,7 +76,7 @@ describe('CheckArgsService', () => {
 
   it('throws if sortField unknown', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
@@ -94,7 +94,7 @@ describe('CheckArgsService', () => {
 
   it('throws if sortField not in metrics or groups', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
