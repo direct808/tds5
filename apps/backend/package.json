@@ -29,8 +29,8 @@
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev --name --",
     "prisma:migrate": "prisma migrate deploy",
-    "cpd": "jscpd src",
-    "cicd:lint": "yarn run lint && yarn run prisma:format-check && yarn run cpd",
+    "jscpd": "jscpd src",
+    "cicd:lint": "yarn run lint && yarn run prisma:format-check && yarn run jscpd",
     "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov",
     "cicd:build": "yarn run prisma:generate && yarn run build",
     "cicd:start": "yarn run prisma:migrate && yarn run start:prod"
