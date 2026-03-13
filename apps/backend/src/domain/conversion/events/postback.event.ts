@@ -1,4 +1,4 @@
-import type { RequestAdapter } from '../../../shared/request-adapter'
+import type { RequestAdapter } from '@/shared/request-adapter'
 
 export const postbackEventName = 'postback'
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { StreamService } from './stream.service'
 import { StreamRepository } from './stream.repository'
-import { CreateStreamDto } from '../dto/create-stream.dto'
-import { CreateStreamOfferService } from '../stream-offer/create-stream-offer.service'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
+import { CreateStreamDto } from '@/domain/campaign/dto/create-stream.dto'
+import { CreateStreamOfferService } from '@/domain/campaign/stream-offer/create-stream-offer.service'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 import { StreamSchemaEnum } from '@generated/prisma/enums'
 
 @Injectable()

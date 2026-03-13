@@ -1,14 +1,14 @@
-import { StreamResponse } from '../../../types'
-import { StreamFullWithCampaign } from '../../../../campaign/types'
+import { StreamResponse } from '@/domain/click/types'
+import { StreamFullWithCampaign } from '@/domain/campaign/types'
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
-import { ClickData } from '../../../click-data'
+import { ClickData } from '@/domain/click/click-data'
 import { SelectOfferService } from './select-offer.service'
 import { OfferParamsService } from './offer-params.service'
 import { OfferParamDataMapper } from './offer-params-data-mapper'
 import {
   ClickContext,
   IClickContext,
-} from '../../../shared/click-context.service'
+} from '@/domain/click/shared/click-context.service'
 import { OfferModel } from '@generated/prisma/models/Offer'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
 import { isNullable } from '@/shared/helpers'

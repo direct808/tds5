@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
 import { FilterService } from './filter.service'
 import { FilterFactory } from './filter-factory'
-import { ClickSharedModule } from '../../shared/click-shared.module'
-import { RepositoryModule } from '../../../../infra/repositories/repository.module'
+import { ClickSharedModule } from '@/domain/click/shared/click-shared.module'
+import { RepositoryModule } from '@/infra/repositories/repository.module'
 
 @Module({
   imports: [ClickSharedModule, RepositoryModule],

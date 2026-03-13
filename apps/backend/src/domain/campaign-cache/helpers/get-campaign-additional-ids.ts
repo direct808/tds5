@@ -1,4 +1,4 @@
-import { FullCampaign } from '../../campaign/types'
+import { FullCampaign } from '@/domain/campaign/types'
 import { OfferModel } from '@generated/prisma/models/Offer'
 import { isNullable } from '@/shared/helpers'
 

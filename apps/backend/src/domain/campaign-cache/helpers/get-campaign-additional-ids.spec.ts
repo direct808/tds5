@@ -1,5 +1,5 @@
 import { getCampaignAdditionalIds } from './get-campaign-additional-ids'
-import { FullCampaign } from '../../campaign/types'
+import { FullCampaign } from '@/domain/campaign/types'
 
 describe('get-campaign-additional-ids.ts', () => {
   it('Should return all included ids', () => {

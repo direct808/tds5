@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { CampaignService } from '../campaign.service'
-import { CreateStreamService } from '../stream/create-stream.service'
+import { CampaignService } from '@/domain/campaign/campaign.service'
+import { CreateStreamService } from '@/domain/campaign/stream/create-stream.service'
 import { CreateCampaignUseCase } from './create-campaign.use-case'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { CampaignRepository } from '../../../infra/repositories/campaign.repository'
-import { checkUniqueNameForCreate } from '../../../infra/repositories/utils/repository-utils'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 import { PrismaClient } from '@generated/prisma/client'
-import { TransactionFactory } from '../../../infra/database/transaction-factory'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
+import { TransactionFactory } from '@/infra/database/transaction-factory'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('../../../infra/repositories/utils/repository-utils')
 

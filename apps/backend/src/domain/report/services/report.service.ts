@@ -1,16 +1,13 @@
 import { Injectable } from '@nestjs/common'
-import { formulas } from '../formulas'
-import { ReportRepository } from '../../../infra/repositories/report.repository'
-import { groups } from '../groups'
-import { postgresClickMetricMap } from '../postgres-click-metric-map'
+import { FORMULAS } from '@/domain/report/formulas'
+import { groups } from '@/domain/report/groups'
+import { METRICS } from '@/domain/report/metrics'
 
 @Injectable()
 export class ReportService {
-  constructor(private readonly reportRepository: ReportRepository) {}
-
-  public getAllMetricsFieldNames(): string[] {
-    let result = Object.keys(postgresClickMetricMap)
-    result = result.concat(Object.keys(formulas))
+  public getAllMetricsFieldCodes(): string[] {
+    let result = Object.keys(METRICS)
+    result = result.concat(Object.keys(FORMULAS))
 
     return result
   }

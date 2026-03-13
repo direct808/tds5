@@ -4,7 +4,7 @@ import { createAuthUser } from './utils/helpers'
 import { SourceBuilder } from './utils/entity-builder/source-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
-import { PrismaService } from '../src/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('SourceController (e2e)', () => {
   let app: INestApplication
@@ -78,5 +78,31 @@ describe('SourceController (e2e)', () => {
     })
 
     expect(sourceExists.deletedAt).not.toBeNull()
+  })
+
+  it('Get source columns', async () => {
+    const { body } = await request(app.getHttpServer())
+      .get('/api/source/columns')
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(Array.isArray(body)).toBe(true)
+    body.forEach((item: { column: string; name: string; default: boolean }) => {
+      expect(typeof item.column).toBe('string')
+      expect(typeof item.name).toBe('string')
+      expect(typeof item.default).toBe('boolean')
+    })
+
+    const columns: string[] = body.map(
+      (item: { column: string }) => item.column,
+    )
+    expect(columns).toContain('clicks')
+    expect(columns).toContain('roi')
+
+    const defaults = body
+      .filter((item: { default: boolean }) => item.default)
+      .map((item: { column: string }) => item.column)
+    expect(defaults).toContain('clicks')
+    expect(defaults).toContain('roi')
   })
 })

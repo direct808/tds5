@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ReportResponse } from '../../report/types'
-import { EntityReportUseCase } from '../../report/use-cases/entity-report-use-case.service'
-import { AffiliateNetworkRepository } from '../../../infra/repositories/affiliate-network.repository'
-import { ListAffiliateNetworkDto } from '../dto/list-affiliate-network.dto'
+import { ReportResponse } from '@/domain/report/types'
+import { EntityReportUseCase } from '@/domain/report/use-cases/entity-report-use-case.service'
+import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
+import { ListAffiliateNetworkDto } from '@/domain/affiliate-network/dto/list-affiliate-network.dto'
 
 @Injectable()
 export class ListAffiliateNetworkUseCase {

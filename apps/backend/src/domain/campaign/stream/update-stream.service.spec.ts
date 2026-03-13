@@ -3,12 +3,12 @@ import { StreamService } from './stream.service'
 import { CreateStreamService } from './create-stream.service'
 import { StreamRepository } from './stream.repository'
 import { UpdateStreamService } from './update-stream.service'
-import { getIdsForDelete } from '../../../infra/repositories/utils/repository-utils'
-import { UpdateStreamOfferService } from '../stream-offer/update-stream-offer.service'
-import { UpdateStreamDto } from '../dto/update-stream.dto'
+import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'
+import { UpdateStreamOfferService } from '@/domain/campaign/stream-offer/update-stream-offer.service'
+import { UpdateStreamDto } from '@/domain/campaign/dto/update-stream.dto'
 import { StreamSchemaEnum } from '@generated/prisma/enums'
 import { PrismaClient } from '@generated/prisma/client'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
 
 jest.mock('../../../infra/repositories/utils/repository-utils')
 

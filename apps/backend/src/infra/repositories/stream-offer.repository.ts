@@ -3,7 +3,10 @@ import {
   StreamOfferModel,
   StreamOfferUncheckedCreateInput,
 } from '@generated/prisma/models/StreamOffer'
-import { prismaTransaction, Transaction } from '../prisma/prisma-transaction'
+import {
+  prismaTransaction,
+  Transaction,
+} from '@/infra/prisma/prisma-transaction'
 
 @Injectable()
 export class StreamOfferRepository {

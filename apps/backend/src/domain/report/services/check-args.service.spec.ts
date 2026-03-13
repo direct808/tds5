@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { CheckArgsService } from './check-args.service'
 import { BadRequestException } from '@nestjs/common'
 import { ReportService } from './report.service'
-import { GetReportDto } from '../dto/get-report.dto'
-import { ReportRangeEnum } from '../types'
+import { GetReportDto } from '@/domain/report/dto/get-report.dto'
+import { ReportRangeEnum } from '@/domain/report/types'
 
 describe('CheckArgsService', () => {
   let service: CheckArgsService
 
   const mockReportService = {
     getAllGroupFieldNames: jest.fn(),
-    getAllMetricsFieldNames: jest.fn(),
+    getAllMetricsFieldCodes: jest.fn(),
   }
 
   beforeEach(async () => {
@@ -42,7 +42,7 @@ describe('CheckArgsService', () => {
 
   it('passes if sortField exists in group fields', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
@@ -59,7 +59,7 @@ describe('CheckArgsService', () => {
 
   it('passes if sortField exists in metric fields', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
@@ -76,7 +76,7 @@ describe('CheckArgsService', () => {
 
   it('throws if sortField unknown', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,
@@ -94,7 +94,7 @@ describe('CheckArgsService', () => {
 
   it('throws if sortField not in metrics or groups', () => {
     mockReportService.getAllGroupFieldNames.mockReturnValue(['group1'])
-    mockReportService.getAllMetricsFieldNames.mockReturnValue(['metric1'])
+    mockReportService.getAllMetricsFieldCodes.mockReturnValue(['metric1'])
 
     const args: GetReportDto = {
       limit: 25,

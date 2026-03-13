@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ActionType } from '../../../../types'
-import { ClickContext } from '../../../../shared/click-context.service'
+import { ActionType } from '@/domain/click/types'
+import { ClickContext } from '@/domain/click/shared/click-context.service'
 
 @Injectable()
 export class ToCampaignActionType implements ActionType {

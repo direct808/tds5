@@ -1,8 +1,8 @@
-import { Group, groups } from '../groups'
-import { Formula } from '../types'
-import { formulas } from '../formulas'
+import { Group, groups } from '@/domain/report/groups'
+import { Formula } from '@/domain/report/types'
+import { FormulaKey, FORMULAS } from '@/domain/report/formulas'
 import { BadRequestException } from '@nestjs/common'
-import { ClickMetricMap } from '../../../infra/repositories/report.repository'
+import { ClickMetricMap } from '@/infra/repositories/report.repository'
 import { isNullable } from '@/shared/helpers'
 
 export enum FilterFieldTypeEnum {
@@ -32,11 +32,11 @@ export function getFieldTypeData(
   field: string,
   clickMetricMap: ClickMetricMap,
 ): FieldType {
-  const formulaObj = formulas[field]
+  const formulaObj = FORMULAS[field as FormulaKey]
   const clickMetric = clickMetricMap[field]
   const group = groups[field]
 
-  if (formulaObj) {
+  if (!isNullable(formulaObj)) {
     return {
       type: FilterFieldTypeEnum.formula,
       formulaData: formulaObj,

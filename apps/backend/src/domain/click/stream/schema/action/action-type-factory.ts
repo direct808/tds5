@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ActionType, StreamResponse } from '../../../types'
+import { ActionType, StreamResponse } from '@/domain/click/types'
 import { ModuleRef } from '@nestjs/core'
 import {
   NothingActionType,
@@ -8,8 +8,8 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './type'
-import { MaybePromise } from '../../../../../shared/types'
-import { StreamFull } from '../../../../campaign/types'
+import { MaybePromise } from '@/shared/types'
+import { StreamFull } from '@/domain/campaign/types'
 import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 @Injectable()

@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { CreateCampaignDto } from '../dto/create-campaign.dto'
-import { Transaction } from '../../../infra/prisma/prisma-transaction'
-import { checkUniqueNameForCreate } from '../../../infra/repositories/utils/repository-utils'
+import { CreateCampaignDto } from '@/domain/campaign/dto/create-campaign.dto'
+import { Transaction } from '@/infra/prisma/prisma-transaction'
+import { checkUniqueNameForCreate } from '@/infra/repositories/utils/repository-utils'
 import {
   CampaignCreatedEvent,
   campaignCreatedEventName,
-} from '../events/campaign-created.event'
-import { CampaignRepository } from '../../../infra/repositories/campaign.repository'
-import { CreateStreamService } from '../stream/create-stream.service'
-import { CampaignService } from '../campaign.service'
+} from '@/domain/campaign/events/campaign-created.event'
+import { CampaignRepository } from '@/infra/repositories/campaign.repository'
+import { CreateStreamService } from '@/domain/campaign/stream/create-stream.service'
+import { CampaignService } from '@/domain/campaign/campaign.service'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { TransactionFactory } from '../../../infra/database/transaction-factory'
+import { TransactionFactory } from '@/infra/database/transaction-factory'
 import { CampaignUncheckedCreateInput } from '@generated/prisma/models/Campaign'
 import { nanoid } from 'nanoid'
 

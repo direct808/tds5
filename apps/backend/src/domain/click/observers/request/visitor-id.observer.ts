@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { ClickObserver } from '../subject'
-import { IdGenerator, VISITOR_ID_SIZE } from '../id-generator'
-import { ClickContext } from '../../shared/click-context.service'
+import { ClickObserver } from '@/domain/click/observers/subject'
+import {
+  IdGenerator,
+  VISITOR_ID_SIZE,
+} from '@/domain/click/observers/id-generator'
+import { ClickContext } from '@/domain/click/shared/click-context.service'
 import { isNullable } from '@/shared/helpers'
 
 @Injectable()

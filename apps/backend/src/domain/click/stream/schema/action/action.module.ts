@@ -8,7 +8,7 @@ import {
   ShowTextActionType,
   ToCampaignActionType,
 } from './type'
-import { ClickSharedModule } from '../../../shared/click-shared.module'
+import { ClickSharedModule } from '@/domain/click/shared/click-shared.module'
 
 @Module({
   imports: [ClickSharedModule],

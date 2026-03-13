@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { CampaignService } from './campaign.service'
-import { SourceRepository } from '../../infra/repositories/source.repository'
-import { ensureEntityExists } from '../../infra/repositories/utils/repository-utils'
-import { DomainRepository } from '../../infra/repositories/domain.repository'
+import { SourceRepository } from '@/infra/repositories/source.repository'
+import { ensureEntityExists } from '@/infra/repositories/utils/repository-utils'
+import { DomainRepository } from '@/infra/repositories/domain.repository'
 
 jest.mock('../../infra/repositories/utils/repository-utils')
 

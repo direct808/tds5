@@ -11,9 +11,9 @@ import {
   RemoteRedirectType,
   WithoutRefererRedirectType,
 } from './type'
-import { RedirectType, StreamResponse } from '../../../types'
-import { MaybePromise } from '../../../../../shared/types'
-import { StreamDirectUrl } from '../../../../campaign/types'
+import { RedirectType, StreamResponse } from '@/domain/click/types'
+import { MaybePromise } from '@/shared/types'
+import { StreamDirectUrl } from '@/domain/campaign/types'
 import { StreamRedirectTypeEnum } from '@generated/prisma/enums'
 
 @Injectable()

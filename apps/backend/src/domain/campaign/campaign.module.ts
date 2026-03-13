@@ -11,9 +11,10 @@ import { UpdateStreamOfferService } from './stream-offer/update-stream-offer.ser
 import { CommonStreamOfferService } from './stream-offer/common-stream-offer.service'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
 import { CreateCampaignUseCase } from './use-cases/create-campaign.use-case'
-import { ReportModule } from '../report/report.module'
+import { ReportModule } from '@/domain/report/report.module'
 import { ListCampaignUseCase } from './use-cases/list-campaign.use-case'
 import { DeleteCampaignUseCase } from '@/domain/campaign/use-cases/delete-campaign.use-case'
+import { GetCampaignColumnsUseCase } from './use-cases/get-campaign-columns.use-case'
 
 @Module({
   controllers: [CampaignController],
@@ -31,6 +32,7 @@ import { DeleteCampaignUseCase } from '@/domain/campaign/use-cases/delete-campai
     CommonStreamOfferService,
     ListCampaignUseCase,
     DeleteCampaignUseCase,
+    GetCampaignColumnsUseCase,
   ],
 })
 export class CampaignModule {}

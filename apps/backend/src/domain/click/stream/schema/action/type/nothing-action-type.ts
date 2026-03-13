@@ -1,4 +1,4 @@
-import type { ActionType } from '../../../../types'
+import type { ActionType } from '@/domain/click/types'
 import { Injectable } from '@nestjs/common'
 
 @Injectable()

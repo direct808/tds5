@@ -1,6 +1,8 @@
 import { FormulaRecord, FormulaSummaryEnum } from './types'
 
-export const formulas: FormulaRecord = {
+export type FormulaKey = keyof typeof FORMULAS
+
+export const FORMULAS = {
   revenue: {
     formula:
       'revenue_sale + revenue_deposit + revenue_lead + revenue_registration',
@@ -172,4 +174,41 @@ export const formulas: FormulaRecord = {
     summary: FormulaSummaryEnum.avg,
     decimals: 2,
   },
+} as const satisfies FormulaRecord
+
+export const FORMULA_NAMES: Record<FormulaKey, string> = {
+  revenue: 'Revenue',
+  conversions: 'Conversions',
+  cr: 'CR %',
+  cr_sale: 'CR Sale %',
+  cr_deposit: 'CR Deposit %',
+  cr_hold: 'CR Hold %',
+  cr_registration: 'CR Registration %',
+  cr_regs_to_deps: 'Regs to Deps %',
+  roi: 'ROI %',
+  roi_confirmed: 'ROI Confirmed %',
+  profit_loss: 'Profit/Loss',
+  profit_loss_confirmed: 'Profit/Loss Confirmed',
+  clicks_unique_global_pct: 'Unique Global %',
+  clicks_unique_campaign_pct: 'Unique Campaign %',
+  clicks_unique_stream_pct: 'Unique Stream %',
+  bots_pct: 'Bots %',
+  approve_pct: 'Approve %',
+  epc: 'EPC',
+  uepc: 'uEPC',
+  epc_hold: 'EPC Hold',
+  uepc_hold: 'uEPC Hold',
+  epc_confirmed: 'EPC Confirmed',
+  uepc_confirmed: 'uEPC Confirmed',
+  cps: 'CPS',
+  cpl: 'CPL',
+  cpr: 'CPR',
+  cpd: 'CPD',
+  cpa: 'CPA',
+  cpc: 'CPC',
+  ucpc: 'uCPC',
+  ecpc: 'eCPC',
+  ecpm: 'eCPM',
+  ecpm_confirmed: 'eCPM Confirmed',
+  ucr: 'uCR %',
 }

@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { InputFilterData, ReportRangeEnum, ReportResponse } from '../types'
-import { ComposeReportService } from '../services/compose-report.service'
-import { ReportBuilderService } from '../services/report-builder.service'
+import {
+  InputFilterData,
+  ReportRangeEnum,
+  ReportResponse,
+} from '@/domain/report/types'
+import { ComposeReportService } from '@/domain/report/services/compose-report.service'
+import { ReportBuilderService } from '@/domain/report/services/report-builder.service'
 
 type HandleArgs = {
   metrics: string[]

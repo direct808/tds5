@@ -12,12 +12,12 @@ import {
   CampaignUncheckedCreateInput,
   CampaignWhereInput,
 } from '@generated/prisma/models/Campaign'
-import { PrismaService } from '../prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import {
   prismaTransaction,
   PrismaTransaction,
   Transaction,
-} from '../prisma/prisma-transaction'
+} from '@/infra/prisma/prisma-transaction'
 
 export type GetFullByArgs = { code: string } | { domain: string }
 

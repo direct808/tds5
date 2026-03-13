@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { UpdateStreamOfferDto } from '../dto/update-stream-offer.dto'
+import { UpdateStreamOfferDto } from '@/domain/campaign/dto/update-stream-offer.dto'
 import { CommonStreamOfferService } from './common-stream-offer.service'
 import { StreamOfferRepository } from '@/infra/repositories/stream-offer.repository'
 import { getIdsForDelete } from '@/infra/repositories/utils/repository-utils'

@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaTransaction, Transaction } from '../prisma/prisma-transaction'
-import { PrismaService } from '../prisma/prisma.service'
+import {
+  PrismaTransaction,
+  Transaction,
+} from '@/infra/prisma/prisma-transaction'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 @Injectable()
 export class TransactionFactory {

@@ -6,13 +6,13 @@ import { StreamResponse } from './types'
 import { RegisterClickService } from './register-click.service'
 import { SetupSubject } from './observers/setup-subject'
 import { ClickContext } from './shared/click-context.service'
-import { CampaignCacheService } from '../campaign-cache/campaign-cache.service'
+import { CampaignCacheService } from '@/domain/campaign-cache/campaign-cache.service'
 import { CampaignModel } from '@generated/prisma/models/Campaign'
 import {
   FullCampaign,
   StreamFull,
   StreamFullWithCampaign,
-} from '../campaign/types'
+} from '@/domain/campaign/types'
 import { isNullable } from '@/shared/helpers'
 
 type RedirectData = { count: number }

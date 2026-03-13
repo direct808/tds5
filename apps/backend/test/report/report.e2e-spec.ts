@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common'
+import request from 'supertest'
 import { createAuthUser } from '../utils/helpers'
 import { truncateTables } from '../utils/truncate-tables'
 import { createApp } from '../utils/create-app'
@@ -788,5 +789,34 @@ describe('Report (e2e)', () => {
       },
       total: 1,
     })
+  })
+
+  it('Get report columns', async () => {
+    const { body } = await request(app.getHttpServer())
+      .get('/api/report/columns')
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(Array.isArray(body)).toBe(true)
+    body.forEach((item: { column: string; name: string; default: boolean }) => {
+      expect(typeof item.column).toBe('string')
+      expect(typeof item.name).toBe('string')
+      expect(typeof item.default).toBe('boolean')
+    })
+
+    const columns: string[] = body.map(
+      (item: { column: string }) => item.column,
+    )
+    expect(columns).toContain('clicks')
+    expect(columns).toContain('roi')
+    expect(columns).toContain('cost')
+    expect(columns).toContain('conversions')
+
+    const defaults = body
+      .filter((item: { default: boolean }) => item.default)
+      .map((item: { column: string }) => item.column)
+    expect(defaults).toContain('clicks')
+    expect(defaults).toContain('roi')
+    expect(defaults).not.toContain('cost')
   })
 })

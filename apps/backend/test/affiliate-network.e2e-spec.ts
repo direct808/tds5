@@ -5,7 +5,7 @@ import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-networ
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaClient } from '@generated/prisma/client'
-import { PrismaService } from '../src/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 
 describe('AffiliateNetworkController (e2e)', () => {
   let app: INestApplication
@@ -89,5 +89,33 @@ describe('AffiliateNetworkController (e2e)', () => {
     })
 
     expect(deletedSource.deletedAt).not.toBeNull()
+  })
+
+  it('Get affiliate-network columns', async () => {
+    const { body } = await request(app.getHttpServer())
+      .get('/api/affiliate-network/columns')
+      .auth(accessToken, { type: 'bearer' })
+      .expect(200)
+
+    expect(Array.isArray(body)).toBe(true)
+    body.forEach((item: { column: string; name: string; default: boolean }) => {
+      expect(typeof item.column).toBe('string')
+      expect(typeof item.name).toBe('string')
+      expect(typeof item.default).toBe('boolean')
+    })
+
+    const columns: string[] = body.map(
+      (item: { column: string }) => item.column,
+    )
+    expect(columns).toContain('offers')
+    expect(columns).toContain('clicks')
+    expect(columns).toContain('roi')
+
+    const defaults = body
+      .filter((item: { default: boolean }) => item.default)
+      .map((item: { column: string }) => item.column)
+    expect(defaults).toContain('clicks')
+    expect(defaults).toContain('roi')
+    expect(defaults).not.toContain('offers')
   })
 })

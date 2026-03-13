@@ -12,7 +12,7 @@ import {
   CampaignRepository,
   GetFullByArgs,
 } from '@/infra/repositories/campaign.repository'
-import { FullCampaign } from '../campaign/types'
+import { FullCampaign } from '@/domain/campaign/types'
 import { isNullable } from '@/shared/helpers'
 
 const NOT_FOUND = 'N'

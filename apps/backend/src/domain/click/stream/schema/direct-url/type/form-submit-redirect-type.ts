@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import type { RedirectType } from '../../../../types'
+import type { RedirectType } from '@/domain/click/types'
 
 @Injectable()
 export class FormSubmitRedirectType implements RedirectType {

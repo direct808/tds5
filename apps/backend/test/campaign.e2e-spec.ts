@@ -587,6 +587,40 @@ describe('CampaignController (e2e)', () => {
     })
   })
 
+  describe('columns', () => {
+    it('Get campaign columns', async () => {
+      const { body } = await request(app.getHttpServer())
+        .get('/api/campaign/columns')
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(Array.isArray(body)).toBe(true)
+      body.forEach(
+        (item: { column: string; name: string; default: boolean }) => {
+          expect(typeof item.column).toBe('string')
+          expect(typeof item.name).toBe('string')
+          expect(typeof item.default).toBe('boolean')
+        },
+      )
+
+      const columns: string[] = body.map(
+        (item: { column: string }) => item.column,
+      )
+      expect(columns).toContain('source')
+      expect(columns).toContain('streams')
+      expect(columns).toContain('clicks')
+      expect(columns).toContain('roi')
+
+      const defaults = body
+        .filter((item: { default: boolean }) => item.default)
+        .map((item: { column: string }) => item.column)
+      expect(defaults).toContain('clicks')
+      expect(defaults).toContain('roi')
+      expect(defaults).not.toContain('source')
+      expect(defaults).not.toContain('streams')
+    })
+  })
+
   describe('getFullBy', () => {
     it('code', async () => {
       const date = new Date()

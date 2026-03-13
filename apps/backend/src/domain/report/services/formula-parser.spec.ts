@@ -1,6 +1,6 @@
 import { FormulaParser } from './formula-parser'
 import { BadRequestException } from '@nestjs/common'
-import { FormulaRecord, FormulaSummaryEnum } from '../types'
+import { FormulaRecord, FormulaSummaryEnum } from '@/domain/report/types'
 
 describe('FormulaParser', () => {
   const clickMetricMap = {
