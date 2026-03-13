@@ -30,7 +30,6 @@
     "prisma:migrate:dev": "prisma migrate dev --name --",
     "prisma:migrate": "prisma migrate deploy",
     "cpd": "jscpd src",
-    "jscpd": "jscpd --pattern \"**/*.ts\" --min-tokens 5 --min-lines 2",
     "cicd:lint": "yarn run lint && yarn run prisma:format-check && yarn run cpd",
     "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov",
     "cicd:build": "yarn run prisma:generate && yarn run build",
