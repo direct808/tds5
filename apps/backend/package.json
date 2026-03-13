@@ -29,7 +29,9 @@
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev --name --",
     "prisma:migrate": "prisma migrate deploy",
-    "cicd:lint": "yarn run lint && yarn run prisma:format-check",
+    "cpd": "jscpd",
+    "jscpd": "jscpd --pattern \"**/*.ts\" --min-tokens 5 --min-lines 2",
+    "cicd:lint": "yarn run lint && yarn run prisma:format-check && yarn run cpd",
     "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov",
     "cicd:build": "yarn run prisma:generate && yarn run build",
     "cicd:start": "yarn run prisma:migrate && yarn run start:prod"
@@ -100,6 +102,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "jest": "^29.5.0",
+    "jscpd": "^4.0.8",
     "nest-commander": "^3.19.0",
     "prettier": "^3.0.0",
     "prisma": "^7.0.0",

@@ -1,0 +1,10 @@
+{
+  "path": ["src"],
+  "ignore": ["**/*.spec.ts", "**/*.e2e.ts"],
+  "gitignore": true,
+  "minLines": 1,
+  "minTokens": 1,
+  "reporters": ["console", "json"],
+  "output": "cpd-report",
+  "threshold": 0
+}
