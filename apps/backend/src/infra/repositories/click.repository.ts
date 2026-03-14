@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ClickLimitProvider } from '@/domain/click/stream/filter/filters/click-limit/click-limit-filter'
 import { ClickUniqueProvider } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { InjectKysely } from 'nestjs-kysely'
-import { Kysely, sql } from 'kysely'
+import { Kysely, SelectQueryBuilder, sql } from 'kysely'
 import { DB } from '@generated/kysely'
 import {
   ClickModel,
@@ -32,7 +32,8 @@ export class ClickRepository
   }
 
   public async getCountByVisitorId(visitorId: string): Promise<number> {
-    const { count } = await this.buildCountByVisitorIdQuery(visitorId).executeTakeFirstOrThrow()
+    const { count } =
+      await this.buildCountByVisitorIdQuery(visitorId).executeTakeFirstOrThrow()
 
     return Number(count)
   }
@@ -48,7 +49,9 @@ export class ClickRepository
     return Number(count)
   }
 
-  private buildCountByVisitorIdQuery(visitorId: string) {
+  private buildCountByVisitorIdQuery(
+    visitorId: string,
+  ): SelectQueryBuilder<DB, 'click', { count: string | number | bigint }> {
     return this.db
       .selectFrom('click')
       .select(({ fn }) => [fn.count('click.id').as('count')])

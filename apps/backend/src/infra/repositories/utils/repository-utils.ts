@@ -71,7 +71,7 @@ export async function validateBeforeUpdate<
 ): Promise<void> {
   await ensureEntityExists(repository, { ids: [args.id], userId: args.userId })
 
-  if (args.name != null) {
+  if (args.name !== null) {
     await checkUniqueNameForUpdate(repository, { ...args, name: args.name })
   }
 }
