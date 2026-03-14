@@ -1,0 +1,11 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["src/main.ts", "src/cli.ts", "test/**/*spec.ts"],
+  "project": ["src/**/*.ts"],
+  "ignore": ["generated/**", "dist/**", "coverage/**"],
+  "ignoreDependencies": ["babel-jest", "@babel/preset-env"],
+  "ignoreExportsUsedInFile": true,
+  "typescript": {
+    "config": "tsconfig.json"
+  }
+}
