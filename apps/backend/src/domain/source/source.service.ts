@@ -6,12 +6,11 @@ import {
 } from './events/source-updated.event'
 import {
   checkUniqueNameForCreate,
-  checkUniqueNameForUpdate,
-  ensureEntityExists,
+  softDeleteManyWithCheck,
+  validateBeforeUpdate,
 } from '@/infra/repositories/utils/repository-utils'
 import { SourceRepository } from '@/infra/repositories/source.repository'
 import { SourceModel } from '@generated/prisma/models/Source'
-import { isNullable } from '@/shared/helpers'
 import {
   SourceSoftDeletedEvent,
   sourceSoftDeletedEventName,
@@ -47,17 +46,7 @@ export class SourceService {
   }
 
   public async update(args: UpdatedArgs): Promise<void> {
-    await ensureEntityExists(this.repository, {
-      ids: [args.id],
-      userId: args.userId,
-    })
-
-    if (!isNullable(args.name)) {
-      await checkUniqueNameForUpdate(this.repository, {
-        ...args,
-        name: args.name,
-      })
-    }
+    await validateBeforeUpdate(this.repository, args)
 
     await this.repository.update(args.id, args)
 
@@ -72,9 +61,7 @@ export class SourceService {
   }
 
   public async deleteMany(args: DeleteArgs): Promise<void> {
-    await ensureEntityExists(this.repository, args)
-
-    await this.repository.softDeleteMany(args.ids)
+    await softDeleteManyWithCheck(this.repository, args)
 
     this.eventEmitter.emit(
       sourceSoftDeletedEventName,

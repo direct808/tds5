@@ -1,7 +1,7 @@
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
 import { StartedPostgreSqlContainer } from '@testcontainers/postgresql/build/postgresql-container'
 import { truncateTables } from './truncate-tables'
-import execa from 'execa'
+import { execa } from 'execa'
 
 export default async function (): Promise<void> {
   await globalSetup()

@@ -9,6 +9,7 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
+  softDeleteManyWithCheck,
 } from '@/infra/repositories/utils/repository-utils'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 import {
@@ -75,9 +76,7 @@ export class AffiliateNetworkService {
   }
 
   public async deleteMany(args: DeleteArgs): Promise<void> {
-    await ensureEntityExists(this.repository, args)
-
-    await this.repository.softDeleteMany(args.ids)
+    await softDeleteManyWithCheck(this.repository, args)
 
     this.eventEmitter.emit(
       affiliateNetworkSoftDeletedName,

@@ -8,8 +8,8 @@ import { OfferRepository } from '@/infra/repositories/offer.repository'
 import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import {
   checkUniqueNameForCreate,
-  checkUniqueNameForUpdate,
   ensureEntityExists,
+  validateBeforeUpdate,
 } from '@/infra/repositories/utils/repository-utils'
 import { OfferModel } from '@generated/prisma/models/Offer'
 import { isNullable } from '@/shared/helpers'
@@ -67,17 +67,7 @@ export class OfferService {
    * @param args
    */
   public async update(args: UpdatedArgs): Promise<void> {
-    await ensureEntityExists(this.repository, {
-      ids: [args.id],
-      userId: args.userId,
-    })
-
-    if (!isNullable(args.name)) {
-      await checkUniqueNameForUpdate(this.repository, {
-        ...args,
-        name: args.name,
-      })
-    }
+    await validateBeforeUpdate(this.repository, args)
 
     await this.ensureNetworkExists(args)
 
