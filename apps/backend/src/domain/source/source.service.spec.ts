@@ -4,8 +4,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { SourceRepository } from '@/infra/repositories/source.repository'
 import {
   checkUniqueNameForCreate,
-  checkUniqueNameForUpdate,
-  ensureEntityExists,
+  softDeleteManyWithCheck,
+  validateBeforeUpdate,
 } from '@/infra/repositories/utils/repository-utils'
 import { SourceModel } from '@generated/prisma/models/Source'
 
@@ -55,11 +55,7 @@ describe('SourceService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
-        ids: ['123'],
-        userId: 'Userid',
-      })
-      expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
+      expect(validateBeforeUpdate).toHaveBeenCalledWith(repository, args)
       expect(repository.update).toHaveBeenCalledWith('123', args)
     })
 
@@ -68,11 +64,7 @@ describe('SourceService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
-        ids: ['123'],
-        userId: 'Userid',
-      })
-      expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
+      expect(validateBeforeUpdate).toHaveBeenCalledWith(repository, args)
       expect(repository.update).toHaveBeenCalledWith('123', args)
     })
   })
@@ -96,8 +88,7 @@ describe('SourceService', () => {
 
       await service.deleteMany(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
-      expect(repository.softDeleteMany).toHaveBeenCalledWith(args.ids)
+      expect(softDeleteManyWithCheck).toHaveBeenCalledWith(repository, args)
     })
   })
 })

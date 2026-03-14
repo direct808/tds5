@@ -6,6 +6,7 @@ import {
   checkUniqueNameForCreate,
   checkUniqueNameForUpdate,
   ensureEntityExists,
+  softDeleteManyWithCheck,
 } from '@/infra/repositories/utils/repository-utils'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 
@@ -105,8 +106,7 @@ describe('AffiliateNetworkService', () => {
 
       await service.deleteMany(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, args)
-      expect(repository.softDeleteMany).toHaveBeenCalledWith(args.ids)
+      expect(softDeleteManyWithCheck).toHaveBeenCalledWith(repository, args)
     })
   })
 })

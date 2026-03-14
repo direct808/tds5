@@ -5,8 +5,8 @@ import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-netwo
 import { OfferRepository } from '@/infra/repositories/offer.repository'
 import {
   checkUniqueNameForCreate,
-  checkUniqueNameForUpdate,
   ensureEntityExists,
+  validateBeforeUpdate,
 } from '@/infra/repositories/utils/repository-utils'
 import { OfferModel } from '@generated/prisma/models/Offer'
 
@@ -79,16 +79,12 @@ describe('OfferService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
-        ids: ['offer1'],
-        userId: 'user1',
-      })
-      expect(checkUniqueNameForUpdate).toHaveBeenCalledWith(repository, args)
+      expect(validateBeforeUpdate).toHaveBeenCalledWith(repository, args)
       expect(service['ensureNetworkExists']).toHaveBeenCalledWith(args)
       expect(repository.update).toHaveBeenCalledWith(args.id, args)
     })
 
-    it('checkUniqueNameForUpdate should not be called', async () => {
+    it('should update an offer without name', async () => {
       const args = {
         id: 'offer1',
         affiliateNetworkId: 'net1',
@@ -99,11 +95,7 @@ describe('OfferService', () => {
 
       await service.update(args)
 
-      expect(ensureEntityExists).toHaveBeenCalledWith(repository, {
-        ids: ['offer1'],
-        userId: 'user1',
-      })
-      expect(checkUniqueNameForUpdate).not.toHaveBeenCalled()
+      expect(validateBeforeUpdate).toHaveBeenCalledWith(repository, args)
       expect(service['ensureNetworkExists']).toHaveBeenCalledWith(args)
       expect(repository.update).toHaveBeenCalledWith(args.id, args)
     })
