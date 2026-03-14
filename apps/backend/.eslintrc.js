@@ -63,6 +63,7 @@ module.exports = {
       files: ['test/**/*.ts'],
       rules: {
         'no-process-env': 'off',
+        '@typescript-eslint/strict-boolean-expressions': 'off',
       },
     },
     {
