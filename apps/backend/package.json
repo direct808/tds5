@@ -30,7 +30,7 @@
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:migrate:dev": "prisma migrate dev --name --",
     "prisma:migrate": "prisma migrate deploy",
-    "cicd:lint": "yarn run prisma:generate && yarn run lint && yarn run prisma:format-check && yarn run knip",
+    "cicd:lint": "cross-env DATABASE_URL=postgres://fake yarn run prisma:generate && yarn run lint && yarn run prisma:format-check && yarn run knip",
     "cicd:test": "cross-env DATABASE_URL=postgres://fake yarn run prisma generate && yarn run test:cov",
     "cicd:build": "yarn run prisma:generate && yarn run build",
     "cicd:start": "yarn run prisma:migrate && yarn run start:prod"
