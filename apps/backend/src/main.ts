@@ -1,3 +1,4 @@
+import 'source-map-support/register'
 import { NestFactory } from '@nestjs/core'
 import { Logger } from '@nestjs/common'
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger'
