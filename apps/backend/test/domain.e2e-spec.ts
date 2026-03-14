@@ -7,7 +7,6 @@ import { PrismaService } from '../src/infra/prisma/prisma.service'
 import { createCampaignContent } from './utils/campaign-builder-facades/create-campaign-content'
 import { faker } from '@faker-js/faker'
 import { DomainBuilder } from './utils/entity-builder/domain-builder'
-import { CampaignBuilder } from './utils/entity-builder/campaign-builder'
 
 describe('DomainController (e2e)', () => {
   let app: INestApplication

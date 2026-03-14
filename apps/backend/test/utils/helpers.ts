@@ -1,21 +1,6 @@
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
-import * as bcrypt from 'bcrypt'
-import { UserBuilder } from './entity-builder/user-builder'
 import { PrismaService } from '../../src/infra/prisma/prisma.service'
-import { UserModel } from '@generated/prisma/models/User'
-
-async function authUser(
-  app: INestApplication,
-  user: { login: string; password: string },
-): Promise<string> {
-  const { body } = await request(app.getHttpServer())
-    .post('/api/auth/login')
-    .send({ login: user.login, password: user.password })
-    .expect(201)
-
-  return body.accessToken
-}
 
 export async function createAuthUser(app: INestApplication): Promise<{
   user: { id: string }

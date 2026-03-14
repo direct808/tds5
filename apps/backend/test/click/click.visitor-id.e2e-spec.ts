@@ -84,7 +84,7 @@ describe('click.visitorId (e2e)', () => {
 
 function getVisitorId(cookies: string[]): string | undefined {
   for (const coo of cookies) {
-    if (coo.substring(0, 9) != 'visitorId') {
+    if (coo.substring(0, 9) !== 'visitorId') {
       continue
     }
 
