@@ -4,5 +4,6 @@ node_modules
 .idea
 dist
 apps/backend/generated
+apps/backend/coverage
 apps/backend/test/.env.e2e
 *.mmdb
