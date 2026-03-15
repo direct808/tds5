@@ -1,0 +1,22 @@
+name: Check
+
+on:
+  workflow_call:
+    inputs:
+      script:
+        required: true
+        type: string
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup
+
+      - name: Run script
+        working-directory: apps/backend
+        run: yarn run ${{ inputs.script }}
