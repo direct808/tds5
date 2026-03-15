@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserId } from '@/domain/auth/user-id.decorator'
 import { AffiliateNetworkService } from './affiliate-network.service'
 import { CreateAffiliateNetworkDto } from './dto/create-affiliate-network.dto'
@@ -18,10 +18,12 @@ import { GLOBAL_PREFIX } from '@/shared/constants'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 import { ListAffiliateNetworkUseCase } from './use-cases/list-affiliate-network.use-case'
 import { GetAffiliateNetworkColumnsUseCase } from './use-cases/get-affiliate-network-columns.use-case'
+import { GetAffiliateNetworkByIdUseCase } from './use-cases/get-affiliate-network-by-id.use-case'
 import { ListAffiliateNetworkDto } from './dto/list-affiliate-network.dto'
-import { ReportResponse } from '@/domain/report/types'
+import { GetAffiliateNetworkByIdResponseDto } from './dto/get-affiliate-network-by-id-response.dto'
 import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { DeleteAffiliateNetworkDto } from '@/domain/affiliate-network/dto/delete-affiliate-network.dto'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')
@@ -30,13 +32,15 @@ export class AffiliateNetworkController {
     private readonly affiliateNetworkService: AffiliateNetworkService,
     private readonly listAffiliateNetworkUseCase: ListAffiliateNetworkUseCase,
     private readonly getAffiliateNetworkColumnsUseCase: GetAffiliateNetworkColumnsUseCase,
+    private readonly getAffiliateNetworkByIdUseCase: GetAffiliateNetworkByIdUseCase,
   ) {}
 
   @Get()
+  @ApiOkResponse({ type: ReportResponseDto })
   listAffiliateNetworks(
     @Query() args: ListAffiliateNetworkDto,
     @UserId() userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ReportResponseDto> {
     return this.listAffiliateNetworkUseCase.execute(args, userId)
   }
 
@@ -69,5 +73,14 @@ export class AffiliateNetworkController {
   @ApiResponse({ type: ColumnResponseDto, isArray: true })
   getColumns(): ColumnResponseDto[] {
     return this.getAffiliateNetworkColumnsUseCase.execute()
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetAffiliateNetworkByIdResponseDto })
+  getAffiliateNetworkById(
+    @Param('id') id: string,
+    @UserId() userId: string,
+  ): Promise<GetAffiliateNetworkByIdResponseDto> {
+    return this.getAffiliateNetworkByIdUseCase.execute(id, userId)
   }
 }

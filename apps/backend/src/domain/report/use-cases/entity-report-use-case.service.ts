@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import {
-  InputFilterData,
-  ReportRangeEnum,
-  ReportResponse,
-} from '@/domain/report/types'
+import { InputFilterData, ReportRangeEnum } from '@/domain/report/types'
 import { ComposeReportService } from '@/domain/report/services/compose-report.service'
 import { ReportBuilderService } from '@/domain/report/services/report-builder.service'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 type HandleArgs = {
   metrics: string[]
@@ -33,7 +30,7 @@ export class EntityReportUseCase {
     args: HandleArgs,
     entityList: EntityItem[],
     entityIdName: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ReportResponseDto> {
     if (entityList.length === 0) {
       return { summary: {}, total: 0, rows: [] }
     }
@@ -52,7 +49,7 @@ export class EntityReportUseCase {
     args: HandleArgs,
     ids: string[],
     entityIdName: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ReportResponseDto> {
     const filter: InputFilterData[] = [[entityIdName, 'in', ids]]
 
     return this.reportBuilderService.build({

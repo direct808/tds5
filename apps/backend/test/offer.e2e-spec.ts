@@ -6,6 +6,7 @@ import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { createAuthUser } from './utils/helpers'
 import { PrismaService } from '@/infra/prisma/prisma.service'
+import { UserBuilder } from './utils/entity-builder/user-builder'
 
 describe('OfferController (e2e)', () => {
   let app: INestApplication
@@ -83,6 +84,99 @@ describe('OfferController (e2e)', () => {
     })
 
     expect(source.deletedAt).not.toBeNull()
+  })
+
+  it('List excludes soft-deleted offers', async () => {
+    await OfferBuilder.create()
+      .name('Active')
+      .url('http://example.com')
+      .userId(userId)
+      .save(prisma)
+    await OfferBuilder.create()
+      .name('Deleted')
+      .url('http://example.com')
+      .userId(userId)
+      .deletedAt(new Date())
+      .save(prisma)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/api/offer')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks'],
+        limit: 10,
+        timezone: '+00:00',
+        rangeInterval: 'today',
+        sortField: 'name',
+        sortOrder: 'asc',
+      })
+      .expect(200)
+
+    expect(body.total).toBe(1)
+    expect(body.rows).toHaveLength(1)
+    expect(body.rows[0].name).toBe('Active')
+  })
+
+  describe('Get offer by id', () => {
+    it('Should return offer with correct fields', async () => {
+      const offer = await OfferBuilder.create()
+        .name('Offer 1')
+        .userId(userId)
+        .url('http://example.com')
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/offer/' + offer.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(body).toEqual({
+        id: offer.id,
+        name: 'Offer 1',
+        url: 'http://example.com',
+      })
+    })
+
+    it('Should not expose internal fields', async () => {
+      const offer = await OfferBuilder.create()
+        .name('Offer 1')
+        .userId(userId)
+        .url('http://example.com')
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/offer/' + offer.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(body).not.toHaveProperty('userId')
+      expect(body).not.toHaveProperty('deletedAt')
+    })
+
+    it('Should return 404 if offer not found', async () => {
+      await request(app.getHttpServer())
+        .get('/api/offer/00000000-0000-4000-8000-000000000099')
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
+
+    it('Should return 404 if offer belongs to another user', async () => {
+      const otherUser = await UserBuilder.create()
+        .login('other')
+        .password('pass')
+        .save(prisma)
+
+      const offer = await OfferBuilder.create()
+        .name('Offer 1')
+        .userId(otherUser.id)
+        .url('http://example.com')
+        .save(prisma)
+
+      await request(app.getHttpServer())
+        .get('/api/offer/' + offer.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
   })
 
   it('Get offer columns', async () => {

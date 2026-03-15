@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ReportResponse } from '@/domain/report/types'
 import { EntityReportUseCase } from '@/domain/report/use-cases/entity-report-use-case.service'
 import { OfferRepository } from '@/infra/repositories/offer.repository'
 import { ListOfferDto } from '@/domain/offer/dto/list-offer.dto'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @Injectable()
 export class ListOfferUseCase {
@@ -14,7 +14,7 @@ export class ListOfferUseCase {
   public async execute(
     args: ListOfferDto,
     userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ReportResponseDto> {
     const entities = await this.offerRepository.list(userId)
 
     return this.entityReportUseCase.execute(args, entities, 'offerId')

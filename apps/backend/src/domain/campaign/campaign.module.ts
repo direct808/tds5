@@ -15,6 +15,7 @@ import { ReportModule } from '@/domain/report/report.module'
 import { ListCampaignUseCase } from './use-cases/list-campaign.use-case'
 import { DeleteCampaignUseCase } from '@/domain/campaign/use-cases/delete-campaign.use-case'
 import { GetCampaignColumnsUseCase } from './use-cases/get-campaign-columns.use-case'
+import { GetCampaignByIdUseCase } from './use-cases/get-campaign-by-id.use-case'
 
 @Module({
   controllers: [CampaignController],
@@ -33,6 +34,7 @@ import { GetCampaignColumnsUseCase } from './use-cases/get-campaign-columns.use-
     ListCampaignUseCase,
     DeleteCampaignUseCase,
     GetCampaignColumnsUseCase,
+    GetCampaignByIdUseCase,
   ],
 })
 export class CampaignModule {}
