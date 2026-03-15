@@ -73,4 +73,13 @@ export class OfferController {
   getColumns(): ColumnResponseDto[] {
     return this.getOfferColumnsUseCase.execute()
   }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetByIdResponseDto })
+  offerGetById(
+    @Param('id') id: string,
+    @UserId() userId: string,
+  ): Promise<GetByIdResponseDto> {
+    return this.getByIdUseCase.execute(id, userId)
+  }
 }
