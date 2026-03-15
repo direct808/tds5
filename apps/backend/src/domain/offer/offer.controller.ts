@@ -19,8 +19,8 @@ import { ListOfferUseCase } from './use-cases/list-offer.use-case'
 import { GetOfferColumnsUseCase } from './use-cases/get-offer-columns.use-case'
 import { ListOfferDto } from './dto/list-offer.dto'
 import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
-import { GetByIdUseCase } from '@/domain/offer/use-cases/get-by-id.use-case'
-import { GetByIdResponseDto } from '@/domain/offer/dto/get-by-id-response.dto'
+import { GetOfferByIdUseCase } from '@/domain/offer/use-cases/get-offer-by-id.use-case'
+import { GetOfferByIdResponseDto } from '@/domain/offer/dto/get-offer-by-id-response.dto'
 import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
@@ -31,7 +31,7 @@ export class OfferController {
     private readonly offerService: OfferService,
     private readonly listOfferUseCase: ListOfferUseCase,
     private readonly getOfferColumnsUseCase: GetOfferColumnsUseCase,
-    private readonly getByIdUseCase: GetByIdUseCase,
+    private readonly getByIdUseCase: GetOfferByIdUseCase,
   ) {}
 
   @Get()
@@ -75,11 +75,11 @@ export class OfferController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: GetByIdResponseDto })
+  @ApiOkResponse({ type: GetOfferByIdResponseDto })
   offerGetById(
     @Param('id') id: string,
     @UserId() userId: string,
-  ): Promise<GetByIdResponseDto> {
+  ): Promise<GetOfferByIdResponseDto> {
     return this.getByIdUseCase.execute(id, userId)
   }
 }

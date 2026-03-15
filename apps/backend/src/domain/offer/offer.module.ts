@@ -5,7 +5,7 @@ import { RepositoryModule } from '@/infra/repositories/repository.module'
 import { ListOfferUseCase } from './use-cases/list-offer.use-case'
 import { GetOfferColumnsUseCase } from './use-cases/get-offer-columns.use-case'
 import { ReportModule } from '@/domain/report/report.module'
-import { GetByIdUseCase } from '@/domain/offer/use-cases/get-by-id.use-case'
+import { GetOfferByIdUseCase } from '@/domain/offer/use-cases/get-offer-by-id.use-case'
 
 @Module({
   imports: [RepositoryModule, ReportModule],
@@ -13,7 +13,7 @@ import { GetByIdUseCase } from '@/domain/offer/use-cases/get-by-id.use-case'
   providers: [
     OfferService,
     ListOfferUseCase,
-    GetByIdUseCase,
+    GetOfferByIdUseCase,
     GetOfferColumnsUseCase,
   ],
 })

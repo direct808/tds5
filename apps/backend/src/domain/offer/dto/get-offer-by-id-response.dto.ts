@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Exclude, Expose } from 'class-transformer'
 
 @Exclude()
-export class GetByIdResponseDto {
+export class GetOfferByIdResponseDto {
   @ApiProperty()
   @Expose()
   declare id: string
