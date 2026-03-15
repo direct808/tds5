@@ -52,6 +52,6 @@ export function getFieldTypeData(
       group,
     }
   } else {
-    throw new BadRequestException(`Unknown field: '${field}'`)
+    throw new BadRequestException(`Unknown field: '${field}`)
   }
 }

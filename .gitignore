@@ -1,8 +1,8 @@
-
 node_modules
 .env
 .idea
 dist
 apps/backend/generated
 apps/backend/test/.env.e2e
+apps/frontend/src/shared/api/generated
 *.mmdb

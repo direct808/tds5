@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserId } from '@/domain/auth/user-id.decorator'
 import { OfferService } from './offer.service'
 import { CreateOfferDto } from './dto/create-offer.dto'
@@ -18,9 +18,11 @@ import { GLOBAL_PREFIX } from '@/shared/constants'
 import { ListOfferUseCase } from './use-cases/list-offer.use-case'
 import { GetOfferColumnsUseCase } from './use-cases/get-offer-columns.use-case'
 import { ListOfferDto } from './dto/list-offer.dto'
-import { ReportResponse } from '@/domain/report/types'
-import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { DeleteOfferDto } from '@/domain/offer/dto/delete-offer.dto'
+import { GetByIdUseCase } from '@/domain/offer/use-cases/get-by-id.use-case'
+import { GetByIdResponseDto } from '@/domain/offer/dto/get-by-id-response.dto'
+import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
+import { ListOfferResponseDto } from '@/domain/offer/dto/list-offer-response.dto'
 
 @ApiTags('Offers')
 @Controller(GLOBAL_PREFIX + 'offer')
@@ -29,14 +31,25 @@ export class OfferController {
     private readonly offerService: OfferService,
     private readonly listOfferUseCase: ListOfferUseCase,
     private readonly getOfferColumnsUseCase: GetOfferColumnsUseCase,
+    private readonly getByIdUseCase: GetByIdUseCase,
   ) {}
 
   @Get()
+  @ApiOkResponse({ type: ListOfferResponseDto })
   listOffers(
     @Query() args: ListOfferDto,
     @UserId() userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ListOfferResponseDto> {
     return this.listOfferUseCase.execute(args, userId)
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetByIdResponseDto })
+  offerGetById(
+    @Param('id') id: string,
+    @UserId() userId: string,
+  ): Promise<GetByIdResponseDto> {
+    return this.getByIdUseCase.execute(id, userId)
   }
 
   @Post()
