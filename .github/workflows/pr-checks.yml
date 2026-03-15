@@ -13,6 +13,9 @@ jobs:
         working-directory: apps/backend
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup
 
       - name: Run ESLint
@@ -26,6 +29,9 @@ jobs:
         working-directory: apps/backend
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup
 
       - name: Run Prisma format check
@@ -39,6 +45,9 @@ jobs:
         working-directory: apps/backend
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup
 
       - name: Run JSCPD
@@ -52,10 +61,13 @@ jobs:
         working-directory: apps/backend
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup
 
       - name: Run Knip
-        run: npm run cicd:knip
+        run: yarn run cicd:knip
 
   unit-tests:
     name: Unit tests
@@ -65,10 +77,13 @@ jobs:
         working-directory: apps/backend
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup
 
       - name: Run tests
-        run: npm run cicd:test
+        run: yarn run cicd:test
 
   e2e-tests:
     name: E2E tests
@@ -79,10 +94,10 @@ jobs:
 #    runs-on: self-hosted
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - uses: ./.github/actions/setup
-#
-#      - name: Install yarn
-#        run: npm install -g yarn
 
       - name: Create .env
         run: echo "${{ secrets.ENV_FILE_E2E }}" > test/.env.e2e

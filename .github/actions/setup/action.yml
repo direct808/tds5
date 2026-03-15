@@ -4,9 +4,6 @@ description: Checkout repository, setup Node.js 22, and install yarn dependencie
 runs:
   using: composite
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
