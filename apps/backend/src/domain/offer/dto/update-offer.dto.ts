@@ -5,7 +5,7 @@ import {
   IsUrl,
   IsUUID,
 } from 'class-validator'
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class UpdateOfferDto {
   @ApiProperty()
@@ -19,8 +19,8 @@ export class UpdateOfferDto {
   @IsOptional()
   declare url: string
 
-  @ApiProperty()
+  @ApiPropertyOptional({ type: 'string' })
   @IsUUID()
   @IsOptional()
-  declare affiliateNetworkId: string
+  declare affiliateNetworkId?: string
 }
