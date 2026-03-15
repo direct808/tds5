@@ -1,4 +1,4 @@
-name: Lint & Tests
+name: Checks
 
 on:
   pull_request:
@@ -7,56 +7,37 @@ on:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/backend
+    uses: ./.github/workflows/check.yml
+    with:
+      script: cicd:lint
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  prisma-format-check:
+    name: Prisma format check
+    uses: ./.github/workflows/check.yml
+    with:
+      script: cicd:prisma:format-check
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
+  jscpd:
+    name: JSCPD
+    uses: ./.github/workflows/check.yml
+    with:
+      script: cicd:jscpd
 
-      - name: Install dependencies
-        working-directory: apps/backend
-        run: yarn install
-
-      - name: Run ESLint
-        working-directory: apps/backend
-        run: npm run cicd:lint
+  knip:
+    name: Knip
+    uses: ./.github/workflows/check.yml
+    with:
+      script: cicd:knip
 
   unit-tests:
     name: Unit tests
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/backend
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Run tests
-        run: npm run cicd:test
+    uses: ./.github/workflows/check.yml
+    with:
+      script: cicd:test
 
   e2e-tests:
     name: E2E tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/backend
 #    runs-on: self-hosted
 
     steps:
@@ -68,14 +49,15 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install yarn
-        run: npm install -g yarn
-
       - name: Install dependencies
+        shell: bash
+        working-directory: apps/backend
         run: yarn install
 
       - name: Create .env
+        working-directory: apps/backend
         run: echo "${{ secrets.ENV_FILE_E2E }}" > test/.env.e2e
 
       - name: Run tests
-        run: npm run test:e2e
+        working-directory: apps/backend
+        run: yarn run test:e2e
