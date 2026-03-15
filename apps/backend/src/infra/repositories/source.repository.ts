@@ -54,7 +54,7 @@ export class SourceRepository
     }
 
   public list(userId: string): Promise<SourceModel[]> {
-    return this.prisma.source.findMany({ where: { userId } })
+    return this.prisma.source.findMany({ where: { userId, deletedAt: null } })
   }
 
   public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {

@@ -54,7 +54,7 @@ export class OfferRepository
     }
 
   public list(userId: string): Promise<OfferModel[]> {
-    return this.prisma.offer.findMany({ where: { userId } })
+    return this.prisma.offer.findMany({ where: { userId, deletedAt: null } })
   }
 
   public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {

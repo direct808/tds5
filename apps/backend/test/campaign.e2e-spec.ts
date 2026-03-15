@@ -587,6 +587,40 @@ describe('CampaignController (e2e)', () => {
     })
   })
 
+  describe('List', () => {
+    it('excludes soft-deleted campaigns', async () => {
+      await CampaignBuilder.create()
+        .name('Active')
+        .code('active1')
+        .userId(userId)
+        .save(prisma)
+
+      await CampaignBuilder.create()
+        .name('Deleted')
+        .code('delet1')
+        .userId(userId)
+        .deletedAt(new Date())
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/campaign')
+        .auth(accessToken, { type: 'bearer' })
+        .query({
+          'metrics[]': ['clicks'],
+          limit: 10,
+          timezone: '+00:00',
+          rangeInterval: 'today',
+          sortField: 'name',
+          sortOrder: 'asc',
+        })
+        .expect(200)
+
+      expect(body.total).toBe(1)
+      expect(body.rows).toHaveLength(1)
+      expect(body.rows[0].name).toBe('Active')
+    })
+  })
+
   describe('columns', () => {
     it('Get campaign columns', async () => {
       const { body } = await request(app.getHttpServer())

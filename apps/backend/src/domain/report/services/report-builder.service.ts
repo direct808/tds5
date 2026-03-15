@@ -15,8 +15,9 @@ import { PrismaService } from '@/infra/prisma/prisma.service'
 import { Kysely } from 'kysely'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { groups } from '@/domain/report/groups'
-import { Direction, ReportResponse } from '@/domain/report/types'
+import { Direction } from '@/domain/report/types'
 import { isNullable } from '@/shared/helpers'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @Injectable()
 export class ReportBuilderService {
@@ -28,7 +29,7 @@ export class ReportBuilderService {
     private readonly prisma: PrismaService,
   ) {}
 
-  public async build(args: GetReportDto): Promise<ReportResponse> {
+  public async build(args: GetReportDto): Promise<ReportResponseDto> {
     const { usedClickMetrics, clickMetricMap } = this.getClickMetricMapProxy()
 
     this.reportRepository.addConversionsClickMetrics(

@@ -80,6 +80,32 @@ describe('SourceController (e2e)', () => {
     expect(sourceExists.deletedAt).not.toBeNull()
   })
 
+  it('List excludes soft-deleted sources', async () => {
+    await SourceBuilder.create().name('Active').userId(userId).save(prisma)
+    await SourceBuilder.create()
+      .name('Deleted')
+      .userId(userId)
+      .deletedAt(new Date())
+      .save(prisma)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/api/source')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks'],
+        limit: 10,
+        timezone: '+00:00',
+        rangeInterval: 'today',
+        sortField: 'name',
+        sortOrder: 'asc',
+      })
+      .expect(200)
+
+    expect(body.total).toBe(1)
+    expect(body.rows).toHaveLength(1)
+    expect(body.rows[0].name).toBe('Active')
+  })
+
   it('Get source columns', async () => {
     const { body } = await request(app.getHttpServer())
       .get('/api/source/columns')

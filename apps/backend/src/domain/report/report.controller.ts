@@ -5,7 +5,7 @@ import { GetReportColumnsUseCase } from './use-cases/get-report-columns.use-case
 import { GetReportDto } from './dto/get-report.dto'
 import { ColumnResponseDto } from './dto/column-response.dto'
 import { GLOBAL_PREFIX } from '@/shared/constants'
-import { ReportResponse } from './types'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @Controller(GLOBAL_PREFIX + 'report')
 export class ReportController {
@@ -15,7 +15,7 @@ export class ReportController {
   ) {}
 
   @Get()
-  getReport(@Query() args: GetReportDto): Promise<ReportResponse> {
+  getReport(@Query() args: GetReportDto): Promise<ReportResponseDto> {
     return this.getReportUseCase.execute(args)
   }
 

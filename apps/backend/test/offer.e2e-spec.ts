@@ -85,6 +85,33 @@ describe('OfferController (e2e)', () => {
     expect(source.deletedAt).not.toBeNull()
   })
 
+  it('List excludes soft-deleted offers', async () => {
+    await OfferBuilder.create().name('Active').url('http://example.com').userId(userId).save(prisma)
+    await OfferBuilder.create()
+      .name('Deleted')
+      .url('http://example.com')
+      .userId(userId)
+      .deletedAt(new Date())
+      .save(prisma)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/api/offer')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks'],
+        limit: 10,
+        timezone: '+00:00',
+        rangeInterval: 'today',
+        sortField: 'name',
+        sortOrder: 'asc',
+      })
+      .expect(200)
+
+    expect(body.total).toBe(1)
+    expect(body.rows).toHaveLength(1)
+    expect(body.rows[0].name).toBe('Active')
+  })
+
   it('Get offer columns', async () => {
     const { body } = await request(app.getHttpServer())
       .get('/api/offer/columns')

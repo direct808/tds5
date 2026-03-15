@@ -62,7 +62,7 @@ export class GetReportDto {
   @IsInt()
   @Transform(({ value }) => (!isNullable(value) ? +value : value))
   @Max(1000)
-  @ApiPropertyOptional()
+  @ApiProperty()
   declare limit: number
 
   @IsTimeZone()

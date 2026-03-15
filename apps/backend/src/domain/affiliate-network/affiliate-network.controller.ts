@@ -21,7 +21,7 @@ import { GetAffiliateNetworkColumnsUseCase } from './use-cases/get-affiliate-net
 import { ListAffiliateNetworkDto } from './dto/list-affiliate-network.dto'
 import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { DeleteAffiliateNetworkDto } from '@/domain/affiliate-network/dto/delete-affiliate-network.dto'
-import { ListAffiliateNetworkResponseDto } from '@/domain/affiliate-network/dto/list-affiliate-network-response.dto'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @ApiTags('Партнерские сети')
 @Controller(GLOBAL_PREFIX + 'affiliate-network')
@@ -33,11 +33,11 @@ export class AffiliateNetworkController {
   ) {}
 
   @Get()
-  @ApiOkResponse({ type: ListAffiliateNetworkResponseDto })
+  @ApiOkResponse({ type: ReportResponseDto })
   listAffiliateNetworks(
     @Query() args: ListAffiliateNetworkDto,
     @UserId() userId: string,
-  ): Promise<ListAffiliateNetworkResponseDto> {
+  ): Promise<ReportResponseDto> {
     return this.listAffiliateNetworkUseCase.execute(args, userId)
   }
 

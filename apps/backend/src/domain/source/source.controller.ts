@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common'
-import { ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { SourceService } from './source.service'
 import { UserId } from '@/domain/auth/user-id.decorator'
 import { CreateSourceDto } from './dto/create-source.dto'
@@ -18,9 +18,9 @@ import { GLOBAL_PREFIX } from '@/shared/constants'
 import { ListSourceUseCase } from '@/domain/source/use-cases/list-source.use-case'
 import { GetSourceColumnsUseCase } from './use-cases/get-source-columns.use-case'
 import { ListSourceDto } from './dto/list-source.dto'
-import { ReportResponse } from '@/domain/report/types'
 import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { DeleteSourceDto } from '@/domain/source/dto/delete-source.dto'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @ApiTags('Источники трафика')
 @Controller(GLOBAL_PREFIX + 'source')
@@ -32,10 +32,11 @@ export class SourceController {
   ) {}
 
   @Get()
+  @ApiOkResponse({ type: ReportResponseDto })
   listSources(
     @Query() args: ListSourceDto,
     @UserId() userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ReportResponseDto> {
     return this.listSourceUseCase.execute(args, userId)
   }
 

@@ -91,6 +91,32 @@ describe('AffiliateNetworkController (e2e)', () => {
     expect(deletedSource.deletedAt).not.toBeNull()
   })
 
+  it('List excludes soft-deleted affiliate networks', async () => {
+    await AffiliateNetworkBuilder.create().name('Active').userId(userId).save(prisma)
+    await AffiliateNetworkBuilder.create()
+      .name('Deleted')
+      .userId(userId)
+      .deletedAt(new Date())
+      .save(prisma)
+
+    const { body } = await request(app.getHttpServer())
+      .get('/api/affiliate-network')
+      .auth(accessToken, { type: 'bearer' })
+      .query({
+        'metrics[]': ['clicks'],
+        limit: 10,
+        timezone: '+00:00',
+        rangeInterval: 'today',
+        sortField: 'name',
+        sortOrder: 'asc',
+      })
+      .expect(200)
+
+    expect(body.total).toBe(1)
+    expect(body.rows).toHaveLength(1)
+    expect(body.rows[0].name).toBe('Active')
+  })
+
   it('Get affiliate-network columns', async () => {
     const { body } = await request(app.getHttpServer())
       .get('/api/affiliate-network/columns')
