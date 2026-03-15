@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { AffiliateNetworkRepository } from '@/infra/repositories/affiliate-network.repository'
 import { GetAffiliateNetworkByIdResponseDto } from '@/domain/affiliate-network/dto/get-affiliate-network-by-id-response.dto'
 import { plainToInstance } from 'class-transformer'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class GetAffiliateNetworkByIdUseCase {
@@ -19,7 +20,7 @@ export class GetAffiliateNetworkByIdUseCase {
       userId,
     })
 
-    if (!entity) {
+    if (isNullable(entity)) {
       throw new NotFoundException(`Affiliate network not found ${id}`)
     }
 

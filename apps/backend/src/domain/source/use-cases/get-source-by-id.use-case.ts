@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { SourceRepository } from '@/infra/repositories/source.repository'
 import { GetSourceByIdResponseDto } from '@/domain/source/dto/get-source-by-id-response.dto'
 import { plainToInstance } from 'class-transformer'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class GetSourceByIdUseCase {
@@ -17,7 +18,7 @@ export class GetSourceByIdUseCase {
       userId,
     })
 
-    if (!entity) {
+    if (isNullable(entity)) {
       throw new NotFoundException(`Source not found ${id}`)
     }
 

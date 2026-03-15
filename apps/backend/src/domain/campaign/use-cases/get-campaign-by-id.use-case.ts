@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { GetCampaignByIdResponseDto } from '@/domain/campaign/dto/get-campaign-by-id-response.dto'
 import { plainToInstance } from 'class-transformer'
+import { isNullable } from '@/shared/helpers'
 
 @Injectable()
 export class GetCampaignByIdUseCase {
@@ -17,7 +18,7 @@ export class GetCampaignByIdUseCase {
       userId,
     })
 
-    if (!entity) {
+    if (isNullable(entity)) {
       throw new NotFoundException(`Campaign not found ${id}`)
     }
 

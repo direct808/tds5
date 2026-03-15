@@ -93,7 +93,10 @@ describe('AffiliateNetworkController (e2e)', () => {
   })
 
   it('List excludes soft-deleted affiliate networks', async () => {
-    await AffiliateNetworkBuilder.create().name('Active').userId(userId).save(prisma)
+    await AffiliateNetworkBuilder.create()
+      .name('Active')
+      .userId(userId)
+      .save(prisma)
     await AffiliateNetworkBuilder.create()
       .name('Deleted')
       .userId(userId)
