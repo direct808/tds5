@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { ListCampaignDto } from '@/domain/campaign/dto/list-campaign.dto'
-import { ReportResponse } from '@/domain/report/types'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { EntityReportUseCase } from '@/domain/report/use-cases/entity-report-use-case.service'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @Injectable()
 export class ListCampaignUseCase {
@@ -14,7 +14,7 @@ export class ListCampaignUseCase {
   public async execute(
     args: ListCampaignDto,
     userId: string,
-  ): Promise<ReportResponse> {
+  ): Promise<ReportResponseDto> {
     const campaigns = await this.campaignRepository.list(userId)
 
     return this.entityReportUseCase.execute(args, campaigns, 'campaignId')

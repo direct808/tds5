@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ensureDefined, isNullable } from '@/shared/helpers'
-import { ReportResponse } from '@/domain/report/types'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 type EntityItem = {
   id: string
@@ -10,7 +10,7 @@ type EntityItem = {
 type RowsMap = Map<string, Record<string, string>>
 
 type Args = {
-  report: ReportResponse
+  report: ReportResponseDto
   entityList: EntityItem[]
   metrics: string[]
   entityIdName: string
@@ -22,7 +22,7 @@ type Args = {
 
 @Injectable()
 export class ComposeReportService {
-  public compose(args: Args): ReportResponse {
+  public compose(args: Args): ReportResponseDto {
     const { entityList, report, metrics, entityIdName } = args
     const rowsConcat = this.concat(
       entityList,

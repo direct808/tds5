@@ -98,12 +98,6 @@ export type InputFilterData = [
   value: unknown,
 ]
 
-export type ReportResponse = {
-  rows: Record<string, string>[]
-  summary: Record<string, string>
-  total: number
-}
-
 export type OperationMap = Record<
   FilterOperatorEnum,
   { sqlOperator: string; valueTransformer?: (value: string) => string }

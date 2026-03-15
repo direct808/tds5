@@ -22,7 +22,7 @@ type CreateArgs = {
   name: string
   userId: string
   url: string
-  affiliateNetworkId: string
+  affiliateNetworkId?: string
 }
 
 type UpdatedArgs = {

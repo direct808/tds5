@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { ReportResponse } from '@/domain/report/types'
 import { CheckArgsService } from '@/domain/report/services/check-args.service'
 import { GetReportDto } from '@/domain/report/dto/get-report.dto'
 import { ReportBuilderService } from '@/domain/report/services/report-builder.service'
+import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @Injectable()
 export class GetReportUseCase {
@@ -11,7 +11,7 @@ export class GetReportUseCase {
     private readonly reportComposeService: ReportBuilderService,
   ) {}
 
-  public async execute(args: GetReportDto): Promise<ReportResponse> {
+  public async execute(args: GetReportDto): Promise<ReportResponseDto> {
     this.checkArgsService.checkArgs(args)
 
     return this.reportComposeService.build(args)
