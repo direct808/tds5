@@ -41,7 +41,7 @@ export class AffiliateNetworkRepository
   public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<AffiliateNetworkModel>['getByIdsAndUserId'] =
     (args) => {
       return this.prisma.affiliateNetwork.findMany({
-        where: { id: { in: args.ids }, userId: args.userId },
+        where: { id: { in: args.ids }, userId: args.userId, deletedAt: null },
       })
     }
 

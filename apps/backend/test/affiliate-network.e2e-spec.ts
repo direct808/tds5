@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { createAuthUser } from './utils/helpers'
 import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-network-builder'
+import { UserBuilder } from './utils/entity-builder/user-builder'
 import { truncateTables } from './utils/truncate-tables'
 import { createApp } from './utils/create-app'
 import { PrismaClient } from '@generated/prisma/client'
@@ -115,6 +116,79 @@ describe('AffiliateNetworkController (e2e)', () => {
     expect(body.total).toBe(1)
     expect(body.rows).toHaveLength(1)
     expect(body.rows[0].name).toBe('Active')
+  })
+
+  describe('Get affiliate network by id', () => {
+    it('Should return affiliate network with correct fields', async () => {
+      const affiliateNetwork = await AffiliateNetworkBuilder.create()
+        .name('Network 1')
+        .userId(userId)
+        .offerParams('param1=value1')
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/affiliate-network/' + affiliateNetwork.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(body).toEqual({
+        id: affiliateNetwork.id,
+        name: 'Network 1',
+        offerParams: 'param1=value1',
+      })
+    })
+
+    it('Should not expose internal fields', async () => {
+      const affiliateNetwork = await AffiliateNetworkBuilder.create()
+        .name('Network 1')
+        .userId(userId)
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/affiliate-network/' + affiliateNetwork.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(body).not.toHaveProperty('userId')
+      expect(body).not.toHaveProperty('deletedAt')
+    })
+
+    it('Should return 404 if affiliate network not found', async () => {
+      await request(app.getHttpServer())
+        .get('/api/affiliate-network/00000000-0000-4000-8000-000000000099')
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
+
+    it('Should return 404 if affiliate network belongs to another user', async () => {
+      const otherUser = await UserBuilder.create()
+        .login('other')
+        .password('pass')
+        .save(prisma)
+
+      const affiliateNetwork = await AffiliateNetworkBuilder.create()
+        .name('Network 1')
+        .userId(otherUser.id)
+        .save(prisma)
+
+      await request(app.getHttpServer())
+        .get('/api/affiliate-network/' + affiliateNetwork.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
+
+    it('Should return 404 for soft-deleted affiliate network', async () => {
+      const affiliateNetwork = await AffiliateNetworkBuilder.create()
+        .name('Network 1')
+        .userId(userId)
+        .deletedAt(new Date())
+        .save(prisma)
+
+      await request(app.getHttpServer())
+        .get('/api/affiliate-network/' + affiliateNetwork.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
   })
 
   it('Get affiliate-network columns', async () => {

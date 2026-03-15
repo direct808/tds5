@@ -12,6 +12,7 @@ import { DomainBuilder } from './utils/entity-builder/domain-builder'
 import { CampaignRepository } from '@/infra/repositories/campaign.repository'
 import { SourceBuilder } from './utils/entity-builder/source-builder'
 import { AffiliateNetworkBuilder } from './utils/entity-builder/affiliate-network-builder'
+import { UserBuilder } from './utils/entity-builder/user-builder'
 
 describe('CampaignController (e2e)', () => {
   let app: INestApplication
@@ -618,6 +619,85 @@ describe('CampaignController (e2e)', () => {
       expect(body.total).toBe(1)
       expect(body.rows).toHaveLength(1)
       expect(body.rows[0].name).toBe('Active')
+    })
+  })
+
+  describe('Get campaign by id', () => {
+    it('Should return campaign with correct fields', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('camp01')
+        .userId(userId)
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/campaign/' + campaign.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(body).toEqual({
+        id: campaign.id,
+        name: 'Campaign 1',
+        code: 'camp01',
+        domainId: null,
+        sourceId: null,
+        active: true,
+      })
+    })
+
+    it('Should not expose internal fields', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('camp02')
+        .userId(userId)
+        .save(prisma)
+
+      const { body } = await request(app.getHttpServer())
+        .get('/api/campaign/' + campaign.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(200)
+
+      expect(body).not.toHaveProperty('userId')
+      expect(body).not.toHaveProperty('deletedAt')
+    })
+
+    it('Should return 404 if campaign not found', async () => {
+      await request(app.getHttpServer())
+        .get('/api/campaign/00000000-0000-4000-8000-000000000099')
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
+
+    it('Should return 404 if campaign belongs to another user', async () => {
+      const otherUser = await UserBuilder.create()
+        .login('other')
+        .password('pass')
+        .save(prisma)
+
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('camp03')
+        .userId(otherUser.id)
+        .save(prisma)
+
+      await request(app.getHttpServer())
+        .get('/api/campaign/' + campaign.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
+    })
+
+    it('Should return 404 for soft-deleted campaign', async () => {
+      const campaign = await CampaignBuilder.create()
+        .name('Campaign 1')
+        .code('camp04')
+        .userId(userId)
+        .deletedAt(new Date())
+        .save(prisma)
+
+      await request(app.getHttpServer())
+        .get('/api/campaign/' + campaign.id)
+        .auth(accessToken, { type: 'bearer' })
+        .expect(404)
     })
   })
 

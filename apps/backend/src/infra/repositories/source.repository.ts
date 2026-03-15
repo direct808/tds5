@@ -49,7 +49,7 @@ export class SourceRepository
   public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<SourceModel>['getByIdsAndUserId'] =
     (args) => {
       return this.prisma.source.findMany({
-        where: { id: { in: args.ids }, userId: args.userId },
+        where: { id: { in: args.ids }, userId: args.userId, deletedAt: null },
       })
     }
 

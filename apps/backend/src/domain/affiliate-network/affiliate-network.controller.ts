@@ -18,7 +18,9 @@ import { GLOBAL_PREFIX } from '@/shared/constants'
 import { AffiliateNetworkModel } from '@generated/prisma/models/AffiliateNetwork'
 import { ListAffiliateNetworkUseCase } from './use-cases/list-affiliate-network.use-case'
 import { GetAffiliateNetworkColumnsUseCase } from './use-cases/get-affiliate-network-columns.use-case'
+import { GetAffiliateNetworkByIdUseCase } from './use-cases/get-affiliate-network-by-id.use-case'
 import { ListAffiliateNetworkDto } from './dto/list-affiliate-network.dto'
+import { GetAffiliateNetworkByIdResponseDto } from './dto/get-affiliate-network-by-id-response.dto'
 import { ColumnResponseDto } from '@/domain/report/dto/column-response.dto'
 import { DeleteAffiliateNetworkDto } from '@/domain/affiliate-network/dto/delete-affiliate-network.dto'
 import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
@@ -30,6 +32,7 @@ export class AffiliateNetworkController {
     private readonly affiliateNetworkService: AffiliateNetworkService,
     private readonly listAffiliateNetworkUseCase: ListAffiliateNetworkUseCase,
     private readonly getAffiliateNetworkColumnsUseCase: GetAffiliateNetworkColumnsUseCase,
+    private readonly getAffiliateNetworkByIdUseCase: GetAffiliateNetworkByIdUseCase,
   ) {}
 
   @Get()
@@ -70,5 +73,14 @@ export class AffiliateNetworkController {
   @ApiResponse({ type: ColumnResponseDto, isArray: true })
   getColumns(): ColumnResponseDto[] {
     return this.getAffiliateNetworkColumnsUseCase.execute()
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetAffiliateNetworkByIdResponseDto })
+  getAffiliateNetworkById(
+    @Param('id') id: string,
+    @UserId() userId: string,
+  ): Promise<GetAffiliateNetworkByIdResponseDto> {
+    return this.getAffiliateNetworkByIdUseCase.execute(id, userId)
   }
 }

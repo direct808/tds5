@@ -60,7 +60,7 @@ export class CampaignRepository
   public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<CampaignModel>['getByIdsAndUserId'] =
     (args) => {
       return this.prisma.campaign.findMany({
-        where: { id: { in: args.ids }, userId: args.userId },
+        where: { id: { in: args.ids }, userId: args.userId, deletedAt: null },
       })
     }
 

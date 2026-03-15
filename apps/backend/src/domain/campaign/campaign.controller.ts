@@ -22,6 +22,8 @@ import { ListCampaignDto } from './dto/list-campaign.dto'
 import { ListCampaignUseCase } from './use-cases/list-campaign.use-case'
 import { DeleteCampaignDto } from '@/domain/campaign/dto/delete-campaign.dto'
 import { DeleteCampaignUseCase } from '@/domain/campaign/use-cases/delete-campaign.use-case'
+import { GetCampaignByIdUseCase } from '@/domain/campaign/use-cases/get-campaign-by-id.use-case'
+import { GetCampaignByIdResponseDto } from '@/domain/campaign/dto/get-campaign-by-id-response.dto'
 import { ReportResponseDto } from '@/domain/report/dto/report-response.dto'
 
 @Controller(GLOBAL_PREFIX + 'campaign')
@@ -32,6 +34,7 @@ export class CampaignController {
     private readonly listCampaignUseCase: ListCampaignUseCase,
     private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
     private readonly getCampaignColumnsUseCase: GetCampaignColumnsUseCase,
+    private readonly getCampaignByIdUseCase: GetCampaignByIdUseCase,
   ) {}
 
   @Post()
@@ -72,5 +75,14 @@ export class CampaignController {
   @ApiResponse({ type: ColumnResponseDto, isArray: true })
   getColumns(): ColumnResponseDto[] {
     return this.getCampaignColumnsUseCase.execute()
+  }
+
+  @Get(':id')
+  @ApiOkResponse({ type: GetCampaignByIdResponseDto })
+  getCampaignById(
+    @Param('id') id: string,
+    @UserId() userId: string,
+  ): Promise<GetCampaignByIdResponseDto> {
+    return this.getCampaignByIdUseCase.execute(id, userId)
   }
 }

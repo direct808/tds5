@@ -57,7 +57,7 @@ export class OfferRepository
   public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<OfferModel>['getByIdsAndUserId'] =
     (args) => {
       return this.prisma.offer.findMany({
-        where: { id: { in: args.ids }, userId: args.userId },
+        where: { id: { in: args.ids }, userId: args.userId, deletedAt: null },
       })
     }
 
