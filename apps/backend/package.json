@@ -34,7 +34,7 @@
     "cicd:lint": "yarn run lint",
     "cicd:prisma:format-check": "yarn run prisma:format-check",
     "cicd:jscpd": "yarn run jscpd",
-    "cicd:knip": "yarn run knip",
+    "cicd:knip": "yarn run prisma:generate && yarn run knip",
     "cicd:test": "yarn run prisma:generate && yarn run test:cov",
     "cicd:build": "yarn run prisma:generate && yarn run build",
     "cicd:start": "yarn run prisma:migrate && yarn run start:prod"
