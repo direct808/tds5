@@ -6,7 +6,6 @@ import { AppModule } from './app.module'
 import { configureApp } from './shared/configure-app'
 import { AppConfig } from './infra/config/app-config.service'
 import { NestExpressApplication } from '@nestjs/platform-express'
-import * as fs from 'node:fs'
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -17,16 +16,11 @@ async function bootstrap(): Promise<void> {
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('TDS 5')
-    .setDescription('Трекер веб-аналитики и отслеживания трафика')
+    .setDescription('Трекер веб-аналитики и отслеживания траффика')
     .setVersion('1.0')
     .build()
   const documentFactory: () => OpenAPIObject = () =>
     SwaggerModule.createDocument(app, swaggerConfig)
-
-  fs.writeFileSync(
-    './swagger.json',
-    JSON.stringify(SwaggerModule.createDocument(app, swaggerConfig), null, 2),
-  )
 
   SwaggerModule.setup('api', app, documentFactory, { swaggerOptions: {} })
 

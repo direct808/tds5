@@ -46,14 +46,6 @@ export class OfferRepository
     })
   }
 
-  public getByIdAndUserId(
-    args: Pick<OfferModel, 'id' | 'userId'>,
-  ): Promise<OfferModel | null> {
-    return this.prisma.offer.findFirst({
-      where: { id: args.id, userId: args.userId, deletedAt: null },
-    })
-  }
-
   public getByIdsAndUserId: IGetEntitiesByIdsAndUserId<OfferModel>['getByIdsAndUserId'] =
     (args) => {
       return this.prisma.offer.findMany({
@@ -62,7 +54,7 @@ export class OfferRepository
     }
 
   public list(userId: string): Promise<OfferModel[]> {
-    return this.prisma.offer.findMany({ where: { userId, deletedAt: null } })
+    return this.prisma.offer.findMany({ where: { userId } })
   }
 
   public softDeleteMany: ISoftDeleteMany['softDeleteMany'] = async (ids) => {

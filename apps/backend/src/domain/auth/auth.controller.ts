@@ -1,11 +1,7 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginRequest } from './types'
-import {
-  ApiOkResponse,
-  ApiTags,
-  ApiUnauthorizedResponse,
-} from '@nestjs/swagger'
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { LoginDto } from './dto/login.dto'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { GLOBAL_PREFIX } from '@/shared/constants'
@@ -13,10 +9,7 @@ import { CreateFirstUserDto } from '@/domain/auth/dto/create-first-user.dto'
 import { CreateFirstUserUseCase } from '@/domain/auth/use-cases/create-first-user.use-case'
 import { SkipAuth } from '@/domain/auth/decorators/skip-auth.decorator'
 import { SkipCheckAdminCreated } from '@/domain/auth/decorators/skip-check-admin-created.decorator'
-import {
-  ErrorResponseDto,
-  LoginResponseDto,
-} from '@/domain/auth/dto/login-response.dto'
+import { LoginResponse } from '@/domain/auth/dto/login-response.dto'
 
 @ApiTags('Аутентификация')
 @Controller(GLOBAL_PREFIX + 'auth')
@@ -28,24 +21,17 @@ export class AuthController {
 
   @SkipAuth()
   @UseGuards(LocalAuthGuard)
-  @ApiOkResponse({ type: LoginResponseDto })
-  @ApiUnauthorizedResponse({
-    description: 'Неверный логин или пароль',
-    type: ErrorResponseDto,
-  })
+  @ApiOkResponse({ type: LoginResponse })
   @Post('login')
-  login(
-    @Body() loginDto: LoginDto,
-    @Req() req: LoginRequest,
-  ): LoginResponseDto {
+  login(@Body() loginDto: LoginDto, @Req() req: LoginRequest): LoginResponse {
     return this.authService.sign(req.user)
   }
 
   @SkipAuth()
   @SkipCheckAdminCreated()
-  @ApiOkResponse({ type: LoginResponseDto })
+  @ApiOkResponse({ type: LoginResponse })
   @Post('first-user')
-  createFirstUser(@Body() dto: CreateFirstUserDto): Promise<LoginResponseDto> {
+  createFirstUser(@Body() dto: CreateFirstUserDto): Promise<LoginResponse> {
     return this.createFirstUserUseCase.execute(dto)
   }
 }

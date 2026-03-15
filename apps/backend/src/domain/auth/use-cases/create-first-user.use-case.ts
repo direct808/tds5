@@ -3,7 +3,7 @@ import { CreateFirstUserDto } from '@/domain/auth/dto/create-first-user.dto'
 import { AuthService } from '@/domain/auth/auth.service'
 import { UserRepository } from '@/infra/repositories/user.repository'
 import * as bcrypt from 'bcrypt'
-import { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
+import { LoginResponse } from '@/domain/auth/dto/login-response.dto'
 
 const BCRYPT_HASH_ROUNDS = 10
 
@@ -14,7 +14,7 @@ export class CreateFirstUserUseCase {
     private readonly userRepository: UserRepository,
   ) {}
 
-  public async execute(dto: CreateFirstUserDto): Promise<LoginResponseDto> {
+  public async execute(dto: CreateFirstUserDto): Promise<LoginResponse> {
     const hasUsers = await this.authService.hasUsers()
 
     if (hasUsers) {

@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt'
 import { UserRepository } from '@/infra/repositories/user.repository'
 import { isNullable } from '@/shared/helpers'
 import memoize from 'memoizee'
-import { LoginResponseDto } from '@/domain/auth/dto/login-response.dto'
+import { LoginResponse } from '@/domain/auth/dto/login-response.dto'
 
 @Injectable()
 export class AuthService {
@@ -35,7 +35,7 @@ export class AuthService {
     return bcrypt.compare(password, hash)
   }
 
-  public sign(user: LoginUser): LoginResponseDto {
+  public sign(user: LoginUser): LoginResponse {
     const payload = { login: user.login, sub: user.id }
 
     return {

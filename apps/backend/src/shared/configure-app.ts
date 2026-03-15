@@ -6,5 +6,4 @@ export function configureApp(app: NestExpressApplication): void {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }))
   app.use(cookieParser())
   app.set('trust proxy', true)
-  app.enableCors()
 }
