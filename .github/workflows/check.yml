@@ -15,7 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        shell: bash
+        working-directory: apps/backend
+        run: yarn install
 
       - name: Run script
         working-directory: apps/backend
