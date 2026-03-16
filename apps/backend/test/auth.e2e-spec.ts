@@ -49,6 +49,25 @@ describe('AuthController (e2e)', () => {
     })
   })
 
+  describe('/auth/first-user (GET)', () => {
+    it('should return created: false when no admin exists', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/api/auth/first-user')
+        .expect(200)
+
+      expect(response.body).toEqual({ created: false })
+    })
+
+    it('should return created: true when admin exists', async () => {
+      await createAuthUser(app)
+      const response = await request(app.getHttpServer())
+        .get('/api/auth/first-user')
+        .expect(200)
+
+      expect(response.body).toEqual({ created: true })
+    })
+  })
+
   describe('Create admin', () => {
     const expectedResponse = {
       error: 'ADMIN_NOT_CREATED',

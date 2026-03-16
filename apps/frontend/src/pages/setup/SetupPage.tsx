@@ -10,34 +10,46 @@ import {
   Typography,
 } from '@mui/material'
 import { authService } from '../../services/authService.ts'
-import { useNavigate } from 'react-router-dom'
 import { authApi } from '../../services/api/authApi.ts'
-import { useMutation } from '@tanstack/react-query'
 
-/** Login page with credentials form. */
-export default function LoginPage() {
+interface SetupPageProps {
+  onComplete: () => void
+}
+
+/** First-run setup form for creating the initial admin user. */
+export default function SetupPage({ onComplete }: SetupPageProps) {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-  const navigate = useNavigate()
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState<string | false>(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: () => authApi.login(login, password),
-    onSuccess: (accessToken) => {
-      authService.setToken(accessToken)
-      navigate('/admin')
-    },
-  })
-
-  const handleSubmit: SubmitEventHandler = (e) => {
+  const handleSubmit: SubmitEventHandler = async (e) => {
     e.preventDefault()
-    mutate()
+    setIsLoading(true)
+    setError(false)
+
+    await authApi
+      .createFirstUser(login, password, confirmPassword)
+      .then((accessToken) => {
+        authService.setToken(accessToken)
+        onComplete()
+      })
+      .catch((e: unknown) => {
+        const msg =
+          e !== null && typeof e === 'object' && 'message' in e
+            ? String((e as { message: string }).message)
+            : 'Unknown error'
+        setError(msg)
+      })
+      .finally(() => setIsLoading(false))
   }
 
   return (
     <Container maxWidth="xs">
       <Paper elevation={3} sx={{ p: 4, mt: 10 }}>
         <Typography variant="h5" align="center" gutterBottom>
-          Login
+          Create Admin User
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit}>
@@ -58,19 +70,28 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
 
+          <TextField
+            label="Confirm Password"
+            type="password"
+            fullWidth
+            margin="normal"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+
           <Button
             type="submit"
             variant="contained"
             fullWidth
             sx={{ p: 1.5, mt: 2 }}
-            loading={isPending}
+            loading={isLoading}
           >
-            Login
+            Create
           </Button>
 
           {error && (
             <Alert sx={{ mt: 2 }} severity="error">
-              {error.message}
+              {error}
             </Alert>
           )}
         </Box>

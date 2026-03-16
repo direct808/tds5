@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginRequest } from './types'
 import {
@@ -11,12 +11,14 @@ import { LocalAuthGuard } from './guards/local-auth.guard'
 import { GLOBAL_PREFIX } from '@/shared/constants'
 import { CreateFirstUserDto } from '@/domain/auth/dto/create-first-user.dto'
 import { CreateFirstUserUseCase } from '@/domain/auth/use-cases/create-first-user.use-case'
+import { GetFirstUserStatusUseCase } from '@/domain/auth/use-cases/get-first-user-status.use-case'
 import { SkipAuth } from '@/domain/auth/decorators/skip-auth.decorator'
 import { SkipCheckAdminCreated } from '@/domain/auth/decorators/skip-check-admin-created.decorator'
 import {
   ErrorResponseDto,
   LoginResponseDto,
 } from '@/domain/auth/dto/login-response.dto'
+import { FirstUserStatusDto } from '@/domain/auth/dto/first-user-status.dto'
 
 @ApiTags('Аутентификация')
 @Controller(GLOBAL_PREFIX + 'auth')
@@ -24,6 +26,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private readonly createFirstUserUseCase: CreateFirstUserUseCase,
+    private readonly getFirstUserStatusUseCase: GetFirstUserStatusUseCase,
   ) {}
 
   @SkipAuth()
@@ -47,5 +50,13 @@ export class AuthController {
   @Post('first-user')
   createFirstUser(@Body() dto: CreateFirstUserDto): Promise<LoginResponseDto> {
     return this.createFirstUserUseCase.execute(dto)
+  }
+
+  @SkipAuth()
+  @SkipCheckAdminCreated()
+  @ApiOkResponse({ type: FirstUserStatusDto })
+  @Get('first-user')
+  getFirstUserStatus(): Promise<FirstUserStatusDto> {
+    return this.getFirstUserStatusUseCase.execute()
   }
 }

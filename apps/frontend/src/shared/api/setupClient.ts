@@ -3,7 +3,7 @@ import { authService } from '../../services/authService.ts'
 import { client } from './generated/client.gen.ts'
 
 client.setConfig({
-  baseUrl: 'http://localhost:3300/',
+  baseUrl: import.meta.env.VITE_API_BASE_URL,
   auth: () => authService.getToken() || undefined,
   querySerializer: (params) =>
     qs.stringify(params, {

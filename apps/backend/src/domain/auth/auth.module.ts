@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { AppConfig } from '@/infra/config/app-config.service'
 import { RepositoryModule } from '@/infra/repositories/repository.module'
 import { CreateFirstUserUseCase } from '@/domain/auth/use-cases/create-first-user.use-case'
+import { GetFirstUserStatusUseCase } from '@/domain/auth/use-cases/get-first-user-status.use-case'
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CreateFirstUserUseCase } from '@/domain/auth/use-cases/create-first-use
   controllers: [AuthController],
   providers: [
     CreateFirstUserUseCase,
+    GetFirstUserStatusUseCase,
     AuthService,
     LocalStrategy,
     JwtStrategy,

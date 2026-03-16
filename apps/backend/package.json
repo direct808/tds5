@@ -23,6 +23,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --detectOpenHandles --config ./test/jest-e2e.json",
     "download-ip2-location-database": "nest start --entryFile src/cli.js -- download-ip2-location-database",
+    "swagger:generate": "nest start --entryFile src/cli.js -- generate-swagger",
     "prisma:create-full-migraion": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
     "prisma:generate": "cross-env DATABASE_URL=postgres://fake prisma generate",
     "prisma:format": "prisma format",
@@ -36,7 +37,7 @@
     "cicd:jscpd": "yarn run jscpd",
     "cicd:knip": "yarn run prisma:generate && yarn run knip",
     "cicd:test": "yarn run prisma:generate && yarn run test:cov",
-    "cicd:build": "yarn run prisma:generate && yarn run build",
+    "cicd:build": "yarn run prisma:generate && yarn run build && yarn run swagger:generate",
     "cicd:start": "yarn run prisma:migrate && yarn run start:prod"
   },
   "dependencies": {
