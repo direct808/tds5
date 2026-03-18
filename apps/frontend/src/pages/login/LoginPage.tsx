@@ -11,7 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { authApi } from '../../services/api/authApi.ts'
 import { authService } from '../../services/authService.ts'
 
@@ -22,10 +22,8 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-/** Login page with credentials form. */
+/** Login page with credentials form. Redirects to /admin if already authenticated. */
 export default function LoginPage() {
-  const navigate = useNavigate()
-
   const {
     register,
     handleSubmit,
@@ -34,11 +32,10 @@ export default function LoginPage() {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: (data: FormData) => authApi.login(data.login, data.password),
-    onSuccess: (accessToken) => {
-      authService.setToken(accessToken)
-      navigate('/admin')
-    },
+    onSuccess: (accessToken) => authService.setToken(accessToken),
   })
+
+  if (authService.isAuth()) return <Navigate to="/admin" replace />
 
   return (
     <Container maxWidth="xs">
