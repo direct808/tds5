@@ -1,5 +1,3 @@
-import type { SubmitEventHandler } from 'react'
-import { useState } from 'react'
 import {
   Alert,
   Box,
@@ -9,29 +7,38 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { authService } from '../../services/authService.ts'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { authApi } from '../../services/api/authApi.ts'
-import { useMutation } from '@tanstack/react-query'
+import { authService } from '../../services/authService.ts'
+
+const schema = z.object({
+  login: z.string().min(1, 'Login is required'),
+  password: z.string().min(1, 'Password is required'),
+})
+
+type FormData = z.infer<typeof schema>
 
 /** Login page with credentials form. */
 export default function LoginPage() {
-  const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) })
+
   const { mutate, isPending, error } = useMutation({
-    mutationFn: () => authApi.login(login, password),
+    mutationFn: (data: FormData) => authApi.login(data.login, data.password),
     onSuccess: (accessToken) => {
       authService.setToken(accessToken)
       navigate('/admin')
     },
   })
-
-  const handleSubmit: SubmitEventHandler = (e) => {
-    e.preventDefault()
-    mutate()
-  }
 
   return (
     <Container maxWidth="xs">
@@ -40,13 +47,14 @@ export default function LoginPage() {
           Login
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit((data) => mutate(data))}>
           <TextField
             label="Login"
             fullWidth
             margin="normal"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
+            error={!!errors.login}
+            helperText={errors.login?.message}
+            {...register('login')}
           />
 
           <TextField
@@ -54,8 +62,9 @@ export default function LoginPage() {
             type="password"
             fullWidth
             margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            {...register('password')}
           />
 
           <Button

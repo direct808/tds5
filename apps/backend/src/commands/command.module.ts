@@ -4,6 +4,10 @@ import { GenerateSwaggerModule } from './generate-swagger/generate-swagger.modul
 import { AppConfigModule } from '@/infra/config/app-config.module'
 
 @Module({
-  imports: [AppConfigModule, DownloadIp2LocationDatabaseModule, GenerateSwaggerModule],
+  imports: [
+    AppConfigModule,
+    DownloadIp2LocationDatabaseModule,
+    GenerateSwaggerModule,
+  ],
 })
 export class CommandModule {}

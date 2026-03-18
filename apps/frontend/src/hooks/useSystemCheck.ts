@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { authService } from '../services/authService.ts'
 import { authApi } from '../services/api/authApi.ts'
+import { useSnackbarStore } from '../services/snackbar.store.ts'
 
 type SystemStatus = 'loading' | 'setup' | 'ready'
 
@@ -13,14 +14,19 @@ export function useSystemCheck() {
   useEffect(() => {
     if (authService.isSystemInitialized()) return
 
-    authApi.firstUserCreated().then((created) => {
-      if (created) {
-        authService.markSystemInitialized()
-        setStatus('ready')
-      } else {
-        setStatus('setup')
-      }
-    })
+    authApi
+      .firstUserCreated()
+      .then((created) => {
+        if (created) {
+          authService.markSystemInitialized()
+          setStatus('ready')
+        } else {
+          setStatus('setup')
+        }
+      })
+      .catch((error: Error) => {
+        useSnackbarStore.getState().show(error.message, 'error')
+      })
   }, [])
 
   const markInitialized = () => {

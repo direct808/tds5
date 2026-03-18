@@ -1,5 +1,3 @@
-import type { SubmitEventHandler } from 'react'
-import { useState } from 'react'
 import {
   Alert,
   Box,
@@ -9,8 +7,25 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { authService } from '../../services/authService.ts'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useMutation } from '@tanstack/react-query'
 import { authApi } from '../../services/api/authApi.ts'
+import { authService } from '../../services/authService.ts'
+
+const schema = z
+  .object({
+    login: z.string().min(4, 'Login is required'),
+    password: z.string().min(4, 'Password is required'),
+    confirmPassword: z.string().min(4, 'Please confirm your password'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
+
+type FormData = z.infer<typeof schema>
 
 interface SetupPageProps {
   onComplete: () => void
@@ -18,32 +33,20 @@ interface SetupPageProps {
 
 /** First-run setup form for creating the initial admin user. */
 export default function SetupPage({ onComplete }: SetupPageProps) {
-  const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState<string | false>(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) })
 
-  const handleSubmit: SubmitEventHandler = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(false)
-
-    await authApi
-      .createFirstUser(login, password, confirmPassword)
-      .then((accessToken) => {
-        authService.setToken(accessToken)
-        onComplete()
-      })
-      .catch((e: unknown) => {
-        const msg =
-          e !== null && typeof e === 'object' && 'message' in e
-            ? String((e as { message: string }).message)
-            : 'Unknown error'
-        setError(msg)
-      })
-      .finally(() => setIsLoading(false))
-  }
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: (data: FormData) =>
+      authApi.createFirstUser(data.login, data.password, data.confirmPassword),
+    onSuccess: (accessToken) => {
+      authService.setToken(accessToken)
+      onComplete()
+    },
+  })
 
   return (
     <Container maxWidth="xs">
@@ -52,13 +55,14 @@ export default function SetupPage({ onComplete }: SetupPageProps) {
           Create Admin User
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit((data) => mutate(data))}>
           <TextField
             label="Login"
             fullWidth
             margin="normal"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
+            error={!!errors.login}
+            helperText={errors.login?.message}
+            {...register('login')}
           />
 
           <TextField
@@ -66,8 +70,9 @@ export default function SetupPage({ onComplete }: SetupPageProps) {
             type="password"
             fullWidth
             margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            {...register('password')}
           />
 
           <TextField
@@ -75,8 +80,9 @@ export default function SetupPage({ onComplete }: SetupPageProps) {
             type="password"
             fullWidth
             margin="normal"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword?.message}
+            {...register('confirmPassword')}
           />
 
           <Button
@@ -84,14 +90,14 @@ export default function SetupPage({ onComplete }: SetupPageProps) {
             variant="contained"
             fullWidth
             sx={{ p: 1.5, mt: 2 }}
-            loading={isLoading}
+            loading={isPending}
           >
             Create
           </Button>
 
           {error && (
             <Alert sx={{ mt: 2 }} severity="error">
-              {error}
+              {error.message}
             </Alert>
           )}
         </Box>
