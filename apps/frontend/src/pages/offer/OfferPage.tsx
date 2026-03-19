@@ -7,9 +7,7 @@ import { type Params, useEntityList } from '../../services/useEntityList.ts'
 import { useEntityPage } from '../../services/useEntityPage.ts'
 import { offerApi } from '../../services/api/offerApi.ts'
 
-const COLUMNS: GridColDef[] = [
-  { field: 'name', headerName: 'Name', flex: 1 },
-]
+const COLUMNS: GridColDef[] = [{ field: 'name', headerName: 'Name', flex: 1 }]
 
 const PARAMS: Params = {
   metrics: ['clicks'],

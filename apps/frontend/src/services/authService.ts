@@ -10,4 +10,10 @@ export const authService = {
   },
 
   isAuth: () => !!localStorage.getItem('token'),
+
+  isSystemInitialized: () => !!localStorage.getItem('systemInitialized'),
+
+  markSystemInitialized: () => {
+    localStorage.setItem('systemInitialized', 'true')
+  },
 }

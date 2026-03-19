@@ -50,7 +50,9 @@ export function EntityTable({
       sortingMode="server"
       sortModel={sortModel}
       onSortModelChange={setSortModel}
-      onRowDoubleClick={onEdit ? (params) => onEdit(String(params.id)) : undefined}
+      onRowDoubleClick={
+        onEdit ? (params) => onEdit(String(params.id)) : undefined
+      }
     />
   )
 }

@@ -11,37 +11,48 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
-import { Navigate } from 'react-router-dom'
 import { authApi } from '../../services/api/authApi.ts'
 import { authService } from '../../services/authService.ts'
 
-const schema = z.object({
-  login: z.string().min(1, 'Login is required'),
-  password: z.string().min(1, 'Password is required'),
-})
+const schema = z
+  .object({
+    login: z.string().min(4, 'Login is required'),
+    password: z.string().min(4, 'Password is required'),
+    confirmPassword: z.string().min(4, 'Please confirm your password'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
 type FormData = z.infer<typeof schema>
 
-/** Login page with credentials form. Redirects to /admin if already authenticated. */
-export default function LoginPage() {
+interface SetupPageProps {
+  onComplete: () => void
+}
+
+/** First-run setup form for creating the initial admin user. */
+export default function SetupPage({ onComplete }: SetupPageProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) })
 
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: (data: FormData) => authApi.login(data.login, data.password),
-    onSuccess: (accessToken) => authService.setToken(accessToken),
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: (data: FormData) =>
+      authApi.createFirstUser(data.login, data.password, data.confirmPassword),
+    onSuccess: (accessToken) => {
+      authService.setToken(accessToken)
+      onComplete()
+    },
   })
-
-  if (authService.isAuth()) return <Navigate to="/admin" replace />
 
   return (
     <Container maxWidth="xs">
       <Paper elevation={3} sx={{ p: 4, mt: 10 }}>
         <Typography variant="h5" align="center" gutterBottom>
-          Login
+          Create Admin User
         </Typography>
 
         <Box component="form" onSubmit={handleSubmit((data) => mutate(data))}>
@@ -64,6 +75,16 @@ export default function LoginPage() {
             {...register('password')}
           />
 
+          <TextField
+            label="Confirm Password"
+            type="password"
+            fullWidth
+            margin="normal"
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword?.message}
+            {...register('confirmPassword')}
+          />
+
           <Button
             type="submit"
             variant="contained"
@@ -71,7 +92,7 @@ export default function LoginPage() {
             sx={{ p: 1.5, mt: 2 }}
             loading={isPending}
           >
-            Login
+            Create
           </Button>
 
           {error && (

@@ -7,9 +7,7 @@ import { useEntityPage } from '../../services/useEntityPage.ts'
 import { affiliateNetworkApi } from '../../services/api/affiliateNetworkApi.ts'
 import CreateAffiliateNetworkModal from '../../components/CreateAffiliateNetworkModal.tsx'
 
-const COLUMNS: GridColDef[] = [
-  { field: 'name', headerName: 'Name', flex: 1 },
-]
+const COLUMNS: GridColDef[] = [{ field: 'name', headerName: 'Name', flex: 1 }]
 
 const PARAMS: Params = {
   metrics: ['clicks'],
