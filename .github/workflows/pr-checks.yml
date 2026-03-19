@@ -61,6 +61,10 @@ jobs:
         working-directory: apps/backend
         run: echo "${{ secrets.ENV_FILE_E2E }}" > test/.env.e2e
 
+      - name: Generate prisma
+        working-directory: apps/backend
+        run: yarn run prisma:generate
+
       - name: Run tests
         working-directory: apps/backend
         run: yarn run test:e2e
