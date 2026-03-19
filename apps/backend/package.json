@@ -21,7 +21,7 @@
     "test:cov": "jest --config ./jest.config.unit.ts --coverage",
     "test:cov:watch": "npm run test:cov -- --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --detectOpenHandles --config ./test/jest-e2e.json --testPathPattern click.e2e-spec && jest --detectOpenHandles --config ./test/jest-e2e.json --testPathPattern click-cache.e2e-spec --testNamePattern \"Checks cache for not exists campaign then after create\"",
+    "test:e2e": "jest --detectOpenHandles --config ./test/jest-e2e.json",
     "download-ip2-location-database": "nest start --entryFile src/cli.js -- download-ip2-location-database",
     "swagger:generate": "nest start --entryFile src/cli.js -- generate-swagger",
     "prisma:create-full-migraion": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0_init/migration.sql",
