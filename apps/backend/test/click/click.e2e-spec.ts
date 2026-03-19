@@ -95,9 +95,37 @@ describe('Click (e2e)', () => {
       expect(response.headers.location).toBe(redirectUrl)
     })
 
+    describe('type CURL', () => {
+      const curlPort = 2346
+      const curlHtml =
+        '<html><head><title>Example Domain</title></head><body></body></html>'
+
+      beforeAll(() => {
+        createServer(curlPort, curlHtml)
+      })
+
+      it.each([['Example Domain'], [`<base href="//localhost:${curlPort}/">`]])(
+        'content %s',
+        async (content) => {
+          const campaign = await createCampaignDirectUrl({
+            redirectType: StreamRedirectTypeEnum.CURL,
+            url: `http://localhost:${curlPort}/`,
+            prisma,
+            userId,
+          })
+
+          const response = await ClickRequestBuilder.create(app)
+            .code(campaign.code)
+            .waitRegister()
+            .request()
+            .expect(200)
+
+          expect(response.text).toContain(content)
+        },
+      )
+    })
+
     it.each([
-      [StreamRedirectTypeEnum.CURL, 'Example Domain'],
-      [StreamRedirectTypeEnum.CURL, '<base href="//example.com/">'],
       [StreamRedirectTypeEnum.JS, 'process();</script>'],
       [
         StreamRedirectTypeEnum.META,

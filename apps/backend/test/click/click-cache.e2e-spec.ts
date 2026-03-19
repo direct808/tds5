@@ -534,6 +534,8 @@ describe('Click-cache (e2e)', () => {
       })
       .expect(201)
 
+    await setTimeout(50)
+
     expect(await cache.get(fullCampaignCodeCacheKey(code))).toBeNull()
 
     await clickAndWaitRegister(app, code).expect(200)
