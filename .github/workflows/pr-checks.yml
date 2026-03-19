@@ -57,7 +57,6 @@ jobs:
         working-directory: apps/backend
         run: yarn install
 
-
       - name: Create .env
         working-directory: apps/backend
         run: echo "${{ secrets.ENV_FILE_E2E }}" > test/.env.e2e
