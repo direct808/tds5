@@ -1,7 +1,7 @@
-import { dropDb, getDbNameFromUrl, setDbNameInUrl } from './db-utils'
+import { dropDb, getDbNameFromUrl } from './db-utils'
 
 export default async function teardown(): Promise<void> {
-  const { DATABASE_URL, ORIG_DB_NAME, TEST_USE_SINGLE_DB } = process.env
+  const { DATABASE_URL, ORIG_DATABASE_URL, TEST_USE_SINGLE_DB } = process.env
 
   if (TEST_USE_SINGLE_DB === 'Y') {
     return
@@ -11,12 +11,11 @@ export default async function teardown(): Promise<void> {
     throw new Error('DATABASE_URL not set')
   }
 
-  if (!ORIG_DB_NAME) {
+  if (!ORIG_DATABASE_URL) {
     throw new Error('ORIG_DATABASE_URL not set')
   }
 
   const dbName = getDbNameFromUrl(DATABASE_URL)
-  const connectionUrl = setDbNameInUrl(DATABASE_URL, ORIG_DB_NAME)
 
-  await dropDb(connectionUrl, dbName)
+  await dropDb(ORIG_DATABASE_URL, dbName)
 }
