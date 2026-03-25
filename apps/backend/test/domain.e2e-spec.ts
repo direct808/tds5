@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
 import { createAuthUser } from './utils/helpers'
-import { truncateTables } from './utils/truncate-tables'
+import { truncateTables } from './utils/db-utils'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '../src/infra/prisma/prisma.service'
 import { createCampaignContent } from './utils/campaign-builder-facades/create-campaign-content'

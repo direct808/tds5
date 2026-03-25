@@ -5,13 +5,12 @@
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.ts$": "ts-jest",
-    "^.+\\.js$":["babel-jest", { "extends": "./test/babel.config.js" }]
+    "^.+\\.js$": ["babel-jest", { "extends": "./test/babel.config.js" }]
   },
-  "transformIgnorePatterns": [
-    "node_modules/(?!ip6)"
-  ],
+  "transformIgnorePatterns": ["node_modules/(?!ip6)"],
   "testTimeout": 30000,
   "globalSetup": "<rootDir>/utils/jest.global-setup.ts",
+  "globalTeardown": "./utils/jest.global-teardown.ts",
   "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/../src/$1",
     "^@generated/(.*)$": "<rootDir>/../generated/$1"

@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common'
 import request from 'supertest'
-import { truncateTables } from './utils/truncate-tables'
+import { truncateTables } from './utils/db-utils'
 import { createApp } from './utils/create-app'
 import { createAuthUser } from './utils/helpers'
 import { UserRepository } from '@/infra/repositories/user.repository'

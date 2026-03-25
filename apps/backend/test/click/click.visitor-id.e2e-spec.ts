@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import { VISITOR_ID_SIZE } from '../../src/domain/click/observers/id-generator'
 import { createCampaignContent } from '../utils/campaign-builder-facades/create-campaign-content'
-import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/db-utils'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { ClickRepository } from '../../src/infra/repositories/click.repository'
