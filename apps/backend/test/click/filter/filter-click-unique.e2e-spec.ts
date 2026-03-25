@@ -1,12 +1,12 @@
 import { INestApplication } from '@nestjs/common'
 import { createAuthUser } from '../../utils/helpers'
 import { CampaignBuilder } from '../../utils/entity-builder/campaign-builder'
-import { FilterLogic } from '../../../src/domain/click/stream/filter/types'
+import { FilterLogic } from '@/domain/click/stream/filter/types'
 import { ClickRequestBuilder } from '../../utils/click-builders/click-request-builder'
-import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
-import { ClickUniqueFor } from '../../../src/domain/click/stream/filter/filters/click-unique/click-unique-filter'
+import { flushRedisDb, truncateTables } from '../../utils/db-utils'
+import { ClickUniqueFor } from '@/domain/click/stream/filter/filters/click-unique/click-unique-filter'
 import { createApp } from '../../utils/create-app'
-import { PrismaService } from '../../../src/infra/prisma/prisma.service'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { StreamActionTypeEnum } from '@generated/prisma/enums'
 
 async function clickAction(

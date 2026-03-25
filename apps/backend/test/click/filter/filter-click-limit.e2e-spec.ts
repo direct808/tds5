@@ -6,7 +6,7 @@ import { ClickRequestBuilder } from '../../utils/click-builders/click-request-bu
 import { DateTime } from 'luxon'
 import { ClickBuilder } from '../../utils/entity-builder/click-builder'
 import { faker } from '@faker-js/faker'
-import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../../utils/db-utils'
 import { createApp } from '../../utils/create-app'
 import { PrismaService } from '../../../src/infra/prisma/prisma.service'
 import { ClickModel } from '@generated/prisma/models/Click'
