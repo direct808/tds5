@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/db-utils'
 import { createApp } from '../utils/create-app'
 import { createAuthUser, spyOn } from '../utils/helpers'
 import { SourceBuilder } from '../utils/entity-builder/source-builder'

@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'
-import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/db-utils'
 import { createApp } from '../utils/create-app'
 import { createAuthUser } from '../utils/helpers'
 import { GEO_IP_PROVIDER } from '../../src/domain/geo-ip/types'

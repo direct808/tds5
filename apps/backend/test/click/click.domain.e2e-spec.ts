@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import { createAuthUser } from '../utils/helpers'
 import { createApp } from '../utils/create-app'
-import { flushRedisDb, truncateTables } from '../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../utils/db-utils'
 import { PrismaService } from '../../src/infra/prisma/prisma.service'
 import { ClickRequestBuilder } from '../utils/click-builders/click-request-builder'
 import { CampaignBuilder } from '../utils/entity-builder/campaign-builder'

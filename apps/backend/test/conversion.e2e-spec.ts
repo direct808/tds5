@@ -6,7 +6,7 @@ import {
   CampaignBuilderResult,
 } from './utils/entity-builder/campaign-builder'
 import { ConversionRepository } from '../src/infra/repositories/conversion.repository'
-import { flushRedisDb, truncateTables } from './utils/truncate-tables'
+import { flushRedisDb, truncateTables } from './utils/db-utils'
 import { PrismaService } from '../src/infra/prisma/prisma.service'
 import { ConversionRegisterUseCase } from '../src/domain/conversion/use-cases/conversion-register.use-case'
 import { MockRequestAdapter } from './utils/mock-request-adapter'

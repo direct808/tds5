@@ -6,7 +6,7 @@ import {
   FilterObject,
 } from '../../../src/domain/click/stream/filter/types'
 import { ClickRequestBuilder } from '../../utils/click-builders/click-request-builder'
-import { flushRedisDb, truncateTables } from '../../utils/truncate-tables'
+import { flushRedisDb, truncateTables } from '../../utils/db-utils'
 import { createApp } from '../../utils/create-app'
 import { ClickDataTextKeys } from '../../../src/domain/click/stream/filter/filters/click-data-text/click-data-text-filter'
 import { DateTime } from 'luxon'

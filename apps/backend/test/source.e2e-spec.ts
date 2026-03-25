@@ -3,7 +3,7 @@ import request from 'supertest'
 import { createAuthUser } from './utils/helpers'
 import { SourceBuilder } from './utils/entity-builder/source-builder'
 import { UserBuilder } from './utils/entity-builder/user-builder'
-import { truncateTables } from './utils/truncate-tables'
+import { truncateTables } from './utils/db-utils'
 import { createApp } from './utils/create-app'
 import { PrismaService } from '@/infra/prisma/prisma.service'
 
