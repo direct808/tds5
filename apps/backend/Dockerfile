@@ -2,10 +2,8 @@ FROM node:24-alpine as builder
 
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn
+RUN yarn --frozen-lockfile
 COPY . .
-
-ENV DATABASE_URL=postgres://fake
 
 RUN yarn run cicd:build
 
@@ -13,7 +11,7 @@ FROM node:24-alpine
 
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn install --prod
+RUN yarn install --prod --frozen-lockfile
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma

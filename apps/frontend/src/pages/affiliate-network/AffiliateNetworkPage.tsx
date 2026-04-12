@@ -60,7 +60,7 @@ export default function AffiliateNetworkPage() {
           </Button>
         }
         loading={isLoading}
-        onDelete={() => deleteMutate(rowSelectionModel.ids)}
+        onDelete={() => deleteMutate(Array.from(rowSelectionModel.ids) as string[])}
         onRefresh={() => void refetch()}
       />
       <EntityTable

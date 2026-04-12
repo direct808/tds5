@@ -12,23 +12,33 @@ services:
     command:
       - redis-server
       - --maxmemory
-      - ${REDIS_MAXMEMORY}
+      - ${REDIS_MAXMEMORY:-256m}
       - --maxmemory-policy
       - allkeys-lfu
       - --requirepass
-      - ${REDIS_PASSWORD}
+      - ${REDIS_PASSWORD:-1234}
 
     ports:
       - 6389:6379
 
-  app:
-    build: .
-    image: tds5
+  backend:
+    build:
+      context: apps/backend
+
+    image: tds5-backend
     env_file:
-      - .env
+      - apps/backend/.env
     environment:
       - DATABASE_URL=postgres://postgres:1234@db:5432/postgres
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     ports:
-      - ${PORT}:${PORT}
+      - ${PORT:-3000}:${PORT:-3000}
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+    image: tds5-frontend
+    env_file:
+      - apps/frontend/.env

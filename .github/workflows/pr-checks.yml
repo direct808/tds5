@@ -29,6 +29,12 @@ jobs:
     with:
       script: cicd:knip
 
+  build:
+    name: Build
+    uses: ./.github/workflows/check.yml
+    with:
+      script: cicd:build
+
   unit-tests:
     name: Unit tests
     uses: ./.github/workflows/check.yml
@@ -47,7 +53,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Enable Corepack
         run: corepack enable

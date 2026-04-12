@@ -1,5 +1,4 @@
 import {
-  type ListOfferResponseDto,
   offerControllerCreateOffer,
   type OfferControllerCreateOfferData,
   type OfferControllerCreateOfferResponses,
@@ -7,6 +6,7 @@ import {
   type OfferControllerDeleteOffersData,
   offerControllerListOffers,
   type OfferControllerListOffersData,
+  type OfferControllerListOffersResponse,
   offerControllerOfferGetById,
   type OfferControllerOfferGetByIdResponse,
   offerControllerUpdateOffer,
@@ -17,7 +17,7 @@ import {
 export const offerApi = {
   async list(
     options: OfferControllerListOffersData['query'],
-  ): Promise<ListOfferResponseDto> {
+  ): Promise<OfferControllerListOffersResponse> {
     const { data } = await offerControllerListOffers<true>({
       query: options,
     })
