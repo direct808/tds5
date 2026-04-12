@@ -1,0 +1,35 @@
+name: tds5-prod
+services:
+  db:
+    image: postgres:17.4-alpine
+    environment:
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8
+    command:
+      - redis-server
+      - --maxmemory
+      - ${REDIS_MAXMEMORY:-256m}
+      - --maxmemory-policy
+      - allkeys-lfu
+      - --requirepass
+      - ${REDIS_PASSWORD:-1234}
+
+  backend:
+    image: ghcr.io/direct808/tds5-backend:latest
+    env_file:
+      - .env
+
+  frontend:
+    image: ghcr.io/direct808/tds5-frontend:latest
+    environment:
+      - BACKEND_URL=http://backend:${PORT:-3000}
+      - POSTBACK_KEY=${POSTBACK_KEY}
+#    ports:
+#      - 80:80
+
+volumes:
+  db-data:

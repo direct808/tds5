@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { INestApplication } from '@nestjs/common'
 import TestAgent from 'supertest/lib/agent'
-import { AppConfig } from '../../src/infra/config/app-config.service'
+import { AppConfig } from '@/infra/config/app-config.service'
 
 export class PostbackRequestBuilder {
   private _subid: string | undefined
@@ -34,7 +34,7 @@ export class PostbackRequestBuilder {
 
     const { postbackKey } = this.app.get(AppConfig)
 
-    let url = `/${postbackKey}/postback`
+    let url = `/postback/${postbackKey}`
     if (this.q.size > 0) {
       url += '?' + this.q.toString()
     }

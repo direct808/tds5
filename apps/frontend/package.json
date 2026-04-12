@@ -8,8 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint . --fix",
     "preview": "vite preview",
-    "api:gen": "npx @hey-api/openapi-ts -i ../backend/swagger.json -o src/shared/api/generated",
-    "api:gen:zod": "npx @hey-api/openapi-ts -i ../backend/swagger.json -o src/shared/api/generated2 -p zod"
+    "api:gen": "npx @hey-api/openapi-ts -i ../backend/swagger.json -o src/shared/api/generated"
   },
   "dependencies": {
     "@fontsource/roboto": "^5.2.9",

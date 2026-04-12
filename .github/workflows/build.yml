@@ -1,0 +1,94 @@
+name: Build
+
+on:
+  #  workflow_dispatch:
+  push:
+     branches: [master]
+
+jobs:
+  generate-swagger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install backend dependencies
+        working-directory: apps/backend
+        run: yarn install
+
+      - name: Generate swagger.json
+        working-directory: apps/backend
+        env:
+          DATABASE_URL: postgres://fake
+          PORT: '3000'
+          SECRET: fake
+          JWT_EXPIRES: 1d
+          POSTBACK_KEY: fake
+          REDIS_HOST: fake
+          REDIS_PORT: '6379'
+          REDIS_PASSWORD: fake
+          REDIS_DB: '0'
+        run: yarn prisma:generate && yarn swagger:generate
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: swagger
+          path: apps/backend/swagger.json
+
+  docker-backend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: apps/backend
+          push: true
+          tags: ghcr.io/${{ github.repository }}-backend:latest
+
+  docker-frontend:
+    needs: [ generate-swagger ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: swagger
+          path: apps/backend
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/frontend/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}-frontend:latest
+          build-args: |
+            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL || '/api' }}
